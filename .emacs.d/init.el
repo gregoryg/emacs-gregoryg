@@ -149,8 +149,6 @@
       (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
 	(cl-callf color-saturate-name (face-foreground face) 30)))))
 
-(add-to-list 'load-path "~/emacs/jdee-2.4.1/lisp")
-
 (add-hook 'vc-before-checkin-hook
 	  #'(lambda ()
 	      (set-window-buffer
