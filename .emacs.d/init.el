@@ -44,7 +44,6 @@
     json-mode
     json-reformat
     magit
-    magit-tramp
     markdown-mode
     multiple-cursors
     nodejs-repl
@@ -576,7 +575,7 @@
        (add-to-list 'default-frame-alist '(font . "-unknown-Inconsolata-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"))
        )
       ((and (eq window-system 'x) (eq emacs-major-version 24))
-       (set-default-font "Inconsolata-14")
+       (set-frame-font "Inconsolata-14")
        (add-to-list 'default-frame-alist '(font . "-unknown-Inconsolata-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"))
        )
       ((eq window-system 'x)
