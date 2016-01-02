@@ -16,5 +16,6 @@ history
 semanticdb/
 server/
 tetris.score
+.emacs.d/tramp
 url/
 .Rhistory
