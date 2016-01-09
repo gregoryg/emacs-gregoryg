@@ -45,6 +45,7 @@
     json-reformat
     magit
     markdown-mode
+    monokai-theme
     multiple-cursors
     nodejs-repl
     org
