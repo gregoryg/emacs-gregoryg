@@ -205,26 +205,44 @@
 
 (add-to-list 'load-path "~/emacs/cider")
 (autoload 'cider "cider" "Cider for Clojure")
-;; (require 'cider)
+(require 'cider)
 (eval-after-load "cider"
   '(progn
-     (require 'cider)
-     (defadvice cider--lein-present-p (around gjg-find-the-damn-script activate)
-       "Lein shell script is not detected on Windows as executable"
-       (if (eq window-system 'w32)
-	   (setq ad-return-value (or (file-remote-p default-directory)
-				     (locate-file "lein" exec-path nil 'exists)))
-	 (ad-do-it)))
+     ;; (require 'cider)
+     ;; (defadvice cider--lein-present-p (around gjg-find-the-damn-script activate)
+     ;;   "Lein shell script is not detected on Windows as executable"
+     ;;   (if (eq window-system 'w32)
+     ;;       (setq ad-return-value (or (file-remote-p default-directory)
+     ;;    			     (locate-file "lein" exec-path nil 'exists)))
+     ;;     (ad-do-it)))
      (add-hook 'cider-repl-mode-hook 'company-mode)
      (add-hook 'cider-mode-hook 'company-mode)))
 
 (autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
-(eval-after-load "smartparens-config"
-  '(progn 
-     (add-hook 'clojure-mode-hook 'smartparens-mode)
-     (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
-     (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
-     (add-hook 'emacs-lisp-mode-hook 'smartparens-mode)))
+(defun my-create-newline-and-enter-sexp (&rest _ignored)
+  "Open a new brace or bracket expression, with relevant newlines and indent. "
+  (newline)
+  (indent-according-to-mode)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+(require 'smartparens)
+;; (eval-after-load "smartparens-config"
+;;   '(progn 
+;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+(sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+(sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+(sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+(add-hook 'clojure-mode-hook 'smartparens-mode)
+(add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'emacs-lisp-mode-hook 'smartparens-mode)
+;; ))
+
+;; Javascript
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-hook 'js2-mode-hook 'smartparens-mode)
+(add-hook 'js2-mode-hook 'rainbow-delimiters-mode)
 
 ;; R
 (setq ess-sas-edit-keys-toggle nil)     ;;; turn on automatic indentation
@@ -237,25 +255,13 @@
     (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))))
 
 (load-library "gjg-org")
-(eval-after-load "tramp"
-  '(progn
-     (add-to-list 'tramp-methods
-		  (mapcar
-		   (lambda (x)
-		     (cond
-		      ((equal x "sshx") "cygssh")
-		      ((eq (car x) 'tramp-login-program) (list 'tramp-login-program "fakecygpty ssh"))
-		      (t x)))
-		   (assoc "sshx" tramp-methods)))
-     (setq tramp-default-method "cygssh")))
+(with-eval-after-load 'tramp'
+  (setq tramp-default-method "rsync"))
 
 ;; ** Do special things for special OS
 (setq w32-get-true-file-attributes nil)
-(cond  ((eq window-system 'w32)
-        (setq tramp-default-method "rsync"))
-        ;; (setq tramp-default-method "plink"))
-       (t
-        (setq tramp-default-method "scpc")))
+(setq tramp-default-method "rsync")
+
 ;; **** Windows printing that relies on ghostscript and gsview
 
 (defcustom gjg/gsprint "c:/Program Files/Ghostgum/gsview/gsprint.exe"
@@ -575,7 +581,7 @@
        (add-to-list 'default-frame-alist '(font . "-unknown-Inconsolata-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"))
        )
       ((and (eq window-system 'x) (eq emacs-major-version 24))
-       (set-frame-font "Inconsolata-14")
+       (set-frame-font "Inconsolata-16")
        (add-to-list 'default-frame-alist '(font . "-unknown-Inconsolata-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"))
        )
       ((eq window-system 'x)
@@ -727,7 +733,7 @@
  '(cursor-color "#cccccc")
  '(custom-safe-themes
    (quote
-    ("a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "e8a9dfa28c7c3ae126152210e3ccc3707eedae55bdc4b6d3e1bb3a85dfb4e670" "c006bc787154c31d5c75e93a54657b4421e0b1a62516644bd25d954239bc9933" "9101d2213429a23051e54ceb98858f91b28891879efc448d7cd4daaf60135b77" "3b819bba57a676edf6e4881bd38c777f96d1aa3b3b5bc21d8266fa5b0d0f1ebf" "45df7c30d3ef0c66f18c4160671cccd253396a9b6a04cfbe48d98e6c05bd9a9a" "9217a55eee84ceeeee84eb8ffb8cf8e6bfc29b5678487427f55ff569fe4e5e0b" "5d3f64e560e23755085f88b69289a10de5ad1f35b25c720ef4f84f818b8804f7" "8244ac9dbbd65d58419f080206439d00f71a6d76e96f7e2765f1ad67d887522a" "90c4a9659ecaa594c7b48c6ca754fc147ebf241750de4c828b762f568b9c637e" "826db5f7975a84b2d7751c895077e678858ba4c71a757abcb104e9263a71cd5f" "8b69119982861e210e4935e90f7ba8ef20d8b4cfabb600529be1782cdba01819" "8880e4c3a2c085619444c75df15975b74053bb20e9c08dd778c1cce92a859c00" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" "766265d467a911b011f94dbdd58e014c843d8d89e262037908bb7b53798658e5" "984740e255dec03dc650470f4b684a0052bbae49b476ae0ab3a80c22c1d74e9d" "0c311fb22e6197daba9123f43da98f273d2bfaeeaeb653007ad1ee77f0003037" "297063d0000ca904abb446944398843edaa7ef2c659b7f9087d724bf6f8c1d1f" "7ed6913f96c43796aa524e9ae506b0a3a50bfca061eed73b66766d14adfa86d1" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "2b5aa66b7d5be41b18cc67f3286ae664134b95ccc4a86c9339c886dfd736132d" "ed81411169b1b3e3d4cfc39b09d68ea13e0ff7708dc5b9d0bedb319e071968ad" "b1471d88b39cad028bd621ae7ae1e8e3e3fca2c973f0dfe3fd6658c194a542ff" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "d3d83fe63430888bcb26c74476e9f95babab42abc6ef1abe75a2e2a6504ea688" "cea6d15a8333e0c78e1e15a0524000de69aac2afa7bb6cf9d043a2627327844e" "57072d797dc09fcf563051a85a29d6a51d6f2b1a602e029c35b05c30df319b2a" "e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" default)))
+    ("0cebcfb34ef4f79b8ed16520d199ae323290052e2a1cd0aab9d0a1dcce98d7a8" "0fb6369323495c40b31820ec59167ac4c40773c3b952c264dd8651a3b704f6b5" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "e8a9dfa28c7c3ae126152210e3ccc3707eedae55bdc4b6d3e1bb3a85dfb4e670" "c006bc787154c31d5c75e93a54657b4421e0b1a62516644bd25d954239bc9933" "9101d2213429a23051e54ceb98858f91b28891879efc448d7cd4daaf60135b77" "3b819bba57a676edf6e4881bd38c777f96d1aa3b3b5bc21d8266fa5b0d0f1ebf" "45df7c30d3ef0c66f18c4160671cccd253396a9b6a04cfbe48d98e6c05bd9a9a" "9217a55eee84ceeeee84eb8ffb8cf8e6bfc29b5678487427f55ff569fe4e5e0b" "5d3f64e560e23755085f88b69289a10de5ad1f35b25c720ef4f84f818b8804f7" "8244ac9dbbd65d58419f080206439d00f71a6d76e96f7e2765f1ad67d887522a" "90c4a9659ecaa594c7b48c6ca754fc147ebf241750de4c828b762f568b9c637e" "826db5f7975a84b2d7751c895077e678858ba4c71a757abcb104e9263a71cd5f" "8b69119982861e210e4935e90f7ba8ef20d8b4cfabb600529be1782cdba01819" "8880e4c3a2c085619444c75df15975b74053bb20e9c08dd778c1cce92a859c00" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" "766265d467a911b011f94dbdd58e014c843d8d89e262037908bb7b53798658e5" "984740e255dec03dc650470f4b684a0052bbae49b476ae0ab3a80c22c1d74e9d" "0c311fb22e6197daba9123f43da98f273d2bfaeeaeb653007ad1ee77f0003037" "297063d0000ca904abb446944398843edaa7ef2c659b7f9087d724bf6f8c1d1f" "7ed6913f96c43796aa524e9ae506b0a3a50bfca061eed73b66766d14adfa86d1" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "2b5aa66b7d5be41b18cc67f3286ae664134b95ccc4a86c9339c886dfd736132d" "ed81411169b1b3e3d4cfc39b09d68ea13e0ff7708dc5b9d0bedb319e071968ad" "b1471d88b39cad028bd621ae7ae1e8e3e3fca2c973f0dfe3fd6658c194a542ff" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "d3d83fe63430888bcb26c74476e9f95babab42abc6ef1abe75a2e2a6504ea688" "cea6d15a8333e0c78e1e15a0524000de69aac2afa7bb6cf9d043a2627327844e" "57072d797dc09fcf563051a85a29d6a51d6f2b1a602e029c35b05c30df319b2a" "e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" default)))
  '(dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.[a-zA-Z]")
  '(ediff-split-window-function (quote split-window-horizontally))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
@@ -735,7 +741,7 @@
  '(fci-rule-color "#282a2e")
  '(font-lock-verbose t)
  '(foreground-color "#cccccc")
- '(gjg/os-open "cygstart")
+ '(gjg/os-open "xdg-open")
  '(global-hl-line-mode t)
  '(global-hl-line-sticky-flag t)
  '(grep-command "grep --color=auto -nH -e ")
@@ -820,7 +826,15 @@
  '(pos-tip-foreground-color "#586e75")
  '(safe-local-variable-values
    (quote
-    ((outline-minor-mode)
+    ((eval when
+           (fboundp
+            (quote aggressive-indent-mode))
+           (aggressive-indent-mode -1))
+     (eval when
+           (fboundp
+            (quote rainbow-mode))
+           (rainbow-mode 1))
+     (outline-minor-mode)
      (whitespace-style face tabs spaces trailing lines space-before-tab::space newline indentation::space empty space-after-tab::space space-mark tab-mark newline-mark)
      (eval font-lock-add-keywords nil
            (\`
