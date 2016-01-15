@@ -52,6 +52,7 @@
     org-plus-contrib
     python-mode
     pyvenv
+    queue
     rainbow-delimiters
     recursive-narrow
     redo+
@@ -582,7 +583,8 @@
        (add-to-list 'default-frame-alist '(font . "-unknown-Inconsolata-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"))
        )
       ((and (eq window-system 'x) (eq emacs-major-version 24))
-       (set-frame-font "Inconsolata-16")
+       ;; (set-frame-font "Inconsolata-16")
+       (set-frame-font "Source Code Pro-14")
        (add-to-list 'default-frame-alist '(font . "-unknown-Inconsolata-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"))
        )
       ((eq window-system 'x)
