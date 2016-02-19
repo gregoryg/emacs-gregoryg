@@ -37,12 +37,12 @@
       '(("r" "Regular todo" entry
 	 (file+headline "~/projects/notes.org" "Tasks")
 	 "* TODO %?\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend t)
-	("s" "Syncsort todo" entry
-	 (file+headline "~/syncsort/db/syncsort.org" "Miscellaneous non-project tasks")
+	("s" "Cloudera todo" entry
+	 (file+headline "~/Google Drive/cloudera.org" "Miscellaneous non-project tasks")
 	 "* TODO %?\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend t)
-	("p" "Syncsort PHONE" entry
-	 (file+headline "~/syncsort/db/syncsort.org" "Phone calls")
-	 "* Call %^{type|with|from|to} %^{name|Unknown|Mike Wilkes|Nikhil Kumar}\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n   + %?\n " :prepend t :clock-in t :clock-resume t)
+	("p" "Cloudera pMeeting" entry
+	 (file+headline "~/Google Drive/cloudera.org" "Meetings")
+	 "* Call %^{type|with|from|to} %^{name|Unknown|John Darrah|Kamal Maheshwari}\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n   + %?\n " :prepend t :clock-in t :clock-resume t)
 	("w" "todo With clip" entry
 	 (file+headline "~/projects/notes.org" "Tasks")
 	 "* TODO %?%c\n:LOGBOOK:\n:CREATED:%U\n:END:\n\n%i\n" :prepend t)
@@ -60,19 +60,17 @@
 
 ;; persist clock history across emacs sessions
 (defcustom gjg/agenda-file-sets
-  '(("Syncsort"
-     '("syncsort.org" "misc.org"))
+  '(("Cloudera"
+     '("cloudera.org" "misc.org"))
     ("Home"
      '("misc.org" "notes.org" "projects.org")))
   "Named sets of agenda files"
   :group 'gjg)
 
 (setq org-clock-persist 'history)
-;; Broke in org-mode 8 ;; (org-clock-persistence-insinuate)
+(org-clock-persistence-insinuate)
 (setq org-clock-report-include-clocking-task t)
-(setq org-agenda-files '("~/syncsort/db/syncsort.org" "~/syncsort/db/pm/syncsort-pm.org"))
-;; due to irreconcilable differences between Windows and real operating systems, set org-agenda-files in init.el!!!
-;;    (setq org-agenda-files '("~/syncsort/db/syncsort.org" "~/projects/misc.org" "~/projectshabits.org" "~/projects/notes.org" "~/projectsnext-work.org" "~/projectsdiary.org"))
+(setq org-agenda-files '("~/Google Drive/cloudera.org" ))
 
 (setq org-use-speed-commands t) ;; POWER USER BABY
 (setq org-speed-commands-user 
@@ -239,7 +237,6 @@
 (setq org-mobile-inbox-for-pull "~/projectsfrom-mobile.org")
 (setq org-agenda-before-write-hook nil)
 (setq org-mobile-files '( "~/Copy/ingress/ingress.org" 'org-agenda-files))
-;; (setq org-mobile-files '("~//syncsort/db/syncsort.org" "~/projectsstore.org" "~/projectsgoldflake.org" "~/projects/notes.org" "~/projectsnext-work.org" "~/work/nodepression/nd-archive-conversion.org"))
 ;; (setq org-mobile-agendas '("P" "S" "w"))
 ;;***  [ .emacs remember setup ]
 
@@ -535,14 +532,6 @@ nil if before the first headline."
 (setq org-agenda-todo-ignore-deadlines nil)
 (setq org-agenda-todo-ignore-with-date nil)
 
-(setq org2blog/wp-blog-alist
-      '(:url "http://dynapse.net/blog/xmlrpc.php"
-	     :username "gortsleigh"
-	     :default-categories '("syncsort")
-	     :keep-new-lines nil
-	     
-	)
-      )
 (setq org-publish-project-alist
       '(
 	("ted-talks"
