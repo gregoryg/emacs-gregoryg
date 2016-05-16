@@ -28,6 +28,10 @@
 	    ))
 
 ;; *** Org capture
+;; TODO: improve meeting template with
+;;       + :NOBLOCKING: t
+;;       + meeting|call
+
 (setq org-directory "~/Copy/projects/")
 
 
@@ -40,9 +44,21 @@
 	("s" "Cloudera todo" entry
 	 (file+headline "~/Google Drive/cloudera.org" "Miscellaneous non-project tasks")
 	 "* TODO %?\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend t)
-	("p" "Cloudera pMeeting" entry
+	("p" "Cloudera Phone/Meeting" entry
 	 (file+headline "~/Google Drive/cloudera.org" "Meetings")
-	 "* Call %^{type|with|from|to} %^{name|Unknown|John Darrah|Kamal Maheshwari}\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n   + %?\n " :prepend t :clock-in t :clock-resume t)
+	 "* %^{type|Call|Meeting} with %^{with|Unknown|John Darrah|Krishna Samudrala|Cole Waldron|Mike Pileggi}: %^{Subject|Sync-up|Presentation|Introduction}
+:PROPERTIES:
+:NOBLOCKING: t
+:END:
+:LOGBOOK:
+:CREATED:%U
+:END:
+%i
+   + From Cloudera: GG, 
+   + THESE PROMPTS: 1st %\1, 2nd %\2, 3rd %\3, 4th %\4
+   + From %\2: 
+   + %?
+ " :prepend t :clock-in t :clock-resume t)
 	("w" "todo With clip" entry
 	 (file+headline "~/projects/notes.org" "Tasks")
 	 "* TODO %?%c\n:LOGBOOK:\n:CREATED:%U\n:END:\n\n%i\n" :prepend t)
@@ -70,7 +86,7 @@
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
 (setq org-clock-report-include-clocking-task t)
-(setq org-agenda-files '("~/Google Drive/cloudera.org" ))
+(setq org-agenda-files '("~/Google Drive/cloudera.org" "~/Google Drive/projects/SRP - Salt River Project/srp-poc.org" ))
 
 (setq org-use-speed-commands t) ;; POWER USER BABY
 (setq org-speed-commands-user 
