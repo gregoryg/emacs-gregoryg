@@ -1,4 +1,4 @@
-(defvar gjg/check-packages-on-startup nil)
+(defvar gjg/check-packages-on-startup t)
 
 (setq gjg/bbdb-installed nil) ;; is BBDB installed on this computer?
 
@@ -10,13 +10,13 @@
 
 (require 'package)
 ;; (autoload 'package "package" "Elpa and similar package manager")
-(eval-after-load "package"
-  '(progn
-     (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-     ;; ;; (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-     ;;(add-to-list 'package-archives '("melpa-stable" . "http://melpa.milkbox.net/packages/") t)
-     (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-     (package-initialize)))
+;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+(when (< emacs-major-version 24)
+  ;; for important compatibility packages like cl-lib
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize)
 
 ;; try to get control of required packages across different emacs environments
 (defvar gjg/required-packages 
@@ -24,7 +24,6 @@
     auto-complete
     clojure-mode
     dash
-    deft
     edit-server
     elpy
     ensime
@@ -56,9 +55,11 @@
     recursive-narrow
     redo+
     s
-    scala-mode2
+    scala-mode
     smart-mode-line
     smartparens
+    spaceline
+    spacemacs-theme
     sql-indent
     uuid
     web-mode
@@ -84,9 +85,22 @@
       (when (not (package-installed-p p))
         (package-install p)))))
 
+;; OS X / Mac specific things
+(setq ns-command-modifier (quote meta))
 ;; deal with bad behavior on OSX (PATH does not export for remote shells)
 (when (and (memq window-system '(mac ns)) (fboundp 'exec-path-from-shell-initialize))
   (exec-path-from-shell-initialize))
+
+;; Spacemacs theme stuff
+(load-theme 'spacemacs-dark t)
+(require 'spaceline-config)
+(spaceline-emacs-theme)
+
+ ;; fancy git icon
+  (defadvice vc-mode-line (after strip-backend () activate)
+    (when (stringp vc-mode)
+      (let ((gitlogo (replace-regexp-in-string "^ Git." "  " vc-mode)))
+        (setq vc-mode gitlogo))))
 
 
 ;;* Font selection
@@ -567,7 +581,8 @@
 (global-set-key [C-wheel-down] 'text-scale-decrease)
 (global-set-key [S-wheel-up] 'inc-font-size)
 (global-set-key [S-wheel-down] 'dec-font-size)
-
+(global-set-key (kbd "M-]") 'next-buffer)
+(global-set-key (kbd "M-[") 'previous-buffer)
 ;; EXPERIMENTAL: unbind SPACE and ? in minibuffer, to allow typing in completions with those chars
 (add-hook 'minibuffer-setup-hook (lambda () 
                                    (define-key minibuffer-local-completion-map " " nil)
@@ -578,13 +593,13 @@
 (server-start)
 
 
-(if (window-system)
-    ;; (load-theme 'noctilux t)
-    ;; (load-theme 'grandshell t)
-    (load-theme 'gjg-twilight t)
-  ;;    (load-theme 'deeper-blue t)
-  ;; (load-theme 'solarized-dark t)
-  )
+;; (if (window-system)
+;;     ;; (load-theme 'noctilux t)
+;;     ;; (load-theme 'grandshell t)
+;;     ;; (load-theme 'gjg-twilight t)
+;;   ;;    (load-theme 'deeper-blue t)
+;;   ;; (load-theme 'solarized-dark t)
+;;   )
 
 (cond ((or (eq window-system 'mac) (eq window-system 'ns))
        (set-frame-font "Source Code Pro-17"))
@@ -607,6 +622,7 @@
 ;; *** Desktop save
 (desktop-save-mode 1)
 (setq desktop-restore-eager 5)
+;; GJG TODO: does not work in emacs 25.x
 (defun tv-list-tramp-buffer-file-name ()
   "Return a list of buffers that I do not want automatically restored by desktop.el in the next emacs session: TRAMP dirs and files, Info buffer, and Dired buffers"
   (let* ((desktop-info-list (mapcar #'desktop-buffer-info (buffer-list)))
@@ -625,9 +641,9 @@
 ;;                                         (tv-list-tramp-buffer-file-name)))
 ;;                                    (dolist (i del-buf-list)
 ;;                                      (if (get-buffer i) (kill-buffer i))))))
-(setq desktop-buffers-not-to-save
-      (concat "\\` "
-	      (tv-list-tramp-buffer-file-name)))
+;;(setq desktop-buffers-not-to-save
+;;      (concat "\\` "
+;;	      (tv-list-tramp-buffer-file-name)))
 (add-to-list 'desktop-modes-not-to-save 'dired-mode)
 (add-to-list 'desktop-modes-not-to-save 'Info-mode)
 (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
@@ -649,7 +665,6 @@
 (setq ido-use-filename-at-point nil) ;; prefer file names near point
 
 ;; **** Dired
-
 
 (declare (special dired-x-hands-off-my-keys
 		  dired-bind-vm
@@ -724,41 +739,30 @@
 ;;       (when matching-text
 ;;         (message matching-text)))))
 
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ac-delay 0.5)
  '(ansi-color-faces-vector
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
    (vector "#c5c8c6" "#cc6666" "#b5bd68" "#f0c674" "#81a2be" "#b294bb" "#8abeb7" "#1d1f21"))
  '(ansi-term-color-vector
    [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"] t)
- '(background-color "#202020")
- '(background-mode dark)
  '(compilation-message-face (quote default))
  '(csv-separators (quote (",")))
- '(cua-global-mark-cursor-color "#2aa198")
- '(cua-normal-cursor-color "#839496")
- '(cua-overwrite-cursor-color "#b58900")
- '(cua-read-only-cursor-color "#859900")
- '(cursor-color "#cccccc")
  '(custom-safe-themes
    (quote
-    ("628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "38ba6a938d67a452aeb1dada9d7cdeca4d9f18114e9fc8ed2b972573138d4664" "0cebcfb34ef4f79b8ed16520d199ae323290052e2a1cd0aab9d0a1dcce98d7a8" "0fb6369323495c40b31820ec59167ac4c40773c3b952c264dd8651a3b704f6b5" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "e8a9dfa28c7c3ae126152210e3ccc3707eedae55bdc4b6d3e1bb3a85dfb4e670" "c006bc787154c31d5c75e93a54657b4421e0b1a62516644bd25d954239bc9933" "9101d2213429a23051e54ceb98858f91b28891879efc448d7cd4daaf60135b77" "3b819bba57a676edf6e4881bd38c777f96d1aa3b3b5bc21d8266fa5b0d0f1ebf" "45df7c30d3ef0c66f18c4160671cccd253396a9b6a04cfbe48d98e6c05bd9a9a" "9217a55eee84ceeeee84eb8ffb8cf8e6bfc29b5678487427f55ff569fe4e5e0b" "5d3f64e560e23755085f88b69289a10de5ad1f35b25c720ef4f84f818b8804f7" "8244ac9dbbd65d58419f080206439d00f71a6d76e96f7e2765f1ad67d887522a" "90c4a9659ecaa594c7b48c6ca754fc147ebf241750de4c828b762f568b9c637e" "826db5f7975a84b2d7751c895077e678858ba4c71a757abcb104e9263a71cd5f" "8b69119982861e210e4935e90f7ba8ef20d8b4cfabb600529be1782cdba01819" "8880e4c3a2c085619444c75df15975b74053bb20e9c08dd778c1cce92a859c00" "756597b162f1be60a12dbd52bab71d40d6a2845a3e3c2584c6573ee9c332a66e" "766265d467a911b011f94dbdd58e014c843d8d89e262037908bb7b53798658e5" "984740e255dec03dc650470f4b684a0052bbae49b476ae0ab3a80c22c1d74e9d" "0c311fb22e6197daba9123f43da98f273d2bfaeeaeb653007ad1ee77f0003037" "297063d0000ca904abb446944398843edaa7ef2c659b7f9087d724bf6f8c1d1f" "7ed6913f96c43796aa524e9ae506b0a3a50bfca061eed73b66766d14adfa86d1" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "2b5aa66b7d5be41b18cc67f3286ae664134b95ccc4a86c9339c886dfd736132d" "ed81411169b1b3e3d4cfc39b09d68ea13e0ff7708dc5b9d0bedb319e071968ad" "b1471d88b39cad028bd621ae7ae1e8e3e3fca2c973f0dfe3fd6658c194a542ff" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "d3d83fe63430888bcb26c74476e9f95babab42abc6ef1abe75a2e2a6504ea688" "cea6d15a8333e0c78e1e15a0524000de69aac2afa7bb6cf9d043a2627327844e" "57072d797dc09fcf563051a85a29d6a51d6f2b1a602e029c35b05c30df319b2a" "e24180589c0267df991cf54bf1a795c07d00b24169206106624bb844292807b9" default)))
- '(deft-recursive t)
+    ("bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default)))
  '(dired-omit-files "^\\.?#\\|^\\..*")
  '(ediff-split-window-function (quote split-window-horizontally))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(exec-path
    (quote
     ("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/usr/local/Cellar/emacs/24.5/libexec/emacs/24.5/x86_64-apple-darwin15.2.0" "/usr/local/bin" "/usr/local/texlive/2015/bin/x86_64-darwin")))
- '(fci-rule-character-color "#d9d9d9")
- '(fci-rule-color "#373b41")
  '(font-lock-verbose t)
- '(foreground-color "#cccccc")
  '(gjg/os-open "open")
  '(global-hl-line-mode t)
  '(global-hl-line-sticky-flag t)
@@ -839,6 +843,9 @@
  '(org-startup-folded (quote content))
  '(org-use-sub-superscripts (quote {}))
  '(org-yank-folded-subtrees t)
+ '(package-selected-packages
+   (quote
+    (scala-mode ensime spaceline airline-themes spacemacs-theme zencoding-mode yaml-mode web-mode uuid tramp-hdfs sql-indent smartparens smart-mode-line-powerline-theme redo+ recursive-narrow rainbow-delimiters queue python-mode projectile-speedbar pig-mode org-plus-contrib ocodo-svg-modelines nodejs-repl multiple-cursors multi-term monokai-theme markdown-mode magit json-mode js2-mode jdee ido-ubiquitous htmlize hl-line+ flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view epresent elpy edit-server deft color-theme-sanityinc-tomorrow clojure-mode auto-complete auctex)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(safe-local-variable-values
@@ -878,6 +885,7 @@
    (quote
     (python-mode clojure\.mode emacs-lisp-mode cider-repl-mode)))
  '(sp-hybrid-kill-excessive-whitespace t)
+ '(spaceline-info-mode t)
  '(sql-postgres-login-params
    (quote
     ((user :default "ggrubbs")
@@ -908,7 +916,7 @@
      (340 . "#f0c674")
      (360 . "#b5bd68"))))
  '(vc-annotate-very-old-color nil)
- '(version-control (quote never))
+ '(version-control t)
  '(web-mode-enable-engine-detection t)
  '(weechat-color-list
    (quote
@@ -920,10 +928,7 @@
    ["#fdf6e3" "#cb4b16" "#93a1a1" "#839496" "#657b83" "#6c71c4" "#586e75" "#002b36"])
  '(yas-prompt-functions
    (quote
-    (yas-ido-prompt yas-x-prompt yas-completing-prompt yas-dropdown-prompt yas-no-prompt)))
- '(yas-snippet-dirs
-   (quote
-    ("c:/Users/ggrubbs/.emacs.d/elpa/yasnippet-20140514.1649/snippets" "c:/Users/ggrubbs/emacs/snippets")) nil (yasnippet)))
+    (yas-ido-prompt yas-x-prompt yas-completing-prompt yas-dropdown-prompt yas-no-prompt))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
