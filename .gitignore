@@ -1,6 +1,10 @@
-elpa/
 *~
 *.elc
+elpa/
+.emacs.d/ensime/
+.emacs.d/games/
+.emacs.d/ido.last
+emacs/cider*
 .emacs.desktop
 *.lock
 .mc-lists.el
@@ -10,7 +14,6 @@ ac-comphist.dat
 auto-save-list/
 backups/
 bookmarks
-elpa/
 eshell/
 history
 semanticdb/
