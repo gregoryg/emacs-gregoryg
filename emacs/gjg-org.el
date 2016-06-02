@@ -55,7 +55,6 @@
 :END:
 %i
    + From Cloudera: GG, 
-   + THESE PROMPTS: 1st %\1, 2nd %\2, 3rd %\3, 4th %\4
    + From %\2: 
    + %?
  " :prepend t :clock-in t :clock-resume t)
