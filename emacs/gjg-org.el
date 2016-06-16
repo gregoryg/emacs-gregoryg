@@ -46,7 +46,7 @@
 	 "* TODO %?\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend t)
 	("p" "Cloudera Phone/Meeting" entry
 	 (file+headline "~/Google Drive/cloudera.org" "Meetings")
-	 "* %^{type|Call|Meeting} with %^{with|Unknown|John Darrah|Krishna Samudrala|Cole Waldron|Mike Pileggi}: %^{Subject|Sync-up|Presentation|Introduction}
+	 "* %^{type|Call|Meeting} with %^{with|Unknown|John Darrah|Krishna Samudrala|Cole Waldron}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
 :PROPERTIES:
 :NOBLOCKING: t
 :END:
@@ -55,7 +55,7 @@
 :END:
 %i
    + From Cloudera: GG, 
-   + From %\2: 
+   + From %\\2: 
    + %?
  " :prepend t :clock-in t :clock-resume t)
 	("w" "todo With clip" entry
