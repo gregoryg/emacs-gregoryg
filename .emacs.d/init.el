@@ -93,7 +93,7 @@
 
 ;; Spacemacs theme stuff
 (load-theme 'spacemacs-dark t)
-(require 'spaceline-config)
+(require 'spaceline-confg)
 (spaceline-emacs-theme)
 
  ;; fancy git icon
