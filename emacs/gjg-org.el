@@ -7,6 +7,7 @@
 ;;     org-crypt-use-before-save-magic is called here because it has the
 ;;     side effect of adding to org-mode-hook
 
+(require 'ox-confluence)
 ;; (require 'org-crypt)
 ;; (org-crypt-use-before-save-magic)
 (add-hook 'org-mode-hook
@@ -32,7 +33,7 @@
 ;;       + :NOBLOCKING: t
 ;;       + meeting|call
 
-(setq org-directory "~/Copy/projects/")
+;; PLEASE SET USING CUSTOMIZATION (setq org-directory "~/Copy/projects/")
 
 
 (setq org-default-notes-file "~/projects/notes.org")
@@ -46,7 +47,7 @@
 	 "* TODO %?\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend t)
 	("p" "Cloudera Phone/Meeting" entry
 	 (file+headline "~/Google Drive/cloudera.org" "Meetings")
-	 "* %^{type|Call|Meeting} with %^{with|Unknown|John Darrah|Krishna Samudrala|Cole Waldron}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
+	 "* %t %^{type|Call|Meeting} with %^{with|Unknown|John Darrah|Krishna Samudrala|Cole Waldron}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
 :PROPERTIES:
 :NOBLOCKING: t
 :END:
@@ -81,6 +82,26 @@
      '("misc.org" "notes.org" "projects.org")))
   "Named sets of agenda files"
   :group 'gjg)
+
+;; ease export/sharing from org-mode
+(defun gjg/org-export-to-odt ()
+    "Export to odt without the theme interfering"
+    (interactive)
+    (let ((gort custom-enabled-themes))
+      (mapcar 'disable-theme custom-enabled-themes)
+      (org-odt-export-to-odt)
+      (mapcar 'enable-theme gort)))
+
+(defun gjg/org-export-to-html-and-open ()
+  "Export to HTML with no theme active"
+  (interactive)
+  (let ((gort custom-enabled-themes))
+    (mapcar 'disable-theme custom-enabled-themes)
+    (org-html-export-to-html)
+    (browse-url (browse-url-file-url (concat (file-name-sans-extension (buffer-file-name)) ".html")))
+    (mapcar 'enable-theme gort)
+    ))
+
 
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
@@ -145,7 +166,7 @@
 (setq org-agenda-hide-tags-regexp "noagenda")
 (setq auto-mode-alist (cons '("\\.org$" . org-mode) auto-mode-alist))
 (setq org-completion-use-ido nil)
-(setq org-completion-use-iswitchb t)
+(setq org-completion-use-iswitchb nil)
 (setq org-completion-use-ido t)
 (setq org-return-follows-link t)
 (setq org-treat-S-cursor-todo-selection-as-state-change nil) ;; use S-arrow without having to log state change!
@@ -549,6 +570,22 @@ nil if before the first headline."
 
 (setq org-publish-project-alist
       '(
+        ("director-23-testing" :components("director-23-testing-www" "director-23-testing-static"))
+        ("director-23-testing-www"
+         :base-directory "~/Google Drive/testing/director/2.3"
+         :base-extension "org"
+         :publishing-directory "/rsync:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/testing/director/2.3/"
+         :recursive t
+         :publishing-function org-html-publish-to-html
+         :headline-levels 4
+         :auto-preamble t
+         )
+        ("director-23-testing-static"
+         :base-directory "~/Google Drive/testing/director/2.3"
+         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|dxt\\|dxj\\|sdk\\|txt\\|conf"
+         :publishing-directory "/rsync:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/testing/director/2.3/"
+         :recursive t
+         :publishing-function org-publish-attachment)
 	("ted-talks"
 	 :components
 	 ("ted-talks-notes" "ted-talks-static"))
