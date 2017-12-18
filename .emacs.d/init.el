@@ -1,4 +1,4 @@
-(defvar gjg/check-packages-on-startup t)
+(defvar gjg/check-packages-on-startup nil)
 
 (setq gjg/bbdb-installed nil) ;; is BBDB installed on this computer?
 
@@ -24,27 +24,29 @@
     auto-complete
     clojure-mode
     dash
+    dumb-jump
     edit-server
     elpy
     ensime
     ess
     ess-R-data-view
     ess-R-object-popup
+    exec-path-from-shell
     flx-ido
     hl-line+
     htmlize
     ido-completing-read+
     ido-ubiquitous
-    jdee
     js2-mode
     json-mode
     json-reformat
     magit
     markdown-mode
-    monokai-theme
+    material-theme
     multi-term
     multiple-cursors
     nodejs-repl
+    ob-ipytyon
     org
     org-plus-contrib
     pig-mode
@@ -63,6 +65,7 @@
     sql-indent
     uuid
     web-mode
+    yafolding
     yaml-mode
     yasnippet
     zencoding-mode
@@ -90,11 +93,18 @@
 ;; deal with bad behavior on OSX (PATH does not export for remote shells)
 (when (and (memq window-system '(mac ns)) (fboundp 'exec-path-from-shell-initialize))
   (exec-path-from-shell-initialize))
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
+;; add in local user's bin/
+(when (file-exists-p "~/bin/")
+  (add-to-list 'exec-path "~/bin")
+  )
 
 ;; Spacemacs theme stuff
-(load-theme 'spacemacs-dark t)
-(require 'spaceline-confg)
-(spaceline-emacs-theme)
+(load-theme 'material t)
+;; (load-theme 'spacemacs-dark t)
+;; (require 'spaceline-config)
+;; (spaceline-emacs-theme)
 
  ;; fancy git icon
   (defadvice vc-mode-line (after strip-backend () activate)
@@ -198,6 +208,7 @@
 ;; web-dev
 (setq-default indent-tabs-mode nil)
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.repo\\'" . conf-mode))
 (require 'web-mode)
 ;; (eval-after-load "web-mode"
 ;;   (progn
@@ -223,7 +234,11 @@
 ;; Latex
 (require 'ob-latex)
 ;; SQL
+(require 'sql)
+;; (add-hook 'sql-mode-hook (lambda
+(sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[_a-zA-Z0-9()]*\\]?> ")
 (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
+;; ))
 ;; Clojure
 (require 'ob-clojure) ;; org-babel code evaluation
 
@@ -554,8 +569,11 @@
         (t
          (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
 
+;; take back my C-o binding, emacs25!
+(global-set-key (kbd "C-o") 'open-line)
 ;; redefine the obsolete spell-word
 (defalias 'spell-word  'ispell-word)
+
 (defalias 'spell-buffer 'ispell-buffer)
 (global-set-key [f1] 'delete-other-windows)
 (global-set-key [f2] 'gjg/switch-to-other-buffer)
@@ -583,6 +601,7 @@
 (global-set-key [S-wheel-down] 'dec-font-size)
 (global-set-key (kbd "M-]") 'next-buffer)
 (global-set-key (kbd "M-[") 'previous-buffer)
+(global-set-key (kbd "C-c C-v") 'browse-url-at-point)
 ;; EXPERIMENTAL: unbind SPACE and ? in minibuffer, to allow typing in completions with those chars
 (add-hook 'minibuffer-setup-hook (lambda () 
                                    (define-key minibuffer-local-completion-map " " nil)
@@ -623,6 +642,13 @@
 (desktop-save-mode 1)
 (setq desktop-restore-eager 5)
 ;; GJG TODO: does not work in emacs 25.x
+(defun add-ssh-agent-to-tramp ()
+  (cl-pushnew '("-A")
+              (cadr (assoc 'tramp-login-args
+                           (assoc "ssh" tramp-methods)))
+              :test #'equal))
+(add-ssh-agent-to-tramp)
+
 (defun tv-list-tramp-buffer-file-name ()
   "Return a list of buffers that I do not want automatically restored by desktop.el in the next emacs session: TRAMP dirs and files, Info buffer, and Dired buffers"
   (let* ((desktop-info-list (mapcar #'desktop-buffer-info (buffer-list)))
@@ -654,6 +680,7 @@
 (require 'ido)
 (ido-mode 1)
 (ido-everywhere 1)
+(ido-ubiquitous-mode t) ;; from ido-ubiquitous package, not ido package!!
 (setq ido-auto-merge-delay-time 5.0)
 (setq ido-enable-flex-matching t)
 (setq ido-create-new-buffer 'always)
@@ -679,8 +706,9 @@
 	     (setq dired-x-hands-off-my-keys nil
 		   dired-bind-vm t))))
 
-;; (add-hook 'dired-mode-hook
-;; 	  (function (lambda ()
+(add-hook 'dired-mode-hook
+	  (function (lambda ()
+                      (auto-revert-mode))))
 ;; 		      ;; Set dired-x buffer-local variables here.  For example:
 ;; 		      (setq dired-omit-mode t)
 ;; 		      (setq dired-omit-files "^\\..*")
@@ -690,7 +718,9 @@
 
 ;; **** Occur
 
-
+;; **** yafolding
+(global-set-key (kbd "C-c -") 'yafolding-hide-element)
+(global-set-key (kbd "C-c =") 'yafolding-show-element)
 
 ;;     Some simple sex-ups for occur-mode
 
@@ -751,17 +781,20 @@
    (vector "#c5c8c6" "#cc6666" "#b5bd68" "#f0c674" "#81a2be" "#b294bb" "#8abeb7" "#1d1f21"))
  '(ansi-term-color-vector
    [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"] t)
+ '(auto-revert-verbose nil)
  '(compilation-message-face (quote default))
  '(csv-separators (quote (",")))
  '(custom-safe-themes
    (quote
-    ("bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default)))
+    ("bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "5dc0ae2d193460de979a463b907b4b2c6d2c9c4657b2e9e66b8898d2592e3de5" "98cc377af705c0f2133bb6d340bf0becd08944a588804ee655809da5d8140de6" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "603a9c7f3ca3253cb68584cb26c408afcf4e674d7db86badcfe649dd3c538656" "40bc0ac47a9bd5b8db7304f8ef628d71e2798135935eb450483db0dbbfff8b11" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "28ec8ccf6190f6a73812df9bc91df54ce1d6132f18b4c8fcc85d45298569eb53" "a800120841da457aa2f86b98fb9fd8df8ba682cebde033d7dbf8077c1b7d677a" "b571f92c9bfaf4a28cb64ae4b4cdbda95241cd62cf07d942be44dc8f46c491f4" "ffc01b1b3a7cc43c6d0f25ff5573c21fe6cdf2e4e6ab0e4667856f1a90b98c60" "5cd0afd0ca01648e1fff95a7a7f8abec925bd654915153fb39ee8e72a8b56a1f" "06dbcfac3705aaaa79e1a3264c6fd44ef0cf86ef5ed67930e4007e63a8c1e8ee" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "0cebcfb34ef4f79b8ed16520d199ae323290052e2a1cd0aab9d0a1dcce98d7a8" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default)))
+ '(dired-auto-revert-buffer t)
  '(dired-omit-files "^\\.?#\\|^\\..*")
+ '(dumb-jump-project-denoters
+   (quote
+    (".dumbjump" ".projectile" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".svn" "Makefile" "PkgInfo" "-pkg.el" "package.json")))
  '(ediff-split-window-function (quote split-window-horizontally))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
- '(exec-path
-   (quote
-    ("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/usr/local/Cellar/emacs/24.5/libexec/emacs/24.5/x86_64-apple-darwin15.2.0" "/usr/local/bin" "/usr/local/texlive/2015/bin/x86_64-darwin")))
+ '(fci-rule-color "#373b41")
  '(font-lock-verbose t)
  '(gjg/os-open "open")
  '(global-hl-line-mode t)
@@ -797,14 +830,32 @@
  '(hl-fg-colors
    (quote
     ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
+ '(hl-sexp-background-color "#1c1f26")
+ '(ido-everywhere t)
+ '(ido-ubiquitous-mode t)
+ '(ido-use-virtual-buffers t)
  '(ispell-program-name "aspell")
  '(ls-lisp-verbosity nil)
  '(magit-diff-use-overlays nil)
  '(magit-revert-buffers nil t)
  '(magit-use-overlays nil)
+ '(markdown-command "/usr/local/bin/markdown")
+ '(nrepl-message-colors
+   (quote
+    ("#336c6c" "#205070" "#0f2050" "#806080" "#401440" "#6c1f1c" "#6b400c" "#23733c")))
  '(ns-command-modifier (quote meta))
  '(org-agenda-dim-blocked-tasks t)
- '(org-babel-load-languages (quote ((R . t) (awk . t) (emacs-lisp . t) (sh . t))))
+ '(org-agenda-files
+   (quote
+    ("~/Google Drive/cloudera.org" "~/Google Drive/Customers and Prospects/Simic/Scopely/scopely.org")))
+ '(org-babel-load-languages
+   (quote
+    ((R . t)
+     (awk . t)
+     (emacs-lisp . t)
+     (shell . t)
+     (sql . t))))
+ '(org-directory "~/Google Drive/projects/")
  '(org-drill-optimal-factor-matrix
    (quote
     ((2
@@ -828,8 +879,9 @@
       (2.6 . 4.14)))))
  '(org-drill-save-buffers-after-drill-sessions-p nil)
  '(org-drill-scope (quote tree))
- '(org-export-backends (quote (ascii html icalendar latex md confluence)))
+ '(org-export-backends (quote (ascii html icalendar latex md odt confluence)))
  '(org-export-with-sub-superscripts (quote {}))
+ '(org-html-htmlize-output-type (quote css))
  '(org-html-postamble t)
  '(org-html-postamble-format
    (quote
@@ -840,17 +892,29 @@
    (quote
     (org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m org-drill org-learn)))
  '(org-src-fontify-natively t)
+ '(org-src-window-setup (quote current-window))
  '(org-startup-folded (quote content))
  '(org-use-sub-superscripts (quote {}))
  '(org-yank-folded-subtrees t)
  '(package-selected-packages
    (quote
-    (scala-mode ensime spaceline airline-themes spacemacs-theme zencoding-mode yaml-mode web-mode uuid tramp-hdfs sql-indent smartparens smart-mode-line-powerline-theme redo+ recursive-narrow rainbow-delimiters queue python-mode projectile-speedbar pig-mode org-plus-contrib ocodo-svg-modelines nodejs-repl multiple-cursors multi-term monokai-theme markdown-mode magit json-mode js2-mode jdee ido-ubiquitous htmlize hl-line+ flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view epresent elpy edit-server deft color-theme-sanityinc-tomorrow clojure-mode auto-complete auctex)))
+    (ob-ipython yafolding dart-mode ac-js2 inf-clojure ein ac-cider cider material-theme hc-zenburn-theme afternoon-theme molokai-theme rainbow-identifiers labburn-theme scala-mode ensime spaceline airline-themes spacemacs-theme zencoding-mode yaml-mode web-mode uuid tramp-hdfs sql-indent smartparens smart-mode-line-powerline-theme redo+ recursive-narrow rainbow-delimiters queue python-mode projectile-speedbar pig-mode org-plus-contrib ocodo-svg-modelines nodejs-repl multiple-cursors multi-term monokai-theme markdown-mode magit json-mode js2-mode ido-ubiquitous htmlize hl-line+ flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view epresent elpy edit-server deft color-theme-sanityinc-tomorrow clojure-mode auto-complete auctex)))
+ '(pdf-view-midnight-colors (quote ("#232333" . "#c7c7c7")))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
+ '(python-shell-interpreter-args "--simple-prompt --pprint")
+ '(rainbow-identifiers-choose-face-function (quote rainbow-identifiers-cie-l*a*b*-choose-face))
+ '(rainbow-identifiers-cie-l*a*b*-color-count 1024)
+ '(rainbow-identifiers-cie-l*a*b*-lightness 80)
+ '(rainbow-identifiers-cie-l*a*b*-saturation 25)
  '(safe-local-variable-values
    (quote
-    ((sh-indent-comment . t)
+    ((eval when
+           (require
+            (quote rainbow-mode)
+            nil t)
+           (rainbow-mode 1))
+     (sh-indent-comment . t)
      (eval when
            (fboundp
             (quote aggressive-indent-mode))
@@ -880,10 +944,6 @@
  '(server-use-tcp nil)
  '(show-paren-mode t)
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
- '(sp-autoescape-string-quote nil)
- '(sp-autoescape-string-quote-if-empty
-   (quote
-    (python-mode clojure\.mode emacs-lisp-mode cider-repl-mode)))
  '(sp-hybrid-kill-excessive-whitespace t)
  '(spaceline-info-mode t)
  '(sql-postgres-login-params
@@ -892,8 +952,14 @@
      password server
      (database :default "ggrubbs")
      port)))
+ '(switch-to-buffer-in-dedicated-window (quote prompt))
  '(term-default-bg-color "#002b36")
  '(term-default-fg-color "#839496")
+ '(tramp-default-method "rsync")
+ '(tramp-inline-compress-start-size nil)
+ '(tramp-ssh-controlmaster-options
+   "-o ControlPath='/Users/gregoryg/.ssh/sockets/%%r@%%h-%%p' -o ControlMaster=auto -o ControlPersist=yes" t)
+ '(tramp-use-ssh-controlmaster-options nil)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -935,3 +1001,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(web-mode-html-tag-face ((t (:foreground "DodgerBlue")))))
+(put 'dired-find-alternate-file 'disabled nil)
