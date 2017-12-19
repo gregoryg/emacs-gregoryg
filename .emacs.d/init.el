@@ -22,6 +22,7 @@
 (defvar gjg/required-packages 
   '(auctex
     auto-complete
+    cider
     clojure-mode
     dash
     dumb-jump
@@ -30,7 +31,6 @@
     ensime
     ess
     ess-R-data-view
-    ess-R-object-popup
     exec-path-from-shell
     flx-ido
     hl-line+
@@ -46,7 +46,6 @@
     multi-term
     multiple-cursors
     nodejs-repl
-    ob-ipytyon
     org
     org-plus-contrib
     pig-mode
@@ -242,7 +241,7 @@
 ;; Clojure
 (require 'ob-clojure) ;; org-babel code evaluation
 
-(add-to-list 'load-path "~/emacs/cider")
+;; (add-to-list 'load-path "~/emacs/cider")
 (autoload 'cider "cider" "Cider for Clojure")
 (require 'cider)
 (eval-after-load "cider"
@@ -633,7 +632,9 @@
        ;; (set-frame-font "Inconsolata-16")
        (set-frame-font "Source Code Pro-16"))
       ((eq window-system 'x)
-       (set-face-font 'default '"10x20")))
+       (set-frame-font "Inconsolata-16")
+                                        ;(set-face-font 'default '"10x20")
+       ))
 (require 'fontize)
 (global-set-key [C-kp-subtract] 'dec-font-size)
 (global-set-key [C-kp-add] 'inc-font-size)
