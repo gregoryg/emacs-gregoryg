@@ -1,7 +1,5 @@
 (defvar gjg/check-packages-on-startup nil)
 
-(setq gjg/bbdb-installed nil) ;; is BBDB installed on this computer?
-
 (add-to-list 'load-path "~/emacs")
 (require 'cl)
 (require 'ls-lisp)
@@ -632,7 +630,7 @@
        ;; (set-frame-font "Inconsolata-16")
        (set-frame-font "Source Code Pro-16"))
       ((eq window-system 'x)
-       (set-frame-font "Inconsolata-16")
+       (set-frame-font "Inconsolata-21")
                                         ;(set-face-font 'default '"10x20")
        ))
 (require 'fontize)
@@ -769,6 +767,8 @@
 ;;     (let ((matching-text (blink-matching-open)))
 ;;       (when matching-text
 ;;         (message matching-text)))))
+;; open a nice local shell
+(shell (get-buffer-create "sh1"))
 
 
 (custom-set-variables
@@ -797,7 +797,7 @@
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(fci-rule-color "#373b41")
  '(font-lock-verbose t)
- '(gjg/os-open "open")
+ '(gjg/os-open "exo-open")
  '(global-hl-line-mode t)
  '(global-hl-line-sticky-flag t)
  '(grep-command "grep --color=auto -nH -e ")
