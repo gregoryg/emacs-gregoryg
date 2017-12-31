@@ -1,7 +1,5 @@
 (defvar gjg/check-packages-on-startup nil)
 
-(setq gjg/bbdb-installed nil) ;; is BBDB installed on this computer?
-
 (add-to-list 'load-path "~/emacs")
 (require 'cl)
 (require 'ls-lisp)
@@ -22,6 +20,7 @@
 (defvar gjg/required-packages 
   '(auctex
     auto-complete
+    cider
     clojure-mode
     dash
     dumb-jump
@@ -30,7 +29,6 @@
     ensime
     ess
     ess-R-data-view
-    ess-R-object-popup
     exec-path-from-shell
     flx-ido
     hl-line+
@@ -241,7 +239,7 @@
 ;; Clojure
 (require 'ob-clojure) ;; org-babel code evaluation
 
-(add-to-list 'load-path "~/emacs/cider")
+;; (add-to-list 'load-path "~/emacs/cider")
 (autoload 'cider "cider" "Cider for Clojure")
 (require 'cider)
 (eval-after-load "cider"
@@ -632,7 +630,9 @@
        ;; (set-frame-font "Inconsolata-16")
        (set-frame-font "Source Code Pro-16"))
       ((eq window-system 'x)
-       (set-face-font 'default '"10x20")))
+       (set-frame-font "Inconsolata-21")
+                                        ;(set-face-font 'default '"10x20")
+       ))
 (require 'fontize)
 (global-set-key [C-kp-subtract] 'dec-font-size)
 (global-set-key [C-kp-add] 'inc-font-size)
@@ -767,6 +767,8 @@
 ;;     (let ((matching-text (blink-matching-open)))
 ;;       (when matching-text
 ;;         (message matching-text)))))
+;; open a nice local shell
+(shell (get-buffer-create "sh1"))
 
 
 (custom-set-variables
@@ -795,7 +797,7 @@
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(fci-rule-color "#373b41")
  '(font-lock-verbose t)
- '(gjg/os-open "open")
+ '(gjg/os-open "exo-open")
  '(global-hl-line-mode t)
  '(global-hl-line-sticky-flag t)
  '(grep-command "grep --color=auto -nH -e ")
