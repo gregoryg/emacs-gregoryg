@@ -47,6 +47,7 @@
     org
     org-plus-contrib
     pig-mode
+    pretty-lambdada
     python-mode
     pyvenv
     queue
@@ -840,7 +841,6 @@
  '(magit-diff-use-overlays nil)
  '(magit-revert-buffers nil t)
  '(magit-use-overlays nil)
- '(markdown-command "/usr/local/bin/markdown")
  '(nrepl-message-colors
    (quote
     ("#336c6c" "#205070" "#0f2050" "#806080" "#401440" "#6c1f1c" "#6b400c" "#23733c")))
@@ -899,7 +899,7 @@
  '(org-yank-folded-subtrees t)
  '(package-selected-packages
    (quote
-    (ob-ipython yafolding dart-mode ac-js2 inf-clojure ein ac-cider cider material-theme hc-zenburn-theme afternoon-theme molokai-theme rainbow-identifiers labburn-theme scala-mode ensime spaceline airline-themes spacemacs-theme zencoding-mode yaml-mode web-mode uuid tramp-hdfs sql-indent smartparens smart-mode-line-powerline-theme redo+ recursive-narrow rainbow-delimiters queue python-mode projectile-speedbar pig-mode org-plus-contrib ocodo-svg-modelines nodejs-repl multiple-cursors multi-term monokai-theme markdown-mode magit json-mode js2-mode ido-ubiquitous htmlize hl-line+ flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view epresent elpy edit-server deft color-theme-sanityinc-tomorrow clojure-mode auto-complete auctex)))
+    (pretty-lambdada prettify-greek ob-ipython yafolding dart-mode ac-js2 inf-clojure ein ac-cider cider material-theme hc-zenburn-theme afternoon-theme molokai-theme rainbow-identifiers labburn-theme scala-mode ensime spaceline airline-themes spacemacs-theme zencoding-mode yaml-mode web-mode uuid tramp-hdfs sql-indent smartparens smart-mode-line-powerline-theme redo+ recursive-narrow rainbow-delimiters queue python-mode projectile-speedbar pig-mode org-plus-contrib ocodo-svg-modelines nodejs-repl multiple-cursors multi-term monokai-theme markdown-mode magit json-mode js2-mode ido-ubiquitous htmlize hl-line+ flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view epresent elpy edit-server deft color-theme-sanityinc-tomorrow clojure-mode auto-complete auctex)))
  '(pdf-view-midnight-colors (quote ("#232333" . "#c7c7c7")))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
