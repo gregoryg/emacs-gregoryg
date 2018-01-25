@@ -960,6 +960,15 @@ org-refile-targets '(( org-agenda-files :maxlevel . 3)))
   
   )
 
-
+(defun gjg/open-remote-shell ()
+  "If current buffer is remote, open a new uniquely named shell based on host name"
+  (interactive)
+  (if (file-remote-p default-directory)
+      (progn
+        ;; do stuff
+        (message "Now I shall do stuff")
+        (shell (concat (file-remote-p default-directory 'host) "-sh"))
+               )
+    (message "Buffer is local - not opening shell")))
 
 (provide 'gjg-functions)
