@@ -45,6 +45,7 @@
     org
     org-plus-contrib
     pig-mode
+    pretty-lambdada
     python-mode
     pyvenv
     queue
@@ -789,6 +790,7 @@
  '(dired-omit-files "^\\.?#\\|^\\..*")
  '(ediff-split-window-function (quote split-window-horizontally))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
+<<<<<<< HEAD
  '(package-selected-packages
    (quote
     (swiper flx zencoding-mode yaml-mode yafolding web-mode uuid tramp-term sql-indent spaceline smartparens smart-mode-line redo+ recursive-narrow rainbow-identifiers rainbow-delimiters python-mode pig-mode org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view ensime elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider))))
