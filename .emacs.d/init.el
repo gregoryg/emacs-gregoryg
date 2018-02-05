@@ -778,7 +778,7 @@
 ;; open a nice local shell
 (defalias 'ss 'gjg/open-remote-shell)
 (shell (get-buffer-create "sh1"))
-
+(defalias 'rb 'rename-buffer)
 
 (put 'dired-find-alternate-file 'disabled nil)
 (custom-set-variables
