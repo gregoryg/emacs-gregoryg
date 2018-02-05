@@ -1,4 +1,4 @@
-(defvar gjg/check-packages-on-startup nil)
+(defvar gjg/check-packages-on-startup t)
 
 (add-to-list 'load-path "~/emacs")
 (require 'cl)
@@ -31,7 +31,6 @@
     ess-R-data-view
     exec-path-from-shell
     flx
-    hl-line+
     htmlize
     js2-mode
     json-mode
@@ -45,13 +44,13 @@
     org
     org-plus-contrib
     pig-mode
-    pretty-lambdada
+    ;; pretty-lambdada
     python-mode
     pyvenv
     queue
     rainbow-delimiters
     recursive-narrow
-    redo+
+    ;; redo+
     s
     scala-mode
     smart-mode-line
@@ -130,9 +129,9 @@
 (add-to-list 'Info-default-directory-list "~/emacs/org-mode/doc")
 
 
-(autoload 'hl-line+ "hl-line+" "Extensions to hl-line")
-(eval-after-load "hl-line+"
-  '(global-hl-line-mode t))
+;; (autoload 'hl-line+ "hl-line+" "Extensions to hl-line")
+;; (eval-after-load "hl-line+"
+;;   '(global-hl-line-mode t))
 
 ;; windmove
 (require 'windmove)
