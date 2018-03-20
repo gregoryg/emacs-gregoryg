@@ -44,7 +44,7 @@
     org
     org-plus-contrib
     pig-mode
-    ;; pretty-lambdada
+    prettify-greek
     python-mode
     pyvenv
     queue
@@ -230,6 +230,13 @@
   "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
 
 (require 'ob-python)
+(require 'prettify-greek)
+(add-hook 'python-mode-hook
+          (lambda ()
+            (setq prettify-symbols-alist prettify-greek-lower)
+            (prettify-symbols-mode t)))
+
+
 ;; Latex
 (require 'ob-latex)
 ;; SQL
@@ -796,7 +803,7 @@
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(package-selected-packages
    (quote
-    (smart-mode-line swiper flx zencoding-mode yaml-mode yafolding web-mode uuid tramp-term sql-indent spaceline smartparens redo+ recursive-narrow rainbow-identifiers rainbow-delimiters python-mode pig-mode org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view ensime elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
+    (prettify-greek smart-mode-line swiper flx zencoding-mode yaml-mode yafolding web-mode uuid tramp-term sql-indent spaceline smartparens redo+ recursive-narrow rainbow-identifiers rainbow-delimiters python-mode pig-mode org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view ensime elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
  '(tramp-default-method "ssh"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
