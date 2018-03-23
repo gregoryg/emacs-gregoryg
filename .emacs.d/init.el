@@ -44,7 +44,7 @@
     org
     org-plus-contrib
     pig-mode
-    ;; pretty-lambdada
+    prettify-greek
     python-mode
     pyvenv
     queue
@@ -132,6 +132,7 @@
 ;; (autoload 'hl-line+ "hl-line+" "Extensions to hl-line")
 ;; (eval-after-load "hl-line+"
 ;;   '(global-hl-line-mode t))
+(global-hl-line-mode t)
 
 ;; windmove
 (require 'windmove)
@@ -229,6 +230,13 @@
   "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
 
 (require 'ob-python)
+(require 'prettify-greek)
+(add-hook 'python-mode-hook
+          (lambda ()
+            (setq prettify-symbols-alist prettify-greek-lower)
+            (prettify-symbols-mode t)))
+
+
 ;; Latex
 (require 'ob-latex)
 ;; SQL
@@ -690,7 +698,7 @@
 ;; (ido-ubiquitous-mode t) ;; from ido-ubiquitous package, not ido package!!
 ;; (setq ido-auto-merge-delay-time 5.0)
 ;; (setq ido-enable-flex-matching t)
-;; (setq ido-create-new-buffer 'always)
+(setq ido-create-new-buffer 'always)
 ;; (setq ido-enable-tramp-completion nil)
 ;; (setq ido-enable-last-directory-history nil)
 ;; (setq ido-confirm-unique-completion nil) ;; wait for RET, even for unique?
@@ -786,12 +794,17 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(auto-revert-verbose nil)
+ '(custom-safe-themes
+   (quote
+    ("c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" default)))
  '(dired-omit-files "^\\.?#\\|^\\..*")
  '(ediff-split-window-function (quote split-window-horizontally))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(package-selected-packages
    (quote
-    (origami swiper flx zencoding-mode yaml-mode yafolding web-mode uuid tramp-term sql-indent spaceline smartparens smart-mode-line redo+ recursive-narrow rainbow-identifiers rainbow-delimiters python-mode pig-mode org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view ensime elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider))))
+    (prettify-greek smart-mode-line swiper flx zencoding-mode yaml-mode yafolding web-mode uuid tramp-term sql-indent spaceline smartparens redo+ recursive-narrow rainbow-identifiers rainbow-delimiters python-mode pig-mode org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view ensime elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
+ '(tramp-default-method "ssh"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
