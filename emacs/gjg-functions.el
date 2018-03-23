@@ -971,4 +971,19 @@ org-refile-targets '(( org-agenda-files :maxlevel . 3)))
                )
     (message "Buffer is local - not opening shell")))
 
+(defun gjg/tramp-sudo-to-etc ()
+  "Dired browse as root (sudo) to /etc on current machine"
+  (interactive)
+  (let* ((trampvec (tramp-dissect-file-name default-directory))
+         (tramphop (elt trampvec 4))
+         (conntype (elt trampvec 0))
+         (trampuser (elt trampvec 1)) ; may be nil, which is cool
+         (tramphost (elt trampvec 2))
+         (sudopath (concat "/" tramphop conntype ":" tramphost "|sudo:" tramphost ":/etc/"))
+         )
+    (find-file sudopath)
+    )
+  )
+
+
 (provide 'gjg-functions)
