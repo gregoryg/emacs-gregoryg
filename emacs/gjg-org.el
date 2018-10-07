@@ -106,7 +106,7 @@
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
 (setq org-clock-report-include-clocking-task t)
-(setq org-agenda-files '("~/Google Drive/cloudera.org" "/ssh:smeagol:/home/gregj/Documents/habits.org" ))
+(setq org-agenda-files '("~/Google Drive/cloudera.org" ))
 
 (setq org-use-speed-commands t) ;; POWER USER BABY
 (setq org-speed-commands-user 
