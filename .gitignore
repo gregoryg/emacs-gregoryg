@@ -3,6 +3,8 @@
 elpa/
 .emacs.d/ensime/
 .emacs.d/games/
+.emacs.d/session.*
+.emacs.d/image-dired/
 .emacs.d/ido.last
 emacs/cider*
 .emacs.desktop
