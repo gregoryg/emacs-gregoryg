@@ -1,4 +1,4 @@
-(defvar gjg/check-packages-on-startup t)
+(defvar gjg/check-packages-on-startup nil)
 
 (add-to-list 'load-path "~/emacs")
 (require 'cl)
@@ -22,6 +22,7 @@
     auto-complete
     cider
     clojure-mode
+    csv-mode
     dash
     dumb-jump
     edit-server
@@ -807,8 +808,9 @@
     (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
  '(package-selected-packages
    (quote
-    (prettify-greek smart-mode-line swiper flx zencoding-mode yaml-mode yafolding web-mode uuid tramp-term sql-indent spaceline smartparens redo+ recursive-narrow rainbow-identifiers rainbow-delimiters python-mode pig-mode org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view ensime elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
- '(tramp-default-method "ssh" nil (tramp)))
+    (csv-mode prettify-greek smart-mode-line swiper flx zencoding-mode yaml-mode yafolding web-mode uuid tramp-term sql-indent spaceline smartparens redo+ recursive-narrow rainbow-identifiers rainbow-delimiters python-mode pig-mode org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view ensime elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
+ '(tramp-default-method "ssh" nil (tramp))
+ '(winner-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
