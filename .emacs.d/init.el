@@ -627,7 +627,7 @@
 ;;   )
 
 (cond ((or (eq window-system 'mac) (eq window-system 'ns))
-       (set-frame-font "Source Code Pro-17")
+       (set-frame-font "Inconsolata")
        (setq gjg/os-open "open"))
       ((eq window-system 'w32)
        ;; (set-face-font 'default '"-outline-Inconsolata-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1"))
@@ -641,7 +641,7 @@
        ;; (set-frame-font "Inconsolata-16")
        (set-frame-font "Source Code Pro-16"))
       ((eq window-system 'x)
-       (set-frame-font "Inconsolata-21")
+       (set-frame-font "Inconsolata-18")
        (setq gjg/os-open "xdg-open")
                                       ;(set-face-font 'default '"10x20")
        ))
@@ -801,13 +801,14 @@
  '(dired-omit-files "^\\.?#\\|^\\..*")
  '(ediff-split-window-function (quote split-window-horizontally))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
+ '(ido-auto-merge-work-directories-length -1)
  '(org-modules
    (quote
     (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
  '(package-selected-packages
    (quote
     (prettify-greek smart-mode-line swiper flx zencoding-mode yaml-mode yafolding web-mode uuid tramp-term sql-indent spaceline smartparens redo+ recursive-narrow rainbow-identifiers rainbow-delimiters python-mode pig-mode org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view ensime elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
- '(tramp-default-method "ssh"))
+ '(tramp-default-method "ssh" nil (tramp)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
