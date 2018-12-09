@@ -931,15 +931,15 @@ org-refile-targets '(( org-agenda-files :maxlevel . 3)))
 ;; 9. unknown (nil values)
 
 (defun grab-s3-bucket (url)
-(interactive "sURL for Amazon s3 bucket: ")
-(shell-command (format "curl -O %s" url) (get-buffer-create url)))
+  (interactive "sURL for Amazon s3 bucket: ")
+  (shell-command (format "curl -O %s" url) (get-buffer-create url)))
 
 ;; M-x grab-s3-bucket URL
 ;; You could write the results back with something like:
 
 (defun write-s3-bucket (url)
-(interactive "sURL for Amazon s3 bucket: ")
-(shell-command-on-region (format "curl %s -T " url)))
+  (interactive "sURL for Amazon s3 bucket: ")
+  (shell-command-on-region (format "curl %s -T " url)))
 
 (defun gjg/ec2-nab-hosts-from-cm ()
   "Take contents of copied hosts from Cloudera Manager Hosts page and pull out the hostnames"
