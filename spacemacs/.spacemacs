@@ -31,22 +31,24 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     markdown
+     clojure
      html
-     go
+     ibuffer
+     python
+     sql
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     selectric
      ivy
      ;; auto-completion
      ;; better-defaults
      emacs-lisp
      ;; git
-     markdown
-     org
-     themes-megapack
+     ;; markdown
+     ;; org
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
@@ -312,7 +314,28 @@ This function is called at the very end of Spacemacs initialization after
 layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
-you should place your code here."
+1you should place your code here."
+  (global-set-key [f1] 'delete-other-windows)
+  (global-set-key [f2] 'gjg/switch-to-other-buffer)
+  (global-set-key [f3] 'gjg/other-window-or-split)
+  (global-set-key [f4] 'narrow-to-defun)
+
+  (global-set-key [f5] 'gjg/widen-ask-if-indirect)
+  (global-set-key [f6] 'toggle-read-only)
+  (global-set-key [f7] 'hl-line-mode) ;; toggle hl-line-mode for this window only
+  (global-set-key [f8] 'bury-buffer)
+
+  (global-set-key [f9] 'bury-buffer)
+  (global-set-key [f10] 'dired-omit-mode)
+  ;; (global-set-key [f11] 'mac-toggle-max-window)
+  (global-set-key [f11] 'gjg/toggle-max-frame)
+  (global-set-key [M-f11] 'gjg/toggle-max-frame)
+  ;; (global-set-key [f11] 'toggle-fullscreen)
+  ;; (global-set-key [f11] 'switch-full-screen)
+  ;; (global-set-key (kbd "C-<f11>") 'gjg/emacs-max-coolness)
+  (global-set-key [f12] (lambda () (interactive) (message (or (buffer-file-name) "No file associated with this buffer."))))
+  (global-set-key (kbd "<C-f12>") 'yow)
+  (global-set-key (kbd "C-z") 'undo)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
