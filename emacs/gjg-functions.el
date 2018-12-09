@@ -1,48 +1,48 @@
 (defun gjg/ssh-abbrevs-for-ec2-cluster ()
-"Take text of instances pasted copied from EC2 and add to ~/.ssh/config; expect copied text to be in current clipboard"
-(get-buffer-create "*gort temp*")
-(with-current-buffer "*gort temp*"
-(goto-char (point-min))
-(yank)
-(goto-char (point-min))
-(delete-non-matching-lines "^[0-9][0-9\.]+")
-)
-)
+  "Take text of instances pasted copied from EC2 and add to ~/.ssh/config; expect copied text to be in current clipboard"
+  (get-buffer-create "*gort temp*")
+  (with-current-buffer "*gort temp*"
+    (goto-char (point-min))
+    (yank)
+    (goto-char (point-min))
+    (delete-non-matching-lines "^[0-9][0-9\.]+")
+    )
+  )
 (defun replace-smart-quotes (beg end)
-"Replace 'smart quotes' in buffer or region with ascii quotes."
-(interactive "r")
-(format-replace-strings '(("\x201C" . "\"")
-("\x201D" . "\"")
-("\x2018" . "'")
-("\x2019" . "'")
-("\221" . "`")
-("\222" . "'")
-("\223" . "\"")
-("\224" . "\"")
-("\226" . "-")
-("\227" . "--")
-)
-nil beg end))
+  "Replace 'smart quotes' in buffer or region with ascii quotes."
+  (interactive "r")
+  (format-replace-strings '(("\x201C" . "\"")
+                            ("\x201D" . "\"")
+                            ("\x2018" . "'")
+                            ("\x2019" . "'")
+                            ("\221" . "`")
+                            ("\222" . "'")
+                            ("\223" . "\"")
+                            ("\224" . "\"")
+                            ("\226" . "-")
+                            ("\227" . "--")
+                            )
+                          nil beg end))
 
 (defun coursera-slide-to-orgmode ()
-"Change Coursera.org slides in .Rmd markdown to org-mode format.  Expects entire (narrowed) buffer to be the slides"
-(interactive)
-;; replace Markdown bullets to org-mode
-(replace-regexp "^##" "**" nil (point-min) (point-max))
-;; format R code blocks as org-mode
-(replace-regexp "^```{?r}?" "  #+BEGIN_SRC R" nil (point-min) (point-max))
-(replace-regexp "^```" "  #+END_SRC" nil (point-min) (point-max))
-;; replace markdown code indicator
-(replace-string "`" "=" nil (point-min) (point-max))
-;; get rid of the damned curly quotes
-(replace-smart-quotes (point-min) (point-max)) ;; do last
-)
+  "Change Coursera.org slides in .Rmd markdown to org-mode format.  Expects entire (narrowed) buffer to be the slides"
+  (interactive)
+  ;; replace Markdown bullets to org-mode
+  (replace-regexp "^##" "**" nil (point-min) (point-max))
+  ;; format R code blocks as org-mode
+  (replace-regexp "^```{?r}?" "  #+BEGIN_SRC R" nil (point-min) (point-max))
+  (replace-regexp "^```" "  #+END_SRC" nil (point-min) (point-max))
+  ;; replace markdown code indicator
+  (replace-string "`" "=" nil (point-min) (point-max))
+  ;; get rid of the damned curly quotes
+  (replace-smart-quotes (point-min) (point-max)) ;; do last
+  )
 
 (defun gjg/org-drill-set-cloze1 ()
-"Set current question as 'cloze1' type"
-(interactive)
-(insert ":PROPERTIES:\n:DRILL_CARD_TYPE: hide1cloze\n:END:\n")
-)
+  "Set current question as 'cloze1' type"
+  (interactive)
+  (insert ":PROPERTIES:\n:DRILL_CARD_TYPE: hide1cloze\n:END:\n")
+  )
 ;; (require 'sql)
 
 ;; (defun gjg/parse-wp-config-db (wpconfig-path)
@@ -96,25 +96,25 @@ nil beg end))
 
 ;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph    
 (defun unfill-paragraph ()
-"Takes a multi-line paragraph and makes it into a single line of text."
-(interactive)
-(let ((fill-column (point-max)))
-(fill-paragraph nil)))
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil)))
 
 ;; swiped from Gilaras Drakeson <gilaras@gmail.com>
 (require 'dired)
 (defcustom gjg/os-open "xdg-open"
-"Command to open a document, e.g. 'xdg-open' on Linux, 'open' on OS X, 'explorer' or 'cygpath' on Windows"
-:type 'string
-:group 'gjg)
+  "Command to open a document, e.g. 'xdg-open' on Linux, 'open' on OS X, 'explorer' or 'cygpath' on Windows"
+  :type 'string
+  :group 'gjg)
 
 
 (defun dired-open (&optional file-list)
-(interactive
-(list (dired-get-marked-files t current-prefix-arg)))
-(progn
-(message (format "Calling %s %s" gjg/os-open file-list))
-(apply 'call-process gjg/os-open nil 0 nil file-list)))
+  (interactive
+   (list (dired-get-marked-files t current-prefix-arg)))
+  (progn
+    (message (format "Calling %s %s" gjg/os-open file-list))
+    (apply 'call-process gjg/os-open nil 0 nil file-list)))
 (define-key dired-mode-map (kbd "C-;") 'dired-open)
 
 
@@ -135,19 +135,19 @@ nil beg end))
 ;;   (cancel-function-timers 'gjg/nag-timer))
 
 (defcustom gjg/visual-notify-command "mumbles-send"
-"Location of Growl/Snarl/Mumblles notification command. Order of arguments: Header Text {IconPath}" 
-:type 'string
-:group 'gjg)
+  "Location of Growl/Snarl/Mumblles notification command. Order of arguments: Header Text {IconPath}" 
+  :type 'string
+  :group 'gjg)
 
 (defcustom gjg/visual-notify-options ""
-"Options for Growl/Snarl/Mumbles-like notification command"
-:type 'string
-:group 'gjg)
+  "Options for Growl/Snarl/Mumbles-like notification command"
+  :type 'string
+  :group 'gjg)
 
 (defcustom gjg/say-command "flite"
-"Location of text-to-speech command"
-:type 'string
-:group 'gjg)
+  "Location of text-to-speech command"
+  :type 'string
+  :group 'gjg)
 
 ;; (defun gjg/sanitize (text)
 ;;   "sanitize text a la WordPress"
@@ -176,16 +176,16 @@ nil beg end))
 ;;     (when ns (concat ns "_"))))
 
 (defun gjg/acronyminize (text &optional do-capitalize)
-"Make an acronym from the text 
+  "Make an acronym from the text 
 do-capitalize: t means run text through capitalize function, nil will respect CamelCase
 "
-(save-excursion
-(setq case-fold-search nil)
-(downcase
-(replace-regexp-in-string
-"[^A-Z]" ""
-(if do-capitalize (capitalize text) text) nil t))
-))
+  (save-excursion
+    (setq case-fold-search nil)
+    (downcase
+     (replace-regexp-in-string
+      "[^A-Z]" ""
+      (if do-capitalize (capitalize text) text) nil t))
+    ))
 
 ;; (defun gjg/wp-namespace ()
 ;;   (save-excursion
@@ -196,23 +196,23 @@ do-capitalize: t means run text through capitalize function, nil will respect Ca
 ;;   )
 
 (defun gjg/org-visit-file (&optional restrict)
-"Visit an Org file in org-agenda-files or in my org-directory.
+  "Visit an Org file in org-agenda-files or in my org-directory.
 With prefix, restrict to files currently being visited"
-(interactive "p")
-(let ((f (if (functionp 'ido-completing-read) 'ido-completing-read
-'completing-read))
-(files (if (> restrict 1) (mapcar 'buffer-file-name (org-buffer-list 'files))
-(append org-agenda-files (directory-files org-directory t "\.org$")))))
-(find-file (funcall f "Visit org file: " files))))
+  (interactive "p")
+  (let ((f (if (functionp 'ido-completing-read) 'ido-completing-read
+             'completing-read))
+        (files (if (> restrict 1) (mapcar 'buffer-file-name (org-buffer-list 'files))
+                 (append org-agenda-files (directory-files org-directory t "\.org$")))))
+    (find-file (funcall f "Visit org file: " files))))
 
 (defun gjg/add-ids-to-headers ()
-"Add unique IDs to all headers in a buffer from current point; for use with org-mobile"
-(interactive)
-(save-excursion
-(org-back-to-heading t)
-(while (not (eobp))
-(org-id-get-create) ;; only creates an ID property if none exists
-(outline-next-heading))))
+  "Add unique IDs to all headers in a buffer from current point; for use with org-mobile"
+  (interactive)
+  (save-excursion
+    (org-back-to-heading t)
+    (while (not (eobp))
+      (org-id-get-create) ;; only creates an ID property if none exists
+      (outline-next-heading))))
 
 ;; php lint, modified from a comment on saca chua's blog
 ;;(load-library "compile.el")
@@ -238,25 +238,25 @@ With prefix, restrict to files currently being visited"
 ;; ;;(define-key osx-key-mode-map "\C-x~" 'previous-error)
 
 (defun gjg/move-next-sexp-past-current-scope ()
-"kill sexp following point, move past current scope/sexp/function, yank"
-(beginning-of-line)
-;; (save-excursion
-(let ((beg (point)))
-(re-search-forward "^[ \t]*function[ \t]+[^}]+?}" (point-max) nil)
-(mark-defun)
-(kill-region (point) (mark)))
-(forward-line)
-(yank)
-(indent-region (mark) (point)))
+  "kill sexp following point, move past current scope/sexp/function, yank"
+  (beginning-of-line)
+  ;; (save-excursion
+  (let ((beg (point)))
+    (re-search-forward "^[ \t]*function[ \t]+[^}]+?}" (point-max) nil)
+    (mark-defun)
+    (kill-region (point) (mark)))
+  (forward-line)
+  (yank)
+  (indent-region (mark) (point)))
 
 (require 'bookmark) ;; load so that bookmark-alist will be available
 (defun gjg/ido-bookmark-jump ()
-(interactive)
-(let ((readfunc (if (functionp 'ido-completing-read) 'ido-completing-read 'completing-read)))
-(bookmark-maybe-load-default-file)
-(bookmark-jump 
-(funcall readfunc "Jump to bookmark: " (mapcar 'car bookmark-alist)))
-))
+  (interactive)
+  (let ((readfunc (if (functionp 'ido-completing-read) 'ido-completing-read 'completing-read)))
+    (bookmark-maybe-load-default-file)
+    (bookmark-jump 
+     (funcall readfunc "Jump to bookmark: " (mapcar 'car bookmark-alist)))
+    ))
 (global-set-key (kbd "C-x rb") 'gjg/ido-bookmark-jump)
 
 ;; lol pseudocode ; api ref http://cheezburger.com/apidocs/ContentRetrieval.aspx
@@ -268,19 +268,19 @@ With prefix, restrict to files currently being visited"
 
 ;; TRAMP SUDO FUN - snarfed from Peter Dyballa on gmane.emacs.help
 (defun my-tramp-header-line-function ()
-(when (string-match "^/.*su\\(do\\)?:" default-directory)
-(setq header-line-format
-(format-mode-line "----- THIS BUFFER IS VISITED WITH ROOT PRIVILEGES -----"
-'font-lock-warning-face))))
+  (when (string-match "^/.*su\\(do\\)?:" default-directory)
+    (setq header-line-format
+          (format-mode-line "----- THIS BUFFER IS VISITED WITH ROOT PRIVILEGES -----"
+                            'font-lock-warning-face))))
 
 (add-hook 'find-file-hooks 'my-tramp-header-line-function)
 (add-hook 'dired-mode-hook 'my-tramp-header-line-function)
 
 (require 'vc)
 (setq vc-ignore-dir-regexp
-(format "\\(%s\\)\\|\\(%s\\)"
-vc-ignore-dir-regexp
-tramp-file-name-regexp))
+      (format "\\(%s\\)\\|\\(%s\\)"
+              vc-ignore-dir-regexp
+              tramp-file-name-regexp))
 
 
 ;; (defun gjg/generate-bogus-socialmedia-click ()
@@ -334,10 +334,10 @@ tramp-file-name-regexp))
 
 ;; snarfed from gmane.emacs.help
 (defun my-dired-multi-occur (string)
-"Search string in files marked by dired."
-(interactive "MList lines matching regexp: ")
-(require 'dired)
-(multi-occur (mapcar 'find-file (dired-get-marked-files)) string))
+  "Search string in files marked by dired."
+  (interactive "MList lines matching regexp: ")
+  (require 'dired)
+  (multi-occur (mapcar 'find-file (dired-get-marked-files)) string))
 
 
 ;; (require 'xml)
@@ -373,9 +373,9 @@ tramp-file-name-regexp))
 ;;     myimage))
 
 (defcustom gjg/audioplayer "mplayer"
-"Audio player for this machine"
-:type 'string
-:group 'gjg)
+  "Audio player for this machine"
+  :type 'string
+  :group 'gjg)
 
 
 ;; (defun djcb-popup (title msg &optional icon sound)
@@ -409,13 +409,13 @@ tramp-file-name-regexp))
 ;; (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
 
 (defcustom gjg/appointment-icon "/usr/share/icons/gnome/32x32/status/appointment-soon.png"
-"Icon to display when announcing an appointment"
-:type 'string
-:group 'gjg)
+  "Icon to display when announcing an appointment"
+  :type 'string
+  :group 'gjg)
 (defcustom gjg/appointment-sound "/usr/share/sounds/ubuntu/stereo/service-login.ogg"
-"Sound to play when announcing an appointment"
-:type 'string
-:group 'gjg)
+  "Sound to play when announcing an appointment"
+  :type 'string
+  :group 'gjg)
 
 ;; ;; our little façade-function for djcb-popup
 ;; (defun djcb-appt-display (min-to-app new-time msg)
@@ -564,13 +564,13 @@ tramp-file-name-regexp))
 ;;     (insert "</fieldset>\n" )))
 
 (defun rgr/org-add-note-to-current-task ()
-(interactive)
-(save-window-excursion
-(if(org-clock-is-active)
-(org-clock-goto)
-(org-clock-goto t))
-(org-narrow-to-subtree)
-(org-add-note)))
+  (interactive)
+  (save-window-excursion
+    (if(org-clock-is-active)
+        (org-clock-goto)
+      (org-clock-goto t))
+    (org-narrow-to-subtree)
+    (org-add-note)))
 
 (define-key global-map "\C-cn" 'rgr/org-add-note-to-current-task)
 
@@ -590,12 +590,12 @@ tramp-file-name-regexp))
 
 
 (defun gjg/choose-agenda-file-set ()
-(interactive)
-(let* ((gort (completing-read "Choose an agenda file set: " (mapcar 'car gjg/agenda-file-sets)))
-(gort2 (assoc gort gjg/agenda-file-sets)))
-(setq org-agenda-files (cadr gort2)
-org-refile-targets '(( org-agenda-files :maxlevel . 3)))
-(message (format "org-agenda-files set to %s" org-agenda-files))))
+  (interactive)
+  (let* ((gort (completing-read "Choose an agenda file set: " (mapcar 'car gjg/agenda-file-sets)))
+         (gort2 (assoc gort gjg/agenda-file-sets)))
+    (setq org-agenda-files (cadr gort2)
+          org-refile-targets '(( org-agenda-files :maxlevel . 3)))
+    (message (format "org-agenda-files set to %s" org-agenda-files))))
 
 
 ;; (defun gjg/adhoc-xml-narrow ()
@@ -609,55 +609,55 @@ org-refile-targets '(( org-agenda-files :maxlevel . 3)))
 ;; 	 (message "Cool beans"))
 ;; 	))
 (defun gjg/convert-teradata-sql ()
-"Generate a Syncsort DMExpress delimited record layout from SQL"
-(interactive)
-(copy-region-as-kill (point-min) (point-max))
-(let ((mybuff (get-buffer-create "*DMX Delimited Record Layout*")))
-(copy-region-as-kill (point-min) (point-max))
-(set-buffer mybuff)
-(delete-region (point-min) (point-max))
-(yank)
-(goto-char (point-min))
-;; (search-forward-regexp "CREATE\s+SET\s+TABLE\s+[A-Z]+\\.\\([A-Z0-9]+\\)" (point-max) 42)
-;; (goto-char (point-min))
-(insert "/DELIMITEDRECORDLAYOUT\nI\"layout_TABLENAME\"\n{")
-;; (insert (match-string 1))
-(goto-char (point-max))
-(insert "\n}\n")
-(goto-char (point-min))
-;; translate NOT NULL
-(while (search-forward "NOT NULL" nil t)
-(replace-match "notnullable" t t))
-(goto-char (point-min))
-;; be rid of things not needed for parsing
-(while (search-forward-regexp "\\(COMPRESS\\|DEFAULT CURRENT_TIMESTAMP([0-9]+)\\|TITLE\s+'[^\']+'\\)" (point-max) 42)
-(replace-match "" t t))
-;; convert CHAR and VARCHAR
-(goto-char (point-min))
-(while (search-forward-regexp "\\(VAR\\)?CHAR\s*([0-9]+)\s+CHARACTER\s+SET\s+LATIN\s+NOT\s+CASESPECIFIC" (point-max) 42)
-(replace-match "character" t t))
-;; convert DATE-only formats
-(goto-char (point-min))
-(while (search-forward "DATE FORMAT 'YYYY-MM-DD'" nil t)
-(replace-match "datetime (YEAR-MM0-DD0)" t t))
-;; convert TIME-only formats 
-(goto-char (point-min))
-(while (search-forward "FORMAT '99:99:99'" nil t)
-(replace-match "datetime (HH0:MI0:SE0)" t t))
-;; convert timestamps
-(goto-char (point-min))
-(while (search-forward-regexp "TIMESTAMP([0-9]+)" (point-max) 42)
-(replace-match "datetime (YEAR-MM0-DD0 HH0:MI0:SE0)" t t))
-;; convert DECIMAL
-(goto-char (point-min))
-(while (search-forward-regexp "DECIMAL\s*([0-9 ,]+)" (point-max) 42)
-(replace-match "en" t t))
-;; convert INTEGER
-(goto-char (point-min))
-(while (search-forward-regexp "INTEGER\\|SMALLINT" (point-max) 42)
-(replace-match "en" t t))
+  "Generate a Syncsort DMExpress delimited record layout from SQL"
+  (interactive)
+  (copy-region-as-kill (point-min) (point-max))
+  (let ((mybuff (get-buffer-create "*DMX Delimited Record Layout*")))
+    (copy-region-as-kill (point-min) (point-max))
+    (set-buffer mybuff)
+    (delete-region (point-min) (point-max))
+    (yank)
+    (goto-char (point-min))
+    ;; (search-forward-regexp "CREATE\s+SET\s+TABLE\s+[A-Z]+\\.\\([A-Z0-9]+\\)" (point-max) 42)
+    ;; (goto-char (point-min))
+    (insert "/DELIMITEDRECORDLAYOUT\nI\"layout_TABLENAME\"\n{")
+    ;; (insert (match-string 1))
+    (goto-char (point-max))
+    (insert "\n}\n")
+    (goto-char (point-min))
+    ;; translate NOT NULL
+    (while (search-forward "NOT NULL" nil t)
+      (replace-match "notnullable" t t))
+    (goto-char (point-min))
+    ;; be rid of things not needed for parsing
+    (while (search-forward-regexp "\\(COMPRESS\\|DEFAULT CURRENT_TIMESTAMP([0-9]+)\\|TITLE\s+'[^\']+'\\)" (point-max) 42)
+      (replace-match "" t t))
+    ;; convert CHAR and VARCHAR
+    (goto-char (point-min))
+    (while (search-forward-regexp "\\(VAR\\)?CHAR\s*([0-9]+)\s+CHARACTER\s+SET\s+LATIN\s+NOT\s+CASESPECIFIC" (point-max) 42)
+      (replace-match "character" t t))
+    ;; convert DATE-only formats
+    (goto-char (point-min))
+    (while (search-forward "DATE FORMAT 'YYYY-MM-DD'" nil t)
+      (replace-match "datetime (YEAR-MM0-DD0)" t t))
+    ;; convert TIME-only formats 
+    (goto-char (point-min))
+    (while (search-forward "FORMAT '99:99:99'" nil t)
+      (replace-match "datetime (HH0:MI0:SE0)" t t))
+    ;; convert timestamps
+    (goto-char (point-min))
+    (while (search-forward-regexp "TIMESTAMP([0-9]+)" (point-max) 42)
+      (replace-match "datetime (YEAR-MM0-DD0 HH0:MI0:SE0)" t t))
+    ;; convert DECIMAL
+    (goto-char (point-min))
+    (while (search-forward-regexp "DECIMAL\s*([0-9 ,]+)" (point-max) 42)
+      (replace-match "en" t t))
+    ;; convert INTEGER
+    (goto-char (point-min))
+    (while (search-forward-regexp "INTEGER\\|SMALLINT" (point-max) 42)
+      (replace-match "en" t t))
 
-))
+    ))
 
 ;; (defun gjg/gort ()
 ;;   "parse owens and minor thingie"
@@ -778,7 +778,7 @@ org-refile-targets '(( org-agenda-files :maxlevel . 3)))
 ;; ))
 
 (defvar gjg/lockbox-seq 1
-"The sequence number to use in writing lockbox index files")
+  "The sequence number to use in writing lockbox index files")
 
 ;; (defun gjg/om-ach-mode-write-lockbox () 
 ;;   "Generate images for the credit and remittance sections of the current record and write SunTrust modified index file."
@@ -889,25 +889,25 @@ org-refile-targets '(( org-agenda-files :maxlevel . 3)))
 
 ;; build-target '(id api-level name)
 (defcustom gjg/android-targets
-'(("android-3" (1 3 "Android 1.5"))
-("Google Inc.:Google APIs:3" (2 3 "Google APIs"))
-("android-4" (3 4 "Android 1.6"))
-("android-5" (5 5 "Android 2.0"))
-("android-6" (7 6 "Android 2.0.1"))
-("android-7" (9 7 "Android 2.1-update1"))
-("android-8" (11 "Android 2.2")))
-"Android SDK build targets snarfed periodically from 'android list target'"
-:type '(alist :key-type string :value-type list)
-:group 'gjg
-)
+  '(("android-3" (1 3 "Android 1.5"))
+    ("Google Inc.:Google APIs:3" (2 3 "Google APIs"))
+    ("android-4" (3 4 "Android 1.6"))
+    ("android-5" (5 5 "Android 2.0"))
+    ("android-6" (7 6 "Android 2.0.1"))
+    ("android-7" (9 7 "Android 2.1-update1"))
+    ("android-8" (11 "Android 2.2")))
+  "Android SDK build targets snarfed periodically from 'android list target'"
+  :type '(alist :key-type string :value-type list)
+  :group 'gjg
+  )
 
 (defun gjg/create-android-project (project-name build-target application-name package-name activity min-sdk)
-""
-(interactive)
-;; (let* ((project-name (read-string "Project name: "))
-;; 	 (build-target 
+  ""
+  (interactive)
+  ;; (let* ((project-name (read-string "Project name: "))
+  ;; 	 (build-target 
 
-);; gjg/create-android-project
+  );; gjg/create-android-project
 
 ;; bbdb parsing
 ;; 9 fields in a bbdb record
@@ -968,7 +968,7 @@ org-refile-targets '(( org-agenda-files :maxlevel . 3)))
         ;; do stuff
         (message "Now I shall do stuff")
         (shell (concat (file-remote-p default-directory 'host) "-sh"))
-               )
+        )
     (message "Buffer is local - not opening shell")))
 
 (defun gjg/tramp-sudo-to-etc ()
