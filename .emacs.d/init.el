@@ -1,4 +1,4 @@
-(defvar gjg/check-packages-on-startup nil)
+(defvar gjg/check-packages-on-startup t)
 
 (add-to-list 'load-path "~/emacs")
 (require 'cl)
@@ -20,10 +20,10 @@
 (defvar gjg/required-packages 
   '(auctex
     auto-complete
-    cider
-    clojure-mode
+    ;; cider
     csv-mode
     dash
+    docker-tramp
     dumb-jump
     edit-server
     elpy
@@ -82,6 +82,10 @@
     (dolist (p gjg/required-packages)
       (when (not (package-installed-p p))
         (package-install p)))))
+
+;; (require 'exwm)
+;; (require 'exwm-config)
+;; (exwm-config-default)
 
 ;; OS X / Mac specific things
 (setq ns-command-modifier (quote meta))
@@ -159,9 +163,9 @@
  backup-directory-alist
  '(("." . "~/.emacs.d/backups"))    ; don't litter my fs tree
  delete-old-versions t
- kept-new-versions 1
- kept-old-versions 1
- version-control 'never)       ; use versioned backups
+ kept-new-versions 5
+ kept-old-versions 5
+ version-control nil)
 
 ;; rainbow delimiters ; make much stronger (more saturated) colors
 (autoload 'rainbow-delimiters "rainbow-delimiters" "Highlight brackets according to their depth")
@@ -247,22 +251,22 @@
 (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
 ;; ))
 ;; Clojure
-(require 'ob-clojure) ;; org-babel code evaluation
+;; (require 'ob-clojure) ;; org-babel code evaluation
 
 ;; (add-to-list 'load-path "~/emacs/cider")
-(autoload 'cider "cider" "Cider for Clojure")
-(require 'cider)
-(eval-after-load "cider"
-  '(progn
-     ;; (require 'cider)
-     ;; (defadvice cider--lein-present-p (around gjg-find-the-damn-script activate)
-     ;;   "Lein shell script is not detected on Windows as executable"
-     ;;   (if (eq window-system 'w32)
-     ;;       (setq ad-return-value (or (file-remote-p default-directory)
-     ;;    			     (locate-file "lein" exec-path nil 'exists)))
-     ;;     (ad-do-it)))
-     (add-hook 'cider-repl-mode-hook 'company-mode)
-     (add-hook 'cider-mode-hook 'company-mode)))
+;; (autoload 'cider "cider" "Cider for Clojure")
+;; (require 'cider)
+;; (eval-after-load "cider"
+;;   '(progn
+;;      ;; (require 'cider)
+;;      ;; (defadvice cider--lein-present-p (around gjg-find-the-damn-script activate)
+;;      ;;   "Lein shell script is not detected on Windows as executable"
+;;      ;;   (if (eq window-system 'w32)
+;;      ;;       (setq ad-return-value (or (file-remote-p default-directory)
+;;      ;;    			     (locate-file "lein" exec-path nil 'exists)))
+;;      ;;     (ad-do-it)))
+;;      (add-hook 'cider-repl-mode-hook 'company-mode)
+;;      (add-hook 'cider-mode-hook 'company-mode)))
 
 (autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
 (defun my-create-newline-and-enter-sexp (&rest _ignored)
@@ -279,8 +283,8 @@
 (sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
 (sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
 (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-(add-hook 'clojure-mode-hook 'smartparens-mode)
-(add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+;; (add-hook 'clojure-mode-hook 'smartparens-mode)
+;; (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'smartparens-mode)
 ;; ))
@@ -628,7 +632,7 @@
 ;;   )
 
 (cond ((or (eq window-system 'mac) (eq window-system 'ns))
-       (set-frame-font "Source Code Pro-17")
+       (set-frame-font "Inconsolata")
        (setq gjg/os-open "open"))
       ((eq window-system 'w32)
        ;; (set-face-font 'default '"-outline-Inconsolata-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1"))
@@ -642,7 +646,7 @@
        ;; (set-frame-font "Inconsolata-16")
        (set-frame-font "Source Code Pro-16"))
       ((eq window-system 'x)
-       (set-frame-font "Inconsolata-21")
+       (set-frame-font "Inconsolata-18")
        (setq gjg/os-open "xdg-open")
                                       ;(set-face-font 'default '"10x20")
        ))
@@ -670,7 +674,7 @@
 				       (or
 					(string= "dired-mode" (nth 3 i))
 					(string= "Info-mode" (nth 3 i))
-					(string-match "^/su:.*\\|^/sudo:.*\\|^/ssh:.*\\|^/scp[^:]*:.*\\|^/smb:.*" (car (nth 8 i)))))
+					(string-match "^/su:.*\\|^/sudo:.*\\|^/ssh:.*\\|^/scp[^:]*:.*\\|^/smb:.*\\|^/docker:.*" (car (nth 8 i)))))
 			       collect (nth 2 i))))
     tramp-buf-list))
 
@@ -795,6 +799,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(auto-revert-remote-files t)
  '(auto-revert-verbose nil)
  '(custom-safe-themes
    (quote
@@ -802,12 +807,14 @@
  '(dired-omit-files "^\\.?#\\|^\\..*")
  '(ediff-split-window-function (quote split-window-horizontally))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
+ '(ido-auto-merge-work-directories-length -1)
+ '(ido-enable-last-directory-history nil)
  '(org-modules
    (quote
     (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
  '(package-selected-packages
    (quote
-    (csv-mode prettify-greek smart-mode-line swiper flx zencoding-mode yaml-mode yafolding web-mode uuid tramp-term sql-indent spaceline smartparens redo+ recursive-narrow rainbow-identifiers rainbow-delimiters python-mode pig-mode org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view ensime elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
+    (docker-tramp cider csv-mode swiper flx tramp-term sql-indent redo+ rainbow-identifiers org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
  '(tramp-default-method "ssh" nil (tramp))
  '(winner-mode t))
 (custom-set-faces
