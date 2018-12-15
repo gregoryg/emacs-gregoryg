@@ -20,7 +20,8 @@
 (defvar gjg/required-packages 
   '(auctex
     auto-complete
-    ;; cider
+    cider
+    clojure-mode
     csv-mode
     dash
     docker-tramp
@@ -251,22 +252,22 @@
 (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
 ;; ))
 ;; Clojure
-;; (require 'ob-clojure) ;; org-babel code evaluation
+(require 'ob-clojure) ;; org-babel code evaluation
 
 ;; (add-to-list 'load-path "~/emacs/cider")
-;; (autoload 'cider "cider" "Cider for Clojure")
-;; (require 'cider)
-;; (eval-after-load "cider"
-;;   '(progn
-;;      ;; (require 'cider)
-;;      ;; (defadvice cider--lein-present-p (around gjg-find-the-damn-script activate)
-;;      ;;   "Lein shell script is not detected on Windows as executable"
-;;      ;;   (if (eq window-system 'w32)
-;;      ;;       (setq ad-return-value (or (file-remote-p default-directory)
-;;      ;;    			     (locate-file "lein" exec-path nil 'exists)))
-;;      ;;     (ad-do-it)))
-;;      (add-hook 'cider-repl-mode-hook 'company-mode)
-;;      (add-hook 'cider-mode-hook 'company-mode)))
+(autoload 'cider "cider" "Cider for Clojure")
+(require 'cider)
+(eval-after-load "cider"
+  '(progn
+     ;; (require 'cider)
+     ;; (defadvice cider--lein-present-p (around gjg-find-the-damn-script activate)
+     ;;   "Lein shell script is not detected on Windows as executable"
+     ;;   (if (eq window-system 'w32)
+     ;;       (setq ad-return-value (or (file-remote-p default-directory)
+     ;;    			     (locate-file "lein" exec-path nil 'exists)))
+     ;;     (ad-do-it)))
+     (add-hook 'cider-repl-mode-hook 'company-mode)
+     (add-hook 'cider-mode-hook 'company-mode)))
 
 (autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
 (defun my-create-newline-and-enter-sexp (&rest _ignored)
@@ -283,8 +284,8 @@
 (sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
 (sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
 (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-;; (add-hook 'clojure-mode-hook 'smartparens-mode)
-;; (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'clojure-mode-hook 'smartparens-mode)
+(add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook 'smartparens-mode)
 ;; ))
@@ -347,6 +348,8 @@
 (global-set-key [end] (quote end-of-buffer))
 (global-unset-key (kbd "C-z"))
 (global-set-key (kbd "C-z") 'undo)
+(global-unset-key (kbd "M-]")) ; unset one next-buffer binding
+(global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
 (setq fill-column 90); default for wider screens
 
 ;; ensure that the default for searches is case-insensitive
@@ -632,7 +635,7 @@
 ;;   )
 
 (cond ((or (eq window-system 'mac) (eq window-system 'ns))
-       (set-frame-font "Inconsolata")
+       (set-frame-font "Source Code Pro-17")
        (setq gjg/os-open "open"))
       ((eq window-system 'w32)
        ;; (set-face-font 'default '"-outline-Inconsolata-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1"))
@@ -646,7 +649,7 @@
        ;; (set-frame-font "Inconsolata-16")
        (set-frame-font "Source Code Pro-16"))
       ((eq window-system 'x)
-       (set-frame-font "Inconsolata-18")
+       (set-frame-font "Inconsolata-21")
        (setq gjg/os-open "xdg-open")
                                       ;(set-face-font 'default '"10x20")
        ))
@@ -814,7 +817,7 @@
     (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
  '(package-selected-packages
    (quote
-    (docker-tramp cider csv-mode swiper flx tramp-term sql-indent redo+ rainbow-identifiers org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
+    (org-beautify-theme docker-tramp cider csv-mode prettify-greek smart-mode-line flx tramp-term sql-indent redo+ rainbow-identifiers org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
  '(tramp-default-method "ssh" nil (tramp))
  '(winner-mode t))
 (custom-set-faces
