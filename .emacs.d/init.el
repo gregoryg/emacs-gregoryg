@@ -44,7 +44,6 @@
     nodejs-repl
     org
     org-plus-contrib
-    pig-mode
     prettify-greek
     python-mode
     pyvenv
