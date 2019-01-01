@@ -304,6 +304,7 @@
     (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))))
 
 ;; be sure to load org-mode after windmove (ref: org-disputed-keys)
+(require 'org-tempo)
 (load-library "gjg-org")
 ;; (with-eval-after-load 'tramp'
 ;;   (setq tramp-default-method "rsync"))
