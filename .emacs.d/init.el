@@ -345,6 +345,11 @@
 (setq tetris-score-file "~/.emacs.d/tetris.score")
 (global-set-key [home] (lambda () (interactive) (goto-char (point-min))))
 (global-set-key [end] (quote end-of-buffer))
+;; M-left and M-right on Pixelbook
+(global-unset-key (kbd "<M-left>"))
+(global-unset-key (kbd "<M-right>"))
+(global-set-key (kbd "<M-left>") (lambda () (interactive) (goto-char (point-min))))
+(global-set-key (kbd "<M-right>") 'end-of-buffer)
 (global-unset-key (kbd "C-z"))
 (global-set-key (kbd "C-z") 'undo)
 (global-unset-key (kbd "M-]")) ; unset one next-buffer binding
