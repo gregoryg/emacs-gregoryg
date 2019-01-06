@@ -653,7 +653,7 @@
        ;; (set-frame-font "Inconsolata-16")
        (set-frame-font "Source Code Pro-16"))
       ((eq window-system 'x)
-       (set-frame-font "Inconsolata-21")
+       (set-frame-font "Inconsolata-18")
        (setq gjg/os-open "xdg-open")
                                       ;(set-face-font 'default '"10x20")
        ))
