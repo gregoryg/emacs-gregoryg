@@ -104,7 +104,7 @@
 ;; swiped from Gilaras Drakeson <gilaras@gmail.com>
 (require 'dired)
 (defcustom gjg/os-open "xdg-open"
-  "Command to open a document, e.g. 'xdg-open' on Linux, 'open' on OS X, 'explorer' or 'cygpath' on Windows"
+  "Command to open a document, e.g. 'xdg-open' on Linux, 'sensible-browser' on crostini, 'open' on OS X, 'explorer' or 'cygpath' on Windows"
   :type 'string
   :group 'gjg)
 
