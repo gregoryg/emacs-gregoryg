@@ -82,6 +82,16 @@
       (when (not (package-installed-p p))
         (package-install p)))))
 
+;; let's get encryption established
+(require 'epa-file)
+(epa-file-enable)
+(require 'org-crypt)
+(org-crypt-use-before-save-magic)
+;(setq org-tags-exclude-from-inheritance (quote ("crypt"))) 
+;;  set to nil to use symmetric encryption.
+;; (setq org-crypt-key nil)
+
+
 ;; (require 'exwm)
 ;; (require 'exwm-config)
 ;; (exwm-config-default)
