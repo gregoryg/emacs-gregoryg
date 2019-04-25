@@ -98,6 +98,9 @@
   (add-to-list 'exec-path "~/bin")
   )
 
+;; For gpg, disable external pinentry - let emacs handle pass phrase
+(setenv "GPG_AGENT_INFO" nil)
+
 ;; Spacemacs theme stuff
 (load-theme 'material t)
 ;; (load-theme 'spacemacs-dark t)
