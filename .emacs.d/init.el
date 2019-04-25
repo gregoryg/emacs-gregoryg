@@ -821,12 +821,13 @@
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(ido-auto-merge-work-directories-length -1)
  '(ido-enable-last-directory-history nil)
+ '(org-crypt-key "abcdefabcdef")
  '(org-modules
    (quote
     (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
  '(package-selected-packages
    (quote
-    (org-beautify-theme docker-tramp cider prettify-greek smart-mode-line flx tramp-term sql-indent redo+ rainbow-identifiers org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
+    (bash-completion terraform-mode org-beautify-theme docker-tramp cider prettify-greek smart-mode-line flx tramp-term sql-indent redo+ rainbow-identifiers org-plus-contrib ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme markdown-mode magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view elpy ein edit-server dumb-jump dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
  '(tramp-default-method "ssh" nil (tramp))
  '(winner-mode t))
 (custom-set-faces
