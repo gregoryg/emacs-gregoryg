@@ -58,6 +58,7 @@
     smartparens
     spaceline
     sql-indent
+    terraform-mode
     uuid
     web-mode
     yafolding
