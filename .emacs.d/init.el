@@ -20,6 +20,7 @@
 (defvar gjg/required-packages 
   '(auctex
     auto-complete
+    bash-completion
     cider
     clojure-mode
     dash
