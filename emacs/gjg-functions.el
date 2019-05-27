@@ -985,5 +985,14 @@ With prefix, restrict to files currently being visited"
     )
   )
 
+;; from github user coredump https://stackoverflow.com/questions/2088029/find-files-getting-a-dired-buffer-of-files-specified-by-filter-containing-text
+(defun find-iname-grep-dired (dir pattern regexp)
+  (interactive
+   "DFind-name (directory): \nsFind-name (filename wildcard): \nsFind-grep (grep regexp): ")
+  (find-dired dir (concat "-iname " (shell-quote-argument pattern) " "
+                          "-type f -exec " grep-program " " find-grep-options " -e "
+                          (shell-quote-argument regexp) " "
+                          (shell-quote-argument "{}") " "
+                          (shell-quote-argument ";"))))
 
 (provide 'gjg-functions)
