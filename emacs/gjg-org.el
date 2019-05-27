@@ -26,7 +26,8 @@
 	    (auto-fill-mode 1)
 	    ;; set sub/superscript interpretation OFFFFFFOOOFFF
 	    (setq org-use-sub-superscripts nil)
-	    ))
+            (setq org-catch-invisible-edits 'show-and-error )
+            ))
 
 ;; *** Org capture
 ;; TODO: improve meeting template with
@@ -40,13 +41,13 @@
 (define-key global-map "\C-cc" 'org-capture)
 (setq org-capture-templates
       '(("r" "Regular todo" entry
-	 (file+headline "~/projects/notes.org" "Tasks")
-	 "* TODO %?\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend t)
+	 (file+headline "~/todos.org" "General")
+	 "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
 	("s" "Cloudera todo" entry
-	 (file+headline "~/Google Drive/cloudera.org" "Miscellaneous non-project tasks")
+	 (file+headline "~/cloudera.org.gpg" "Miscellaneous non-project tasks")
 	 "* TODO %?\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend t)
 	("p" "Cloudera Phone/Meeting" entry
-	 (file+headline "~/Google Drive/cloudera.org" "Meetings")
+	 (file+headline "~/cloudera.org.gpg" "Meetings")
 	 "* %t %^{type|Call|Meeting} with %^{with|Unknown|John Darrah|Krishna Samudrala|Cole Waldron}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
 :PROPERTIES:
 :NOBLOCKING: t
@@ -59,6 +60,22 @@
    + From %\\2: 
    + %?
  " :prepend t :clock-in t :clock-resume t)
+	("m" "Mesosphere Phone/Meeting" entry
+	 (file+headline "~/mesosphere.org.gpg" "Calls and Meetings Log")
+	 "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty|Nick Kane|Jerry Connors}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
+:PROPERTIES:
+:NOBLOCKING: t
+:END:
+:LOGBOOK:
+:CREATED:%U
+:END:
+%i
+   + From Mesosphere: GG, 
+   + From %\\2: 
+   + %?
+ " :prepend t :clock-in t :clock-resume t)
+
+        
 	("w" "todo With clip" entry
 	 (file+headline "~/projects/notes.org" "Tasks")
 	 "* TODO %?%c\n:LOGBOOK:\n:CREATED:%U\n:END:\n\n%i\n" :prepend t)
@@ -77,7 +94,9 @@
 ;; persist clock history across emacs sessions
 (defcustom gjg/agenda-file-sets
   '(("Cloudera"
-     '("cloudera.org" "misc.org"))
+     '("cloudera.org.gpg" "misc.org"))
+    ("Mesosphere"
+     '("mesosphere.org.gpg"))
     ("Home"
      '("misc.org" "notes.org" "projects.org")))
   "Named sets of agenda files"
@@ -106,7 +125,7 @@
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
 (setq org-clock-report-include-clocking-task t)
-(setq org-agenda-files '("~/Google Drive/cloudera.org"))
+(setq org-agenda-files '("~/mesosphere.org.gpg"))
 
 (setq org-use-speed-commands t) ;; POWER USER BABY
 (setq org-speed-commands-user 
@@ -221,6 +240,13 @@
                                 (sequence "PROPOSED(p)" "WAITING(w@/!)" "MAYBE(m!)" "OPEN(O@)" "|" "CANCELLED(c@/!)") ;; "oddball" states that any task may be set to
                                 ;; (sequence "QUOTE(q!)" "QUOTED(Q!)" "|" "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")     ;; sequence for quotes
                                 )))
+(setq org-todo-keyword-faces
+      '(("TODO"
+         (:foreground "#ff39a3" :weight bold))
+        ("STARTED" . "#E35DBF")
+        ("CANCELLED" :foreground "green" :weight bold :strike-through t)
+        ("PROPOSED" . "pink")
+        ("WAITING" . "yellow")))
 
 ;; (setq org-todo-keyword-faces (quote (("TODO" :foreground "red" :weight bold)
 ;;                                      ("STARTED" :foreground "deep sky blue" :weight bold)
