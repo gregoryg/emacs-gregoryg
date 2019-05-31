@@ -24,6 +24,7 @@
     bash-completion
     cider
     clojure-mode
+    csv-mode
     dash
     docker-tramp
     dumb-jump
@@ -854,7 +855,7 @@
  '(ediff-split-window-function (quote split-window-horizontally))
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
  '(elpy-rpc-python-command "python3")
- '(epg-gpg-program "/usr/bin/gpg2")
+ '(epg-gpg-program "/usr/local/bin/gpg")
  '(fci-rule-color "#eee8d5")
  '(gjg/os-open "sensible-browser")
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
