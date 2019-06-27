@@ -266,6 +266,23 @@ With prefix, restrict to files currently being visited"
 ;; use (assoc 'LolImageUrl (car myxmlparse))
 ;; keys are LolId, LolImageUrl, ThumbnailImageUrl, LolPageUrl, FullText, PictureId, PictureImageUrl, Title, Description, SourcePictures, TimeStamp
 
+;; Add method to connect to Mesosphere DC/OS tasks
+;; we need to execute a command like the following
+;;  dcos task exec --tty --interactive <taskname> -- bash
+;; example TRAMP URI:   //dcos:jupyter:
+(require 'tramp)
+(add-to-list 'tramp-methods
+             '("dcos"
+               (tramp-login-program "dcos")
+               (tramp-login-args
+                (nil
+                 ("task" "exec" "-it")
+                 ("%h")
+                 ("--" "bash")))
+               (tramp-remote-shell "/bin/sh")
+               (tramp-remote-shell-args ("-i" "-c"))))
+
+
 ;; TRAMP SUDO FUN - snarfed from Peter Dyballa on gmane.emacs.help
 (defun my-tramp-header-line-function ()
   (when (string-match "^/.*su\\(do\\)?:" default-directory)
