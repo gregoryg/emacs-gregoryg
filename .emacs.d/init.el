@@ -313,6 +313,11 @@
 (add-hook 'emacs-lisp-mode-hook 'smartparens-mode)
 ;; ))
 
+;; Go
+(add-hook 'go-mode-hook 'smartparens-mode)
+(add-hook 'go-mode-hook 'rainbow-delimiters-mode)
+
+
 ;; Javascript
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-hook 'js2-mode-hook 'smartparens-mode)
