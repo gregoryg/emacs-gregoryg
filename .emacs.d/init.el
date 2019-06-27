@@ -689,7 +689,7 @@
 ;; *** Desktop save
 (desktop-save-mode 1)
 (setq desktop-restore-eager 5)
-;; GJG TODO: does not work in emacs 25.x
+
 (defun add-ssh-agent-to-tramp ()
   (cl-pushnew '("-A")
               (cadr (assoc 'tramp-login-args
@@ -838,11 +838,13 @@
    ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#839496"])
  '(auto-revert-remote-files t)
  '(auto-revert-verbose nil)
+ '(browse-url-browser-function (quote browse-url-generic))
  '(browse-url-filename-alist
    (quote
     (("^/\\(ftp@\\|anonymous@\\)?\\([^:/]+\\):/*" . "ftp://\\2/")
      ("^/\\([^:@/]+@\\)?\\([^:/]+\\):/*" . "ftp://\\1\\2/")
      ("^/home/gregorygrubbs/\\(.+\\)" . "http://100.115.92.199:80/gregorygrubbs/\\1"))))
+ '(browse-url-generic-program "sensible-browser")
  '(compilation-message-face (quote default))
  '(cua-global-mark-cursor-color "#2aa198")
  '(cua-normal-cursor-color "#657b83")
