@@ -1,4 +1,4 @@
-(defvar gjg/check-packages-on-startup t)
+(defvar gjg/check-packages-on-startup nil)
 
 (add-to-list 'load-path "~/emacs")
 (require 'cl)
@@ -28,6 +28,7 @@
     dash
     docker-tramp
     dumb-jump
+    edit-indirect
     edit-server
     elpy
     ensime
@@ -40,6 +41,7 @@
     js2-mode
     json-mode
     json-reformat
+    lsp-mode
     magit
     magit-todos
     markdown-mode
@@ -64,6 +66,7 @@
     spaceline
     sql-indent
     terraform-mode
+    use-package
     uuid
     web-mode
     yafolding
@@ -276,21 +279,31 @@
 ;; ))
 ;; Clojure
 (require 'ob-clojure) ;; org-babel code evaluation
+(use-package lsp-mode
+  :ensure t
+  :commands lsp
+  :config
+  (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure-mode"))
+  :init
+  (setq lsp-enable-indentation nil)
+  (add-hook 'clojure-mode-hook #'lsp)
+  (add-hook 'clojurec-mode-hook #'lsp)
+  (add-hook 'clojurescript-mode-hook #'lsp))
 
-;; (add-to-list 'load-path "~/emacs/cider")
-(autoload 'cider "cider" "Cider for Clojure")
-(require 'cider)
-(eval-after-load "cider"
-  '(progn
-     ;; (require 'cider)
-     ;; (defadvice cider--lein-present-p (around gjg-find-the-damn-script activate)
-     ;;   "Lein shell script is not detected on Windows as executable"
-     ;;   (if (eq window-system 'w32)
-     ;;       (setq ad-return-value (or (file-remote-p default-directory)
-     ;;    			     (locate-file "lein" exec-path nil 'exists)))
-     ;;     (ad-do-it)))
-     (add-hook 'cider-repl-mode-hook 'company-mode)
-     (add-hook 'cider-mode-hook 'company-mode)))
+;; ;; (add-to-list 'load-path "~/emacs/cider")
+;; (autoload 'cider "cider" "Cider for Clojure")
+;; (require 'cider)
+;; (eval-after-load "cider"
+;;   '(progn
+;;      ;; (require 'cider)
+;;      ;; (defadvice cider--lein-present-p (around gjg-find-the-damn-script activate)
+;;      ;;   "Lein shell script is not detected on Windows as executable"
+;;      ;;   (if (eq window-system 'w32)
+;;      ;;       (setq ad-return-value (or (file-remote-p default-directory)
+;;      ;;    			     (locate-file "lein" exec-path nil 'exists)))
+;;      ;;     (ad-do-it)))
+;;      (add-hook 'cider-repl-mode-hook 'company-mode)
+;;      (add-hook 'cider-mode-hook 'company-mode)))
 
 (autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
 (defun my-create-newline-and-enter-sexp (&rest _ignored)
@@ -749,19 +762,21 @@
 ;; (setq ido-use-filename-at-point nil) ;; prefer file names near point
 
 ;; **** Dired
-
-(declare (special dired-x-hands-off-my-keys
-		  dired-bind-vm
-		  dired-omit-files-p))
-(add-hook 'dired-load-hook
-	  (function
-	   (lambda ()
-	     (declare (special dired-x-hands-off-my-keys
-			       dired-bind-vm
-			       dired-omit-files-p))
-	     (load-library "dired-x")
-	     (setq dired-x-hands-off-my-keys nil
-		   dired-bind-vm t))))
+(require 'dired)
+(require 'dired-x)
+(setq dired-dwim-target t)
+(setq dired-omit-files "^\\.?#\\|^\\..*")
+;; (declare (special dired-x-hands-off-my-keys
+;; 		  dired-bind-vm
+;; 		  dired-omit-files-p))
+;; (add-hook 'dired-load-hook
+;; 	  (function
+;; 	   (lambda ()
+;; 	     (declare (special dired-x-hands-off-my-keys
+;; 			       dired-bind-vm))
+;; 	     (load-library "dired-x")
+;; 	     (setq dired-x-hands-off-my-keys nil
+;; 		   dired-bind-vm t))))
 
 (add-hook 'dired-mode-hook
 	  (function (lambda ()
@@ -770,8 +785,6 @@
 ;; 		      (setq dired-omit-mode t)
 ;; 		      (setq dired-omit-files "^\\..*")
 ;; 		      )))
-(setq dired-dwim-target t)
-(require 'dired-x)
 
 ;; **** Occur
 
@@ -832,131 +845,8 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default bold shadow italic underline bold bold-italic bold])
- '(ansi-color-names-vector
-   ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#839496"])
- '(auto-revert-remote-files t)
- '(auto-revert-verbose nil)
- '(browse-url-browser-function (quote browse-url-generic))
- '(browse-url-filename-alist
-   (quote
-    (("^/\\(ftp@\\|anonymous@\\)?\\([^:/]+\\):/*" . "ftp://\\2/")
-     ("^/\\([^:@/]+@\\)?\\([^:/]+\\):/*" . "ftp://\\1\\2/")
-     ("^/home/gregorygrubbs/\\(.+\\)" . "http://100.115.92.199:80/gregorygrubbs/\\1"))))
- '(browse-url-generic-program "sensible-browser")
- '(compilation-message-face (quote default))
- '(cua-global-mark-cursor-color "#2aa198")
- '(cua-normal-cursor-color "#657b83")
- '(cua-overwrite-cursor-color "#b58900")
- '(cua-read-only-cursor-color "#859900")
- '(custom-safe-themes
-   (quote
-    ("fa2af0c40576f3bde32290d7f4e7aa865eb6bf7ebe31eb9e37c32aa6f4ae8d10" "170bb47b35baa3d2439f0fd26b49f4278e9a8decf611aa33a0dad1397620ddc3" "4639288d273cbd3dc880992e6032f9c817f17c4a91f00f3872009a099f5b3f84" "fe16a59cc8d28255a61c701b032950a4785cc60708afebd352ed5960fcbc0e68" "96872a5b9e9a6b092df1e4bd034699c606c28f675869a8ff3ada1ca5f4d16ebf" "a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a" "732b807b0543855541743429c9979ebfb363e27ec91e82f463c91e68c772f6e3" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" default)))
- '(dired-omit-files "^\\.?#\\|^\\..*")
- '(ediff-split-window-function (quote split-window-horizontally))
- '(ediff-window-setup-function (quote ediff-setup-windows-plain))
- '(elpy-rpc-python-command "python3")
- '(epg-gpg-program "/usr/local/bin/gpg")
- '(fci-rule-color "#eee8d5")
- '(gjg/os-open "sensible-browser")
- '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
- '(highlight-symbol-colors
-   (--map
-    (solarized-color-blend it "#fdf6e3" 0.25)
-    (quote
-     ("#b58900" "#2aa198" "#dc322f" "#6c71c4" "#859900" "#cb4b16" "#268bd2"))))
- '(highlight-symbol-foreground-color "#586e75")
- '(highlight-tail-colors
-   (quote
-    (("#eee8d5" . 0)
-     ("#B4C342" . 20)
-     ("#69CABF" . 30)
-     ("#69B7F0" . 50)
-     ("#DEB542" . 60)
-     ("#F2804F" . 70)
-     ("#F771AC" . 85)
-     ("#eee8d5" . 100))))
- '(hl-bg-colors
-   (quote
-    ("#DEB542" "#F2804F" "#FF6E64" "#F771AC" "#9EA0E5" "#69B7F0" "#69CABF" "#B4C342")))
- '(hl-fg-colors
-   (quote
-    ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
- '(hl-paren-colors (quote ("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900")))
- '(hl-sexp-background-color "#1c1f26")
- '(ido-auto-merge-work-directories-length -1)
- '(ido-enable-last-directory-history nil)
- '(line-spacing 0.2)
- '(magit-diff-use-overlays nil)
- '(magit-todos-mode t nil (magit-todos))
- '(nrepl-message-colors
-   (quote
-    ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
- '(org-agenda-log-mode-items (quote (closed clock state)))
- '(org-export-dispatch-use-expert-ui t)
- '(org-modules
-   (quote
-    (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
- '(package-selected-packages
-   (quote
-    (pandoc-mode zencoding-mode yaml-mode yafolding web-mode uuid spaceline smartparens recursive-narrow rainbow-delimiters python-mode org-plus-contrib js2-mode ensime elpy dumb-jump auto-complete haskell-mode ag go-mode bash-completion all-the-icons all-the-icons-dired jupyter org-bullets leuven-theme terraform-mode csv-mode pcache poet-theme markdown-mode org-gcal org-cliplink epresent org-tree-slide treemacs solarized-theme pdf-tools magit-todos org-beautify-theme docker-tramp cider prettify-greek smart-mode-line flx tramp-term sql-indent redo+ rainbow-identifiers ob-ipython nodejs-repl multiple-cursors multi-term monokai-theme molokai-theme material-theme magit labburn-theme json-mode inf-clojure ido-ubiquitous htmlize hl-line+ hc-zenburn-theme flx-ido exec-path-from-shell ess-R-object-popup ess-R-data-view ein edit-server dart-mode color-theme-sanityinc-tomorrow auctex afternoon-theme ac-js2 ac-cider)))
- '(pos-tip-background-color "#eee8d5")
- '(pos-tip-foreground-color "#586e75")
- '(safe-local-variable-values
-   (quote
-    ((hl-sexp-mode)
-     (rainbow-mode . t)
-     (org-todo-keyword-faces
-      ("TODO" . "red")
-      ("WAIT" . "orange")
-      ("DONE" . "green"))
-     (auto-save-mode)
-     (cider-ns-refresh-after-fn . "integrant.repl/resume")
-     (cider-ns-refresh-before-fn . "integrant.repl/suspend"))))
- '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
- '(term-default-bg-color "#fdf6e3")
- '(term-default-fg-color "#657b83")
- '(tramp-default-method "ssh" nil (tramp))
- '(vc-annotate-background nil)
- '(vc-annotate-background-mode nil)
- '(vc-annotate-color-map
-   (quote
-    ((20 . "#dc322f")
-     (40 . "#c8805d801780")
-     (60 . "#bec073400bc0")
-     (80 . "#b58900")
-     (100 . "#a5008e550000")
-     (120 . "#9d0091000000")
-     (140 . "#950093aa0000")
-     (160 . "#8d0096550000")
-     (180 . "#859900")
-     (200 . "#66aa9baa32aa")
-     (220 . "#57809d004c00")
-     (240 . "#48559e556555")
-     (260 . "#392a9faa7eaa")
-     (280 . "#2aa198")
-     (300 . "#28669833af33")
-     (320 . "#279993ccbacc")
-     (340 . "#26cc8f66c666")
-     (360 . "#268bd2"))))
- '(vc-annotate-very-old-color nil)
- '(weechat-color-list
-   (quote
-    (unspecified "#fdf6e3" "#eee8d5" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#657b83" "#839496")))
- '(winner-mode t)
- '(xterm-color-names
-   ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#073642"])
- '(xterm-color-names-bright
-   ["#fdf6e3" "#cb4b16" "#93a1a1" "#839496" "#657b83" "#6c71c4" "#586e75" "#002b36"]))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; keep customized variables in a separate file
+(setq custom-file "~/.emacs.d/emacs-custom.el")
+(load custom-file)
+
+
