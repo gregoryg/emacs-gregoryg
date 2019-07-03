@@ -37,30 +37,35 @@
 ;; PLEASE SET USING CUSTOMIZATION (setq org-directory "~/Copy/projects/")
 
 
+;; taken from StackOverflow answer https://stackoverflow.com/questions/11902620/org-mode-how-do-i-create-a-new-file-with-org-capture
+;; (defun capture-blog-filename (path)
+(defun capture-blog-filename ()
+  (let ((thedate (org-read-date nil nil nil "Date of post: "))
+        (name (read-string "Name of blog post file description: ")))
+    (expand-file-name (format "%s-%s.md"
+                              (format-time-string "%Y-%m-%d")
+                              name) "~/projects/jekyll/gregorygrubbs/_posts/")))
+
+
 (setq org-default-notes-file "~/projects/notes.org")
 (define-key global-map "\C-cc" 'org-capture)
 (setq org-capture-templates
-      '(("r" "Regular todo" entry
+      '(
+        ("b" "Blog post" plain
+         (file capture-blog-filename)
+         "---
+layout: post
+title:  %^{title|Generic Post}
+date:   %<%F %T %z>
+categories: jekyll update
+---
+
+# some thoughts"
+         )
+        ("r" "Regular todo" entry
 	 (file+headline "~/todos.org" "General")
 	 "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
-	("s" "Cloudera todo" entry
-	 (file+headline "~/cloudera.org.gpg" "Miscellaneous non-project tasks")
-	 "* TODO %?\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend t)
-	("p" "Cloudera Phone/Meeting" entry
-	 (file+headline "~/cloudera.org.gpg" "Meetings")
-	 "* %t %^{type|Call|Meeting} with %^{with|Unknown|John Darrah|Krishna Samudrala|Cole Waldron}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
-:PROPERTIES:
-:NOBLOCKING: t
-:END:
-:LOGBOOK:
-:CREATED:%U
-:END:
-%i
-   + From Cloudera: GG, 
-   + From %\\2: 
-   + %?
- " :prepend t :clock-in t :clock-resume t)
-	("m" "Mesosphere Phone/Meeting" entry
+	("p" "Mesosphere Phone/Meeting" entry
 	 (file+headline "~/mesosphere.org.gpg" "Calls and Meetings Log")
 	 "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty|Nick Kane|Jerry Connors}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
 :PROPERTIES:
