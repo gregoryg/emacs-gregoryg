@@ -24,6 +24,7 @@
     bash-completion
     cider
     clojure-mode
+    company-lsp
     csv-mode
     dash
     docker-tramp
