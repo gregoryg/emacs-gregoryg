@@ -189,6 +189,17 @@
  kept-old-versions 5
  version-control nil)
 
+;; Moos and MUDs - NOT legacy stuff - added 2019!
+(add-to-list 'load-path "~/projects/rmoo")
+(require 'rmoo-autoload)
+(require 'moocode-mode)
+;; (global-set-key (kbd "C-c C-r") 'rmoo)
+(add-to-list 'auto-mode-alist '("\\.moo$" . moocode-mode))
+(add-hook 'rmoo-interactive-mode-hooks
+          (lambda ()
+            (linum-mode -1)                  ;; ... no line numbers
+            (goto-address-mode t)))          ;; ... clickable links
+
 ;; rainbow delimiters ; make much stronger (more saturated) colors
 (autoload 'rainbow-delimiters "rainbow-delimiters" "Highlight brackets according to their depth")
 
