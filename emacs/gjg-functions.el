@@ -282,6 +282,21 @@ With prefix, restrict to files currently being visited"
                (tramp-remote-shell "/bin/sh")
                (tramp-remote-shell-args ("-i" "-c"))))
 
+;; Add method to connect to Kubernetes pods
+;; we need to execute a command like the following
+;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
+;; example TRAMP URI:   //kexec:jhub@jupyter:
+(add-to-list 'tramp-methods
+             '("kube"
+               (tramp-login-program "kubectl")
+               (tramp-login-args
+                (nil
+                 ("exec" "-it")
+                 ("--namespace" "%u")
+                 ("%h")
+                 ("--" "bash")))
+               (tramp-remote-shell "/bin/sh")
+               (tramp-remote-shell-args ("-i" "-c"))))
 
 ;; TRAMP SUDO FUN - snarfed from Peter Dyballa on gmane.emacs.help
 (defun my-tramp-header-line-function ()
