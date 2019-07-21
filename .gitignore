@@ -28,3 +28,5 @@ url/
 .emacs.d/org-clock-save.el
 .emacs.d/projectile-bookmarks.eld
 .emacs.d/projectile.cache
+.emacs.d/emacs-custom.el
+.emacs.d/transient/
