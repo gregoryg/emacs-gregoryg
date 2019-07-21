@@ -1,4 +1,4 @@
-(defvar gjg/check-packages-on-startup nil)
+(defvar gjg/check-packages-on-startup t)
 
 (add-to-list 'load-path "~/emacs")
 (require 'cl)
@@ -62,6 +62,7 @@
     ;; redo+
     s
     scala-mode
+    ssh-config-mode
     smart-mode-line
     smartparens
     spaceline
@@ -70,6 +71,7 @@
     use-package
     uuid
     web-mode
+    xterm-color
     yafolding
     yaml-mode
     yasnippet
@@ -162,6 +164,8 @@
 ;;   '(global-hl-line-mode t))
 (global-hl-line-mode t)
 
+;; winner
+(winner-mode 1)
 ;; windmove
 (require 'windmove)
 (eval-after-load "windmove"
