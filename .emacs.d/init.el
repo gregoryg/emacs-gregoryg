@@ -766,6 +766,7 @@
 (require 'ido)
 (ido-mode 1)
 (ido-everywhere 1)
+(setq ido-enable-last-directory-history nil) ;; do not switch paths to select some idiotic alternative
 ;; (ido-ubiquitous-mode t) ;; from ido-ubiquitous package, not ido package!!
 ;; (setq ido-auto-merge-delay-time 5.0)
 ;; (setq ido-enable-flex-matching t)
