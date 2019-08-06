@@ -474,10 +474,15 @@
 (setq ibuffer-expert t)
 (setq ibuffer-saved-filter-groups
       '(("home"
-         ("Org" (mode . org-mode))
+         ("Org and Markdown" (or (mode . org-mode)
+                                 (mode . markdown-mode)))
          ("Shell" (mode . shell-mode))
-         ("emacs-config" (or (filename . ".emacs.d")
-                             (filename . "emacs-config")))
+         ("Configs" (or (filename . ".emacs.d")
+                             (mode . emacs-lisp-mode)
+                             (derived-mode .  conf-mode)
+                             (mode . json-mode)
+                             (mode . yaml-mode)))
+         ("Code" (derived-mode .  prog-mode))
          ("Magit" (or (mode . magit-diff-mode)
                       (mode . magit-status-mode)
                       (mode . magit-process-mode)
