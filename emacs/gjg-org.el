@@ -242,7 +242,7 @@ categories: jekyll update
                            ""))
 (setq org-columns-default-format "%TODO %CATEGORY %60ITEM(Task)%5Effort(Estim){:} %5CLOCKSUM(Clock) %SCHEDULED(Time) %DEADLINE")
 (setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s!)" "|" "DONE(d!)")      ;; ordinary sequence is Todo -> Started -> Done
-                                (sequence "PROPOSED(p)" "WAITING(w@/!)" "MAYBE(m!)" "OPEN(O@)" "|" "CANCELLED(c@/!)") ;; "oddball" states that any task may be set to
+                                (sequence "PROPOSED(p)" "WAITING(w@/!)" "MAYBE(m!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
                                 ;; (sequence "QUOTE(q!)" "QUOTED(Q!)" "|" "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")     ;; sequence for quotes
                                 )))
 (setq org-todo-keyword-faces
