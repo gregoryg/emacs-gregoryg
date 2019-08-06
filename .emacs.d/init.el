@@ -472,6 +472,29 @@
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
 (setq ibuffer-expert t)
+(setq ibuffer-saved-filter-groups
+      '(("home"
+         ("Org and Markdown" (or (mode . org-mode)
+                                 (mode . markdown-mode)))
+         ("Shell" (mode . shell-mode))
+         ("Configs" (or (filename . ".emacs.d")
+                             (mode . emacs-lisp-mode)
+                             (derived-mode .  conf-mode)
+                             (mode . json-mode)
+                             (mode . yaml-mode)))
+         ("Code" (derived-mode .  prog-mode))
+         ("Magit" (or (mode . magit-diff-mode)
+                      (mode . magit-status-mode)
+                      (mode . magit-process-mode)
+                      (mode . magit-revision-mode)
+                      (mode . magit-refs-mode)))
+         ("Dired" (mode . dired-mode))
+         ("Remote" (filename . "/\*:.+"))
+         )))
+(add-hook 'ibuffer-mode-hook
+	  '(lambda ()
+             (ibuffer-auto-mode 1)
+	     (ibuffer-switch-to-saved-filter-groups "home")))
 
 (autoload 'uniquify "uniquify" "unique buffer names dependent on file name")
 (eval-after-load "uniquify"
@@ -766,6 +789,7 @@
 (require 'ido)
 (ido-mode 1)
 (ido-everywhere 1)
+(setq ido-enable-last-directory-history nil) ;; do not switch paths to select some idiotic alternative
 ;; (ido-ubiquitous-mode t) ;; from ido-ubiquitous package, not ido package!!
 ;; (setq ido-auto-merge-delay-time 5.0)
 ;; (setq ido-enable-flex-matching t)
