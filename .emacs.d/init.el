@@ -472,6 +472,24 @@
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
 (setq ibuffer-expert t)
+(setq ibuffer-saved-filter-groups
+      '(("home"
+         ("Org" (mode . org-mode))
+         ("Shell" (mode . shell-mode))
+         ("emacs-config" (or (filename . ".emacs.d")
+                             (filename . "emacs-config")))
+         ("Magit" (or (mode . magit-diff-mode)
+                      (mode . magit-status-mode)
+                      (mode . magit-process-mode)
+                      (mode . magit-revision-mode)
+                      (mode . magit-refs-mode)))
+         ("Dired" (mode . dired-mode))
+         ("Remote" (filename . "/\*:.+"))
+         )))
+(add-hook 'ibuffer-mode-hook
+	  '(lambda ()
+             (ibuffer-auto-mode 1)
+	     (ibuffer-switch-to-saved-filter-groups "home")))
 
 (autoload 'uniquify "uniquify" "unique buffer names dependent on file name")
 (eval-after-load "uniquify"
