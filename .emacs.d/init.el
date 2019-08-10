@@ -120,6 +120,9 @@
 (when (file-exists-p "~/bin/")
   (add-to-list 'exec-path "~/bin")
   )
+;; use ssh-agent
+(exec-path-from-shell-copy-env "SSH_AGENT_PID")
+(exec-path-from-shell-copy-env "SSH_AUTH_SOCK")
 
 ;; For gpg, disable external pinentry - let emacs handle pass phrase
 (setenv "GPG_AGENT_INFO" nil)
