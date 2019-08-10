@@ -1,4 +1,4 @@
-(defvar gjg/check-packages-on-startup t)
+(defvar gjg/check-packages-on-startup nil) ; should be nil in repo
 
 (add-to-list 'load-path "~/emacs")
 (require 'cl)
