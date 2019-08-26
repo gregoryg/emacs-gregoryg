@@ -1,3 +1,8 @@
+(defun gjg/highlight-terraform-stuff ()
+  (interactive)
+  (highlight-regexp "Creation complete" 'hi-green)
+  (highlight-regexp "Destruction complete" 'hi-pink))
+
 (defun gjg/ssh-abbrevs-for-ec2-cluster ()
   "Take text of instances pasted copied from EC2 and add to ~/.ssh/config; expect copied text to be in current clipboard"
   (get-buffer-create "*gort temp*")
@@ -302,7 +307,7 @@ With prefix, restrict to files currently being visited"
 (defun my-tramp-header-line-function ()
   (when (string-match "^/.*su\\(do\\)?:" default-directory)
     (setq header-line-format
-          (format-mode-line "----- THIS BUFFER IS VISITED WITH ROOT PRIVILEGES -----"
+          (format-mode-line "----- THIS BUFFER IS VISITED WITH SUDO PRIVILEGES -----"
                             'font-lock-warning-face))))
 
 (add-hook 'find-file-hooks 'my-tramp-header-line-function)

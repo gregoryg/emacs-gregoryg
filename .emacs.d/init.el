@@ -51,6 +51,7 @@
     multiple-cursors
     nodejs-repl
     org
+    org-bullets
     org-plus-contrib
     pandoc-mode
     prettify-greek
@@ -888,6 +889,7 @@
 ;;         (message matching-text)))))
 ;; open a nice local shell
 (defalias 'ss 'gjg/open-remote-shell)
+(defalias 'ht 'gjg/highlight-terraform-stuff)
 (shell (get-buffer-create "sh1"))
 (defalias 'rb 'rename-buffer)
 
