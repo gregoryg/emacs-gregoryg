@@ -442,6 +442,7 @@ categories: jekyll update
 (global-set-key [C-M-right] 'show-children)
 (global-set-key [C-M-up] 'outline-previous-visible-heading)
 (global-set-key [C-M-down] 'outline-next-visible-heading)
+(defalias 'dp 'org-display-outline-path)
 
 
 ;; delete the seleted region when something is typed

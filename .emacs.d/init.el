@@ -372,6 +372,9 @@
 ;; (with-eval-after-load 'tramp'
 ;;   (setq tramp-default-method "rsync"))
 
+(add-to-list 'load-path "~/projects/org-tree-slide")
+(require 'org-tree-slide nil t)
+
 ;; ** Do special things for special OS
 (setq w32-get-true-file-attributes nil)
 
@@ -791,6 +794,7 @@
 
 (setq confirm-nonexistent-file-or-buffer nil)
 (require 'ido)
+(setq ido-auto-merge-work-directories-length -1) ;; don't switch paths on me!!!
 (ido-mode 1)
 (ido-everywhere 1)
 (setq ido-enable-last-directory-history nil) ;; do not switch paths to select some idiotic alternative
