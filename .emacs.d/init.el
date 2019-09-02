@@ -53,6 +53,8 @@
     org
     org-bullets
     org-plus-contrib
+    org-tree-slide
+    toc-org
     pandoc-mode
     prettify-greek
     python-mode
