@@ -303,6 +303,23 @@ With prefix, restrict to files currently being visited"
                (tramp-remote-shell "/bin/sh")
                (tramp-remote-shell-args ("-i" "-c"))))
 
+;; TRAMP gcloud ssh
+;; Google Cloud Shell
+(add-to-list 'tramp-methods
+  '("gshell"
+    (tramp-login-program        "gcloud alpha cloud-shell ssh")
+    (tramp-default-host "cloud-shell")
+    (tramp-login-args (("#%h")))
+    ;; (tramp-login-args           (("%h")))
+    ;; (tramp-async-args           (("-q")))
+    (tramp-remote-shell         "/bin/bash")
+    (tramp-remote-shell-args    ("-c"))
+    ;; (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+    ;;                              ("-o" "UserKnownHostsFile=/dev/null")
+    ;;                              ("-o" "StrictHostKeyChecking=no")))
+    (tramp-default-port         22)))
+
+
 ;; TRAMP SUDO FUN - snarfed from Peter Dyballa on gmane.emacs.help
 (defun my-tramp-header-line-function ()
   (when (string-match "^/.*su\\(do\\)?:" default-directory)
