@@ -30,3 +30,7 @@ url/
 .emacs.d/projectile.cache
 .emacs.d/emacs-custom.el
 .emacs.d/transient/
+.emacs.d/emacs-init.el
+.emacs.d/emacs-init.html
+.emacs.d/recentf
+.emacs.d/smex-items
