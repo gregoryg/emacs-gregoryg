@@ -23,7 +23,7 @@
 	    ;; (local-set-key (kbd "S C-c TAB") 'org-previous-link)
 	    ;; and what the hell - turn on auto fill mode for every org file
 	    (abbrev-mode 1)
-	    (auto-fill-mode 1)
+	    (auto-fill-mode -1)
 	    ;; set sub/superscript interpretation OFFFFFFOOOFFF
 	    (setq org-use-sub-superscripts nil)
             (setq org-catch-invisible-edits 'show-and-error )
@@ -48,6 +48,8 @@
 
 
 (setq org-default-notes-file "~/projects/notes.org")
+(eval-after-load "org-capture"
+  '(add-hook 'org-capture-mode-hook 'turn-on-auto-fill))
 (define-key global-map "\C-cc" 'org-capture)
 (setq org-capture-templates
       '(
@@ -65,7 +67,7 @@ categories: jekyll update
         ("r" "Regular todo" entry
 	 (file+headline "~/todos.org" "General")
 	 "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
-	("p" "Mesosphere Phone/Meeting" entry
+	("p" "D2iQ Phone/Meeting" entry
 	 (file+headline "~/mesosphere.org.gpg" "Calls and Meetings Log")
 	 "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty|Nick Kane|Jerry Connors}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
 :PROPERTIES:
@@ -75,7 +77,7 @@ categories: jekyll update
 :CREATED:%U
 :END:
 %i
-   + From Mesosphere: GG, 
+   + From D2iQ: GG, 
    + From %\\2: 
    + %?
  " :prepend t :clock-in t :clock-resume t)
@@ -100,12 +102,26 @@ categories: jekyll update
 (defcustom gjg/agenda-file-sets
   '(("Cloudera"
      '("cloudera.org.gpg" "misc.org"))
-    ("Mesosphere"
+    ("D2iQ"
      '("mesosphere.org.gpg"))
     ("Home"
      '("misc.org" "notes.org" "projects.org")))
   "Named sets of agenda files"
   :group 'gjg)
+
+;; TODO: evaluate whether this is working
+;; export to html - use light theme for export
+;; tip o' the hat to legoscia https://github.com/legoscia/dotemacs/blob/master/dotemacs.org#theme-for-org-html-export
+(defvar my-org-html-export-theme 'material-light)
+
+(defun my-with-theme (orig-fun &rest args)
+  (load-theme my-org-html-export-theme)
+  (unwind-protect
+      (apply orig-fun args)
+    (disable-theme my-org-html-export-theme)))
+
+(with-eval-after-load "ox-html"
+  (advice-add 'org-export-to-buffer :around 'my-with-theme))
 
 ;; ease export/sharing from org-mode
 (defun gjg/org-export-to-odt ()
