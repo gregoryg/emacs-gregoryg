@@ -2,7 +2,7 @@
 #+OPTIONS: author:t broken-links:nil c:nil creator:nil
 #+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
 #+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
-#+OPTIONS: timestamp:t title:t toc:t todo:t |:t
+#+OPTIONS: timestamp:t title:t toc:1 todo:t |:t
 #+TITLE: emacs-init
 #+DATE: <2019-09-08 Sun>
 #+AUTHOR: Greg Grubbs
@@ -102,8 +102,9 @@
 #+END_SRC
 
 * Org mode stuff
-  My Org mode setup is mostly externalized in the =gjg-org= library - Alanis-ironically
-  still in Elisp, not Org mode.
+  My Org mode setup is mostly externalized in the =gjg-org= library.
+
+  Alanis-ironically, it is still in Elisp, not Org mode.
 
   #+begin_src emacs-lisp
     (unless (version< org-version "9.2")
