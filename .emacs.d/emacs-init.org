@@ -59,7 +59,7 @@
       uuid
       xterm-color
       ;; language modes
-      csv-mode
+      ;; csv-mode
       go-mode
       js2-mode
       json-mode
@@ -97,7 +97,9 @@
 
 * Org mode stuff
   #+begin_src emacs-lisp
-    (require 'org-tempo) ; required for Easy Templates since Org 9.2
+    (unless (version< org-version "9.2")
+      (require 'org-tempo) ; required for Easy Templates since Org 9.2
+      )
     (setq org-babel-load-languages
 	  (quote
 	   ((emacs-lisp . t)
@@ -117,8 +119,6 @@
      (setq ns-command-modifier (quote meta))
      ;; deal with bad behavior on OSX (PATH does not export for remote shells)
      (when (and (memq window-system '(mac ns)) (fboundp 'exec-path-from-shell-initialize))
-       (exec-path-from-shell-initialize))
-     (when (memq window-system '(mac ns))
        (exec-path-from-shell-initialize))
      ;; add in local user's bin/
      (when (file-exists-p "~/bin/")
@@ -599,7 +599,9 @@
     ;; For gpg, disable external pinentry - let emacs handle pass phrase
     (setenv "GPG_AGENT_INFO" nil)
     (require 'epa-file)
+    (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
     (epa-file-enable)
+    (setq epa-pinentry-mode 'loopback)
     (require 'org-crypt)
     (org-crypt-use-before-save-magic)
 
