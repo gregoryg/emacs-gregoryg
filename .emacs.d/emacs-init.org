@@ -41,6 +41,7 @@
     '(ag
       bash-completion
       counsel
+      diminish
       docker-tramp
       dumb-jump
       edit-indirect
@@ -99,12 +100,11 @@
 	  (package-install p)))))
 
 #+END_SRC
-* Let emacs use more memory in these modern times
-#+BEGIN_SRC emacs-lisp
-(setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
-#+END_SRC
 
 * Org mode stuff
+  My Org mode setup is mostly externalized in the =gjg-org= library - Alanis-ironically
+  still in Elisp, not Org mode.
+
   #+begin_src emacs-lisp
     (unless (version< org-version "9.2")
       (require 'org-tempo) ; required for Easy Templates since Org 9.2
@@ -118,10 +118,15 @@
 	    (clojure . t)
 	    )))
     (setq org-src-window-setup 'current-window)
+    (add-to-list 'load-path "~/emacs")
     (load-library "gjg-org")
   #+end_src
 
 * Greg's required customizations!
+** Let emacs use more memory in these modern times
+ #+BEGIN_SRC emacs-lisp
+ (setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
+ #+END_SRC
 ** MacOS Things
    #+begin_src emacs-lisp
      ;; OS X / Mac specific things
@@ -135,14 +140,14 @@
        )
    #+end_src
 ** Microsoft Windows things
+*** Printing
    #+begin_src emacs-lisp
-     ;; ** Do special things for special OS
-     (setq w32-get-true-file-attributes nil)
-
      ;; **** Windows printing that relies on ghostscript and gsview
 
      (defcustom gjg/gsprint "c:/Program Files/Ghostgum/gsview/gsprint.exe"
-       "Path to gsprint.exe: usually in Program Files or Program Files (x86)")
+       "Path to gsprint.exe: usually in Program Files or Program Files (x86)"
+       :group 'gjg
+       :type 'string)
 
      (when (and (string= (window-system) "w32") (file-exists-p gjg/gsprint))
        (progn
@@ -165,33 +170,31 @@
 *** File opens
     #+begin_src emacs-lisp
       (when (eq window-system 'w32)
+	(setq w32-get-true-file-attributes nil)
 	(remove-hook 'find-file-hooks 'vc-find-file-hook))
     #+end_src
 ** Fonts
+   Forever in search of the One True Holy and Apostolic Programmer Font.
+
+   Big fan of Inconsolata, Source Code Pro, and Hack.  Inability to decide on one is
+   encoded herein.
+
    #+begin_src emacs-lisp
      (cond ((or (eq window-system 'mac) (eq window-system 'ns))
 	    (set-frame-font "Source Code Pro-17")
 	    (setq gjg/os-open "open"))
 	   ((eq window-system 'w32)
-	    ;; (set-face-font 'default '"-outline-Inconsolata-normal-normal-normal-mono-16-*-*-*-c-*-iso8859-1"))
 	    (set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")
 	    (setq gjg/os-open "cygpath"))
-	   ((and (eq window-system 'x) (eq emacs-major-version 23))
-	    (set-face-font 'default '"-unknown-Inconsolata-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1")
-	    (add-to-list 'default-frame-alist '(font . "-unknown-Inconsolata-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"))
-	    )
-	   ((and (eq window-system 'x) (eq emacs-major-version 24))
-	    ;; (set-frame-font "Inconsolata-16")
-	    (set-frame-font "Source Code Pro-16"))
 	   ((eq window-system 'x)	
-    (set-frame-font "Hack-14")
+	    (set-frame-font "Hack-14")
 	    ;; (set-frame-font "Inconsolata-16")
 	    (setq gjg/os-open "xdg-open")
-					   ;(set-face-font 'default '"10x20")
 	    ))
-     (require 'fontize)
-     (global-set-key [C-kp-subtract] 'dec-font-size)
-     (global-set-key [C-kp-add] 'inc-font-size)
+     ;; (load-library "fontize")
+     ;; (require 'fontize)
+     ;; (global-set-key [C-kp-subtract] 'dec-font-size)
+     ;; (global-set-key [C-kp-add] 'inc-font-size)
    #+end_src
 ** Desktop save
    #+begin_src emacs-lisp
@@ -199,35 +202,16 @@
      (setq desktop-restore-eager 5)
    #+end_src
 ** Basic defaults that aren't default
+   So many defaults in Emacs make no sense.  If starting out with Emacs, consider these
+   settings to make your first experiences nicer.
+   
+   If you have any questions about what these settings do, use Emacs to explore them:
+   + If it's a variable being set (line starts with the =setq= function, set the point in
+     the variable name and hit =C-h v= for help on that variable.
+   + If it's a function (line starts with almost anything other than =setq=, set the point
+     in the function name and hit "C-h f"
 
 #+begin_src emacs-lisp
-  ;; show them parens
-  (show-paren-mode 1)
-  ;; ** Global identity (ie, same on all machines)
-  (setq user-full-name "Gregory Grubbs"
-	user-mail-address "gregory@dynapse.com")
-
-  (setq confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
-  ;; dippy bird FTW
-  (fset 'yes-or-no-p 'y-or-n-p)
-  (setq shell-file-name "bash")
-  (setq explicit-shell-file-name shell-file-name)
-  (setq explicit-bash-args '("--noediting" "-i"))
-  (add-to-list 'Info-default-directory-list "~/emacs/org-mode/doc")
-
-
-  ;; (autoload 'hl-line+ "hl-line+" "Extensions to hl-line")
-  ;; (eval-after-load "hl-line+"
-  ;;   '(global-hl-line-mode t))
-  (global-hl-line-mode t)
-  (temp-buffer-resize-mode 1)  ;; crazy cool
-
-  (setq fill-column 90); default for wider screens
-  ;; ensure that the default for searches is case-insensitive
-  (setq case-fold-search t)
-  ;; highlight/colorize everything that can be colorized!
-  (global-font-lock-mode 1)
-
   ;; When I want transient mark mode, I'll beat it out of you
   (setq transient-mark-mode nil)
   ;; display time and battery status in the mode line
@@ -241,6 +225,32 @@
   ;; don't do that stoopid splash screen
   (setq inhibit-splash-screen t)
 
+  ;; blink parens and similar delimiters
+  (show-paren-mode 1)
+  ;; ** Global identity (ie, same on all machines) - Emacs does not make good guesses here
+  (setq user-full-name "Gregory Grubbs"
+	user-mail-address "gregory@dynapse.com")
+
+  (setq confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
+
+  ;; dippy bird FTW - single character y-n for all yes/no question dialogs
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (setq shell-file-name "bash")
+  (setq explicit-shell-file-name shell-file-name)
+  (setq explicit-bash-args '("--noediting" "-i"))
+
+  (global-hl-line-mode t) ;; highlight current line - turn off when figuring out faces
+
+  (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows - nice for UX
+
+  (setq fill-column 90); good default for wider screens
+
+  ;; ensure that the default for searches is case-insensitive
+  (setq case-fold-search t)
+
+  ;; highlight/colorize everything that can be colorized!
+  (global-font-lock-mode 1)
+
   ;; never split windows horizontally by default
   (setq split-width-threshold nil)
   ;; Here's a choice one: stay in the same column while scrolling!
@@ -253,8 +263,6 @@
 
   ;; echo quickly
   (setq echo-keystrokes 0.1)
-  ;; show column number in modeline
-  (column-number-mode t)
   ;; keep the screen from jumping wildly as I cursor down/up
   (setq scroll-conservatively 5)
   ;; remember minibuffer history between sessions
@@ -262,18 +270,11 @@
   ;; if point is at end of line, keep it there for vertical movement
   (setq track-eol t)
   (setq align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
-
-
-  ;; fancy git icon
-  (defadvice vc-mode-line (after strip-backend () activate)
-    (when (stringp vc-mode)
-      (let ((gitlogo (replace-regexp-in-string "^ Git." "  " vc-mode)))
-	(setq vc-mode gitlogo))))
-
 #+end_src
-
 ** Custom Functions in a separate file
    #+begin_src emacs-lisp
+   (add-to-list 'load-path "~/emacs")
+   (load-library "gjg-functions")
    (require 'gjg-functions)
    #+end_src
 ** Key bindings
@@ -343,8 +344,19 @@
    #+end_src
 ** Window/buffer management
 *** Modeline and Title
+   Fancy icons may require fonts (like =texlive-fonts-extra=)
+
     #+begin_src emacs-lisp
+      ;; show column number in modeline - in addition to line number
+      (column-number-mode t)
+
       (setq frame-title-format (concat "emacs@" (system-name) " - %f; %b"))
+      ;; fancy git icon
+      (defadvice vc-mode-line (after strip-backend () activate)
+	(when (stringp vc-mode)
+	  (let ((gitlogo (replace-regexp-in-string "^ Git." "  " vc-mode)))
+	    (setq vc-mode gitlogo))))
+
     #+end_src
 *** Winner-mode and Windmove
    #+begin_src emacs-lisp
@@ -366,9 +378,9 @@
    #+end_src
 *** Theme
     #+begin_src emacs-lisp
-      (load-theme 'material t)
+      (load-theme 'material-light t)
     #+end_src
-*** COMMENT GJG full screen, movement, transparency
+*** GJG full screen, movement, transparency
     #+begin_src emacs-lisp
       (defun revert-dammit () ; revert buffer without prompting
 	(interactive)
@@ -503,7 +515,7 @@
 	"Restore the current frame to its previous size and toggle gjg/frame-maxp"
 	(interactive)
 	(cond ((eq window-system 'w32)
-	       (restore-frame))
+	(restore-frame))
 	      ((eq window-system 'x)
 	       (switch-full-screen))
 	      (t
@@ -712,6 +724,7 @@
    #+end_src
 ** Help mode
    #+begin_src emacs-lisp
+     (setq help-window-select t)
      (add-hook 'help-mode-hook
 	       (lambda ()
 		 (local-set-key (kbd "M-p") 'help-go-back)
@@ -719,28 +732,14 @@
 		 ))
    #+end_src
 ** Ivy / Smex / Counsel
+   Just starting to make use of =use-package= here.  The =:ensure= param will
+   automagically install the package if it is not already installed. 
+
+*** Set up Ivy basics
+    This setup includes reliance on other packages such as Swiper for incremental search,
+    and Counsel for symbol completion and selection.
+
    #+begin_src emacs-lisp
-     ;; (use-package ivy :ensure t
-     ;;   :diminish (ivy-mode . "")
-     ;;   :bind
-     ;;   (:map ivy-mode-map
-     ;; 	("C-'" . ivy-avy))
-     ;;   :config
-     ;;   (ivy-mode 1)
-     ;;   ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
-     ;;   (setq ivy-use-virtual-buffers t)
-     ;;   ;; number of result lines to display
-     ;;   (setq ivy-height 10)
-     ;;   ;; does not count candidates
-     ;;   (setq ivy-count-format "")
-     ;;   ;; no regexp by default
-     ;;   (setq ivy-initial-inputs-alist nil)
-     ;;   ;; configure regexp engine.
-     ;;   (setq ivy-re-builders-alist
-     ;; 	;; allow input not in order
-     ;;         '((t   . ivy--regex-ignore-order))))
-
-
      (use-package counsel
        :ensure t
        :config
@@ -756,12 +755,27 @@
        ;; (setq ivy-re-builders-alist
        ;;       '((t . ivy--regex-fuzzy)))
        (setq ivy-re-builders-alist
-	     '((ivy-switch-buffer . ivy--regex-plus)
+	     '((swiper . ivy--regex-plus)
+	       (counsel-find-file . ivy--regex-plus)
+	       (ivy-switch-buffer . ivy--regex-plus)
 	       (t . ivy--regex-fuzzy))))
 
 
 
    #+end_src
+
+*** Make some keybindings for these crazy packages
+
+    Use =M-j= during a search to add the sub-word at point to the search - similar to =C-s
+    C-w= in built-in isearch.
+
+    #+begin_src emacs-lisp
+      (global-set-key (kbd "C-s") 'swiper)
+      (global-set-key (kbd "C-M-s") 'swiper-isearch)
+      (global-set-key (kbd "C-M-r") 'swiper-isearch-backward)
+      (global-set-key (kbd "M-x") 'counsel-M-x)
+      (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+    #+end_src
 ** Occur
    #+begin_src emacs-lisp
      ;;     Some simple sex-ups for occur-mode

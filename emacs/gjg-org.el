@@ -86,7 +86,7 @@ categories: jekyll update
 	("w" "todo With clip" entry
 	 (file+headline "~/projects/notes.org" "Tasks")
 	 "* TODO %?%c\n:LOGBOOK:\n:CREATED:%U\n:END:\n\n%i\n" :prepend t)
-	("b" "bookmarks" entry
+	("k" "bookmarks" entry
 	 (file+headline "~/projects/notes.org" "Bookmarks")
 	 "* %c\n%i\n %u" :prepend t)
 	("v" "Vocabulary" entry
