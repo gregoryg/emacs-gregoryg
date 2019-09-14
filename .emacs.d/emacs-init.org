@@ -1,9 +1,9 @@
 #+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
 #+OPTIONS: author:t broken-links:nil c:nil creator:nil
-#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
 #+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
 #+OPTIONS: timestamp:t title:t toc:1 todo:t |:t
-#+TITLE: emacs-init
+#+TITLE: Gregory's Emacs Initialization in Org-Mode
 #+DATE: <2019-09-08 Sun>
 #+AUTHOR: Greg Grubbs
 #+EMAIL: gregory@dynapse.com
@@ -931,5 +931,6 @@
      (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
      ;; ))
    #+end_src
+
 
 
