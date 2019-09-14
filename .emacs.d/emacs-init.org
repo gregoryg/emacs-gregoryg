@@ -13,7 +13,16 @@
 #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
 # #+SETUPFILE: ../../../style/theme-readtheorg.setup
 #+SETUPFILE: https://raw.githubusercontent.com/fniessen/org-html-themes/master/setup/theme-readtheorg.setup
+* Should I use =evil-mode=?
+
+  No.
+
 * Deal with required packages
+
+  This first section installs most required packages automatically (when
+  =gjg/check-packages-on-startup= is set)
+
+  Very useful when bringing up a virgin Emacs on a new system
 
 #+BEGIN_SRC emacs-lisp
   (defvar gjg/check-packages-on-startup nil) ; should be nil in repo
