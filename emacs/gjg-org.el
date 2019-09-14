@@ -7,27 +7,27 @@
 ;;     org-crypt-use-before-save-magic is called here because it has the
 ;;     side effect of adding to org-mode-hook
 
-(require 'ox-confluence)
+;;(require 'ox-confluence)
 ;; (require 'org-crypt)
 ;; (org-crypt-use-before-save-magic)
-(add-hook 'org-mode-hook
-          (lambda ()
-            (setq fill-column 90)
-	    (org-defkey org-mode-map [(control tab)] 'org-next-link)
-	    (org-defkey org-mode-map [C-S-iso-lefttab] 'org-previous-link)
-	    ;; (org-defkey org-mode-map [C-c C-/] 'org-decrypt-entries)
-	    ;; steal back my keys
-	    (org-defkey org-mode-map [home] 'beginning-of-buffer)
-	    (org-defkey org-mode-map [end] 'end-of-buffer)
-	    ;; (local-set-key (kbd "C-c TAB") 'org-next-link)
-	    ;; (local-set-key (kbd "S C-c TAB") 'org-previous-link)
-	    ;; and what the hell - turn on auto fill mode for every org file
-	    (abbrev-mode 1)
-	    (auto-fill-mode -1)
-	    ;; set sub/superscript interpretation OFFFFFFOOOFFF
-	    (setq org-use-sub-superscripts nil)
-            (setq org-catch-invisible-edits 'show-and-error )
-            ))
+;; (add-hook 'org-mode-hook
+;;           (lambda ()
+;;             (setq fill-column 90)
+;; 	    (org-defkey org-mode-map [(control tab)] 'org-next-link)
+;; 	    (org-defkey org-mode-map [C-S-iso-lefttab] 'org-previous-link)
+;; 	    ;; (org-defkey org-mode-map [C-c C-/] 'org-decrypt-entries)
+;; 	    ;; steal back my keys
+;; 	    (org-defkey org-mode-map [home] 'beginning-of-buffer)
+;; 	    (org-defkey org-mode-map [end] 'end-of-buffer)
+;; 	    ;; (local-set-key (kbd "C-c TAB") 'org-next-link)
+;; 	    ;; (local-set-key (kbd "S C-c TAB") 'org-previous-link)
+;; 	    ;; and what the hell - turn on auto fill mode for every org file
+;; 	    (abbrev-mode 1)
+;; 	    (auto-fill-mode -1)
+;; 	    ;; set sub/superscript interpretation OFFFFFFOOOFFF
+;; 	    (setq org-use-sub-superscripts nil)
+;;             (setq org-catch-invisible-edits 'show-and-error )
+;;             ))
 
 ;; *** Org capture
 ;; TODO: improve meeting template with
