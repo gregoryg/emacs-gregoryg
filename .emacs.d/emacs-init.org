@@ -58,6 +58,7 @@
       org-bullets
       org-plus-contrib
       org-tree-slide
+      ob-async
       toc-org
       ;; pandoc-mode
       prettify-greek
@@ -124,7 +125,472 @@
     (load-library "gjg-org")
   #+end_src
 
-* Greg's required customizations!
+
+** TODO Move org-mode into org-mode
+   #+begin_src emacs-lisp
+   
+   #+end_src
+
+*** Org-mode hook
+    I had a lot of nonsense in this hook - a couple lines may survive
+    #+begin_src emacs-lisp
+      (add-hook 'org-mode-hook
+		(lambda ()
+      ;;             (setq fill-column 90)
+		  (org-defkey org-mode-map [(control tab)] 'org-next-link)
+      ;; 	    (org-defkey org-mode-map [C-S-iso-lefttab] 'org-previous-link)
+      ;; 	    ;; (org-defkey org-mode-map [C-c C-/] 'org-decrypt-entries)
+		  ;; steal back my keys
+		  (org-defkey org-mode-map [home] 'beginning-of-buffer)
+		  (org-defkey org-mode-map [end] 'end-of-buffer)
+      ;; 	    ;; (local-set-key (kbd "C-c TAB") 'org-next-link)
+      ;; 	    ;; (local-set-key (kbd "S C-c TAB") 'org-previous-link)
+      ;; 	    ;; and what the hell - turn on auto fill mode for every org file
+      ;; 	    (abbrev-mode 1)
+      ;; 	    (auto-fill-mode -1)
+      ;; 	    ;; set sub/superscript interpretation OFFFFFFOOOFFF
+      ;; 	    (setq org-use-sub-superscripts nil)
+		  (setq org-catch-invisible-edits 'show-and-error )
+		   ))
+    #+end_src
+*** Capture Templates
+
+    #+begin_src emacs-lisp
+      ;; *** Org capture
+      ;; TODO: improve meeting template with
+      ;;       + :NOBLOCKING: t
+      ;;       + meeting|call
+
+      ;; PLEASE SET USING CUSTOMIZATION (setq org-directory "~/Copy/projects/")
+
+
+      ;; taken from StackOverflow answer https://stackoverflow.com/questions/11902620/org-mode-how-do-i-create-a-new-file-with-org-capture
+      ;; (defun capture-blog-filename (path)
+      (defun capture-blog-filename ()
+	(let ((thedate (org-read-date nil nil nil "Date of post: "))
+	      (name (read-string "Name of blog post file description: ")))
+	  (expand-file-name (format "%s-%s.md"
+				    (format-time-string "%Y-%m-%d")
+				    name) "~/projects/jekyll/gregorygrubbs/_posts/")))
+
+
+      (setq org-default-notes-file "~/projects/notes.org")
+      (eval-after-load "org-capture"
+	'(add-hook 'org-capture-mode-hook 'turn-on-auto-fill))
+      (define-key global-map "\C-cc" 'org-capture)
+      (setq org-capture-templates
+	    '(
+	      ("b" "Blog post" plain
+	       (file capture-blog-filename)
+	       "---
+      layout: post
+      title:  %^{title|Generic Post}
+      date:   %<%F %T %z>
+      categories: jekyll update
+      ---
+
+      # some thoughts"
+	       )
+	      ("r" "Regular todo" entry
+	       (file+headline "~/todos.org" "General")
+	       "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
+p	      ("p" "D2iQ Phone/Meeting" entry
+	       (file+headline "~/mesosphere.org.gpg" "Calls and Meetings Log")
+	       "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty|Nick Kane|Jerry Connors}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
+      :PROPERTIES:
+      :NOBLOCKING: t
+      :END:
+      :LOGBOOK:
+      :CREATED:%U
+      :END:
+      %i
+	 + From D2iQ: GG, 
+	 + From %\\2: 
+	 + %?
+       " :prepend t :clock-in t :clock-resume t)
+
+        
+	      ("w" "todo With clip" entry
+	       (file+headline "~/projects/notes.org" "Tasks")
+	       "* TODO %?%c\n:LOGBOOK:\n:CREATED:%U\n:END:\n\n%i\n" :prepend t)
+	      ("k" "bookmarks" entry
+	       (file+headline "~/projects/notes.org" "Bookmarks")
+	       "* %c\n%i\n %u" :prepend t)
+	      ("v" "Vocabulary" entry
+	       (file+headline (concat org-directory "/vocab.org")
+			      "Vocabulary")
+	       "* %^{The word} :drill:\n %t\n %^{Extended word (may be empty)} \n** Answer \n%^{The definition}")
+	      ))
+
+
+    #+end_src
+*** Exporting
+**** Atlassian Confluence
+     #+begin_src emacs-lisp
+     ;;(require 'ox-confluence)
+     #+end_src
+**** HTML
+     #+begin_src emacs-lisp
+       ;; ease export/sharing from org-mode
+       (defun gjg/org-export-to-odt ()
+	 "Export to odt without the theme interfering"
+	 (interactive)
+	 (let ((gort custom-enabled-themes))
+	   (mapcar 'disable-theme custom-enabled-themes)
+	   (org-odt-export-to-odt)
+	   (mapcar 'enable-theme gort)))
+
+       (defun gjg/org-export-to-html-and-open ()
+	 "Export to HTML with no theme active"
+	 (interactive)
+	 (let ((gort custom-enabled-themes))
+	   (mapcar 'disable-theme custom-enabled-themes)
+	   (org-html-export-to-html)
+	   (browse-url (browse-url-file-url (concat (file-name-sans-extension (buffer-file-name)) ".html")))
+	   (mapcar 'enable-theme gort)
+	   ))
+
+       (org-defkey org-mode-map (kbd "C-c o") 'gjg/org-export-to-html-and-open)
+     #+end_src
+*** Speed commands
+    #+begin_src emacs-lisp
+      (setq org-use-speed-commands t) ;; POWER USER BABY
+      ;; (setq org-speed-commands-user 
+      ;;       '(
+      ;;         ("," . org-columns)
+      ;;         ("q" . bury-buffer)))
+      ;; DAN DAVISON nifty speed commands
+      (defun ded/org-show-next-heading-tidily ()
+	"Show next entry, keeping other entries closed."
+	(if (save-excursion (end-of-line) (outline-invisible-p))
+	    (progn (org-show-entry) (show-children))
+	  (outline-next-heading)
+	  (unless (and (bolp) (org-on-heading-p))
+	    (org-up-heading-safe)
+	    (hide-subtree)
+	    (error "Boundary reached"))
+	  (org-overview)
+	  (org-reveal t)
+	  (org-show-entry)
+	  (show-children)))
+
+      (defun ded/org-show-previous-heading-tidily ()
+	"Show previous entry, keeping other entries closed."
+	(let ((pos (point)))
+	  (outline-previous-heading)
+	  (unless (and (< (point) pos) (bolp) (org-on-heading-p))
+	    (goto-char pos)
+	    (hide-subtree)
+	    (error "Boundary reached"))
+	  (org-overview)
+	  (org-reveal t)
+	  (org-show-entry)
+	  (show-children)))
+
+      (add-to-list 'org-speed-commands-user
+		   '("]" ded/org-show-next-heading-tidily))
+      (add-to-list 'org-speed-commands-user 
+		   '("[" ded/org-show-previous-heading-tidily))
+
+      ;; END DAN DAVISON nifty speed commands
+
+    #+end_src
+*** Agenda
+    #+begin_src emacs-lisp
+      (global-set-key (kbd "C-c a") 'org-agenda)
+      (global-set-key "\C-ca" 'org-agenda)
+      (setq org-agenda-files '("~/mesosphere.org.gpg"))
+      ;;(global-set-key (kbd "C-c TAB") 'org-cycle-agenda-files)
+      ;; Set basic org-mode keys
+      (setq org-agenda-show-inherited-tags t)
+      (setq org-agenda-hide-tags-regexp "noagenda")
+      (setq org-agenda-window-setup 'other-window)
+      (setq org-agenda-restore-windows-after-quit t)
+      (setq org-agenda-start-with-log-mode t)
+      (setq org-agenda-entry-text-maxlines 10)
+      (setq org-agenda-diary-file "~/projects/diary.org")
+      (setq org-agenda-include-diary t)
+
+      (setq org-agenda-exporter-settings
+	    '((ps-number-of-columns 1)
+	      (ps-landscape-mode t)
+	      (org-agenda-add-entry-text-maxlines 10)
+	      (htmlize-output-type 'css)))
+
+      ;;(setq org-agenda-start-with-clockreport-mode t)
+      (setq org-special-ctrl-a/e t)
+      (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
+      (setq org-cycle-open-archived-trees nil)
+      (setq org-cycle-separator-lines 1) ;
+      (setq org-clock-history-length 12)
+
+      (setq org-agenda-show-inherited-tags t)
+      (setq org-agenda-custom-commands
+	    (quote (("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
+		    ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
+		    ("w" "Tasks waiting on something" tags "WAITING" ((org-use-tag-inheritance nil)))
+		    ("dc" "Clock report" agenda ""
+		     ((org-agenda-ndays 1)
+		      (org-agenda-start-with-clockreport-mode t)
+		      (org-agenda-time-grid nil)
+		      (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
+		    ("dw" "Weekly clock report" agenda ""
+		     ((org-agenda-ndays 7)
+		      (org-agenda-start-with-clockreport-mode t)
+		      (org-agenda-time-grid nil)
+		      (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
+		    ("da" "GORT Agenda"
+		     ((agenda "")
+		      (todo "STARTED")))
+		    )))
+
+      ;; org-agenda: some handy keys
+      ;;(define-key org-agenda-mode-map "o" 'org-agenda-show)
+
+      ;; you might also want to set:
+      ;;   (setq org-agenda-skip-unavailable-files t)
+      ;; so these warnings won't annoy the little remember-frame
+      ;; also: I have noted infrequent problems when using ElScreen
+      ;;  (the wrong frame might be chosen for Remember in about 10% of the cases)
+
+      ;; (defun popup-remember-frame ()
+      ;;   "turn the current frame into a small popup frame for remember mode;
+      ;; this is meant to be called with
+      ;;      emacsclient -c -e '(popup-remember-frame)'"
+      ;;   (modify-frame-parameters nil
+      ;;                         '( (name . "*Remember*") ;; must be same as in mode-hook below
+      ;;                            (width .  80)
+      ;;                            (height . 16)
+      ;;                            (vertical-scroll-bars . nil)
+      ;;                            (menu-bar-lines . nil)
+      ;;                            (tool-bar-lines . nil)))
+      ;;   (org-remember nil ?w)
+      ;;   (when (fboundp 'x-focus-frame) (x-focus-frame nil)) ;; X only
+      ;;   (delete-other-windows))
+
+      ;; when we're in such a remember-frame, close it when done.
+      ;; (add-hook 'org-remember-mode-hook
+      ;;        (lambda()
+      ;;          (define-key org-remember-mode-map (kbd "C-c C-c")
+      ;;            (lambda()(interactive)
+      ;;               (let ((remember-frame-p
+      ;;                      (string= (frame-parameter nil 'name) "*Remember*")))
+      ;;                 (when remember-frame-p (make-frame-invisible))  ;; hide quickly
+
+      ;;                 (org-remember-finalize)
+      ;;                 (when remember-frame-p (delete-frame)))))))
+
+      (add-hook 'org-agenda-mode-hook
+		(lambda ()
+		  (hl-line-mode 1)
+		  ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
+		  ;;       (local-unset-key "o")
+		  ;; rebind to a sweet and beautiful function
+		  (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
+		  (local-unset-key "a") ;; don't let this accidentally archive a tree!
+		  ))
+      (add-hook 'org-export-preprocess-hook
+		(lambda ()
+		  (org-dblock-update 2) ;; update all dynamic blocks in the buffer
+		  ))
+      ;; Function stolen from Bernt Hansen on gmane.emacs.orgmode: insert inactive time stamp for new entries
+
+      (setq org-agenda-format-date
+	    (concat "%Y-%m-%d %a "
+		    (make-string (- (window-width) 15) (string-to-char "_"))))
+
+    #+end_src
+*** Tags/TODOs/Projects Oh My
+    #+begin_src emacs-lisp
+      (setq org-tag-alist '(("Project" . ?p)
+			    ("NEXT" . ?n)
+			    ("noexport" . ?x)
+			    ("cloud" . ?c)
+			    ("customer")
+			    ("Hadoop" . ?h)
+			    ("m&a" . ?m)
+			    ))
+      ;; Projects are identified by a :Project: tag unless they are marked DONE;
+      ;;   Any project must have one sub-task identified by :NEXT: to be considered un-stuck
+      ;;   MAYBE: exclude special tags like Someday/Maybe
+      (setq org-stuck-projects '("Project|project/-DONE"
+				 nil
+				 ("NEXT")
+				 ""))
+      (setq org-columns-default-format "%TODO %CATEGORY %60ITEM(Task)%5Effort(Estim){:} %5CLOCKSUM(Clock) %SCHEDULED(Time) %DEADLINE")
+      (setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s!)" "|" "DONE(d!)")      ;; ordinary sequence is Todo -> Started -> Done
+				      (sequence "PROPOSED(p)" "WAITING(w@/!)" "MAYBE(m!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
+				      ;; (sequence "QUOTE(q!)" "QUOTED(Q!)" "|" "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")     ;; sequence for quotes
+				      )))
+      (setq org-todo-keyword-faces
+	    '(("TODO"
+	       (:foreground "#ff39a3" :weight bold))
+	      ("STARTED" . "#E35DBF")
+	      ("CANCELLED" :foreground "green" :weight bold :strike-through t)
+	      ("PROPOSED" . "pink")
+	      ("WAITING" . "yellow")))
+
+      ;; (setq org-todo-keyword-faces (quote (("TODO" :foreground "red" :weight bold)
+      ;;                                      ("STARTED" :foreground "deep sky blue" :weight bold)
+      ;;                                      ("DONE" :foreground "forest green" :weight bold)
+      ;;                                      ("WAITING" :foreground "orange" :weight bold)
+      ;;                                      ("SOMEDAY" :foreground "magenta" :weight bold)
+      ;;                                      ("CANCELLED" :foreground "forest green" :weight bold)
+      ;;                                      ("QUOTE" :foreground "red" :weight bold)
+      ;;                                      ("QUOTED" :foreground "magenta" :weight bold)
+      ;;                                      ("APPROVED" :foreground "forest green" :weight bold)
+      ;;                                      ("EXPIRED" :foreground "forest green" :weight bold)
+      ;;                                      ("REJECTED" :foreground "forest green" :weight bold)
+      ;;                                      ("OPEN" :foreground "blue" :weight bold))))
+
+      (setq org-todo-state-tags-triggers
+	    (quote (("CANCELLED" ("CANCELLED" . t))
+		    ("WAITING" ("WAITING" . t) ("NEXT"))
+		    ("SOMEDAY" ("WAITING" . t))
+		    (done ("NEXT") ("WAITING"))
+		    ("TODO" ("WAITING") ("CANCELLED"))
+		    ("STARTED" ("WAITING") ("NEXT" . t)))))
+      ;; Change task state to STARTED when clocking in
+      (setq org-clock-in-switch-to-state "STARTED")
+
+      (setq org-tags-exclude-from-inheritance '("Project" "project" "interview2"))    
+					      ;(setq org-tag-alist '(("project" . ?p)("car" . ?c)))
+
+      (setq org-enforce-todo-dependencies t)
+    #+end_src
+*** Refile
+    #+begin_src emacs-lisp
+      ;; navigate to files using org-refile; use C-u C-c C-w
+      (setq org-outline-path-complete-in-steps nil)
+      ;; (setq org-refile-targets '(( org-agenda-files :maxlevel . 3))
+      ;;       org-refile-use-outline-path 'file
+      ;;       org-refile-target-verify-function
+      ;;       (lambda ()
+      ;;         (not (member "ARCHIVE" (org-get-tags)))))
+
+      (defadvice org-refile (around org-refile-pseudo-hook )
+	"Turn ido flex matching off for org-refile"
+	(let ((ido-enable-flex-matching nil))
+	  ad-do-it))
+      (ad-activate 'org-refile)
+
+      (defun gjg/org-refile-goto ()
+	"Call org-refile with arg to visit an org-mode location. A convenience function to bind to a global key."
+	(interactive)
+	(org-refile 1))
+
+
+    #+end_src
+*** TODO Mobile Org - delete or move to modern version
+    
+    #+begin_src emacs-lisp
+      ;;*** Org-mobile
+      (setq org-mobile-directory "~/Dropbox/MobileOrg")
+      ;;    (setq org-mobile-directory "/gregj@smeagol.hoochiepep.home:/home/gregj/work/org/web")
+      (setq org-mobile-inbox-for-pull "~/projectsfrom-mobile.org")
+      (setq org-agenda-before-write-hook nil)
+      (setq org-mobile-files '( "~/Copy/ingress/ingress.org" 'org-agenda-files))
+
+    #+end_src
+*** Publishing
+    This is for publishing to a website
+    #+begin_src emacs-lisp
+      (setq org-publish-project-alist
+	    '(
+	      ("director-23-testing" :components("director-23-testing-www" "director-23-testing-static"))
+	      ("director-23-testing-www"
+	       :base-directory "~/Google Drive/testing/director/2.3"
+	       :base-extension "org"
+	       :publishing-directory "/rsync:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/testing/director/2.3/"
+	       :recursive t
+	       :publishing-function org-html-publish-to-html
+	       :headline-levels 4
+	       :auto-preamble t
+	       )
+	      ("director-23-testing-static"
+	       :base-directory "~/Google Drive/testing/director/2.3"
+	       :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|dxt\\|dxj\\|sdk\\|txt\\|conf"
+	       :publishing-directory "/rsync:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/testing/director/2.3/"
+	       :recursive t
+	       :publishing-function org-publish-attachment)
+	      ("ted-talks"
+	       :components
+	       ("ted-talks-notes" "ted-talks-static"))
+	      ("ted-talks-notes"
+	       :base-directory "/c/Copy/projects/programming/ted"
+	       :base-extension "org"
+	       :publishing-directory "/rsync:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/ted"
+	       :recursive t
+	       :publishing-function org-html-publish-to-html
+	       :headline-levels 4)  ;; default for this project
+	      ("ted-talks-static"
+	       :base-directory "/c/Copy/projects/programming/ted"
+	       :base-extension "html"
+	       :publishing-directory "/rsync:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/ted"
+	       :recursive t
+	       :publishing-function org-publish-attachment)
+	      ("syncsort-pm2015-notes"
+	       :base-directory "~/syncsort/db/pm/syncsort-pm2015"
+	       :base-extension "org"
+	       :publishing-directory "/cygssh:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/syncsort-pm2015"
+	       :recursive t
+	       :publishing-function org-html-publish-to-html
+	       :headline-levels 4  ;; default for this project
+	       :html-head "<style>.timestamp {color: #ff0033;} .notes-image img {width: 60%;} body {counter-reset: section;} h4 {counter-increment: section; color: auto;} h4:before { counter(section) " ";}</style><style>html {font-family: Georgia, "Times New Roman", Times, serif; font-size: large;}</style>"
+	       )
+	      ("syncsort-pm2015-static"
+	       :base-directory "~/syncsort/db/pm/syncsort-pm2015/images"
+	       :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|dxt\\|dxj\\|sdk\\|txt"
+	       :publishing-directory "/cygssh:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/syncsort-pm2015/images"
+	       :recursive t
+	       :publishing-function org-publish-attachment
+	       )
+	      ("syncsort-pm2015"
+	       :components
+	       ("syncsort-pm2015-notes" "syncsort-pm2015-static"))
+	      ("hadoop-howtows-notes"
+	       :base-directory "~/syncsort/db/docs/hadoop/howto"
+	       :base-extension "org"
+	       :publishing-directory "/plink:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/private/joins"
+	       :recursive t
+	       :publishing-function org-publish-org-to-html
+	       :headline-levels 4  ;; default for this project
+	       )
+	      ("hadoop-howtos-static"
+	       :base-directory "~/syncsort/db/docs/hadoop/howto"
+	       :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|dxt\\|dxj\\|sdk\\|txt"
+	       :publishing-directory "/plink:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/private/joins"
+	       :recursive t
+	       :publishing-function org-publish-attachment
+	       )
+	      ("hadoop-howtos"
+	       :components
+	       ("hadoop-howtos-notes" "hadoop-howtos-static"))
+	      ("syncsort-pm-blog-posts"
+	       :base-directory "~/syncsort/db/pm"
+	       :base-extension "org"
+	       :publishing-directory "/plink:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/blog"
+	       :recursive nil
+	       :with-toc nil
+	       :section-numbers nil
+	       :with-todo-keywords nil
+	       :publishing-function org-html-publish-to-html
+	       )
+	      ("blog-static"
+	       :base-directory "~/syncsort/db/pm"
+	       :recursive t
+	       :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|dxt\\|dxj\\|sdk\\|txt"
+	       :publishing-directory "/plink:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/blog"
+	       :publishing-function org-publish-attachment
+	       )
+	      ("syncsort-blog"
+	      :components ("syncsort-pm-blog-posts" "blog-static"))
+	      ))
+
+
+    #+end_src
+
+* Greg's customizations!
 ** Let emacs use more memory in these modern times
  #+BEGIN_SRC emacs-lisp
  (setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
@@ -636,13 +1102,10 @@
    #+end_src
 ** TRAMP
    #+begin_src emacs-lisp
-     (defun add-ssh-agent-to-tramp ()
-       (cl-pushnew '("-A")
-		   (cadr (assoc 'tramp-login-args
-				(assoc "ssh" tramp-methods)))
-		   :test #'equal))
-     (add-ssh-agent-to-tramp)
-
+   (require 'tramp)
+   #+end_src
+*** Do not restore TRAMP buffers in next emacs session
+   #+begin_src emacs-lisp
      (defun tv-list-tramp-buffer-file-name ()
        "Return a list of buffers that I do not want automatically restored by desktop.el in the next emacs session: TRAMP dirs and files, Info buffer, and Dired buffers"
        (let* ((desktop-info-list (mapcar #'desktop-buffer-info (buffer-list)))
@@ -668,6 +1131,81 @@
      (add-to-list 'desktop-modes-not-to-save 'Info-mode)
      (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
    #+end_src
+*** Add SSH Agent
+    #+begin_src emacs-lisp
+     (defun add-ssh-agent-to-tramp ()
+       (cl-pushnew '("-A")
+		   (cadr (assoc 'tramp-login-args
+				(assoc "ssh" tramp-methods)))
+		   :test #'equal))
+     (add-ssh-agent-to-tramp)
+
+    
+    #+end_src
+*** Add methods for Docker, DC/OS, Google Cloud Shell
+    #+begin_src emacs-lisp
+      ;; Add method to connect to Mesosphere DC/OS tasks
+      ;; we need to execute a command like the following
+      ;;  dcos task exec --tty --interactive <taskname> -- bash
+      ;; example TRAMP URI:   //dcos:jupyter:
+      (require 'tramp)
+      (add-to-list 'tramp-methods
+		   '("dcos"
+		     (tramp-login-program "dcos")
+		     (tramp-login-args
+		      (nil
+		       ("task" "exec" "-it")
+		       ("%h")
+		       ("--" "bash")))
+		     (tramp-remote-shell "/bin/sh")
+		     (tramp-remote-shell-args ("-i" "-c"))))
+
+      ;; Add method to connect to Kubernetes pods
+      ;; we need to execute a command like the following
+      ;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
+      ;; example TRAMP URI:   //kexec:jhub@jupyter:
+      (add-to-list 'tramp-methods
+		   '("kube"
+		     (tramp-login-program "kubectl")
+		     (tramp-login-args
+		      (nil
+		       ("exec" "-it")
+		       ("--namespace" "%u")
+		       ("%h")
+		       ("--" "bash")))
+		     (tramp-remote-shell "/bin/sh")
+		     (tramp-remote-shell-args ("-i" "-c"))))
+
+      ;; TRAMP gcloud ssh
+      ;; Google Cloud Shell
+      (add-to-list 'tramp-methods
+	'("gshell"
+	  (tramp-login-program        "gcloud alpha cloud-shell ssh")
+	  (tramp-default-host "cloud-shell")
+	  (tramp-login-args (("#%h")))
+	  ;; (tramp-login-args           (("%h")))
+	  ;; (tramp-async-args           (("-q")))
+	  (tramp-remote-shell         "/bin/bash")
+	  (tramp-remote-shell-args    ("-c"))
+	  ;; (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+	  ;;                              ("-o" "UserKnownHostsFile=/dev/null")
+	  ;;                              ("-o" "StrictHostKeyChecking=no")))
+	  (tramp-default-port         22)))
+
+
+    #+end_src
+*** Handle SUDO - root and other users
+    #+begin_src emacs-lisp
+      ;; TRAMP SUDO FUN - snarfed from Peter Dyballa on gmane.emacs.help
+      (defun my-tramp-header-line-function ()
+	(when (string-match "^/.*su\\(do\\)?:" default-directory)
+	  (setq header-line-format
+		(format-mode-line "----- THIS BUFFER IS VISITED WITH SUDO PRIVILEGES -----"
+				  'font-lock-warning-face))))
+
+      (add-hook 'find-file-hooks 'my-tramp-header-line-function)
+      (add-hook 'dired-mode-hook 'my-tramp-header-line-function)
+    #+end_src
 ** Rainbow delimiters for various programming modes
    #+begin_src emacs-lisp
      (require 'rainbow-delimiters)
@@ -881,7 +1419,6 @@
      ;;      (add-hook 'cider-mode-hook 'company-mode)))
 
    #+end_src
-
 ** Go
    #+begin_src emacs-lisp
      (add-hook 'go-mode-hook 'smartparens-mode)
@@ -932,6 +1469,22 @@
      (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
      ;; ))
    #+end_src
+* Devops
+** Working with containers
+   This is largely a function of TRAMP.  I have added simple ways to
+   get Dired and =shell-mode= in 
+   + Docker containers using =docker-tramp= package
+   + DC/OS tasks with the =dcos= TRAMP method
+   + Kubernetes pods with the =kube= TRAMP method.  This will grab a
+     shell on the first container defined in the pod
+   + Google Cloud Shell with =gshell= TRAMP method
 
-
+** Highlight Terraform and Ansible messages
+  #+begin_src emacs-lisp
+    (defun gjg/highlight-terraform-stuff ()
+      (interactive)
+      (highlight-regexp "Creation complete" 'hi-green)
+      (highlight-regexp "Destruction complete" 'hi-pink)
+      (highlight-regexp "\\(STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
+  #+end_src
 
