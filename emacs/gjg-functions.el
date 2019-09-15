@@ -1,8 +1,3 @@
-(defun gjg/highlight-terraform-stuff ()
-  (interactive)
-  (highlight-regexp "Creation complete" 'hi-green)
-  (highlight-regexp "Destruction complete" 'hi-pink))
-
 (defun gjg/ssh-abbrevs-for-ec2-cluster ()
   "Take text of instances pasted copied from EC2 and add to ~/.ssh/config; expect copied text to be in current clipboard"
   (get-buffer-create "*gort temp*")
@@ -219,29 +214,6 @@ With prefix, restrict to files currently being visited"
       (org-id-get-create) ;; only creates an ID property if none exists
       (outline-next-heading))))
 
-;; php lint, modified from a comment on saca chua's blog
-;;(load-library "compile.el")
-;; (pushnew '(php "syntax error.* in \\(.*\\) on line \\([0-9]+\\)$" 1 2)
-;;          compilation-error-regexp-alist-alist)
-
-;; (setq compilation-error-regexp-alist
-;;       (append (list 'php) compilation-error-regexp-alist))
-
-;; (defun php-lint ()
-;;   "Performs a PHP lint-check on the current file."
-;;   (interactive)
-;;   (string-match (car tramp-file-name-structure) (buffer-file-name))
-
-;;   (let ((localpath (if (string-match (car tramp-file-name-structure) (format "%s" (buffer-file-name)))
-;; 		       (match-string-no-properties 8 (buffer-file-name))
-;; 		     (buffer-file-name))))
-;;     (if localpath (compile (concat "php -l -f \"" localpath "\"")))))
-
-;; (add-hook 'php-mode-hook 
-;; 	  '(lambda ()
-;; 	     (define-key php-mode-map "\C-c\C-l" 'php-lint)))
-;; ;;(define-key osx-key-mode-map "\C-x~" 'previous-error)
-
 (defun gjg/move-next-sexp-past-current-scope ()
   "kill sexp following point, move past current scope/sexp/function, yank"
   (beginning-of-line)
@@ -270,65 +242,6 @@ With prefix, restrict to files currently being visited"
 ;; parse using xml-read from xml.el
 ;; use (assoc 'LolImageUrl (car myxmlparse))
 ;; keys are LolId, LolImageUrl, ThumbnailImageUrl, LolPageUrl, FullText, PictureId, PictureImageUrl, Title, Description, SourcePictures, TimeStamp
-
-;; Add method to connect to Mesosphere DC/OS tasks
-;; we need to execute a command like the following
-;;  dcos task exec --tty --interactive <taskname> -- bash
-;; example TRAMP URI:   //dcos:jupyter:
-(require 'tramp)
-(add-to-list 'tramp-methods
-             '("dcos"
-               (tramp-login-program "dcos")
-               (tramp-login-args
-                (nil
-                 ("task" "exec" "-it")
-                 ("%h")
-                 ("--" "bash")))
-               (tramp-remote-shell "/bin/sh")
-               (tramp-remote-shell-args ("-i" "-c"))))
-
-;; Add method to connect to Kubernetes pods
-;; we need to execute a command like the following
-;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
-;; example TRAMP URI:   //kexec:jhub@jupyter:
-(add-to-list 'tramp-methods
-             '("kube"
-               (tramp-login-program "kubectl")
-               (tramp-login-args
-                (nil
-                 ("exec" "-it")
-                 ("--namespace" "%u")
-                 ("%h")
-                 ("--" "bash")))
-               (tramp-remote-shell "/bin/sh")
-               (tramp-remote-shell-args ("-i" "-c"))))
-
-;; TRAMP gcloud ssh
-;; Google Cloud Shell
-(add-to-list 'tramp-methods
-  '("gshell"
-    (tramp-login-program        "gcloud alpha cloud-shell ssh")
-    (tramp-default-host "cloud-shell")
-    (tramp-login-args (("#%h")))
-    ;; (tramp-login-args           (("%h")))
-    ;; (tramp-async-args           (("-q")))
-    (tramp-remote-shell         "/bin/bash")
-    (tramp-remote-shell-args    ("-c"))
-    ;; (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
-    ;;                              ("-o" "UserKnownHostsFile=/dev/null")
-    ;;                              ("-o" "StrictHostKeyChecking=no")))
-    (tramp-default-port         22)))
-
-
-;; TRAMP SUDO FUN - snarfed from Peter Dyballa on gmane.emacs.help
-(defun my-tramp-header-line-function ()
-  (when (string-match "^/.*su\\(do\\)?:" default-directory)
-    (setq header-line-format
-          (format-mode-line "----- THIS BUFFER IS VISITED WITH SUDO PRIVILEGES -----"
-                            'font-lock-warning-face))))
-
-(add-hook 'find-file-hooks 'my-tramp-header-line-function)
-(add-hook 'dired-mode-hook 'my-tramp-header-line-function)
 
 (require 'vc)
 (setq vc-ignore-dir-regexp
