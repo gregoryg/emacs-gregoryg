@@ -127,10 +127,6 @@
 
 
 ** TODO Move org-mode into org-mode
-   #+begin_src emacs-lisp
-   
-   #+end_src
-
 *** Org-mode hook
     I had a lot of nonsense in this hook - a couple lines may survive
     #+begin_src emacs-lisp
@@ -844,10 +840,6 @@ p	      ("p" "D2iQ Phone/Meeting" entry
 
 
    #+end_src
-*** Theme
-    #+begin_src emacs-lisp
-      (load-theme 'material-light t)
-    #+end_src
 *** GJG full screen, movement, transparency
     #+begin_src emacs-lisp
       (defun revert-dammit () ; revert buffer without prompting
@@ -1038,6 +1030,10 @@ p	      ("p" "D2iQ Phone/Meeting" entry
 	   (setq uniquify-separator "/")
 	   (setq uniquify-after-kill-buffer-p t)
 	   (setq uniquify-ignore-buffers-re "^\\*")))
+    #+end_src
+*** Theme
+    #+begin_src emacs-lisp
+      (load-theme 'material t)
     #+end_src
 ** Automatic typing - abbrevs and expansions
    #+begin_src emacs-lisp
@@ -1279,43 +1275,43 @@ p	      ("p" "D2iQ Phone/Meeting" entry
     This setup includes reliance on other packages such as Swiper for incremental search,
     and Counsel for symbol completion and selection.
 
-   #+begin_src emacs-lisp
-     (use-package counsel
-       :ensure t
-       :config
-       (use-package smex
-	 :ensure t)
-       (use-package flx
-	 :ensure t)
-       (ivy-mode 1)
-       (setq ivy-use-virtual-buffers t)
-       ;; intentional space before end of string
-       (setq ivy-count-format "(%d/%d) ")
-       (setq ivy-initial-inputs-alist nil)
-       ;; (setq ivy-re-builders-alist
-       ;;       '((t . ivy--regex-fuzzy)))
-       (setq ivy-re-builders-alist
-	     '((swiper . ivy--regex-plus)
-	       (counsel-find-file . ivy--regex-plus)
-	       (ivy-switch-buffer . ivy--regex-plus)
-	       (t . ivy--regex-fuzzy))))
-
-
-
+    #+begin_src emacs-lisp
+      (use-package counsel
+	:ensure t
+	:config
+	(use-package smex
+	  :ensure t)
+	(use-package flx
+	  :ensure t)
+	(ivy-mode 1)
+	(setq ivy-use-virtual-buffers t)
+	;; intentional space before end of string
+	(setq ivy-count-format "(%d/%d) ")
+	(setq ivy-initial-inputs-alist nil)
+	;; (setq ivy-re-builders-alist
+	;;       '((t . ivy--regex-fuzzy)))
+	(setq ivy-re-builders-alist
+	      '((swiper . ivy--regex-plus)
+		(counsel-find-file . ivy--regex-plus)
+		(ivy-switch-buffer . ivy--regex-plus)
+		(t . ivy--regex-fuzzy))))
    #+end_src
 
-*** Make some keybindings for these crazy packages
+**** Make some keybindings for these crazy packages
+     :PROPERTIES:
+     :Effort:   wqfdewsqar3eqw=-09875612`6543`lkjhga.,
+     :END:
 
-    Use =M-j= during a search to add the sub-word at point to the search - similar to =C-s
-    C-w= in built-in isearch.
+     Use =M-j= during a search to add the sub-word at point to the search - similar to =C-s
+     C-w= in built-in isearch.
 
-    #+begin_src emacs-lisp
-      (global-set-key (kbd "C-s") 'swiper)
-      (global-set-key (kbd "C-M-s") 'swiper-isearch)
-      (global-set-key (kbd "C-M-r") 'swiper-isearch-backward)
-      (global-set-key (kbd "M-x") 'counsel-M-x)
-      (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-    #+end_src
+     #+begin_src emacs-lisp
+       (global-set-key (kbd "C-s") 'swiper)
+       ;; (global-set-key (kbd "C-M-s") 'swiper-isearch)
+       ;; (global-set-key (kbd "C-M-r") 'swiper-isearch-backward)
+       (global-set-key (kbd "M-x") 'counsel-M-x)
+       (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+     #+end_src
 ** Occur
    #+begin_src emacs-lisp
      ;;     Some simple sex-ups for occur-mode
