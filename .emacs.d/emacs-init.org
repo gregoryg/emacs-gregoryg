@@ -24,7 +24,10 @@
 
   Very useful when bringing up a virgin Emacs on a new system
 
-  TODO: Investigate: this section can probably be handled entirely by =use-package=
+  =use-package= is a macro, so it makes it challenging
+  to do something like mapping over a list of package names - to do
+  that you would have to [[https://emacs.stackexchange.com/questions/32744/dynamic-package-name-with-use-package][write your own macro]]
+
 #+BEGIN_SRC emacs-lisp
   (defvar gjg/check-packages-on-startup nil) ; should be nil in repo
 
@@ -41,7 +44,6 @@
   (defvar gjg/required-packages
     '(ag
       bash-completion
-      counsel
       diminish
       docker-tramp
       dumb-jump
@@ -65,14 +67,11 @@
       rainbow-delimiters
       ;; smart-mode-line
       smartparens
-      smex
-      swiper
       use-package
       uuid
       xterm-color
       ;; language modes
       ;; csv-mode
-      go-mode
       js2-mode
       json-mode
       markdown-mode
@@ -108,6 +107,7 @@
 
   Alanis-ironically, it is still in Elisp, not Org mode.
 
+
   #+begin_src emacs-lisp
     (unless (version< org-version "9.2")
       (require 'org-tempo) ; required for Easy Templates since Org 9.2
@@ -126,13 +126,23 @@
   #+end_src
 
 
-** TODO Move org-mode into org-mode
+** STARTED Move org-mode into org-mode                                 :NEXT:
+   :LOGBOOK:
+   - State "STARTED"    from "TODO"       [2019-09-16 Mon 19:06]
+   :END:
 *** Org-mode hook
     I had a lot of nonsense in this hook - a couple lines may survive
+
+    On =auto-fill-mode=: I prefer to have it on, but hate when
+    creating links and having it wrap while typing the description.
+    For this reason, I want to get in the habit of only adding links
+    using =C-c C-l= (=org-insert-link=)
+
     #+begin_src emacs-lisp
       (add-hook 'org-mode-hook
 		(lambda ()
-      ;;             (setq fill-column 90)
+		  (auto-fill-mode 1)
+		  (setq fill-column 90) ; good default for wide screens
 		  (org-defkey org-mode-map [(control tab)] 'org-next-link)
       ;; 	    (org-defkey org-mode-map [C-S-iso-lefttab] 'org-previous-link)
       ;; 	    ;; (org-defkey org-mode-map [C-c C-/] 'org-decrypt-entries)
@@ -143,7 +153,6 @@
       ;; 	    ;; (local-set-key (kbd "S C-c TAB") 'org-previous-link)
       ;; 	    ;; and what the hell - turn on auto fill mode for every org file
       ;; 	    (abbrev-mode 1)
-      ;; 	    (auto-fill-mode -1)
       ;; 	    ;; set sub/superscript interpretation OFFFFFFOOOFFF
       ;; 	    (setq org-use-sub-superscripts nil)
 		  (setq org-catch-invisible-edits 'show-and-error )
@@ -689,6 +698,8 @@ p	      ("p" "D2iQ Phone/Meeting" entry
   ;; don't do that stoopid splash screen
   (setq inhibit-splash-screen t)
 
+  (setq-default tab-always-indent t)
+  (setq-default tab-width 4)
   ;; blink parens and similar delimiters
   (show-paren-mode 1)
   ;; ** Global identity (ie, same on all machines) - Emacs does not make good guesses here
@@ -707,7 +718,7 @@ p	      ("p" "D2iQ Phone/Meeting" entry
 
   (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows - nice for UX
 
-  (setq fill-column 90); good default for wider screens
+  (setq fill-column 90); good default for wider screens - BUT this is buffer-local so should be set in mode hooks only
 
   ;; ensure that the default for searches is case-insensitive
   (setq case-fold-search t)
@@ -1219,6 +1230,17 @@ p	      ("p" "D2iQ Phone/Meeting" entry
 
    #+end_src
 ** Dired
+   =dired-dwim-target= is just awesome.  Whenever you have 2 Dired
+   windows in a frame, hitting Copy or Rename from one Dired buffer
+   automatically suggests the other as the target
+
+   =dired-omit-files= is a regexp for files you want to hide using
+   =dired-omit-mode= Depending on your workflow, that may include
+   compiled files (.elc, .o etc) as well as normally hidden files.
+
+   =auto-revert-mode= refreshes the visible buffer when something in
+   the directory changes.
+
    #+begin_src emacs-lisp
      (require 'dired)
      (require 'dired-x)
@@ -1280,6 +1302,8 @@ p	      ("p" "D2iQ Phone/Meeting" entry
 	:ensure t
 	:config
 	(use-package smex
+	  :ensure t)
+	(use-package swiper
 	  :ensure t)
 	(use-package flx
 	  :ensure t)
@@ -1370,10 +1394,6 @@ p	      ("p" "D2iQ Phone/Meeting" entry
      (sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
      (sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
      (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-     (add-hook 'clojure-mode-hook 'smartparens-mode)
-     (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
-     (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
-     (add-hook 'emacs-lisp-mode-hook 'smartparens-mode)
      ;; ))
 
    #+end_src
@@ -1385,6 +1405,13 @@ p	      ("p" "D2iQ Phone/Meeting" entry
      (defalias 'spell-buffer 'ispell-buffer)
    #+end_src
 * Programming modes
+** All modes derived from =prog-mode=
+   #+begin_src emacs-lisp
+     (add-hook 'prog-mode-hook
+	       (lambda ()
+		 (setq rainbow-delimiters-mode 1)
+		 (setq smartparens-mode 1)))
+   #+end_src
 ** Clojure
    #+begin_src emacs-lisp
      (require 'ob-clojure) ;; org-babel code evaluation
@@ -1417,32 +1444,44 @@ p	      ("p" "D2iQ Phone/Meeting" entry
    #+end_src
 ** Go
    #+begin_src emacs-lisp
-     (add-hook 'go-mode-hook 'smartparens-mode)
-     (add-hook 'go-mode-hook 'rainbow-delimiters-mode)
+     (use-package go-mode
+       :ensure t
+       :config)
    #+end_src
+** Rust
 ** Javascript
    #+begin_src emacs-lisp
      (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-     (add-hook 'js2-mode-hook 'smartparens-mode)
-     (add-hook 'js2-mode-hook 'rainbow-delimiters-mode)
-
    #+end_src
 ** Python
    #+begin_src emacs-lisp
-     ;; Python
-     ;; deal with the horrific ANSI codes in latest ipython
-     (setq ansi-color-drop-regexp
-       "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
+;; Python
+;; TODO: is the ANSI code problem still existant as of Emacs 26.3?
+;; deal with the horrific ANSI codes in latest ipython
 
-     ;; (require 'elpy)
-     (setq python-shell-interpreter "ipython3" 
-	   python-shell-interpreter-args "-i --simple-prompt")
+(use-package python
+  :ensure t
+  :config
+  (use-package prettify-greek
+	:ensure t)
+  (setq python-shell-interpreter "ipython3" 
+		python-shell-interpreter-args "-i --simple-prompt")
+  (setq org-babel-python-command "python3")
+  (add-hook 'python-mode-hook
+			(lambda ()
+			  (setq indent-tabs-mode nil)
+			  (setq python-indent 4)
+			  (setq tab-width 4)
+			  (setq prettify-symbols-alist prettify-greek-lower)
+			  (prettify-symbols-mode t)))
+  )
 
-     (require 'prettify-greek)
-     (add-hook 'python-mode-hook
-	       (lambda ()
-		 (setq prettify-symbols-alist prettify-greek-lower)
-		 (prettify-symbols-mode t)))
+(setq ansi-color-drop-regexp
+	  "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
+
+;; (require 'elpy)
+
+;; (require 'prettify-greek)
 
    #+end_src
 ** R
