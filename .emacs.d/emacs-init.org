@@ -61,6 +61,7 @@
       org-plus-contrib
       org-tree-slide
       ob-async
+	  ob-http
       toc-org
       ;; pandoc-mode
       prettify-greek
@@ -107,38 +108,41 @@
 
   Alanis-ironically, it is still in Elisp, not Org mode.
 
-
+** Org Babel and Source Code Blocks
   #+begin_src emacs-lisp
-    (unless (version< org-version "9.2")
-      (require 'org-tempo) ; required for Easy Templates since Org 9.2
-      )
-    (setq org-babel-load-languages
-	  (quote
-	   ((emacs-lisp . t)
-	    (shell . t)
-	    (latex . t)
-	    (python . t)
-	    (clojure . t)
-	    )))
-    (setq org-src-window-setup 'current-window)
-    (add-to-list 'load-path "~/emacs")
-    (load-library "gjg-org")
+;; (unless (version< org-version "9.2")
+;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
+;;   )
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ (append org-babel-load-languages
+		 '(
+		   (clojure . t)
+		   (http . t) ;; curl
+		   (js . t)
+		   (latex . t)
+		   (python . t)
+		   (shell  . t)
+		   (sql . t)
+		   
+		   )))
+;; The Dreadful Timeline has brought us indentation-sensitive languages
+;; Python, YAML, Heredoc seem to require that Org not format source code blocks
+(setq org-src-preserve-indentation t) 
+
+(setq org-src-window-setup 'current-window)
   #+end_src
 
 
-** STARTED Move org-mode into org-mode                                 :NEXT:
-   :LOGBOOK:
-   - State "STARTED"    from "TODO"       [2019-09-16 Mon 19:06]
-   :END:
-*** Org-mode hook
-    I had a lot of nonsense in this hook - a couple lines may survive
+** Org-mode hook
+   I had a lot of nonsense in this hook - a couple lines may survive
 
-    On =auto-fill-mode=: I prefer to have it on, but hate when
-    creating links and having it wrap while typing the description.
-    For this reason, I want to get in the habit of only adding links
-    using =C-c C-l= (=org-insert-link=)
+   On =auto-fill-mode=: I prefer to have it on, but hate when
+   creating links and having it wrap while typing the description.
+   For this reason, I want to get in the habit of only adding links
+   using =C-c C-l= (=org-insert-link=)
 
-    #+begin_src emacs-lisp
+   #+begin_src emacs-lisp
       (add-hook 'org-mode-hook
 		(lambda ()
 		  (auto-fill-mode 1)
@@ -157,37 +161,37 @@
       ;; 	    (setq org-use-sub-superscripts nil)
 		  (setq org-catch-invisible-edits 'show-and-error )
 		   ))
-    #+end_src
-*** Capture Templates
+   #+end_src
+** Capture Templates
 
-    #+begin_src emacs-lisp
-      ;; *** Org capture
-      ;; TODO: improve meeting template with
-      ;;       + :NOBLOCKING: t
-      ;;       + meeting|call
+   #+begin_src emacs-lisp
+;; *** Org capture
+;; TODO: improve meeting template with
+;;       + :NOBLOCKING: t
+;;       + meeting|call
 
-      ;; PLEASE SET USING CUSTOMIZATION (setq org-directory "~/Copy/projects/")
-
-
-      ;; taken from StackOverflow answer https://stackoverflow.com/questions/11902620/org-mode-how-do-i-create-a-new-file-with-org-capture
-      ;; (defun capture-blog-filename (path)
-      (defun capture-blog-filename ()
-	(let ((thedate (org-read-date nil nil nil "Date of post: "))
-	      (name (read-string "Name of blog post file description: ")))
-	  (expand-file-name (format "%s-%s.md"
-				    (format-time-string "%Y-%m-%d")
-				    name) "~/projects/jekyll/gregorygrubbs/_posts/")))
+;; PLEASE SET USING CUSTOMIZATION (setq org-directory "~/Copy/projects/")
 
 
-      (setq org-default-notes-file "~/projects/notes.org")
-      (eval-after-load "org-capture"
-	'(add-hook 'org-capture-mode-hook 'turn-on-auto-fill))
-      (define-key global-map "\C-cc" 'org-capture)
-      (setq org-capture-templates
-	    '(
-	      ("b" "Blog post" plain
-	       (file capture-blog-filename)
-	       "---
+;; taken from StackOverflow answer https://stackoverflow.com/questions/11902620/org-mode-how-do-i-create-a-new-file-with-org-capture
+;; (defun capture-blog-filename (path)
+(defun capture-blog-filename ()
+  (let ((thedate (org-read-date nil nil nil "Date of post: "))
+		(name (read-string "Name of blog post file description: ")))
+	(expand-file-name (format "%s-%s.md"
+							  (format-time-string "%Y-%m-%d")
+							  name) "~/projects/jekyll/gregorygrubbs/_posts/")))
+
+
+(setq org-default-notes-file "~/projects/notes.org")
+(eval-after-load "org-capture"
+  '(add-hook 'org-capture-mode-hook 'turn-on-auto-fill))
+(define-key global-map "\C-cc" 'org-capture)
+(setq org-capture-templates
+	  '(
+		("b" "Blog post" plain
+		 (file capture-blog-filename)
+		 "---
       layout: post
       title:  %^{title|Generic Post}
       date:   %<%F %T %z>
@@ -195,13 +199,13 @@
       ---
 
       # some thoughts"
-	       )
-	      ("r" "Regular todo" entry
-	       (file+headline "~/todos.org" "General")
-	       "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
-p	      ("p" "D2iQ Phone/Meeting" entry
-	       (file+headline "~/mesosphere.org.gpg" "Calls and Meetings Log")
-	       "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty|Nick Kane|Jerry Connors}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
+		 )
+		("r" "Regular todo" entry
+		 (file+headline "~/todos.org" "General")
+		 "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
+		p	      ("p" "D2iQ Phone/Meeting" entry
+				   (file+headline "~/mesosphere.org.gpg" "Calls and Meetings Log")
+				   "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty|Nick Kane|Jerry Connors}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
       :PROPERTIES:
       :NOBLOCKING: t
       :END:
@@ -213,29 +217,25 @@ p	      ("p" "D2iQ Phone/Meeting" entry
 	 + From %\\2: 
 	 + %?
        " :prepend t :clock-in t :clock-resume t)
-
-        
-	      ("w" "todo With clip" entry
-	       (file+headline "~/projects/notes.org" "Tasks")
-	       "* TODO %?%c\n:LOGBOOK:\n:CREATED:%U\n:END:\n\n%i\n" :prepend t)
-	      ("k" "bookmarks" entry
-	       (file+headline "~/projects/notes.org" "Bookmarks")
-	       "* %c\n%i\n %u" :prepend t)
-	      ("v" "Vocabulary" entry
-	       (file+headline (concat org-directory "/vocab.org")
-			      "Vocabulary")
-	       "* %^{The word} :drill:\n %t\n %^{Extended word (may be empty)} \n** Answer \n%^{The definition}")
-	      ))
+		))
 
 
-    #+end_src
-*** Exporting
-**** Atlassian Confluence
-     #+begin_src emacs-lisp
+   #+end_src
+** Exporting
+*** Atlassian Confluence
+    #+begin_src emacs-lisp
      ;;(require 'ox-confluence)
-     #+end_src
-**** HTML
-     #+begin_src emacs-lisp
+    #+end_src
+*** HTML
+
+	#+RESULTS:
+	: gjg/org-export-to-html-and-open
+*** Exporting Babel without evaluation
+#+begin_src emacs-lisp
+(custom-set-variables '(org-export-use-babel nil))
+#+end_src
+*** Exporting so theme does not interfere with source code blocks
+    #+begin_src emacs-lisp
        ;; ease export/sharing from org-mode
        (defun gjg/org-export-to-odt ()
 	 "Export to odt without the theme interfering"
@@ -256,9 +256,39 @@ p	      ("p" "D2iQ Phone/Meeting" entry
 	   ))
 
        (org-defkey org-mode-map (kbd "C-c o") 'gjg/org-export-to-html-and-open)
-     #+end_src
-*** Speed commands
-    #+begin_src emacs-lisp
+    #+end_src
+*** STARTED Alternative way to export without theme interference       :NEXT:
+	:LOGBOOK:
+	- State "STARTED"    from "TODO"       [2019-09-17 Tue 19:37]
+	:END:
+	This one needs to wrap advice around any means of exporting HTML, including export-and-open
+#+begin_src emacs-lisp
+;; TODO: evaluate whether this is working
+;; export to html - use light theme for export
+;; tip o' the hat to legoscia https://github.com/legoscia/dotemacs/blob/master/dotemacs.org#theme-for-org-html-export
+(defvar my-org-html-export-theme 'material-light)
+
+(defun my-with-theme (orig-fun &rest args)
+  (load-theme my-org-html-export-theme)
+  (unwind-protect
+      (apply orig-fun args)
+    (disable-theme my-org-html-export-theme)))
+
+(with-eval-after-load "ox-html"
+  (advice-add 'org-export-to-buffer :around 'my-with-theme)
+  (advice-add 'org-export-to-file :around 'my-with-theme)
+)
+
+
+
+;; Add a help function to open the resulting file
+(defun gjg/html-and-open ()
+
+)
+
+#+end_src
+** Speed commands
+   #+begin_src emacs-lisp
       (setq org-use-speed-commands t) ;; POWER USER BABY
       ;; (setq org-speed-commands-user 
       ;;       '(
@@ -299,9 +329,9 @@ p	      ("p" "D2iQ Phone/Meeting" entry
 
       ;; END DAN DAVISON nifty speed commands
 
-    #+end_src
-*** Agenda
-    #+begin_src emacs-lisp
+   #+end_src
+** Agenda
+   #+begin_src emacs-lisp
       (global-set-key (kbd "C-c a") 'org-agenda)
       (global-set-key "\C-ca" 'org-agenda)
       (setq org-agenda-files '("~/mesosphere.org.gpg"))
@@ -404,9 +434,9 @@ p	      ("p" "D2iQ Phone/Meeting" entry
 	    (concat "%Y-%m-%d %a "
 		    (make-string (- (window-width) 15) (string-to-char "_"))))
 
-    #+end_src
-*** Tags/TODOs/Projects Oh My
-    #+begin_src emacs-lisp
+   #+end_src
+** Tags/TODOs/Projects Oh My
+   #+begin_src emacs-lisp
       (setq org-tag-alist '(("Project" . ?p)
 			    ("NEXT" . ?n)
 			    ("noexport" . ?x)
@@ -462,9 +492,9 @@ p	      ("p" "D2iQ Phone/Meeting" entry
 					      ;(setq org-tag-alist '(("project" . ?p)("car" . ?c)))
 
       (setq org-enforce-todo-dependencies t)
-    #+end_src
-*** Refile
-    #+begin_src emacs-lisp
+   #+end_src
+** Refile
+   #+begin_src emacs-lisp
       ;; navigate to files using org-refile; use C-u C-c C-w
       (setq org-outline-path-complete-in-steps nil)
       ;; (setq org-refile-targets '(( org-agenda-files :maxlevel . 3))
@@ -485,10 +515,10 @@ p	      ("p" "D2iQ Phone/Meeting" entry
 	(org-refile 1))
 
 
-    #+end_src
-*** TODO Mobile Org - delete or move to modern version
+   #+end_src
+** TODO Mobile Org - delete or move to modern version
     
-    #+begin_src emacs-lisp
+   #+begin_src emacs-lisp
       ;;*** Org-mobile
       (setq org-mobile-directory "~/Dropbox/MobileOrg")
       ;;    (setq org-mobile-directory "/gregj@smeagol.hoochiepep.home:/home/gregj/work/org/web")
@@ -496,10 +526,10 @@ p	      ("p" "D2iQ Phone/Meeting" entry
       (setq org-agenda-before-write-hook nil)
       (setq org-mobile-files '( "~/Copy/ingress/ingress.org" 'org-agenda-files))
 
-    #+end_src
-*** Publishing
-    This is for publishing to a website
-    #+begin_src emacs-lisp
+   #+end_src
+** Publishing
+   This is for publishing to a website
+   #+begin_src emacs-lisp
       (setq org-publish-project-alist
 	    '(
 	      ("director-23-testing" :components("director-23-testing-www" "director-23-testing-static"))
@@ -593,7 +623,34 @@ p	      ("p" "D2iQ Phone/Meeting" entry
 	      ))
 
 
-    #+end_src
+   #+end_src
+** Clock
+#+begin_src emacs-lisp
+(setq org-clock-persist 'history)
+(org-clock-persistence-insinuate)
+(setq org-clock-report-include-clocking-task t)
+(setq org-read-date-prefer-future 'time)
+
+#+end_src
+** Behavior
+#+begin_src emacs-lisp
+;; make c-y pay attention to current level
+(setq org-yank-adjusted-subtrees t)
+(setq org-yank-folded-subtrees nil)
+(setq org-insert-heading-respect-content t); new headings go AFTER CONTENT, even from the middle of content area
+(setq org-indirect-buffer-display 'current-window)
+(setq org-reverse-note-order t) ; notes go at the top
+(setq org-return-follows-link t)
+(setq org-treat-S-cursor-todo-selection-as-state-change nil) ;; use S-arrow without having to log state change!
+(setq org-log-into-drawer t)
+
+;; delete the seleted region when something is typed - don't do that
+(delete-selection-mode -1)
+
+;; show only current/today's/all time in the clock task modeline
+;; this SHOULD be settable on a file basis by using property CLOCK_MODELINE_TOTAL
+(setq org-clock-modeline-total 'current)
+#+end_src
 
 * Greg's customizations!
 ** Let emacs use more memory in these modern times
@@ -1326,11 +1383,11 @@ p	      ("p" "D2iQ Phone/Meeting" entry
      :Effort:   wqfdewsqar3eqw=-09875612`6543`lkjhga.,
      :END:
 
-     Use =M-j= during a search to add the sub-word at point to the search - similar to =C-s
-     C-w= in built-in isearch.
+     Use =M-j= during a Swiper search to add the sub-word at point to
+     the search - similar to =C-s C-w= in built-in isearch.
 
      #+begin_src emacs-lisp
-       (global-set-key (kbd "C-s") 'swiper)
+       ;; (global-set-key (kbd "C-s") 'swiper)
        ;; (global-set-key (kbd "C-M-s") 'swiper-isearch)
        ;; (global-set-key (kbd "C-M-r") 'swiper-isearch-backward)
        (global-set-key (kbd "M-x") 'counsel-M-x)
@@ -1470,11 +1527,13 @@ p	      ("p" "D2iQ Phone/Meeting" entry
   (add-hook 'python-mode-hook
 			(lambda ()
 			  (setq indent-tabs-mode nil)
-			  (setq python-indent 4)
+			  (setq python-indent-offset 4)
 			  (setq tab-width 4)
 			  (setq prettify-symbols-alist prettify-greek-lower)
 			  (prettify-symbols-mode t)))
   )
+
+(custom-set-variables '(org-babel-python-command "python3"))
 
 (setq ansi-color-drop-regexp
 	  "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
