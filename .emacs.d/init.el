@@ -2,7 +2,7 @@
 (defconst emacs-start-time (current-time))
 ;; initalize all ELPA packages
 (require 'package)
-(package-initialize)
+;; (package-initialize)
 
 ;; (setq package-enable-at-startup nil)
 (let ((elapsed (float-time (time-subtract (current-time)

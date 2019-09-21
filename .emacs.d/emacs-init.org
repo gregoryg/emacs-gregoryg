@@ -32,13 +32,12 @@
   (defvar gjg/check-packages-on-startup nil) ; should be nil in repo
 
   (add-to-list 'load-path "~/emacs")
-  (require 'cl)
+  ;; (require 'cl)
   ;; (require 'ls-lisp)
   ;; (setq ls-lisp-use-insert-directory-program nil)
   (require 'package)
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-  (package-initialize)
 
   ;; get control of required packages across different emacs environments
   (defvar gjg/required-packages
@@ -203,7 +202,8 @@
 		("r" "Regular todo" entry
 		 (file+headline "~/todos.org" "General")
 		 "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
-		p	      ("p" "D2iQ Phone/Meeting" entry
+		
+("p" "D2iQ Phone/Meeting" entry
 				   (file+headline "~/mesosphere.org.gpg" "Calls and Meetings Log")
 				   "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty|Nick Kane|Jerry Connors}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
       :PROPERTIES:
@@ -241,18 +241,18 @@
 	 "Export to odt without the theme interfering"
 	 (interactive)
 	 (let ((gort custom-enabled-themes))
-	   (mapcar 'disable-theme custom-enabled-themes)
+	   (mapc 'disable-theme custom-enabled-themes)
 	   (org-odt-export-to-odt)
-	   (mapcar 'enable-theme gort)))
+	   (mapc 'enable-theme gort)))
 
        (defun gjg/org-export-to-html-and-open ()
 	 "Export to HTML with no theme active"
 	 (interactive)
 	 (let ((gort custom-enabled-themes))
-	   (mapcar 'disable-theme custom-enabled-themes)
+	   (mapc 'disable-theme custom-enabled-themes)
 	   (org-html-export-to-html)
 	   (browse-url (browse-url-file-url (concat (file-name-sans-extension (buffer-file-name)) ".html")))
-	   (mapcar 'enable-theme gort)
+	   (mapc 'enable-theme gort)
 	   ))
 
        (org-defkey org-mode-map (kbd "C-c o") 'gjg/org-export-to-html-and-open)
@@ -298,29 +298,29 @@
       (defun ded/org-show-next-heading-tidily ()
 	"Show next entry, keeping other entries closed."
 	(if (save-excursion (end-of-line) (outline-invisible-p))
-	    (progn (org-show-entry) (show-children))
+	    (progn (org-show-entry) (outline-show-children))
 	  (outline-next-heading)
-	  (unless (and (bolp) (org-on-heading-p))
+	  (unless (and (bolp) (org-at-heading-p))
 	    (org-up-heading-safe)
-	    (hide-subtree)
+	    (outline-hide-subtree)
 	    (error "Boundary reached"))
 	  (org-overview)
 	  (org-reveal t)
 	  (org-show-entry)
-	  (show-children)))
+	  (outline-show-children)))
 
       (defun ded/org-show-previous-heading-tidily ()
 	"Show previous entry, keeping other entries closed."
 	(let ((pos (point)))
 	  (outline-previous-heading)
-	  (unless (and (< (point) pos) (bolp) (org-on-heading-p))
+	  (unless (and (< (point) pos) (bolp) (org-at-heading-p))
 	    (goto-char pos)
-	    (hide-subtree)
+	    (outline-hide-subtree)
 	    (error "Boundary reached"))
 	  (org-overview)
 	  (org-reveal t)
 	  (org-show-entry)
-	  (show-children)))
+	  (outline-show-children)))
 
       (add-to-list 'org-speed-commands-user
 		   '("]" ded/org-show-next-heading-tidily))
@@ -332,52 +332,52 @@
    #+end_src
 ** Agenda
    #+begin_src emacs-lisp
-      (global-set-key (kbd "C-c a") 'org-agenda)
-      (global-set-key "\C-ca" 'org-agenda)
-      (setq org-agenda-files '("~/mesosphere.org.gpg"))
-      ;;(global-set-key (kbd "C-c TAB") 'org-cycle-agenda-files)
-      ;; Set basic org-mode keys
-      (setq org-agenda-show-inherited-tags t)
-      (setq org-agenda-hide-tags-regexp "noagenda")
-      (setq org-agenda-window-setup 'other-window)
-      (setq org-agenda-restore-windows-after-quit t)
-      (setq org-agenda-start-with-log-mode t)
-      (setq org-agenda-entry-text-maxlines 10)
-      (setq org-agenda-diary-file "~/projects/diary.org")
-      (setq org-agenda-include-diary t)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key "\C-ca" 'org-agenda)
+(setq org-agenda-files '("~/mesosphere.org.gpg"))
+;;(global-set-key (kbd "C-c TAB") 'org-cycle-agenda-files)
+;; Set basic org-mode keys
+(setq org-agenda-show-inherited-tags t)
+(setq org-agenda-hide-tags-regexp "noagenda")
+(setq org-agenda-window-setup 'other-window)
+(setq org-agenda-restore-windows-after-quit t)
+(setq org-agenda-start-with-log-mode t)
+(setq org-agenda-entry-text-maxlines 10)
+(setq org-agenda-diary-file "~/projects/diary.org")
+(setq org-agenda-include-diary t)
 
-      (setq org-agenda-exporter-settings
-	    '((ps-number-of-columns 1)
-	      (ps-landscape-mode t)
-	      (org-agenda-add-entry-text-maxlines 10)
-	      (htmlize-output-type 'css)))
+(setq org-agenda-exporter-settings
+	  '((ps-number-of-columns 1)
+	    (ps-landscape-mode t)
+	    (org-agenda-add-entry-text-maxlines 10)
+	    (htmlize-output-type 'css)))
 
-      ;;(setq org-agenda-start-with-clockreport-mode t)
-      (setq org-special-ctrl-a/e t)
-      (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
-      (setq org-cycle-open-archived-trees nil)
-      (setq org-cycle-separator-lines 1) ;
-      (setq org-clock-history-length 12)
+;;(setq org-agenda-start-with-clockreport-mode t)
+(setq org-special-ctrl-a/e t)
+(setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
+(setq org-cycle-open-archived-trees nil)
+(setq org-cycle-separator-lines 1) ;
+(setq org-clock-history-length 12
 
       (setq org-agenda-show-inherited-tags t)
       (setq org-agenda-custom-commands
-	    (quote (("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
-		    ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
-		    ("w" "Tasks waiting on something" tags "WAITING" ((org-use-tag-inheritance nil)))
-		    ("dc" "Clock report" agenda ""
-		     ((org-agenda-ndays 1)
-		      (org-agenda-start-with-clockreport-mode t)
-		      (org-agenda-time-grid nil)
-		      (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
-		    ("dw" "Weekly clock report" agenda ""
-		     ((org-agenda-ndays 7)
-		      (org-agenda-start-with-clockreport-mode t)
-		      (org-agenda-time-grid nil)
-		      (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
-		    ("da" "GORT Agenda"
-		     ((agenda "")
-		      (todo "STARTED")))
-		    )))
+			(quote (("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
+					("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
+					("w" "Tasks waiting on something" tags "WAITING" ((org-use-tag-inheritance nil)))
+					("dc" "Clock report" agenda ""
+					 ((org-agenda-ndays 1)
+					  (org-agenda-start-with-clockreport-mode t)
+					  (org-agenda-time-grid nil)
+					  (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
+					("dw" "Weekly clock report" agenda ""
+					 ((org-agenda-ndays 7)
+					  (org-agenda-start-with-clockreport-mode t)
+					  (org-agenda-time-grid nil)
+					  (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
+					("da" "GORT Agenda"
+					 ((agenda "")
+					  (todo "STARTED")))
+					)))
 
       ;; org-agenda: some handy keys
       ;;(define-key org-agenda-mode-map "o" 'org-agenda-show)
@@ -416,23 +416,23 @@
       ;;                 (when remember-frame-p (delete-frame)))))))
 
       (add-hook 'org-agenda-mode-hook
-		(lambda ()
-		  (hl-line-mode 1)
-		  ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
-		  ;;       (local-unset-key "o")
-		  ;; rebind to a sweet and beautiful function
-		  (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
-		  (local-unset-key "a") ;; don't let this accidentally archive a tree!
-		  ))
+				(lambda ()
+				  (hl-line-mode 1)
+				  ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
+				  ;;       (local-unset-key "o")
+				  ;; rebind to a sweet and beautiful function
+				  (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
+				  (local-unset-key "a") ;; don't let this accidentally archive a tree!
+				  ))
       (add-hook 'org-export-preprocess-hook
-		(lambda ()
-		  (org-dblock-update 2) ;; update all dynamic blocks in the buffer
-		  ))
+				(lambda ()
+				  (org-dblock-update 2) ;; update all dynamic blocks in the buffer
+				  ))
       ;; Function stolen from Bernt Hansen on gmane.emacs.orgmode: insert inactive time stamp for new entries
 
       (setq org-agenda-format-date
-	    (concat "%Y-%m-%d %a "
-		    (make-string (- (window-width) 15) (string-to-char "_"))))
+			(concat "%Y-%m-%d %a "
+					(make-string (- (window-width) 15) (string-to-char "_"))))
 
    #+end_src
 ** Tags/TODOs/Projects Oh My
@@ -651,6 +651,15 @@
 ;; this SHOULD be settable on a file basis by using property CLOCK_MODELINE_TOTAL
 (setq org-clock-modeline-total 'current)
 #+end_src
+** Org Drill flashcards
+#+begin_src emacs-lisp
+(defun gjg/org-drill-set-cloze1 ()
+  "Set current question as 'cloze1' type"
+  (interactive)
+  (insert ":PROPERTIES:\n:DRILL_CARD_TYPE: hide1cloze\n:END:\n")
+  )
+
+#+end_src
 
 * Greg's customizations!
 ** Let emacs use more memory in these modern times
@@ -701,7 +710,7 @@
     #+begin_src emacs-lisp
       (when (eq window-system 'w32)
 	(setq w32-get-true-file-attributes nil)
-	(remove-hook 'find-file-hooks 'vc-find-file-hook))
+	(remove-hook 'find-file-hook 'vc-find-file-hook))
     #+end_src
 ** Fonts
    Forever in search of the One True Holy and Apostolic Programmer Font.
@@ -1147,14 +1156,15 @@
    
    #+end_src
 * Encryption
+  Set value of =epg-gpg-program= to location on local system
   #+begin_src emacs-lisp
     ;; let's get encryption established
     ;; For gpg, disable external pinentry - let emacs handle pass phrase
     (setenv "GPG_AGENT_INFO" nil)
     (require 'epa-file)
-    (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
+    ;; (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
     (epa-file-enable)
-    (setq epa-pinentry-mode 'loopback)
+    (setq epg-pinentry-mode 'loopback)
     (require 'org-crypt)
     (org-crypt-use-before-save-magic)
 
@@ -1267,7 +1277,7 @@
 		(format-mode-line "----- THIS BUFFER IS VISITED WITH SUDO PRIVILEGES -----"
 				  'font-lock-warning-face))))
 
-      (add-hook 'find-file-hooks 'my-tramp-header-line-function)
+      (add-hook 'find-file-hook 'my-tramp-header-line-function)
       (add-hook 'dired-mode-hook 'my-tramp-header-line-function)
     #+end_src
 ** Rainbow delimiters for various programming modes
@@ -1322,7 +1332,26 @@
      ;; 		      (setq dired-omit-mode t)
      ;; 		      (setq dired-omit-files "^\\..*")
      ;; 		      )))
+
    #+end_src
+*** Open file in relevant OS app
+#+begin_src emacs-lisp
+;; swiped from Gilaras Drakeson <gilaras@gmail.com>
+(require 'dired)
+(defcustom gjg/os-open "xdg-open"
+  "Command to open a document, e.g. 'xdg-open' on Linux, 'sensible-browser' on crostini, 'open' on OS X, 'explorer' or 'cygpath' on Windows"
+  :type 'string
+  :group 'gjg)
+
+
+(defun dired-open (&optional file-list)
+  (interactive
+   (list (dired-get-marked-files t current-prefix-arg)))
+  (progn
+    (message (format "Calling %s %s" gjg/os-open file-list))
+    (apply 'call-process gjg/os-open nil 0 nil file-list)))
+(define-key dired-mode-map (kbd "C-;") 'dired-open)
+#+end_src
 ** Ediff
    #+begin_src emacs-lisp
      (setq ediff-split-window-function 'split-window-horizontally)
@@ -1342,7 +1371,7 @@
      (setq help-window-select t)
      (add-hook 'help-mode-hook
 	       (lambda ()
-		 (local-set-key (kbd "M-p") 'help-go-back)
+p		 (local-set-key (kbd "M-p") 'help-go-back)
 		 (local-set-key (kbd "M-n") 'help-go-forward)
 		 ))
    #+end_src
@@ -1461,6 +1490,7 @@
 
      (defalias 'spell-buffer 'ispell-buffer)
    #+end_src
+
 * Programming modes
 ** All modes derived from =prog-mode=
    #+begin_src emacs-lisp
