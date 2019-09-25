@@ -131,7 +131,67 @@
 
 (setq org-src-window-setup 'current-window)
   #+end_src
+*** Crazy way to allow babel elisp to modify window configuration
+This disables Org's use of =save-window-excursion= for execution of source blocks
+Stolen from [[https://emacs.stackexchange.com/questions/42096/running-elisp-within-an-orgmode-code-block][Running elisp within an orgmode code block]] (github)
 
+Simply add the new block param =:keep-windows= to use this functionality
+
+#+begin_src emacs-lisp
+(require 'ob-emacs-lisp)
+(defun transform-tree (tree trafo)
+  "Transform TREE by TRAFO."
+  (let ((next tree))
+    (while next
+      (let ((this next))
+		(setq next (cdr next))
+		(if (consp (car this))
+			(transform-tree (car this) trafo)
+		  (funcall trafo this)))))
+  tree)
+
+(defun replace-in-fundef (fun sym &rest replacement)
+  "In function FUN perform REPLACEMENT."
+  (setq fun (or
+			 (condition-case err
+				 (let* ((pos (find-function-noselect fun t))
+						(buf (car pos))
+						(pt (cdr pos)))
+				   (with-current-buffer buf
+					 (save-excursion
+					   (goto-char pt)
+					   (read buf))))
+			   (error nil))
+			 (and (symbolp fun) (symbol-function fun))
+			 fun))
+  (transform-tree fun
+				  (lambda (this)
+					(when (eq (car this) sym)
+					  (let ((copy-repl (cl-copy-list replacement)))
+						(setcdr (last copy-repl) (cdr this))
+						(setcdr this (cdr copy-repl))
+						(setcar this (car copy-repl)))))))
+
+(defmacro save-window-excursion-if (pred &rest body)
+  "Act like `save-window-excursion' if PRED is non-nil."
+  (declare (indent 1) (debug t))
+  (let ((c (make-symbol "wconfig")))
+    `(let ((,c (and ,pred (current-window-configuration))))
+       (unwind-protect (progn ,@body)
+         (when ,c (set-window-configuration ,c))))))
+
+(advice-remove 'org-babel-execute:emacs-lisp #'ad-org-babel-execute:emacs-lisp)
+;; make sure we have access to the source code of `org-babel-execute:emacs-lisp'
+(find-function-noselect 'org-babel-execute:emacs-lisp t)
+;; (defun ad-org-babel-execute:emacs-lisp ...):
+(eval (replace-in-fundef 'org-babel-execute:emacs-lisp 'org-babel-execute:emacs-lisp 'ad-org-babel-execute:emacs-lisp))
+;; Use `save-window-excursion-if' in `ad-org-babel-execute:emacs-lisp':
+(declare-function 'ad-org-babel-execute:emacs-lisp " ")
+(eval (replace-in-fundef 'ad-org-babel-execute:emacs-lisp
+						 'save-window-excursion 'save-window-excursion-if '(null (member (cdr (assoc :keep-windows params)) '("yes" "t")))))
+;; Replace `org-babel-execute:emacs-lisp':
+(advice-add 'org-babel-execute:emacs-lisp :override #'ad-org-babel-execute:emacs-lisp)
+#+end_src
 
 ** Org-mode hook
    I had a lot of nonsense in this hook - a couple lines may survive
@@ -176,10 +236,10 @@
 ;; (defun capture-blog-filename (path)
 (defun capture-blog-filename ()
   (let ((thedate (org-read-date nil nil nil "Date of post: "))
-		(name (read-string "Name of blog post file description: ")))
-	(expand-file-name (format "%s-%s.md"
-							  (format-time-string "%Y-%m-%d")
-							  name) "~/projects/jekyll/gregorygrubbs/_posts/")))
+	(name (read-string "Name of blog post file description: ")))
+    (expand-file-name (format "%s-%s.md"
+			      (format-time-string "%Y-%m-%d")
+			      name) "~/projects/jekyll/gregorygrubbs/_posts/")))
 
 
 (setq org-default-notes-file "~/projects/notes.org")
@@ -187,10 +247,10 @@
   '(add-hook 'org-capture-mode-hook 'turn-on-auto-fill))
 (define-key global-map "\C-cc" 'org-capture)
 (setq org-capture-templates
-	  '(
-		("b" "Blog post" plain
-		 (file capture-blog-filename)
-		 "---
+      '(
+	("b" "Blog post" plain
+	 (file capture-blog-filename)
+	 "---
       layout: post
       title:  %^{title|Generic Post}
       date:   %<%F %T %z>
@@ -198,14 +258,14 @@
       ---
 
       # some thoughts"
-		 )
-		("r" "Regular todo" entry
-		 (file+headline "~/todos.org" "General")
-		 "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
-		
-("p" "D2iQ Phone/Meeting" entry
-				   (file+headline "~/mesosphere.org.gpg" "Calls and Meetings Log")
-				   "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty|Nick Kane|Jerry Connors}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
+	 )
+	("r" "Regular todo" entry
+	 (file+headline "~/todos.org" "General")
+	 "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
+	
+	("p" "D2iQ Phone/Meeting" entry
+	 (file+headline "~/mesosphere.org.gpg" "Calls and Meetings Log")
+	 "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty|Nick Kane|Jerry Connors}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
       :PROPERTIES:
       :NOBLOCKING: t
       :END:
@@ -217,7 +277,7 @@
 	 + From %\\2: 
 	 + %?
        " :prepend t :clock-in t :clock-resume t)
-		))
+	))
 
 
    #+end_src
@@ -357,7 +417,7 @@
 (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
 (setq org-cycle-open-archived-trees nil)
 (setq org-cycle-separator-lines 1) ;
-(setq org-clock-history-length 12
+(setq org-clock-history-length 12)
 
       (setq org-agenda-show-inherited-tags t)
       (setq org-agenda-custom-commands
@@ -1368,12 +1428,12 @@
    #+end_src
 ** Help mode
    #+begin_src emacs-lisp
-     (setq help-window-select t)
-     (add-hook 'help-mode-hook
-	       (lambda ()
-p		 (local-set-key (kbd "M-p") 'help-go-back)
-		 (local-set-key (kbd "M-n") 'help-go-forward)
-		 ))
+(setq help-window-select t)
+(add-hook 'help-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "M-p") 'help-go-back)
+	    (local-set-key (kbd "M-n") 'help-go-forward)
+	    ))
    #+end_src
 ** Ivy / Smex / Counsel
    Just starting to make use of =use-package= here.  The =:ensure= param will
@@ -1385,14 +1445,14 @@ p		 (local-set-key (kbd "M-p") 'help-go-back)
 
     #+begin_src emacs-lisp
       (use-package counsel
-	:ensure t
+	:ensure nil
 	:config
 	(use-package smex
-	  :ensure t)
+	  :ensure nil)
 	(use-package swiper
-	  :ensure t)
+	  :ensure nil)
 	(use-package flx
-	  :ensure t)
+	  :ensure nil)
 	(ivy-mode 1)
 	(setq ivy-use-virtual-buffers t)
 	;; intentional space before end of string
@@ -1408,10 +1468,6 @@ p		 (local-set-key (kbd "M-p") 'help-go-back)
    #+end_src
 
 **** Make some keybindings for these crazy packages
-     :PROPERTIES:
-     :Effort:   wqfdewsqar3eqw=-09875612`6543`lkjhga.,
-     :END:
-
      Use =M-j= during a Swiper search to add the sub-word at point to
      the search - similar to =C-s C-w= in built-in isearch.
 
@@ -1503,7 +1559,7 @@ p		 (local-set-key (kbd "M-p") 'help-go-back)
    #+begin_src emacs-lisp
      (require 'ob-clojure) ;; org-babel code evaluation
      (use-package lsp-mode
-       :ensure t
+       :ensure nil
        :commands lsp
        :config
        (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure-mode"))
@@ -1532,7 +1588,7 @@ p		 (local-set-key (kbd "M-p") 'help-go-back)
 ** Go
    #+begin_src emacs-lisp
      (use-package go-mode
-       :ensure t
+       :ensure nil
        :config)
    #+end_src
 ** Rust
@@ -1547,10 +1603,10 @@ p		 (local-set-key (kbd "M-p") 'help-go-back)
 ;; deal with the horrific ANSI codes in latest ipython
 
 (use-package python
-  :ensure t
+  :ensure nil
   :config
   (use-package prettify-greek
-	:ensure t)
+	:ensure nil)
   (setq python-shell-interpreter "ipython3" 
 		python-shell-interpreter-args "-i --simple-prompt")
   (setq org-babel-python-command "python3")
