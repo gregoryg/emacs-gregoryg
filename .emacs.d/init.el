@@ -6,7 +6,7 @@
 
 ;; (setq package-enable-at-startup nil)
 (let ((elapsed (float-time (time-subtract (current-time)
-					  emacs-start-time))))
+										  emacs-start-time))))
   (message "Loaded packages in %.3fs" elapsed))
 
 ;; keep customized variables in a separate file
@@ -21,7 +21,7 @@
  nil ; compile the result
  )
 
- ;; Message how long it took to load everything (minus packages)
-  (let ((elapsed (float-time (time-subtract (current-time)
-                                            emacs-start-time))))
-    (message "Loading complete config...done (%.3fs)" elapsed))
+;; Message how long it took to load everything (minus packages)
+(let ((elapsed (float-time (time-subtract (current-time)
+                                          emacs-start-time))))
+  (message "Loading complete config...done (%.3fs)" elapsed))
