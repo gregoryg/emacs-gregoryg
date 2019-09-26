@@ -32,7 +32,7 @@
   (defvar gjg/check-packages-on-startup nil) ; should be nil in repo
 
   (add-to-list 'load-path "~/emacs")
-  ;; (require 'cl)
+  (require 'cl)
   ;; (require 'ls-lisp)
   ;; (setq ls-lisp-use-insert-directory-program nil)
   (require 'package)
