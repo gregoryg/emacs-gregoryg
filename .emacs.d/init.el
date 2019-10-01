@@ -2,16 +2,12 @@
 (defconst emacs-start-time (current-time))
 ;; initalize all ELPA packages
 (require 'package)
-;; (package-initialize)
+(package-initialize)
 
 ;; (setq package-enable-at-startup nil)
 (let ((elapsed (float-time (time-subtract (current-time)
 										  emacs-start-time))))
   (message "Loaded packages in %.3fs" elapsed))
-
-;; keep customized variables in a separate file
-(setq custom-file "~/.emacs.d/emacs-custom.el")
-(load custom-file)
 
 
 (require 'org)
@@ -20,6 +16,11 @@
  (expand-file-name "emacs-init.org" user-emacs-directory)
  nil ; compile the result
  )
+
+;; keep customized variables in a separate file
+(setq custom-file "~/.emacs.d/emacs-custom.el")
+(load custom-file)
+
 
 ;; Message how long it took to load everything (minus packages)
 (let ((elapsed (float-time (time-subtract (current-time)

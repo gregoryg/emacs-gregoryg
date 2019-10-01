@@ -52,6 +52,7 @@
       htmlize
       ;; ivy-omni-org
       ;; ivy-todo
+	  jupyter
       magit
       magit-todos
       material-theme
@@ -123,7 +124,7 @@
 		   (python . t)
 		   (shell  . t)
 		   (sql . t)
-		   
+		   (jupyter . t)
 		   )))
 ;; The Dreadful Timeline has brought us indentation-sensitive languages
 ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
@@ -979,184 +980,184 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+end_src
 *** GJG full screen, movement, transparency
     #+begin_src emacs-lisp
-      (defun revert-dammit () ; revert buffer without prompting
-	(interactive)
-	;; revert buffer, don't use auto-save, preserve modes
-	(revert-buffer t t t))
-      (defalias 'rd 'revert-dammit)
-      (defun gjg/switch-to-other-buffer ()
-	(interactive)
-	(switch-to-buffer (other-buffer))
-	(message "Switched to other-buffer"))
-      (defun gjg/other-window-or-split ()
-	"If one window is displayed in current frame, split vertically and go to other window, else go to other window without splitting"
-	(interactive)
-	(if (one-window-p t)
-	    (progn
-	      (split-window-vertically)
-	      (other-window 1)
-	      (switch-to-buffer (other-buffer)))
-	  (other-window 1)))
-      (defun gjg/widen-ask-if-indirect ()
-	"If buffer is indirect, ask before widening"
-	(interactive)
-	(if (buffer-base-buffer)
-	    (when (yes-or-no-p "Buffer is indirect; really widen? ")
-	      (widen))
-	  (widen)))
-      (defun toggle-transparency (alpha-level)
-	(interactive "p")
-	(message (format "%s" alpha-level))
-	(if (< alpha-level 50) (setq alpha-level 75))
-	(let ((myalpha (frame-parameter nil 'alpha)))
-	  (if (or (not myalpha)
-		  (= myalpha 100))
-	      (set-frame-parameter nil 'alpha alpha-level)
-	    (set-frame-parameter nil 'alpha 100))
-	  )
-	(message (format "Alpha level is %d" (frame-parameter nil 'alpha)))
+(defun revert-dammit () ; revert buffer without prompting
+  (interactive)
+  ;; revert buffer, don't use auto-save, preserve modes
+  (revert-buffer t t t))
+(defalias 'rd 'revert-dammit)
+(defun gjg/switch-to-other-buffer ()
+  (interactive)
+  (switch-to-buffer (other-buffer))
+  (message "Switched to other-buffer"))
+(defun gjg/other-window-or-split ()
+  "If one window is displayed in current frame, split vertically and go to other window, else go to other window without splitting"
+  (interactive)
+  (if (one-window-p t)
+	  (progn
+		(split-window-vertically)
+		(other-window 1)
+		(switch-to-buffer (other-buffer)))
+	(other-window 1)))
+(defun gjg/widen-ask-if-indirect ()
+  "If buffer is indirect, ask before widening"
+  (interactive)
+  (if (buffer-base-buffer)
+	  (when (yes-or-no-p "Buffer is indirect; really widen? ")
+		(widen))
+	(widen)))
+(defun toggle-transparency (alpha-level)
+  (interactive "p")
+  (message (format "%s" alpha-level))
+  (if (< alpha-level 50) (setq alpha-level 75))
+  (let ((myalpha (frame-parameter nil 'alpha)))
+	(if (or (not myalpha)
+			(= myalpha 100))
+		(set-frame-parameter nil 'alpha alpha-level)
+	  (set-frame-parameter nil 'alpha 100))
 	)
+  (message (format "Alpha level is %d" (frame-parameter nil 'alpha)))
+  )
 
-      (defun set-transparency (alpha-level)
-	(interactive "p")
-	(message (format "Alpha level passed in: %s" alpha-level))
-	(let ((alpha-level (if (< alpha-level 2)
-			       (read-number "Opacity percentage: " 75)
-			     alpha-level))
-	      (myalpha (frame-parameter nil 'alpha)))
-	  (set-frame-parameter nil 'alpha alpha-level))
-	(message (format "Alpha level is %d" (frame-parameter nil 'alpha))))
-      (defalias 'set-opacity 'set-transparency )
+(defun set-transparency (alpha-level)
+  (interactive "p")
+  (message (format "Alpha level passed in: %s" alpha-level))
+  (let ((alpha-level (if (< alpha-level 2)
+						 (read-number "Opacity percentage: " 75)
+					   alpha-level))
+		(myalpha (frame-parameter nil 'alpha)))
+	(set-frame-parameter nil 'alpha alpha-level))
+  (message (format "Alpha level is %d" (frame-parameter nil 'alpha))))
+(defalias 'set-opacity 'set-transparency )
 
-      (defun toggle-window-split ()
-	(interactive)
-	(if (= (count-windows) 2)
-	    (let* ((this-win-buffer (window-buffer))
-		   (next-win-buffer (window-buffer (next-window)))
-		   (this-win-edges (window-edges (selected-window)))
-		   (next-win-edges (window-edges (next-window)))
-		   (this-win-2nd (not (and (<= (car this-win-edges)
-					       (car next-win-edges))
-					   (<= (cadr this-win-edges)
-					       (cadr next-win-edges)))))
-		   (splitter
-		    (if (= (car this-win-edges)
-			   (car (window-edges (next-window))))
-			'split-window-horizontally
-		      'split-window-vertically)))
-	      (delete-other-windows)
-	      (let ((first-win (selected-window)))
-		(funcall splitter)
-		(if this-win-2nd (other-window 1))
-		(set-window-buffer (selected-window) this-win-buffer)
-		(set-window-buffer (next-window) next-win-buffer)
-		(select-window first-win)
-		(if this-win-2nd (other-window 1))))))
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+	  (let* ((this-win-buffer (window-buffer))
+			 (next-win-buffer (window-buffer (next-window)))
+			 (this-win-edges (window-edges (selected-window)))
+			 (next-win-edges (window-edges (next-window)))
+			 (this-win-2nd (not (and (<= (car this-win-edges)
+										 (car next-win-edges))
+									 (<= (cadr this-win-edges)
+										 (cadr next-win-edges)))))
+			 (splitter
+			  (if (= (car this-win-edges)
+					 (car (window-edges (next-window))))
+				  'split-window-horizontally
+				'split-window-vertically)))
+		(delete-other-windows)
+		(let ((first-win (selected-window)))
+		  (funcall splitter)
+		  (if this-win-2nd (other-window 1))
+		  (set-window-buffer (selected-window) this-win-buffer)
+		  (set-window-buffer (next-window) next-win-buffer)
+		  (select-window first-win)
+		  (if this-win-2nd (other-window 1))))))
 
-      (define-key ctl-x-4-map "t" 'toggle-window-split)
-      ;; *** Full-screen frame defuns
+(define-key ctl-x-4-map "t" 'toggle-window-split)
+;; *** Full-screen frame defuns
 
-      (defun switch-full-screen ()
-	(interactive)
-	(shell-command (concat "/usr/bin/wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -btoggle,fullscreen")))
+(defun switch-full-screen ()
+  (interactive)
+  (shell-command (concat "/usr/bin/wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -btoggle,fullscreen")))
 
-      ;; (defun toggle-fullscreen ()
-      ;;   "toggles whether the currently selected frame consumes the entire display or is decorated with a window border"
-      ;;   (interactive)
-      ;;   (let ((f (selected-frame)))
-      ;;     (modify-frame-parameters f `((fullscreen . ,(if (eq nil (frame-parameter f 'fullscreen)) 'fullboth nil))))))
+;; (defun toggle-fullscreen ()
+;;   "toggles whether the currently selected frame consumes the entire display or is decorated with a window border"
+;;   (interactive)
+;;   (let ((f (selected-frame)))
+;;     (modify-frame-parameters f `((fullscreen . ,(if (eq nil (frame-parameter f 'fullscreen)) 'fullboth nil))))))
 
-      ;; (defun mac-toggle-max-window ()
-      ;;   "Toggle full-screen frame on Linux and OS X - use maxframe.el for Windows"
-      ;;   (interactive)
-      ;;   (if (frame-parameter nil 'fullscreen)
-      ;;       (set-frame-parameter nil 'fullscreen nil)
-      ;;     (set-frame-parameter nil 'fullscreen 'fullboth)))
-      ;; (defun toggle-full-screen ()
-      ;;   "Toggle between full screen and partial screen display on X11;
-      ;;     courtesy of http://www.emacswiki.org/cgi-bin/wiki/FullScreen"
-      ;;   (interactive)
-      ;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-      ;;                          '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+;; (defun mac-toggle-max-window ()
+;;   "Toggle full-screen frame on Linux and OS X - use maxframe.el for Windows"
+;;   (interactive)
+;;   (if (frame-parameter nil 'fullscreen)
+;;       (set-frame-parameter nil 'fullscreen nil)
+;;     (set-frame-parameter nil 'fullscreen 'fullboth)))
+;; (defun toggle-full-screen ()
+;;   "Toggle between full screen and partial screen display on X11;
+;;     courtesy of http://www.emacswiki.org/cgi-bin/wiki/FullScreen"
+;;   (interactive)
+;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+;;                          '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
 
 
-      ;; ;; add toggle for maxframe.el (works on Windows)
-      (when (eq window-system 'w32)
-	(require 'maxframe)
-	(modify-frame-parameters nil '((gjg/frame-maxp . nil))))
-      ;; (modify-frame-parameters nil '((gjg/frame-maxp . nil)))
-      ;; ;; (defvar gjg/frame-maxp nil "Store whether frame is maximized using maxframe.el")
-      (defun gjg/switch-buffer-by-mode ()
-	"Switch to a buffer after choosing a mode."
-	(interactive)
-	(let* ((active-buffers-with-mode (mapcar '(lambda (x) (with-current-buffer x (cons (buffer-name) (symbol-name major-mode)))) (buffer-list)))
-	       (distinct-modes (-distinct (mapcar #'cdr active-buffers-with-mode)))
-	       (selected-mode (ido-completing-read "Mode: " distinct-modes))
-	       (candidate-buffers (mapcar #'car (remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
-	       (selected-buffer (ido-completing-read "Buffer: " candidate-buffers)))
-	  (switch-to-buffer selected-buffer)))
-      (global-set-key (kbd "C-c s") 'gjg/switch-buffer-by-mode)
+;; ;; add toggle for maxframe.el (works on Windows)
+(when (eq window-system 'w32)
+  (require 'maxframe)
+  (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
+;; (modify-frame-parameters nil '((gjg/frame-maxp . nil)))
+;; ;; (defvar gjg/frame-maxp nil "Store whether frame is maximized using maxframe.el")
+(defun gjg/switch-buffer-by-mode ()
+  "Switch to a buffer after choosing a mode."
+  (interactive)
+  (let* ((active-buffers-with-mode (mapcar #'(lambda (x) (with-current-buffer x (cons (buffer-name) (symbol-name major-mode)))) (buffer-list)))
+		 (distinct-modes (-distinct (mapcar #'cdr active-buffers-with-mode)))
+		 (selected-mode (ido-completing-read "Mode: " distinct-modes))
+		 (candidate-buffers (mapcar #'car (remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
+		 (selected-buffer (ido-completing-read "Buffer: " candidate-buffers)))
+	(switch-to-buffer selected-buffer)))
+(global-set-key (kbd "C-c s") 'gjg/switch-buffer-by-mode)
 
-      (defun gjg/max-frame ()
-	"Maximize the current frame and toggle gjg/frame-maxp"
-	(interactive)
-	(cond ((eq window-system 'w32)
-	       (maximize-frame))
-	      ((eq window-system 'x)
-	       (switch-full-screen))
-	      (t
-	       (mac-toggle-max-window)))
-	(modify-frame-parameters nil '((gjg/frame-maxp . t))))
+(defun gjg/max-frame ()
+  "Maximize the current frame and toggle gjg/frame-maxp"
+  (interactive)
+  (cond ((eq window-system 'w32)
+		 (maximize-frame))
+		((eq window-system 'x)
+		 (switch-full-screen))
+		(t
+		 (mac-toggle-max-window)))
+  (modify-frame-parameters nil '((gjg/frame-maxp . t))))
 
-      (defun gjg/restore-frame ()
-	"Restore the current frame to its previous size and toggle gjg/frame-maxp"
-	(interactive)
-	(cond ((eq window-system 'w32)
-	(restore-frame))
-	      ((eq window-system 'x)
-	       (switch-full-screen))
-	      (t
-	       (mac-toggle-max-window)))
-	(modify-frame-parameters nil '((gjg/frame-maxp . nil))))
+(defun gjg/restore-frame ()
+  "Restore the current frame to its previous size and toggle gjg/frame-maxp"
+  (interactive)
+  (cond ((eq window-system 'w32)
+		 (restore-frame))
+		((eq window-system 'x)
+		 (switch-full-screen))
+		(t
+		 (mac-toggle-max-window)))
+  (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
 
-      (defun gjg/toggle-max-frame ()
-	"Check the status of gjg/max-framep and change to whichever mode we're not in now."
-	(interactive)
-	(cond ((eq window-system 'ns)
-	       (toggle-frame-maximized))
-	      (t
-	       (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
+(defun gjg/toggle-max-frame ()
+  "Check the status of gjg/max-framep and change to whichever mode we're not in now."
+  (interactive)
+  (cond ((eq window-system 'ns)
+		 (toggle-frame-maximized))
+		(t
+		 (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
 
     #+end_src
 *** Ibuffer FTW
     Saved filter groups provide a nice organization.
 
     #+begin_src emacs-lisp
-      (global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
-      (setq ibuffer-expert t)
-      (setq ibuffer-saved-filter-groups
-	    '(("home"
-	       ("Org and Markdown" (or (mode . org-mode)
-				       (mode . markdown-mode)))
-	       ("Shell" (mode . shell-mode))
-	       ("Configs" (or (filename . ".emacs.d")
-				   (mode . emacs-lisp-mode)
-				   (derived-mode .  conf-mode)
-				   (mode . json-mode)
-				   (mode . yaml-mode)))
-	       ("Code" (derived-mode .  prog-mode))
-	       ("Magit" (or (mode . magit-diff-mode)
-			    (mode . magit-status-mode)
-			    (mode . magit-process-mode)
-			    (mode . magit-revision-mode)
-			    (mode . magit-refs-mode)))
-	       ("Dired" (mode . dired-mode))
-	       ("Remote" (filename . "/\*:.+"))
-	       )))
-      (add-hook 'ibuffer-mode-hook
-		'(lambda ()
-		   (ibuffer-auto-mode 1)
-		   (ibuffer-switch-to-saved-filter-groups "home")))
+(global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
+(setq ibuffer-expert t)
+(setq ibuffer-saved-filter-groups
+	  '(("home"
+	     ("Org and Markdown" (or (mode . org-mode)
+								 (mode . markdown-mode)))
+	     ("Shell" (mode . shell-mode))
+	     ("Configs" (or (filename . ".emacs.d")
+						(mode . emacs-lisp-mode)
+						(derived-mode .  conf-mode)
+						(mode . json-mode)
+						(mode . yaml-mode)))
+	     ("Code" (derived-mode .  prog-mode))
+	     ("Magit" (or (mode . magit-diff-mode)
+					  (mode . magit-status-mode)
+					  (mode . magit-process-mode)
+					  (mode . magit-revision-mode)
+					  (mode . magit-refs-mode)))
+	     ("Dired" (mode . dired-mode))
+	     ("Remote" (filename . "/\*:.+"))
+	     )))
+(add-hook 'ibuffer-mode-hook
+		  '(lambda ()
+			 (ibuffer-auto-mode 1)
+			 (ibuffer-switch-to-saved-filter-groups "home")))
     #+end_src
 *** Uniquify
     #+begin_src emacs-lisp
@@ -1220,7 +1221,7 @@ Simply add the new block param =:keep-windows= to use this functionality
   #+begin_src emacs-lisp
     ;; let's get encryption established
     ;; For gpg, disable external pinentry - let emacs handle pass phrase
-    (setenv "GPG_AGENT_INFO" nil)
+    ;; (setenv "GPG_AGENT_INFO" nil)
     (require 'epa-file)
     ;; (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
     (epa-file-enable)
@@ -1419,12 +1420,12 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+end_src
 ** Grep
    #+begin_src emacs-lisp
-     (defun advice-without-ivy (o &rest a)
-       (ivy-mode -1)
-       (prog1 (apply o a)
-	 (ivy-mode 1)))
+;; (defun advice-without-ivy (o &rest a)
+;;   (ivy-mode -1)
+;;   (prog1 (apply o a)
+;; 	(ivy-mode 1)))
 
-     (advice-add 'grep-read-files :around #'advice-without-ivy)
+;; (advice-add 'grep-read-files :around #'advice-without-ivy)
    #+end_src
 ** Help mode
    #+begin_src emacs-lisp
@@ -1444,27 +1445,27 @@ Simply add the new block param =:keep-windows= to use this functionality
     and Counsel for symbol completion and selection.
 
     #+begin_src emacs-lisp
-      (use-package counsel
-	:ensure nil
-	:config
-	(use-package smex
-	  :ensure nil)
-	(use-package swiper
-	  :ensure nil)
-	(use-package flx
-	  :ensure nil)
-	(ivy-mode 1)
-	(setq ivy-use-virtual-buffers t)
-	;; intentional space before end of string
-	(setq ivy-count-format "(%d/%d) ")
-	(setq ivy-initial-inputs-alist nil)
+    ;;   (use-package counsel
+	;; :ensure nil
+	;; :config
+	;; (use-package smex
+	;;   :ensure nil)
+	;; (use-package swiper
+	;;   :ensure nil)
+	;; (use-package flx
+	;;   :ensure nil)
+	;; (ivy-mode 1)
+	;; (setq ivy-use-virtual-buffers t)
+	;; ;; intentional space before end of string
+	;; (setq ivy-count-format "(%d/%d) ")
+	;; (setq ivy-initial-inputs-alist nil)
+	;; ;; (setq ivy-re-builders-alist
+	;; ;;       '((t . ivy--regex-fuzzy)))
 	;; (setq ivy-re-builders-alist
-	;;       '((t . ivy--regex-fuzzy)))
-	(setq ivy-re-builders-alist
-	      '((swiper . ivy--regex-plus)
-		(counsel-find-file . ivy--regex-plus)
-		(ivy-switch-buffer . ivy--regex-plus)
-		(t . ivy--regex-fuzzy))))
+	;;       '((swiper . ivy--regex-plus)
+	;; 	(counsel-find-file . ivy--regex-plus)
+	;; 	(ivy-switch-buffer . ivy--regex-plus)
+	;; 	(t . ivy--regex-fuzzy))))
    #+end_src
 
 **** Make some keybindings for these crazy packages
@@ -1547,7 +1548,7 @@ Simply add the new block param =:keep-windows= to use this functionality
      (defalias 'spell-buffer 'ispell-buffer)
    #+end_src
 
-* Programming modes
+* Programming language modes
 ** All modes derived from =prog-mode=
    #+begin_src emacs-lisp
      (add-hook 'prog-mode-hook
@@ -1629,6 +1630,12 @@ Simply add the new block param =:keep-windows= to use this functionality
 ;; (require 'prettify-greek)
 
    #+end_src
+** Jupyter
+#+begin_src emacs-lisp
+(use-package jupyter
+       :ensure nil)
+
+#+end_src
 ** R
    #+begin_src emacs-lisp
      ;; (setq ess-sas-edit-keys-toggle nil)     ;;; turn on automatic indentation
