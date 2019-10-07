@@ -11,8 +11,8 @@
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
-# #+SETUPFILE: ../../../style/theme-readtheorg.setup
-#+SETUPFILE: https://raw.githubusercontent.com/fniessen/org-html-themes/master/setup/theme-readtheorg.setup
+#+SETUPFILE: ~/projects/org-html-themes/setup/theme-bigblow.setup
+# #+SETUPFILE: https://raw.githubusercontent.com/fniessen/org-html-themes/master/setup/theme-readtheorg.setup
 * Should I use =evil-mode=?
 
   No.
@@ -104,9 +104,6 @@
 #+END_SRC
 
 * Org mode stuff
-  My Org mode setup is mostly externalized in the =gjg-org= library.
-
-  Alanis-ironically, it is still in Elisp, not Org mode.
 
 ** Org Babel and Source Code Blocks
   #+begin_src emacs-lisp
@@ -1418,15 +1415,6 @@ Simply add the new block param =:keep-windows= to use this functionality
      (setq ediff-split-window-function 'split-window-horizontally)
      (setq ediff-window-setup-function 'ediff-setup-windows-plain)
    #+end_src
-** Grep
-   #+begin_src emacs-lisp
-;; (defun advice-without-ivy (o &rest a)
-;;   (ivy-mode -1)
-;;   (prog1 (apply o a)
-;; 	(ivy-mode 1)))
-
-;; (advice-add 'grep-read-files :around #'advice-without-ivy)
-   #+end_src
 ** Help mode
    #+begin_src emacs-lisp
 (setq help-window-select t)
@@ -1445,27 +1433,26 @@ Simply add the new block param =:keep-windows= to use this functionality
     and Counsel for symbol completion and selection.
 
     #+begin_src emacs-lisp
-    ;;   (use-package counsel
-	;; :ensure nil
-	;; :config
-	;; (use-package smex
-	;;   :ensure nil)
-	;; (use-package swiper
-	;;   :ensure nil)
-	;; (use-package flx
-	;;   :ensure nil)
-	;; (ivy-mode 1)
-	;; (setq ivy-use-virtual-buffers t)
-	;; ;; intentional space before end of string
-	;; (setq ivy-count-format "(%d/%d) ")
-	;; (setq ivy-initial-inputs-alist nil)
-	;; ;; (setq ivy-re-builders-alist
-	;; ;;       '((t . ivy--regex-fuzzy)))
-	;; (setq ivy-re-builders-alist
-	;;       '((swiper . ivy--regex-plus)
-	;; 	(counsel-find-file . ivy--regex-plus)
-	;; 	(ivy-switch-buffer . ivy--regex-plus)
-	;; 	(t . ivy--regex-fuzzy))))
+(use-package counsel
+  :ensure nil
+  :config
+  (use-package smex
+	:ensure nil)
+  (use-package swiper
+	:ensure nil)
+  (use-package flx
+	:ensure nil)
+  (ivy-mode 1)
+  ;; (setq ivy-use-virtual-buffers t)
+  ;; intentional space before end of string
+  (setq ivy-count-format "(%d/%d) ")
+  ;; (setq ivy-re-builders-alist
+  ;;       '((t . ivy--regex-fuzzy)))
+  (setq ivy-re-builders-alist
+	    '((swiper . ivy--regex-plus)
+		  (counsel-find-file . ivy--regex-plus)
+		  (ivy-switch-buffer . ivy--regex-plus)
+		  (t . ivy--regex-fuzzy))))
    #+end_src
 
 **** Make some keybindings for these crazy packages
@@ -1479,6 +1466,15 @@ Simply add the new block param =:keep-windows= to use this functionality
        (global-set-key (kbd "M-x") 'counsel-M-x)
        (global-set-key (kbd "C-x C-f") 'counsel-find-file)
      #+end_src
+** Grep
+   #+begin_src emacs-lisp
+(defun advice-without-ivy (o &rest a)
+  (ivy-mode -1)
+  (prog1 (apply o a)
+	(ivy-mode 1)))
+
+(advice-add 'grep-read-files :around #'advice-without-ivy)
+   #+end_src
 ** Occur
    #+begin_src emacs-lisp
      ;;     Some simple sex-ups for occur-mode
