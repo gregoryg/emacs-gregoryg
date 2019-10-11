@@ -1,3 +1,13 @@
+;; (require 'bookmark) ;; load so that bookmark-alist will be available
+;; (defun gjg/ido-bookmark-jump ()
+;;   (interactive)
+;;   (let ((readfunc (if (functionp 'ido-completing-read) 'ido-completing-read 'completing-read)))
+;;     (bookmark-maybe-load-default-file)
+;;     (bookmark-jump 
+;;      (funcall readfunc "Jump to bookmark: " (mapcar 'car bookmark-alist)))
+;;     ))
+;; (global-set-key (kbd "C-x rb") 'gjg/ido-bookmark-jump)
+
 (defun replace-smart-quotes (beg end)
   "Replace 'smart quotes' in buffer or region with ascii quotes."
   (interactive "r")
@@ -80,15 +90,6 @@ With prefix, restrict to files currently being visited"
   (yank)
   (indent-region (mark) (point)))
 
-(require 'bookmark) ;; load so that bookmark-alist will be available
-(defun gjg/ido-bookmark-jump ()
-  (interactive)
-  (let ((readfunc (if (functionp 'ido-completing-read) 'ido-completing-read 'completing-read)))
-    (bookmark-maybe-load-default-file)
-    (bookmark-jump 
-     (funcall readfunc "Jump to bookmark: " (mapcar 'car bookmark-alist)))
-    ))
-(global-set-key (kbd "C-x rb") 'gjg/ido-bookmark-jump)
 
 ;; lol pseudocode ; api ref http://cheezburger.com/apidocs/ContentRetrieval.aspx
 ;; build url  http://api.cheezburger.com/xml/category/{category}/lol/random
