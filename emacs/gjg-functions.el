@@ -1,12 +1,30 @@
-;; (require 'bookmark) ;; load so that bookmark-alist will be available
-;; (defun gjg/ido-bookmark-jump ()
-;;   (interactive)
-;;   (let ((readfunc (if (functionp 'ido-completing-read) 'ido-completing-read 'completing-read)))
-;;     (bookmark-maybe-load-default-file)
-;;     (bookmark-jump 
-;;      (funcall readfunc "Jump to bookmark: " (mapcar 'car bookmark-alist)))
-;;     ))
-;; (global-set-key (kbd "C-x rb") 'gjg/ido-bookmark-jump)
+(defun gjg/open-remote-shell ()
+  "If current buffer is remote, open a new uniquely named shell based on host name"
+  (interactive)
+  (if (file-remote-p default-directory)
+      (progn
+        ;; do stuff
+        (message "Now I shall do stuff")
+        (shell (concat (file-remote-p default-directory 'host) "-sh"))
+        )
+	(progn
+	  (shell (concat "local-" default-directory "-sh"))
+	  ;; (message "Buffer is local - not opening shell"))
+	  )))
+
+(defun gjg/tramp-sudo-to-etc ()
+  "Dired browse as root (sudo) to /etc on current machine"
+  (interactive)
+  (let* ((trampvec (tramp-dissect-file-name default-directory))
+         (tramphop (elt trampvec 4))
+         (conntype (elt trampvec 0))
+         (trampuser (elt trampvec 1)) ; may be nil, which is cool
+         (tramphost (elt trampvec 2))
+         (sudopath (concat "/" tramphop conntype ":" tramphost "|sudo:" tramphost ":/etc/"))
+         )
+    (find-file sudopath)
+    )
+  )
 
 (defun replace-smart-quotes (beg end)
   "Replace 'smart quotes' in buffer or region with ascii quotes."
