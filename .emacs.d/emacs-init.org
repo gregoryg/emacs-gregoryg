@@ -724,18 +724,6 @@ Simply add the new block param =:keep-windows= to use this functionality
  #+BEGIN_SRC emacs-lisp
  (setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
  #+END_SRC
-** MacOS Things
-   #+begin_src emacs-lisp
-     ;; OS X / Mac specific things
-     (setq ns-command-modifier (quote meta))
-     ;; deal with bad behavior on OSX (PATH does not export for remote shells)
-     (when (and (memq window-system '(mac ns)) (fboundp 'exec-path-from-shell-initialize))
-       (exec-path-from-shell-initialize))
-     ;; add in local user's bin/
-     (when (file-exists-p "~/bin/")
-       (add-to-list 'exec-path "~/bin")
-       )
-   #+end_src
 ** Microsoft Windows things
 *** Printing
    #+begin_src emacs-lisp
