@@ -122,11 +122,23 @@
 	       (sql . t)
 	       (jupyter . t)
 	       )))
-    ;; The Dreadful Timeline has brought us indentation-sensitive languages
-    ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
-    (setq org-src-preserve-indentation t) 
+;; The Dreadful Timeline has brought us indentation-sensitive languages
+;; Python, YAML, Heredoc seem to require that Org not format source code blocks
+(setq org-src-preserve-indentation t) 
+(setq org-src-window-setup 'current-window)
+(setq org-structure-template-alist '(("C" . "comment")
+									 ("e" . "example")
+									 ("E" . "export")
+									 ("h" . "export html")
+									 ("l" . "export latex")
+									 ("q" . "quote")
+									 ("S" . "src")
+									 ("sb" . "src bash")
+									 ("sl" . "src emacs-lisp")
+									 ("sp" . "src python")
+									 ("ss" . "src sh")
+									 ("sy" . "src yaml")))
 
-    (setq org-src-window-setup 'current-window)
   #+end_src
 *** Crazy way to allow babel elisp to modify window configuration
 This disables Org's use of =save-window-excursion= for execution of source blocks
