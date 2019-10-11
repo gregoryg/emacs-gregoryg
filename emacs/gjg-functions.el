@@ -1,13 +1,3 @@
-(defun gjg/ssh-abbrevs-for-ec2-cluster ()
-  "Take text of instances pasted copied from EC2 and add to ~/.ssh/config; expect copied text to be in current clipboard"
-  (get-buffer-create "*gort temp*")
-  (with-current-buffer "*gort temp*"
-    (goto-char (point-min))
-    (yank)
-    (goto-char (point-min))
-    (delete-non-matching-lines "^[0-9][0-9\.]+")
-    )
-  )
 (defun replace-smart-quotes (beg end)
   "Replace 'smart quotes' in buffer or region with ascii quotes."
   (interactive "r")
