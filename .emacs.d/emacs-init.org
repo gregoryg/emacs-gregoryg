@@ -1555,16 +1555,16 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Clojure
    #+begin_src emacs-lisp
      (require 'ob-clojure) ;; org-babel code evaluation
-     (use-package lsp-mode
-       :ensure nil
-       :commands lsp
-       :config
-       (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure-mode"))
-       :init
-       (setq lsp-enable-indentation nil)
-       (add-hook 'clojure-mode-hook #'lsp)
-       (add-hook 'clojurec-mode-hook #'lsp)
-       (add-hook 'clojurescript-mode-hook #'lsp))
+     ;; (use-package lsp-mode
+     ;;   :ensure nil
+     ;;   :commands lsp
+     ;;   :config
+     ;;   (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure-mode"))
+     ;;   :init
+     ;;   (setq lsp-enable-indentation nil)
+     ;;   (add-hook 'clojure-mode-hook #'lsp)
+     ;;   (add-hook 'clojurec-mode-hook #'lsp)
+     ;;   (add-hook 'clojurescript-mode-hook #'lsp))
 
      ;; ;; (add-to-list 'load-path "~/emacs/cider")
      ;; (autoload 'cider "cider" "Cider for Clojure")
