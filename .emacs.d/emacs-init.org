@@ -1531,7 +1531,25 @@ Simply add the new block param =:keep-windows= to use this functionality
      (defalias 'spell-buffer 'ispell-buffer)
    #+end_src
 
+** Company
+ #+BEGIN_SRC emacs-lisp
+(use-package company
+:ensure t
+:config
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 3)
+
+(global-company-mode t)
+)
+
+;; (use-package company-lsp
+;;   :ensure t
+;;   :config
+;;  (push 'company-lsp company-backends)
+;; )
+ #+END_SRC
 * Programming language modes
+
 ** All modes derived from =prog-mode=
    #+begin_src emacs-lisp
      (add-hook 'prog-mode-hook
