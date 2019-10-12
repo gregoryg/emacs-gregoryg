@@ -1,7 +1,12 @@
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
+;;   On MacOS, define the meta key up front for usability when init does not load fully
+(setq ns-command-modifier (quote meta))
+
 ;; initalize all ELPA packages
 (require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 (package-initialize)
 
 ;; (setq package-enable-at-startup nil)

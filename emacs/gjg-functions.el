@@ -1,13 +1,31 @@
-(defun gjg/ssh-abbrevs-for-ec2-cluster ()
-  "Take text of instances pasted copied from EC2 and add to ~/.ssh/config; expect copied text to be in current clipboard"
-  (get-buffer-create "*gort temp*")
-  (with-current-buffer "*gort temp*"
-    (goto-char (point-min))
-    (yank)
-    (goto-char (point-min))
-    (delete-non-matching-lines "^[0-9][0-9\.]+")
+(defun gjg/open-remote-shell ()
+  "If current buffer is remote, open a new uniquely named shell based on host name"
+  (interactive)
+  (if (file-remote-p default-directory)
+      (progn
+        ;; do stuff
+        (message "Now I shall do stuff")
+        (shell (concat (file-remote-p default-directory 'host) "-sh"))
+        )
+	(progn
+	  (shell (concat "local-" default-directory "-sh"))
+	  ;; (message "Buffer is local - not opening shell"))
+	  )))
+
+(defun gjg/tramp-sudo-to-etc ()
+  "Dired browse as root (sudo) to /etc on current machine"
+  (interactive)
+  (let* ((trampvec (tramp-dissect-file-name default-directory))
+         (tramphop (elt trampvec 4))
+         (conntype (elt trampvec 0))
+         (trampuser (elt trampvec 1)) ; may be nil, which is cool
+         (tramphost (elt trampvec 2))
+         (sudopath (concat "/" tramphop conntype ":" tramphost "|sudo:" tramphost ":/etc/"))
+         )
+    (find-file sudopath)
     )
   )
+
 (defun replace-smart-quotes (beg end)
   "Replace 'smart quotes' in buffer or region with ascii quotes."
   (interactive "r")
@@ -90,15 +108,6 @@ With prefix, restrict to files currently being visited"
   (yank)
   (indent-region (mark) (point)))
 
-(require 'bookmark) ;; load so that bookmark-alist will be available
-(defun gjg/ido-bookmark-jump ()
-  (interactive)
-  (let ((readfunc (if (functionp 'ido-completing-read) 'ido-completing-read 'completing-read)))
-    (bookmark-maybe-load-default-file)
-    (bookmark-jump 
-     (funcall readfunc "Jump to bookmark: " (mapcar 'car bookmark-alist)))
-    ))
-(global-set-key (kbd "C-x rb") 'gjg/ido-bookmark-jump)
 
 ;; lol pseudocode ; api ref http://cheezburger.com/apidocs/ContentRetrieval.aspx
 ;; build url  http://api.cheezburger.com/xml/category/{category}/lol/random
@@ -157,17 +166,6 @@ With prefix, restrict to files currently being visited"
     (message (format "org-agenda-files set to %s" org-agenda-files))))
 
 
-(defun grab-s3-bucket (url)
-  (interactive "sURL for Amazon s3 bucket: ")
-  (shell-command (format "curl -O %s" url) (get-buffer-create url)))
-
-;; M-x grab-s3-bucket URL
-;; You could write the results back with something like:
-
-(defun write-s3-bucket (url)
-  (interactive "sURL for Amazon s3 bucket: ")
-  (shell-command-on-region (format "curl %s -T " url)))
-
 (defun gjg/ec2-nab-hosts-from-cm ()
   "Take contents of copied hosts from Cloudera Manager Hosts page and pull out the hostnames"
   (interactive)
@@ -187,33 +185,6 @@ With prefix, restrict to files currently being visited"
   
   )
 
-(defun gjg/open-remote-shell ()
-  "If current buffer is remote, open a new uniquely named shell based on host name"
-  (interactive)
-  (if (file-remote-p default-directory)
-      (progn
-        ;; do stuff
-        (message "Now I shall do stuff")
-        (shell (concat (file-remote-p default-directory 'host) "-sh"))
-        )
-	(progn
-	  (shell (concat "local-" default-directory "-sh"))
-	  ;; (message "Buffer is local - not opening shell"))
-	  )))
-
-(defun gjg/tramp-sudo-to-etc ()
-  "Dired browse as root (sudo) to /etc on current machine"
-  (interactive)
-  (let* ((trampvec (tramp-dissect-file-name default-directory))
-         (tramphop (elt trampvec 4))
-         (conntype (elt trampvec 0))
-         (trampuser (elt trampvec 1)) ; may be nil, which is cool
-         (tramphost (elt trampvec 2))
-         (sudopath (concat "/" tramphop conntype ":" tramphost "|sudo:" tramphost ":/etc/"))
-         )
-    (find-file sudopath)
-    )
-  )
 
 ;; from github user coredump https://stackoverflow.com/questions/2088029/find-files-getting-a-dired-buffer-of-files-specified-by-filter-containing-text
 (defun find-iname-grep-dired (dir pattern regexp)

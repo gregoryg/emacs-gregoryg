@@ -36,8 +36,6 @@
   ;; (require 'ls-lisp)
   ;; (setq ls-lisp-use-insert-directory-program nil)
   (require 'package)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 
   ;; get control of required packages across different emacs environments
   (defvar gjg/required-packages
@@ -61,7 +59,7 @@
       org-plus-contrib
       org-tree-slide
       ob-async
-	  ob-http
+      ob-http
       toc-org
       ;; pandoc-mode
       prettify-greek
@@ -106,28 +104,29 @@
 * Org mode stuff
 
 ** Org Babel and Source Code Blocks
+  TODO: install pkgs babel ob-http and ob-jupyter
   #+begin_src emacs-lisp
-;; (unless (version< org-version "9.2")
-;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
-;;   )
-(org-babel-do-load-languages
- 'org-babel-load-languages
- (append org-babel-load-languages
-		 '(
-		   (clojure . t)
-		   (http . t) ;; curl
-		   (js . t)
-		   (latex . t)
-		   (python . t)
-		   (shell  . t)
-		   (sql . t)
-		   (jupyter . t)
-		   )))
-;; The Dreadful Timeline has brought us indentation-sensitive languages
-;; Python, YAML, Heredoc seem to require that Org not format source code blocks
-(setq org-src-preserve-indentation t) 
+    ;; (unless (version< org-version "9.2")
+    ;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
+    ;;   )
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     (append org-babel-load-languages
+	     '(
+	       (clojure . t)
+	       (http . t) ;; curl 
+	       (js . t)
+	       (latex . t)
+	       (python . t)
+	       (shell  . t)
+	       (sql . t)
+	       (jupyter . t)
+	       )))
+    ;; The Dreadful Timeline has brought us indentation-sensitive languages
+    ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
+    (setq org-src-preserve-indentation t) 
 
-(setq org-src-window-setup 'current-window)
+    (setq org-src-window-setup 'current-window)
   #+end_src
 *** Crazy way to allow babel elisp to modify window configuration
 This disables Org's use of =save-window-excursion= for execution of source blocks
@@ -724,18 +723,6 @@ Simply add the new block param =:keep-windows= to use this functionality
  #+BEGIN_SRC emacs-lisp
  (setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
  #+END_SRC
-** MacOS Things
-   #+begin_src emacs-lisp
-     ;; OS X / Mac specific things
-     (setq ns-command-modifier (quote meta))
-     ;; deal with bad behavior on OSX (PATH does not export for remote shells)
-     (when (and (memq window-system '(mac ns)) (fboundp 'exec-path-from-shell-initialize))
-       (exec-path-from-shell-initialize))
-     ;; add in local user's bin/
-     (when (file-exists-p "~/bin/")
-       (add-to-list 'exec-path "~/bin")
-       )
-   #+end_src
 ** Microsoft Windows things
 *** Printing
    #+begin_src emacs-lisp
@@ -1367,29 +1354,31 @@ Simply add the new block param =:keep-windows= to use this functionality
    the directory changes.
 
    #+begin_src emacs-lisp
-     (require 'dired)
-     (require 'dired-x)
-     (setq dired-dwim-target t)
-     (setq dired-omit-files "^\\.?#\\|^\\..*")
-     ;; (declare (special dired-x-hands-off-my-keys
-     ;; 		  dired-bind-vm
-     ;; 		  dired-omit-files-p))
-     ;; (add-hook 'dired-load-hook
-     ;; 	  (function
-     ;; 	   (lambda ()
-     ;; 	     (declare (special dired-x-hands-off-my-keys
-     ;; 			       dired-bind-vm))
-     ;; 	     (load-library "dired-x")
-     ;; 	     (setq dired-x-hands-off-my-keys nil
-     ;; 		   dired-bind-vm t))))
+(require 'dired)
+(require 'dired-x)
+(setq dired-dwim-target t)
+(setq dired-omit-files "^\\.?#\\|^\\..*")
+;; (declare (special dired-x-hands-off-my-keys
+;; 		  dired-bind-vm
+;; 		  dired-omit-files-p))
+;; (add-hook 'dired-load-hook
+;; 	  (function
+;; 	   (lambda ()
+;; 	     (declare (special dired-x-hands-off-my-keys
+;; 			       dired-bind-vm))
+;; 	     (load-library "dired-x")
+;; 	     (setq dired-x-hands-off-my-keys nil
+;; 		   dired-bind-vm t))))
 
-     (add-hook 'dired-mode-hook
-	       (function (lambda ()
-			   (auto-revert-mode))))
-     ;; 		      ;; Set dired-x buffer-local variables here.  For example:
-     ;; 		      (setq dired-omit-mode t)
-     ;; 		      (setq dired-omit-files "^\\..*")
-     ;; 		      )))
+(require 'autorevert)
+(setq auto-revert-verbose nil)
+(add-hook 'dired-mode-hook
+	      (function (lambda ()
+					  (auto-revert-mode))))
+;; 		      ;; Set dired-x buffer-local variables here.  For example:
+;; 		      (setq dired-omit-mode t)
+;; 		      (setq dired-omit-files "^\\..*")
+;; 		      )))
 
    #+end_src
 *** Open file in relevant OS app
@@ -1436,8 +1425,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 (use-package counsel
   :ensure nil
   :config
-  (use-package smex
-	:ensure nil)
   (use-package swiper
 	:ensure nil)
   (use-package flx
