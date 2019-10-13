@@ -912,7 +912,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 					(define-key minibuffer-local-must-match-map "?" nil)))
      (defalias 'ss 'gjg/open-remote-shell)
      (defalias 'ht 'gjg/highlight-terraform-stuff)
-     (shell (get-buffer-create "sh1"))
      (defalias 'rb 'rename-buffer)
 
    #+end_src
@@ -1219,6 +1218,23 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+begin_src emacs-lisp
      (server-start)
    #+end_src
+** Company
+ #+BEGIN_SRC emacs-lisp
+(use-package company
+:ensure t
+:config
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 3)
+
+;; (global-company-mode t)
+)
+
+;; (use-package company-lsp
+;;   :ensure t
+;;   :config
+;;  (push 'company-lsp company-backends)
+;; )
+ #+END_SRC
 ** TRAMP
    #+begin_src emacs-lisp
    (require 'tramp)
@@ -1478,30 +1494,37 @@ Simply add the new block param =:keep-windows= to use this functionality
      (ad-activate 'occur-prev)
    #+end_src
 ** Shell mode
+The =xterm-color-filter= function is part of the =xterm-color= package.  It does the
+lawd's work in translating ANSI color codes to font properties so that things can look
+awesome.
+
    #+begin_src emacs-lisp
-     (ansi-color-for-comint-mode-on)
-     ;; try some xterm coloring in shell buffers
-     (setq comint-output-filter-functions
-	   (remove 'ansi-color-process-output comint-output-filter-functions))
+(ansi-color-for-comint-mode-on)
+;; try some xterm coloring in shell buffers
+(setq comint-output-filter-functions
+	  (remove 'ansi-color-process-output comint-output-filter-functions))
 
-     (add-hook 'shell-mode-hook
-	       (lambda ()
-		 ;; Disable font-locking in this buffer to improve performance
-		 (font-lock-mode -1)
-		 ;; Prevent font-locking from being re-enabled in this buffer
-		 (make-local-variable 'font-lock-function)
-		 (setq font-lock-function (lambda (_) nil))
-		 (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)
-		 (process-send-string (get-buffer-process (current-buffer)) "export TERM=xterm-256color")
-		 ))
+(add-hook 'shell-mode-hook
+	      (lambda ()
+			;; Disable font-locking in this buffer to improve performance
+			;; TODO: Does disabling font-lock mess up highlight-regexp?
+			;; (font-lock-mode -1)
+			;; Prevent font-locking from being re-enabled in this buffer
+			;; (make-local-variable 'font-lock-function)
+			;; (setq font-lock-function (lambda (_) nil))
+			(add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)
+			(unless (file-remote-p default-directory)
+			  (company-mode 1))
+			(process-send-string (get-buffer-process (current-buffer)) "export TERM=xterm-256color")
+			))
 
-     ;; Also set TERM accordingly (xterm-256color) in the shell itself.
+;; Also set TERM accordingly (xterm-256color) in the shell itself.
 
-     ;; (add-hook 'shell-mode-hook
-     ;; 	  (lambda ()
-     ;; 	    (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)
-     ;; 	    (shell-command "export PS1='\\[\\e[32m\\]\\u@\\h \\[\\e[33m\\]\\w\\[\\e[0m\\]\\n\\$ '")
-     ;; 	    ))
+;; (add-hook 'shell-mode-hook
+;; 	  (lambda ()
+;; 	    (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)
+;; 	    (shell-command "export PS1='\\[\\e[32m\\]\\u@\\h \\[\\e[33m\\]\\w\\[\\e[0m\\]\\n\\$ '")
+;; 	    ))
    #+end_src
 ** Smartparens
    #+begin_src emacs-lisp
@@ -1531,23 +1554,6 @@ Simply add the new block param =:keep-windows= to use this functionality
      (defalias 'spell-buffer 'ispell-buffer)
    #+end_src
 
-** Company
- #+BEGIN_SRC emacs-lisp
-(use-package company
-:ensure t
-:config
-(setq company-idle-delay 0)
-(setq company-minimum-prefix-length 3)
-
-(global-company-mode t)
-)
-
-;; (use-package company-lsp
-;;   :ensure t
-;;   :config
-;;  (push 'company-lsp company-backends)
-;; )
- #+END_SRC
 * Programming language modes
 
 ** All modes derived from =prog-mode=
@@ -1676,3 +1682,7 @@ Simply add the new block param =:keep-windows= to use this functionality
       (highlight-regexp "\\(STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
   #+end_src
 
+* Final steps
+#+begin_src emacs-lisp
+(shell (get-buffer-create "sh1"))
+#+end_src
