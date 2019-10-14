@@ -1438,6 +1438,8 @@ Simply add the new block param =:keep-windows= to use this functionality
     This setup includes reliance on other packages such as Swiper for incremental search,
     and Counsel for symbol completion and selection.
 
+	Smex helps sort commands by most-used 
+
     #+begin_src emacs-lisp
 (use-package counsel
   :ensure nil
