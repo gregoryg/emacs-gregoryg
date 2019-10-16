@@ -41,12 +41,14 @@
   (defvar gjg/required-packages
     '(ag
       bash-completion
+      counsel
       diminish
       docker-tramp
       dumb-jump
       edit-indirect
       ;; edit-server
       flx
+      go
       htmlize
       ;; ivy-omni-org
       ;; ivy-todo
@@ -1600,7 +1602,7 @@ awesome.
    #+end_src
 ** Go
    #+begin_src emacs-lisp
-     (use-package go-mode
+     (use-package go
        :ensure nil
        :config)
    #+end_src
@@ -1684,7 +1686,7 @@ awesome.
       (interactive)
       (highlight-regexp "Creation complete" 'hi-green)
       (highlight-regexp "Destruction complete" 'hi-pink)
-      (highlight-regexp "\\(STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
+      (highlight-regexp "\\(RUNNING\\|STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
   #+end_src
 
 * Final steps
