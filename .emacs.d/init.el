@@ -15,16 +15,16 @@
   (message "Loaded packages in %.3fs" elapsed))
 
 
+;; keep customized variables in a separate file
+(setq custom-file "~/.emacs.d/emacs-custom.el")
+(load custom-file)
+
 (require 'org)
 
 (org-babel-load-file
  (expand-file-name "emacs-init.org" user-emacs-directory)
  nil ; compile the result
  )
-
-;; keep customized variables in a separate file
-(setq custom-file "~/.emacs.d/emacs-custom.el")
-(load custom-file)
 
 
 ;; Message how long it took to load everything (minus packages)
