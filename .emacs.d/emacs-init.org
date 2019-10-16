@@ -41,12 +41,14 @@
   (defvar gjg/required-packages
     '(ag
       bash-completion
+      counsel
       diminish
       docker-tramp
       dumb-jump
       edit-indirect
       ;; edit-server
       flx
+      go
       htmlize
       ;; ivy-omni-org
       ;; ivy-todo
@@ -76,6 +78,7 @@
       markdown-mode
       ;; scala-mode
       ssh-config-mode
+	  smex
       sql-indent
       terraform-mode
       ;; web-mode
@@ -931,7 +934,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 					(define-key minibuffer-local-must-match-map "?" nil)))
      (defalias 'ss 'gjg/open-remote-shell)
      (defalias 'ht 'gjg/highlight-terraform-stuff)
-     (shell (get-buffer-create "sh1"))
      (defalias 'rb 'rename-buffer)
 
    #+end_src
@@ -1238,6 +1240,23 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+begin_src emacs-lisp
      (server-start)
    #+end_src
+** Company
+ #+BEGIN_SRC emacs-lisp
+(use-package company
+:ensure t
+:config
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 3)
+
+;; (global-company-mode t)
+)
+
+;; (use-package company-lsp
+;;   :ensure t
+;;   :config
+;;  (push 'company-lsp company-backends)
+;; )
+ #+END_SRC
 ** TRAMP
    #+begin_src emacs-lisp
    (require 'tramp)
@@ -1440,6 +1459,8 @@ Simply add the new block param =:keep-windows= to use this functionality
     This setup includes reliance on other packages such as Swiper for incremental search,
     and Counsel for symbol completion and selection.
 
+	Smex helps sort commands by most-used 
+
     #+begin_src emacs-lisp
 (use-package counsel
   :ensure nil
@@ -1447,6 +1468,8 @@ Simply add the new block param =:keep-windows= to use this functionality
   (use-package swiper
 	:ensure nil)
   (use-package flx
+	:ensure nil)
+  (use-package smex
 	:ensure nil)
   (ivy-mode 1)
   ;; (setq ivy-use-virtual-buffers t)
@@ -1497,30 +1520,37 @@ Simply add the new block param =:keep-windows= to use this functionality
      (ad-activate 'occur-prev)
    #+end_src
 ** Shell mode
+The =xterm-color-filter= function is part of the =xterm-color= package.  It does the
+lawd's work in translating ANSI color codes to font properties so that things can look
+awesome.
+
    #+begin_src emacs-lisp
-     (ansi-color-for-comint-mode-on)
-     ;; try some xterm coloring in shell buffers
-     (setq comint-output-filter-functions
-	   (remove 'ansi-color-process-output comint-output-filter-functions))
+(ansi-color-for-comint-mode-on)
+;; try some xterm coloring in shell buffers
+(setq comint-output-filter-functions
+	  (remove 'ansi-color-process-output comint-output-filter-functions))
 
-     (add-hook 'shell-mode-hook
-	       (lambda ()
-		 ;; Disable font-locking in this buffer to improve performance
-		 (font-lock-mode -1)
-		 ;; Prevent font-locking from being re-enabled in this buffer
-		 (make-local-variable 'font-lock-function)
-		 (setq font-lock-function (lambda (_) nil))
-		 (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)
-		 (process-send-string (get-buffer-process (current-buffer)) "export TERM=xterm-256color")
-		 ))
+(add-hook 'shell-mode-hook
+	      (lambda ()
+			;; Disable font-locking in this buffer to improve performance
+			;; TODO: Does disabling font-lock mess up highlight-regexp?
+			;; (font-lock-mode -1)
+			;; Prevent font-locking from being re-enabled in this buffer
+			;; (make-local-variable 'font-lock-function)
+			;; (setq font-lock-function (lambda (_) nil))
+			(add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)
+			(unless (file-remote-p default-directory)
+			  (company-mode 1))
+			(process-send-string (get-buffer-process (current-buffer)) "export TERM=xterm-256color")
+			))
 
-     ;; Also set TERM accordingly (xterm-256color) in the shell itself.
+;; Also set TERM accordingly (xterm-256color) in the shell itself.
 
-     ;; (add-hook 'shell-mode-hook
-     ;; 	  (lambda ()
-     ;; 	    (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)
-     ;; 	    (shell-command "export PS1='\\[\\e[32m\\]\\u@\\h \\[\\e[33m\\]\\w\\[\\e[0m\\]\\n\\$ '")
-     ;; 	    ))
+;; (add-hook 'shell-mode-hook
+;; 	  (lambda ()
+;; 	    (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)
+;; 	    (shell-command "export PS1='\\[\\e[32m\\]\\u@\\h \\[\\e[33m\\]\\w\\[\\e[0m\\]\\n\\$ '")
+;; 	    ))
    #+end_src
 ** Smartparens
    #+begin_src emacs-lisp
@@ -1551,6 +1581,7 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+end_src
 
 * Programming language modes
+
 ** All modes derived from =prog-mode=
    #+begin_src emacs-lisp
      (add-hook 'prog-mode-hook
@@ -1561,16 +1592,16 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Clojure
    #+begin_src emacs-lisp
      (require 'ob-clojure) ;; org-babel code evaluation
-     (use-package lsp-mode
-       :ensure nil
-       :commands lsp
-       :config
-       (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure-mode"))
-       :init
-       (setq lsp-enable-indentation nil)
-       (add-hook 'clojure-mode-hook #'lsp)
-       (add-hook 'clojurec-mode-hook #'lsp)
-       (add-hook 'clojurescript-mode-hook #'lsp))
+     ;; (use-package lsp-mode
+     ;;   :ensure nil
+     ;;   :commands lsp
+     ;;   :config
+     ;;   (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure-mode"))
+     ;;   :init
+     ;;   (setq lsp-enable-indentation nil)
+     ;;   (add-hook 'clojure-mode-hook #'lsp)
+     ;;   (add-hook 'clojurec-mode-hook #'lsp)
+     ;;   (add-hook 'clojurescript-mode-hook #'lsp))
 
      ;; ;; (add-to-list 'load-path "~/emacs/cider")
      ;; (autoload 'cider "cider" "Cider for Clojure")
@@ -1590,7 +1621,7 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+end_src
 ** Go
    #+begin_src emacs-lisp
-     (use-package go-mode
+     (use-package go
        :ensure nil
        :config)
    #+end_src
@@ -1674,6 +1705,10 @@ Simply add the new block param =:keep-windows= to use this functionality
       (interactive)
       (highlight-regexp "Creation complete" 'hi-green)
       (highlight-regexp "Destruction complete" 'hi-pink)
-      (highlight-regexp "\\(STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
+      (highlight-regexp "\\(RUNNING\\|STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
   #+end_src
 
+* Final steps
+#+begin_src emacs-lisp
+(shell (get-buffer-create "sh1"))
+#+end_src
