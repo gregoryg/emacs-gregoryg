@@ -767,21 +767,18 @@ Simply add the new block param =:keep-windows= to use this functionality
    encoded herein.
 
    #+begin_src emacs-lisp
-     (cond ((or (eq window-system 'mac) (eq window-system 'ns))
-	    (set-frame-font "Source Code Pro-17")
-	    (setq gjg/os-open "open"))
-	   ((eq window-system 'w32)
-	    (set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1")
-	    (setq gjg/os-open "cygpath"))
-	   ((eq window-system 'x)	
-	    (set-frame-font "Hack-14")
-	    ;; (set-frame-font "Inconsolata-16")
-	    (setq gjg/os-open "xdg-open")
-	    ))
-     ;; (load-library "fontize")
-     ;; (require 'fontize)
-     ;; (global-set-key [C-kp-subtract] 'dec-font-size)
-     ;; (global-set-key [C-kp-add] 'inc-font-size)
+(cond ((or (eq window-system 'mac) (eq window-system 'ns))
+	   (set-frame-font "Source Code Pro-17"))
+	  ((eq window-system 'w32)
+	   (set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1"))
+	  ((eq window-system 'x)
+	   (set-frame-font "Hack-14")
+	   ;; (set-frame-font "Inconsolata-16")
+	   ))
+;; (load-library "fontize")
+;; (require 'fontize)
+;; (global-set-key [C-kp-subtract] 'dec-font-size)
+;; (global-set-key [C-kp-add] 'inc-font-size)
    #+end_src
 ** Desktop save
    #+begin_src emacs-lisp
@@ -1138,6 +1135,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 					  (mode . magit-revision-mode)
 					  (mode . magit-refs-mode)))
 	     ("Dired" (mode . dired-mode))
+		 ("Tramp sessions" (name . "\*tramp.+"))
 	     ("Remote" (filename . "/\*:.+"))
 	     )))
 (add-hook 'ibuffer-mode-hook
@@ -1458,11 +1456,12 @@ Simply add the new block param =:keep-windows= to use this functionality
   (setq ivy-count-format "(%d/%d) ")
   ;; (setq ivy-re-builders-alist
   ;;       '((t . ivy--regex-fuzzy)))
-  (setq ivy-re-builders-alist
-	    '((swiper . ivy--regex-plus)
-		  (counsel-find-file . ivy--regex-plus)
-		  (ivy-switch-buffer . ivy--regex-plus)
-		  (t . ivy--regex-fuzzy))))
+  ;; (setq ivy-re-builders-alist
+  ;; 	    '((swiper . ivy--regex-plus)
+  ;; 		  (counsel-find-file . ivy--regex-plus)
+  ;; 		  (ivy-switch-buffer . ivy--regex-plus)
+  ;; 		  (t . ivy--regex-fuzzy))))
+  (setq ivy-re-builders-alist '((t . ivy--regex-plus))))
    #+end_src
 
 **** Make some keybindings for these crazy packages
@@ -1486,6 +1485,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 (advice-add 'grep-read-files :around #'advice-without-ivy)
    #+end_src
 ** Occur
+*** Navigation
    #+begin_src emacs-lisp
      ;;     Some simple sex-ups for occur-mode
 
@@ -1500,6 +1500,31 @@ Simply add the new block param =:keep-windows= to use this functionality
        (occur-mode-display-occurrence))
      (ad-activate 'occur-prev)
    #+end_src
+*** Occur in buffers that use this current mode
+	Stolen from Sacha Chua in [[https://masteringemacs.org/article/searching-buffers-occur-mode][Mastering Emacs]]
+#+begin_src emacs-lisp
+(eval-when-compile
+  (require 'cl))
+
+(defun get-buffers-matching-mode (mode)
+  "Returns a list of buffers where their major-mode is equal to MODE"
+  (let ((buffer-mode-matches '()))
+	(dolist (buf (buffer-list))
+      (with-current-buffer buf
+		(if (eq mode major-mode)
+			(add-to-list 'buffer-mode-matches buf))))
+	buffer-mode-matches))
+
+(defun multi-occur-in-this-mode ()
+  "Show all lines matching REGEXP in buffers with this major mode."
+  (interactive)
+  (multi-occur
+   (get-buffers-matching-mode major-mode)
+   (car (occur-read-primary-args))))
+
+;; global key for `multi-occur-in-this-mode' - you should change this.
+(global-set-key (kbd "C-<f2>") 'multi-occur-in-this-mode)
+#+end_src
 ** Shell mode
 The =xterm-color-filter= function is part of the =xterm-color= package.  It does the
 lawd's work in translating ANSI color codes to font properties so that things can look
@@ -1520,8 +1545,8 @@ awesome.
 			;; (make-local-variable 'font-lock-function)
 			;; (setq font-lock-function (lambda (_) nil))
 			(add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)
-			(unless (file-remote-p default-directory)
-			  (company-mode 1))
+			;; (unless (file-remote-p default-directory)
+			;;   (company-mode 1))
 			(process-send-string (get-buffer-process (current-buffer)) "export TERM=xterm-256color")
 			))
 
@@ -1681,11 +1706,17 @@ awesome.
    + Google Cloud Shell with =gshell= TRAMP method
 
 ** Highlight Terraform and Ansible messages
+   This function highlights the typical lines for: 
+   + Terraform (Creation/Destruction complete)
+   + Ansible (RUNNING/STAGE/TASK/PLAY)
+   + Docker build (Step n/n)
+
   #+begin_src emacs-lisp
     (defun gjg/highlight-terraform-stuff ()
       (interactive)
       (highlight-regexp "Creation complete" 'hi-green)
       (highlight-regexp "Destruction complete" 'hi-pink)
+	  (highlight-regexp "Step [0-9]+/[0-9]+ : [A-Z]+" 'hi-aquamarine)
       (highlight-regexp "\\(RUNNING\\|STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
   #+end_src
 
