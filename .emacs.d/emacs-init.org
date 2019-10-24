@@ -11,7 +11,7 @@
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
-#+SETUPFILE: ~/projects/org-html-themes/setup/theme-bigblow.setup
+#+SETUPFILE: ~/projects/org-html-themes/setup/theme-readtheorg-local.setup
 # #+SETUPFILE: https://raw.githubusercontent.com/fniessen/org-html-themes/master/setup/theme-readtheorg.setup
 * Should I use =evil-mode=?
 
@@ -109,12 +109,12 @@
 ** Org Babel and Source Code Blocks
   TODO: install pkgs babel ob-http and ob-jupyter
   #+begin_src emacs-lisp
-    ;; (unless (version< org-version "9.2")
-    ;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
-    ;;   )
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     (append org-babel-load-languages
+;; (unless (version< org-version "9.2")
+;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
+;;   )
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ (append org-babel-load-languages
 	     '(
 	       (clojure . t)
 	       (http . t) ;; curl 
@@ -125,11 +125,23 @@
 	       (sql . t)
 	       (jupyter . t)
 	       )))
-    ;; The Dreadful Timeline has brought us indentation-sensitive languages
-    ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
-    (setq org-src-preserve-indentation t) 
+;; The Dreadful Timeline has brought us indentation-sensitive languages
+;; Python, YAML, Heredoc seem to require that Org not format source code blocks
+(setq org-src-preserve-indentation t) 
+(setq org-src-window-setup 'current-window)
+(setq org-structure-template-alist '(("C" . "comment")
+									 ("e" . "example")
+									 ("E" . "export")
+									 ("h" . "export html")
+									 ("l" . "export latex")
+									 ("q" . "quote")
+									 ("S" . "src")
+									 ("sb" . "src bash")
+									 ("sl" . "src emacs-lisp")
+									 ("sp" . "src python")
+									 ("ss" . "src sh")
+									 ("sy" . "src yaml")))
 
-    (setq org-src-window-setup 'current-window)
   #+end_src
 *** Crazy way to allow babel elisp to modify window configuration
 This disables Org's use of =save-window-excursion= for execution of source blocks
@@ -726,6 +738,13 @@ Simply add the new block param =:keep-windows= to use this functionality
  #+BEGIN_SRC emacs-lisp
  (setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
  #+END_SRC
+** Unixesque OS
+#+begin_src emacs-lisp
+(when (file-exists-p "~/bin")
+  (add-to-list 'exec-path "~/bin")
+(when (file-exists-p "/usr/local/bin")
+  (add-to-list 'exec-path "/usr/local/bin")
+#+end_src
 ** Microsoft Windows things
 *** Printing
    #+begin_src emacs-lisp
