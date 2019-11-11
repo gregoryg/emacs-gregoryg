@@ -11,8 +11,8 @@
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
-#+SETUPFILE: ~/projects/org-html-themes/setup/theme-readtheorg-local.setup
-# #+SETUPFILE: https://raw.githubusercontent.com/fniessen/org-html-themes/master/setup/theme-readtheorg.setup
+# #+SETUPFILE: ~/projects/org-html-themes/setup/theme-readtheorg-local.setup
+#+SETUPFILE: https://raw.githubusercontent.com/fniessen/org-html-themes/master/setup/theme-readtheorg.setup
 * Should I use =evil-mode=?
 
   No.
@@ -877,6 +877,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 (setq align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
 #+end_src
 ** Custom Functions in a separate file
+   TODO: pull these functions in
    #+begin_src emacs-lisp
 (add-to-list 'load-path "~/emacs")
 (load-library "gjg-functions")
