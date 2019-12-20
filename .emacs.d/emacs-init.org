@@ -1567,7 +1567,7 @@ awesome.
 	    (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)
 	    ;; (unless (file-remote-p default-directory)
 	    ;;   (company-mode 1))
-	    (process-send-string (get-buffer-process (current-buffer)) "export TERM=xterm-256color")
+	    ;; (process-send-string (get-buffer-process (current-buffer)) "export TERM=xterm-256color")
 	    ))
 
 ;; Also set TERM accordingly (xterm-256color) in the shell itself.
