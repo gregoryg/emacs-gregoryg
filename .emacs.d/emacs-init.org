@@ -17,6 +17,13 @@
 
   No.
 
+* Set executable path
+#+begin_src emacs-lisp
+  (when (file-exists-p "~/bin")
+    (add-to-list 'exec-path "~/bin"))
+  (when (file-exists-p "/usr/local/bin")
+    (add-to-list 'exec-path "/usr/local/bin"))
+#+end_src
 * Deal with required packages
 
   This first section installs most required packages automatically when
@@ -738,13 +745,6 @@ Simply add the new block param =:keep-windows= to use this functionality
  #+BEGIN_SRC emacs-lisp
 (setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
  #+END_SRC
-** Unixesque OS
-#+begin_src emacs-lisp
-(when (file-exists-p "~/bin")
-  (add-to-list 'exec-path "~/bin"))
-(when (file-exists-p "/usr/local/bin")
-  (add-to-list 'exec-path "/usr/local/bin"))
-#+end_src
 ** Microsoft Windows things
 *** Printing
    #+begin_src emacs-lisp
