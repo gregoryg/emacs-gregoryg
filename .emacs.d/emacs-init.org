@@ -1612,8 +1612,8 @@ awesome.
    #+begin_src emacs-lisp
 (add-hook 'prog-mode-hook
 	  (lambda ()
-	    (setq rainbow-delimiters-mode 1)
-	    (setq smartparens-mode 1)))
+		(rainbow-delimiters-mode 1)
+		(smartparens-mode 1)))
    #+end_src
 ** Clojure
    #+begin_src emacs-lisp
@@ -1734,9 +1734,12 @@ awesome.
   #+begin_src emacs-lisp
 (defun gjg/highlight-terraform-stuff ()
   (interactive)
+  ; Terraform patterns
   (highlight-regexp "Creation complete" 'hi-green)
   (highlight-regexp "Destruction complete" 'hi-pink)
+  ; Docker build
   (highlight-regexp "Step [0-9]+/[0-9]+ : [A-Z]+" 'hi-aquamarine)
+  ; Ansible
   (highlight-regexp "\\(RUNNING\\|STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
   #+end_src
 
