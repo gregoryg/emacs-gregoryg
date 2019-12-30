@@ -791,7 +791,7 @@ Simply add the new block param =:keep-windows= to use this functionality
       ((eq window-system 'w32)
        (set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1"))
       ((eq window-system 'x)
-       (set-frame-font "Hack-14")
+       (set-frame-font "Hack-16")
        ;; (set-frame-font "Inconsolata-16")
        ))
 ;; (load-library "fontize")
@@ -1392,6 +1392,8 @@ Simply add the new block param =:keep-windows= to use this functionality
 
    #+begin_src emacs-lisp
 (require 'dired)
+(define-key dired-mode-map [mouse-1] 'dired-find-file)
+(define-key dired-mode-map [mouse-2] 'dired-find-file)
 (require 'dired-x)
 (setq dired-dwim-target t)
 (setq dired-omit-files "^\\.?#\\|^\\..*")
@@ -1618,6 +1620,8 @@ awesome.
 ** Clojure
    #+begin_src emacs-lisp
 (require 'ob-clojure) ;; org-babel code evaluation
+;; (add-hook 'cider-repl-mode-hook #'company-
+(add-hook 'cider-mode-hook #'company-mode) 
 ;; (use-package lsp-mode
 ;;   :ensure nil
 ;;   :commands lsp
