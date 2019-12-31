@@ -1615,6 +1615,7 @@ awesome.
 (add-hook 'prog-mode-hook
 	  (lambda ()
 		(rainbow-delimiters-mode 1)
+		(company-mode)
 		(smartparens-mode 1)))
    #+end_src
 ** Clojure
