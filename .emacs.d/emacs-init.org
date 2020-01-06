@@ -1631,6 +1631,11 @@ awesome.
 
 (defalias 'spell-buffer 'ispell-buffer)
    #+end_src
+** Man pages
+Open man page in current window, rather than other window with 
+#+begin_src emacs-lisp
+(custom-set-variables '(Man-notify-method 'pushy))
+#+end_src
 
 * Programming language modes
 
