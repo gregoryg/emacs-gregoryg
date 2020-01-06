@@ -1548,6 +1548,30 @@ Simply add the new block param =:keep-windows= to use this functionality
 (global-set-key (kbd "C-<f2>") 'multi-occur-in-this-mode)
 #+end_src
 ** Shell mode
+*** Placement of new shell windows
+I want new shell buffers to open in the currently selected window, not replacing the text
+I'm referencing in a different window.  This is absurdly difficult to do because
+=shell-mode= does not offer a setting to control this behavior.  The solution I found was
+given in an answer [[https://stackoverflow.com/a/40351851/457574][here on stackoverflow]] 
+
+#+begin_src emacs-lisp
+(defun shell-same-window-advice (orig-fn &optional buffer)
+  "Advice to make `shell' reuse the current window.
+
+Intended as :around advice."
+  (let* ((buffer-regexp
+          (regexp-quote
+           (cond ((bufferp buffer)  (buffer-name buffer))
+                 ((stringp buffer)  buffer)
+                 (:else             "*shell*"))))
+         (display-buffer-alist
+          (cons `(,buffer-regexp display-buffer-same-window)
+                display-buffer-alist)))
+    (funcall orig-fn buffer)))
+
+(advice-add 'shell :around #'shell-same-window-advice)
+#+end_src
+*** ANSI color
 The =xterm-color-filter= function is part of the =xterm-color= package.  It does the
 lawd's work in translating ANSI color codes to font properties so that things can look
 awesome.
