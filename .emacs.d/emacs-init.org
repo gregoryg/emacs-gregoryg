@@ -114,40 +114,40 @@
 * Org mode stuff
 
 ** Org Babel and Source Code Blocks
-  TODO: install pkgs babel ob-http and ob-jupyter
+  TODO: install ob-jupyter package on systems with Jupyter
   #+begin_src emacs-lisp
-;; (unless (version< org-version "9.2")
-;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
-;;   )
-(org-babel-do-load-languages
- 'org-babel-load-languages
- (append org-babel-load-languages
-	 '(
-	   (clojure . t)
-	   (http . t) ;; curl 
-	   (js . t)
-	   (latex . t)
-	   (python . t)
-	   (shell  . t)
-	   (sql . t)
-	   (jupyter . t)
-	   )))
-;; The Dreadful Timeline has brought us indentation-sensitive languages
-;; Python, YAML, Heredoc seem to require that Org not format source code blocks
-(setq org-src-preserve-indentation t) 
-(setq org-src-window-setup 'current-window)
-(setq org-structure-template-alist '(("C" . "comment")
-				     ("e" . "example")
-				     ("E" . "export")
-				     ("h" . "export html")
-				     ("l" . "export latex")
-				     ("q" . "quote")
-				     ("S" . "src")
-				     ("sb" . "src bash")
-				     ("sl" . "src emacs-lisp")
-				     ("sp" . "src python")
-				     ("ss" . "src sh")
-				     ("sy" . "src yaml")))
+	;; (unless (version< org-version "9.2")
+	;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
+	;;   )
+	(org-babel-do-load-languages
+	 'org-babel-load-languages
+	 (append org-babel-load-languages
+		 '(
+		   (clojure . t)
+		   (http . t) ;; curl 
+		   (js . t)
+		   (latex . t)
+		   (python . t)
+		   (shell  . t)
+		   (sql . t)
+		   (jupyter . t)
+		   )))
+	;; ;; The Dreadful Timeline has brought us indentation-sensitive languages
+	;; ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
+	;; (setq org-src-preserve-indentation nil) 
+	(setq org-src-window-setup 'current-window)
+	(setq org-structure-template-alist '(("C" . "comment")
+						 ("e" . "example")
+						 ("E" . "export")
+						 ("h" . "export html")
+						 ("l" . "export latex")
+						 ("q" . "quote")
+						 ("S" . "src")
+						 ("sb" . "src bash")
+						 ("sl" . "src emacs-lisp")
+						 ("sp" . "src python")
+						 ("ss" . "src sh")
+						 ("sy" . "src yaml")))
 
   #+end_src
 *** Crazy way to allow babel elisp to modify window configuration
@@ -213,8 +213,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 #+end_src
 
 ** Org-mode hook
-   I had a lot of nonsense in this hook - a couple lines may survive
-
    On =auto-fill-mode=: I prefer to have it on, but hate when
    creating links and having it wrap while typing the description.
    For this reason, I want to get in the habit of only adding links
@@ -226,14 +224,11 @@ Simply add the new block param =:keep-windows= to use this functionality
 	    (auto-fill-mode 1)
 	    (setq fill-column 90) ; good default for wide screens
 	    (org-defkey org-mode-map [(control tab)] 'org-next-link)
-	    ;; 	    (org-defkey org-mode-map [C-S-iso-lefttab] 'org-previous-link)
-	    ;; 	    ;; (org-defkey org-mode-map [C-c C-/] 'org-decrypt-entries)
 	    ;; steal back my keys
 	    (org-defkey org-mode-map [home] 'beginning-of-buffer)
 	    (org-defkey org-mode-map [end] 'end-of-buffer)
 	    ;; 	    ;; (local-set-key (kbd "C-c TAB") 'org-next-link)
 	    ;; 	    ;; (local-set-key (kbd "S C-c TAB") 'org-previous-link)
-	    ;; 	    ;; and what the hell - turn on auto fill mode for every org file
 	    ;; 	    (abbrev-mode 1)
 	    ;; 	    ;; set sub/superscript interpretation OFFFFFFOOOFFF
 	    ;; 	    (setq org-use-sub-superscripts nil)
@@ -306,9 +301,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 ;;(require 'ox-confluence)
     #+end_src
 *** HTML
-
-	#+RESULTS:
-	: gjg/org-export-to-html-and-open
 *** Exporting Babel without evaluation
 #+begin_src emacs-lisp
 (custom-set-variables '(org-export-use-babel nil))
@@ -356,13 +348,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 (with-eval-after-load "ox-html"
   (advice-add 'org-export-to-buffer :around 'my-with-theme)
   (advice-add 'org-export-to-file :around 'my-with-theme)
-  )
-
-
-
-;; Add a help function to open the resulting file
-(defun gjg/html-and-open ()
-
   )
 
 #+end_src
@@ -1593,7 +1578,7 @@ awesome.
 	    (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)
 	    ;; (unless (file-remote-p default-directory)
 	    ;;   (company-mode 1))
-	    ;; (process-send-string (get-buffer-process (current-buffer)) "export TERM=xterm-256color")
+	    ;; (process-send-string (get-buffer-process (current-buffer)) "export TERM=xterm-256color\n")
 	    ))
 
 ;; Also set TERM accordingly (xterm-256color) in the shell itself.
