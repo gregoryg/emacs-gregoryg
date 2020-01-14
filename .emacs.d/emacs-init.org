@@ -771,18 +771,18 @@ Simply add the new block param =:keep-windows= to use this functionality
    encoded herein.
 
    #+begin_src emacs-lisp
-(cond ((or (eq window-system 'mac) (eq window-system 'ns))
-       (set-frame-font "Source Code Pro-17"))
-      ((eq window-system 'w32)
-       (set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1"))
-      ((eq window-system 'x)
-       (set-frame-font "Hack-16")
-       ;; (set-frame-font "Inconsolata-16")
-       ))
-;; (load-library "fontize")
-;; (require 'fontize)
-;; (global-set-key [C-kp-subtract] 'dec-font-size)
-;; (global-set-key [C-kp-add] 'inc-font-size)
+	 (cond ((or (eq window-system 'mac) (eq window-system 'ns))
+			(set-frame-font "Source Code Pro-17"))
+		   ((eq window-system 'w32)
+			(set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1"))
+		   ((eq window-system 'x)
+			(set-frame-font "Hack-16")
+			;; (set-frame-font "Inconsolata-16")
+			))
+	 (load-library "fontize")
+	 (require 'fontize)
+	 (global-set-key [C-kp-subtract] 'dec-font-size)
+	 (global-set-key [C-kp-add] 'inc-font-size)
    #+end_src
 ** Desktop save
    #+begin_src emacs-lisp
