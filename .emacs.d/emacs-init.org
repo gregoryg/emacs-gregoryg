@@ -1125,32 +1125,32 @@ Simply add the new block param =:keep-windows= to use this functionality
     Saved filter groups provide a nice organization.
 
     #+begin_src emacs-lisp
-(global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
-(setq ibuffer-expert t)
-(setq ibuffer-saved-filter-groups
-      '(("home"
-	 ("Org and Markdown" (or (mode . org-mode)
-				 (mode . markdown-mode)))
-	 ("Shell" (mode . shell-mode))
-	 ("Configs" (or (filename . ".emacs.d")
-			(mode . emacs-lisp-mode)
-			(derived-mode .  conf-mode)
-			(mode . json-mode)
-			(mode . yaml-mode)))
-	 ("Code" (derived-mode .  prog-mode))
-	 ("Magit" (or (mode . magit-diff-mode)
-		      (mode . magit-status-mode)
-		      (mode . magit-process-mode)
-		      (mode . magit-revision-mode)
-		      (mode . magit-refs-mode)))
-	 ("Dired" (mode . dired-mode))
-	 ("Tramp sessions" (name . "\*tramp.+"))
-	 ("Remote" (filename . "/\*:.+"))
-	 )))
-(add-hook 'ibuffer-mode-hook
-	  '(lambda ()
-	     (ibuffer-auto-mode 1)
-	     (ibuffer-switch-to-saved-filter-groups "home")))
+	  (global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
+	  (setq ibuffer-expert t)
+	  (setq ibuffer-saved-filter-groups
+			'(("home"
+			   ("Org and Markdown" (or (mode . org-mode)
+									   (mode . markdown-mode)))
+			   ("Shell" (mode . shell-mode))
+			   ("Configs" (or (filename . ".emacs.d")
+							  (mode . emacs-lisp-mode)
+							  (derived-mode .  conf-mode)
+							  (mode . json-mode)))
+			   ("YAML Shmaml" (mode . yaml-mode))
+			   ("Code" (derived-mode .  prog-mode))
+			   ("Magit" (or (mode . magit-diff-mode)
+							(mode . magit-status-mode)
+							(mode . magit-process-mode)
+							(mode . magit-revision-mode)
+							(mode . magit-refs-mode)))
+			   ("Dired" (mode . dired-mode))
+			   ("Tramp sessions" (name . "\*tramp.+"))
+			   ("Remote" (filename . "/\*:.+"))
+			   )))
+	  (add-hook 'ibuffer-mode-hook
+				'(lambda ()
+				   (ibuffer-auto-mode 1)
+				   (ibuffer-switch-to-saved-filter-groups "home")))
     #+end_src
 *** Uniquify
     #+begin_src emacs-lisp
@@ -1537,6 +1537,13 @@ Simply add the new block param =:keep-windows= to use this functionality
 (global-set-key (kbd "C-<f2>") 'multi-occur-in-this-mode)
 #+end_src
 ** Shell mode
+*** Bash completions
+#+begin_src emacs-lisp
+  (autoload 'bash-completion-dynamic-complete \"bash-completion\"
+	\"BASH completion hook\")
+  (add-hook 'shell-dynamic-complete-functions
+			'bash-completion-dynamic-complete)
+#+end_src
 *** Placement of new shell windows
 I want new shell buffers to open in the currently selected window, not replacing the text
 I'm referencing in a different window.  This is absurdly difficult to do because
