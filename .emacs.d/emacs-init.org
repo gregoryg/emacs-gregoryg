@@ -1539,10 +1539,8 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Shell mode
 *** Bash completions
 #+begin_src emacs-lisp
-  (autoload 'bash-completion-dynamic-complete \"bash-completion\"
-	\"BASH completion hook\")
-  (add-hook 'shell-dynamic-complete-functions
-			'bash-completion-dynamic-complete)
+  (require 'bash-completion)
+  (bash-completion-setup)
 #+end_src
 *** Placement of new shell windows
 I want new shell buffers to open in the currently selected window, not replacing the text
