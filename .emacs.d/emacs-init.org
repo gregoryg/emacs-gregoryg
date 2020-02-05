@@ -1682,10 +1682,17 @@ Open man page in current window, rather than other window with
    #+end_src
 ** Rust
 ** Javascript
+*** Prefer =js2= mode
    #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
    #+end_src
+*** Treat =.cue= as JSON
+	#+begin_src emacs-lisp
+	  (add-to-list 'auto-mode-alist '("\\.cue$" . json-mode))
+
+	#+end_src
 ** Python
+*** Python mode setup
    #+begin_src emacs-lisp
 ;; Python
 ;; TODO: is the ANSI code problem still existant as of Emacs 26.3?
@@ -1718,6 +1725,10 @@ Open man page in current window, rather than other window with
 ;; (require 'prettify-greek)
 
    #+end_src
+*** Treat Bazel/Starlark files as Python
+	#+begin_src emacs-lisp
+	  (add-to-list 'auto-mode-alist '("\\.starlark$" . python-mode))
+	#+end_src
 ** Jupyter
 #+begin_src emacs-lisp
 (use-package jupyter
