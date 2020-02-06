@@ -114,6 +114,15 @@
 
 * Org mode stuff
 
+** Org key mappings
+Disable some that get in the way
+#+begin_src emacs-lisp
+(eval-after-load 'org
+  (progn
+	(define-key org-mode-map (kbd "C-c ;") nil)
+	)
+  )
+#+end_src
 ** Org Babel and Source Code Blocks
   TODO: install ob-jupyter package on systems with Jupyter
   #+begin_src emacs-lisp
