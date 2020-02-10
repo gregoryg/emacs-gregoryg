@@ -154,6 +154,7 @@ Disable some that get in the way
 						 ("q" . "quote")
 						 ("S" . "src")
 						 ("sb" . "src bash")
+                         ("sj" . "src json")
 						 ("sl" . "src emacs-lisp")
 						 ("sp" . "src python")
 						 ("ss" . "src sh")
@@ -740,6 +741,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 #+end_src
 
 * Greg's customizations!
+
 ** Let emacs use more memory in these modern times
  #+BEGIN_SRC emacs-lisp
 (setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
@@ -827,6 +829,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 ;; don't do that stoopid splash screen
 (setq inhibit-splash-screen t)
 
+(setq-default indent-tabs-mode nil)
 (setq-default tab-always-indent t)
 (setq-default tab-width 4)
 ;; blink parens and similar delimiters
