@@ -49,6 +49,8 @@
 (defvar gjg/required-packages
   '(ag
     bash-completion
+    bazel-mode
+    company
     counsel
     diminish
     docker-tramp
@@ -1698,9 +1700,9 @@ Open man page in current window, rather than other window with
    #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
    #+end_src
-*** Treat =.cue= as JSON
+*** Treat =.cue= as JSON or Bazel
 	#+begin_src emacs-lisp
-	  (add-to-list 'auto-mode-alist '("\\.cue$" . json-mode))
+(add-to-list 'auto-mode-alist '("\\.cue$" . bazel-mode))
 
 	#+end_src
 ** Python
