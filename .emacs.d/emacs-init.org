@@ -92,6 +92,7 @@
     sql-indent
     terraform-mode
     ;; web-mode
+    yafolding
     yaml-mode
     ))
 
@@ -821,7 +822,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 ;; When I want transient mark mode, I'll beat it out of you
 (setq transient-mark-mode nil)
 ;; display time and battery status in the mode line
-(display-time-mode 1)
+(display-time-mode 0)
 (display-battery-mode 0)
 ;; turn off that stupid toolbar
 (tool-bar-mode -1)
@@ -1351,6 +1352,17 @@ Simply add the new block param =:keep-windows= to use this functionality
 	       ;;                              ("-o" "UserKnownHostsFile=/dev/null")
 	       ;;                              ("-o" "StrictHostKeyChecking=no")))
 	       (tramp-default-port         22)))
+(add-to-list 'tramp-methods
+             '("gcssh"
+               (tramp-login-program        "gcloud compute ssh")
+               (tramp-login-args           (("%h")))
+               (tramp-async-args           (("-q")))
+               (tramp-remote-shell         "/bin/bash")
+               (tramp-remote-shell-args    ("-c"))
+               (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+                                            ("-o" "UserKnownHostsFile=/dev/null")
+                                            ("-o" "StrictHostKeyChecking=no")))
+               (tramp-default-port         22)))
 
 
     #+end_src
@@ -1656,6 +1668,11 @@ Open man page in current window, rather than other window with
 		(company-mode)
 		(smartparens-mode 1)))
    #+end_src
+** Folding for indentation-based languages
+#+begin_src emacs-lisp
+(add-hook 'python-mode-hook #'yafolding-mode)
+(add-hook 'yaml-mode-hook #'yafolding-mode)
+#+end_src
 ** Clojure
    #+begin_src emacs-lisp
 (require 'ob-clojure) ;; org-babel code evaluation
