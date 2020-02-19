@@ -1664,15 +1664,12 @@ Open man page in current window, rather than other window with
    #+begin_src emacs-lisp
 (add-hook 'prog-mode-hook
 	  (lambda ()
+		(rainbow-delimiters-mode 0)
 		(rainbow-delimiters-mode 1)
-		(company-mode)
+		(company-mode 1)
+        (yafolding-mode 1)
 		(smartparens-mode 1)))
    #+end_src
-** Folding for indentation-based languages
-#+begin_src emacs-lisp
-(add-hook 'python-mode-hook #'yafolding-mode)
-(add-hook 'yaml-mode-hook #'yafolding-mode)
-#+end_src
 ** Clojure
    #+begin_src emacs-lisp
 (require 'ob-clojure) ;; org-babel code evaluation
