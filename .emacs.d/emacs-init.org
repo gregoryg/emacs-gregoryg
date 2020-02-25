@@ -63,6 +63,7 @@
     ;; ivy-omni-org
     ;; ivy-todo
     jupyter
+    keychain-environment
     magit
     magit-todos
     material-theme
