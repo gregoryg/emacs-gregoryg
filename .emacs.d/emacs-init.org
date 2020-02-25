@@ -114,7 +114,6 @@
 	(package-install p)))))
 
 #+END_SRC
-
 * Org mode stuff
 
 ** Org key mappings
@@ -235,6 +234,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 (add-hook 'org-mode-hook
 	  (lambda ()
 	    (auto-fill-mode 1)
+        (org-bullets-mode 1)
 	    (setq fill-column 90) ; good default for wide screens
 	    (org-defkey org-mode-map [(control tab)] 'org-next-link)
 	    ;; steal back my keys
@@ -1624,6 +1624,13 @@ awesome.
 ;; 	    (shell-command "export PS1='\\[\\e[32m\\]\\u@\\h \\[\\e[33m\\]\\w\\[\\e[0m\\]\\n\\$ '")
 ;; 	    ))
    #+end_src
+*** SSH Agent in subprocesses
+    + Not really related to shell-mode, this assures our keychain is activated for things
+      such as magit that fire off subproceess
+      #+begin_src emacs-lisp
+(keychain-refresh-environment)
+      #+end_src
+
 ** Smartparens
    #+begin_src emacs-lisp
 (autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
