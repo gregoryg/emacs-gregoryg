@@ -1317,7 +1317,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 		(nil
 		 ("task" "exec" "-it")
 		 ("%h")
-		 ("--" "bash")))
+		 ("bash")))
 	       (tramp-remote-shell "/bin/sh")
 	       (tramp-remote-shell-args ("-i" "-c"))))
 
