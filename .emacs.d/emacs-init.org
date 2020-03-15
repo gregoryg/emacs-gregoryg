@@ -59,6 +59,8 @@
     ;; edit-server
     flx
     go
+    go-autocomplete
+    go-guru
     htmlize
     ;; ivy-omni-org
     ;; ivy-todo
