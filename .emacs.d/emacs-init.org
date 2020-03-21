@@ -294,7 +294,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 	 "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
 	
 	("p" "D2iQ Phone/Meeting" entry
-	 (file+headline "~/mesosphere.org.gpg" "Calls and Meetings Log")
+	 (file+headline "~/projects/private-orgmode/mesosphere.org.gpg" "Calls and Meetings Log")
 	 "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty|Nick Kane|Jerry Connors}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
       :PROPERTIES:
       :NOBLOCKING: t
@@ -418,7 +418,7 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+begin_src emacs-lisp
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key "\C-ca" 'org-agenda)
-(setq org-agenda-files '("~/mesosphere.org.gpg"))
+(setq org-agenda-files '("~/projects/private-orgmode/mesosphere.org.gpg"))
 ;;(global-set-key (kbd "C-c TAB") 'org-cycle-agenda-files)
 ;; Set basic org-mode keys
 (setq org-agenda-show-inherited-tags t)
