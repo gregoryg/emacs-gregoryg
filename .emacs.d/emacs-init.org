@@ -417,7 +417,9 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+begin_src emacs-lisp
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key "\C-ca" 'org-agenda)
-(setq org-agenda-files '("~/projects/private-orgmode/mesosphere.org.gpg"))
+(setq org-agenda-files '("~/projects/private-orgmode/mesosphere.org.gpg"
+                         "~/projects/d2iq/se-poc/champions-teams/data-services/data-services-se-team-champions.org"
+                         ))
 ;;(global-set-key (kbd "C-c TAB") 'org-cycle-agenda-files)
 ;; Set basic org-mode keys
 (setq org-agenda-show-inherited-tags t)
@@ -536,8 +538,8 @@ Simply add the new block param =:keep-windows= to use this functionality
 			   ("NEXT")
 			   ""))
 (setq org-columns-default-format "%TODO %CATEGORY %60ITEM(Task)%5Effort(Estim){:} %5CLOCKSUM(Clock) %SCHEDULED(Time) %DEADLINE")
-(setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s!)" "|" "DONE(d!)")      ;; ordinary sequence is Todo -> Started -> Done
-				(sequence "PROPOSED(p)" "WAITING(w@/!)" "MAYBE(m!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
+(setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s!)" "PAUSED(p!)" "|" "DONE(d!)")      ;; ordinary sequence is Todo -> Started -> Done
+				(sequence "WAITING(w@/!)" "MAYBE(m!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
 				;; (sequence "QUOTE(q!)" "QUOTED(Q!)" "|" "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")     ;; sequence for quotes
 				)))
 (setq org-todo-keyword-faces
