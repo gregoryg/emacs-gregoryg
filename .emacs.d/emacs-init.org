@@ -13,7 +13,7 @@
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
 # #+SETUPFILE: ~/projects/org-html-themes/setup/theme-readtheorg-local.setup
-#+SETUPFILE: https://raw.githubusercontent.com/fniessen/org-html-themes/master/setup/theme-readtheorg.setup
+#+setupfile: ~/projects/org-html-themes/setup/theme-readtheorg.setup
 * Should I use =evil-mode=?
 
   No.
@@ -41,8 +41,6 @@
 
 (add-to-list 'load-path "~/emacs")
 (require 'cl)
-;; (require 'ls-lisp)
-;; (setq ls-lisp-use-insert-directory-program nil)
 (require 'package)
 
 ;; get control of required packages across different emacs environments
@@ -1514,6 +1512,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 ;; (global-set-key (kbd "C-M-r") 'swiper-isearch-backward)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "C-x b") 'ivy-switch-buffer)
      #+end_src
 ** Grep
    #+begin_src emacs-lisp
@@ -1634,6 +1633,14 @@ awesome.
 (keychain-refresh-environment)
       #+end_src
 
+** Magit
+   Initiate =magit-todos= only on =magit= invocation, since it loads slowly
+   #+begin_export emacs-lisp
+   (add-hook 'magit-status-mode-hook
+             (lambda ()
+               (magit-todos-mode 1)
+               ))
+   #+end_export
 ** Smartparens
    #+begin_src emacs-lisp
 (autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
