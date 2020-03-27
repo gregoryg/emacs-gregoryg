@@ -48,6 +48,7 @@
   '(ag
     bash-completion
     bazel-mode
+    brutalist-theme
     company
     counsel
     diminish
@@ -1180,7 +1181,7 @@ Simply add the new block param =:keep-windows= to use this functionality
     #+end_src
 *** Theme
     #+begin_src emacs-lisp
-(load-theme 'material t)
+(load-theme 'brutalist-dark t)
     #+end_src
 ** Automatic typing - abbrevs and expansions
    #+begin_src emacs-lisp
