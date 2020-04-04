@@ -48,7 +48,6 @@
   '(ag
     bash-completion
     bazel-mode
-    brutalist-theme
     company
     counsel
     diminish
@@ -69,7 +68,7 @@
     magit-todos
     material-theme
     org
-    org-bullets
+    org-superstar
     org-plus-contrib
     org-tree-slide
     ob-async
@@ -236,7 +235,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 (add-hook 'org-mode-hook
 	  (lambda ()
 	    (auto-fill-mode 1)
-        (org-bullets-mode 1)
+        (org-superstar-mode 1)
 	    (setq fill-column 90) ; good default for wide screens
 	    (org-defkey org-mode-map [(control tab)] 'org-next-link)
 	    ;; steal back my keys
@@ -265,10 +264,10 @@ Simply add the new block param =:keep-windows= to use this functionality
 ;; (defun capture-blog-filename (path)
 (defun capture-blog-filename ()
   (let ((thedate (org-read-date nil nil nil "Date of post: "))
-	(name (read-string "Name of blog post file description: ")))
+	    (name (read-string "Name of blog post file description: ")))
     (expand-file-name (format "%s-%s.md"
-			      (format-time-string "%Y-%m-%d")
-			      name) "~/projects/jekyll/gregorygrubbs/_posts/")))
+			                  (format-time-string "%Y-%m-%d")
+			                  name) "~/projects/jekyll/gregorygrubbs/_posts/")))
 
 
 (setq org-default-notes-file "~/projects/notes.org")
@@ -277,9 +276,9 @@ Simply add the new block param =:keep-windows= to use this functionality
 (define-key global-map "\C-cc" 'org-capture)
 (setq org-capture-templates
       '(
-	("b" "Blog post" plain
-	 (file capture-blog-filename)
-	 "---
+	    ("b" "Blog post" plain
+	     (file capture-blog-filename)
+	     "---
       layout: post
       title:  %^{title|Generic Post}
       date:   %<%F %T %z>
@@ -287,14 +286,15 @@ Simply add the new block param =:keep-windows= to use this functionality
       ---
 
       # some thoughts"
-	 )
-	("r" "Regular todo" entry
-	 (file+headline "~/todos.org" "General")
-	 "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
-	
-	("p" "D2iQ Phone/Meeting" entry
-	 (file+headline "~/projects/private-orgmode/mesosphere.org.gpg" "Calls and Meetings Log")
-	 "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty|Nick Kane|Jerry Connors}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
+	     )
+        ("l" "Link" entry (file+headline "~/projects/links.org" "Links")
+         "* %a %^g\n %?\n %T\n %i")
+	    ("r" "Regular todo" entry
+	     (file+headline "~/todos.org" "General")
+	     "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
+	    ("p" "D2iQ Phone/Meeting" entry
+	     (file+headline "~/projects/private-orgmode/gjg-notes.org" "Calls and Meetings Log")
+	     "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
       :PROPERTIES:
       :NOBLOCKING: t
       :END:
@@ -306,7 +306,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 	 + From %\\2: 
 	 + %?
        " :prepend t :clock-in t :clock-resume t)
-	))
+	    ))
 
 
    #+end_src
@@ -417,12 +417,10 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+begin_src emacs-lisp
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key "\C-ca" 'org-agenda)
-(setq org-agenda-files '("~/projects/private-orgmode/mesosphere.org.gpg"
-                         "~/projects/d2iq/se-poc/champions-teams/data-services/data-services-se-team-champions.org"
-                         ))
+;;; ---> Set org-agenda-files in customization
+;; (setq org-agenda-files '("~/projects/private-orgmode/gjg-notes.org"))
 ;;(global-set-key (kbd "C-c TAB") 'org-cycle-agenda-files)
 ;; Set basic org-mode keys
-(setq org-agenda-show-inherited-tags t)
 (setq org-agenda-hide-tags-regexp "noagenda")
 (setq org-agenda-window-setup 'other-window)
 (setq org-agenda-restore-windows-after-quit t)
@@ -433,36 +431,34 @@ Simply add the new block param =:keep-windows= to use this functionality
 
 (setq org-agenda-exporter-settings
       '((ps-number-of-columns 1)
-	(ps-landscape-mode t)
-	(org-agenda-add-entry-text-maxlines 10)
-	(htmlize-output-type 'css)))
+	    (ps-landscape-mode t)
+	    (org-agenda-add-entry-text-maxlines 10)
+	    (htmlize-output-type 'css)))
 
-;;(setq org-agenda-start-with-clockreport-mode t)
+(setq org-agenda-start-with-clockreport-mode t)
 (setq org-special-ctrl-a/e t)
 (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
-(setq org-cycle-open-archived-trees nil)
 (setq org-cycle-separator-lines 1) ;
 (setq org-clock-history-length 12)
 
-(setq org-agenda-show-inherited-tags t)
 (setq org-agenda-custom-commands
       (quote (("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
-	      ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
-	      ("w" "Tasks waiting on something" tags "WAITING" ((org-use-tag-inheritance nil)))
-	      ("dc" "Clock report" agenda ""
-	       ((org-agenda-ndays 1)
-		(org-agenda-start-with-clockreport-mode t)
-		(org-agenda-time-grid nil)
-		(org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
-	      ("dw" "Weekly clock report" agenda ""
-	       ((org-agenda-ndays 7)
-		(org-agenda-start-with-clockreport-mode t)
-		(org-agenda-time-grid nil)
-		(org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
-	      ("da" "GORT Agenda"
-	       ((agenda "")
-		(todo "STARTED")))
-	      )))
+	          ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
+	          ("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
+	          ("dc" "Clock report" agenda ""
+	           ((org-agenda-ndays 1)
+		        (org-agenda-start-with-clockreport-mode t)
+		        (org-agenda-time-grid nil)
+		        (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
+	          ("dw" "Weekly clock report" agenda ""
+	           ((org-agenda-ndays 7)
+		        (org-agenda-start-with-clockreport-mode t)
+		        (org-agenda-time-grid nil)
+		        (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
+	          ("da" "GORT Agenda"
+	           ((agenda "")
+		        (todo "STARTED")))
+	          )))
 
 ;; org-agenda: some handy keys
 ;;(define-key org-agenda-mode-map "o" 'org-agenda-show)
@@ -501,23 +497,23 @@ Simply add the new block param =:keep-windows= to use this functionality
 ;;                 (when remember-frame-p (delete-frame)))))))
 
 (add-hook 'org-agenda-mode-hook
-	  (lambda ()
-	    (hl-line-mode 1)
-	    ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
-	    ;;       (local-unset-key "o")
-	    ;; rebind to a sweet and beautiful function
-	    (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
-	    (local-unset-key "a") ;; don't let this accidentally archive a tree!
-	    ))
+	      (lambda ()
+	        ;; (hl-line-mode 1)
+	        ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
+	        ;;       (local-unset-key "o")
+	        ;; rebind to a sweet and beautiful function
+	        (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
+	        (local-unset-key "a") ;; don't let this accidentally archive a tree!
+	        ))
 (add-hook 'org-export-preprocess-hook
-	  (lambda ()
-	    (org-dblock-update 2) ;; update all dynamic blocks in the buffer
-	    ))
+	      (lambda ()
+	        (org-dblock-update 2) ;; update all dynamic blocks in the buffer
+	        ))
 ;; Function stolen from Bernt Hansen on gmane.emacs.orgmode: insert inactive time stamp for new entries
 
 (setq org-agenda-format-date
       (concat "%Y-%m-%d %a "
-	      (make-string (- (window-width) 15) (string-to-char "_"))))
+	          (make-string (- (window-width) 15) (string-to-char "_"))))
 
    #+end_src
 ** Tags/TODOs/Projects Oh My
@@ -548,28 +544,16 @@ Simply add the new block param =:keep-windows= to use this functionality
 	("STARTED" . "#E35DBF")
 	("CANCELLED" :foreground "green" :weight bold :strike-through t)
 	("PROPOSED" . "pink")
+    ("PAUSED"  . "yellow")
 	("WAITING" . "yellow")))
 
-;; (setq org-todo-keyword-faces (quote (("TODO" :foreground "red" :weight bold)
-;;                                      ("STARTED" :foreground "deep sky blue" :weight bold)
-;;                                      ("DONE" :foreground "forest green" :weight bold)
-;;                                      ("WAITING" :foreground "orange" :weight bold)
-;;                                      ("SOMEDAY" :foreground "magenta" :weight bold)
-;;                                      ("CANCELLED" :foreground "forest green" :weight bold)
-;;                                      ("QUOTE" :foreground "red" :weight bold)
-;;                                      ("QUOTED" :foreground "magenta" :weight bold)
-;;                                      ("APPROVED" :foreground "forest green" :weight bold)
-;;                                      ("EXPIRED" :foreground "forest green" :weight bold)
-;;                                      ("REJECTED" :foreground "forest green" :weight bold)
-;;                                      ("OPEN" :foreground "blue" :weight bold))))
-
-(setq org-todo-state-tags-triggers
-      (quote (("CANCELLED" ("CANCELLED" . t))
-	      ("WAITING" ("WAITING" . t) ("NEXT"))
-	      ("SOMEDAY" ("WAITING" . t))
-	      (done ("NEXT") ("WAITING"))
-	      ("TODO" ("WAITING") ("CANCELLED"))
-	      ("STARTED" ("WAITING") ("NEXT" . t)))))
+;; (setq org-todo-state-tags-triggers
+;;       (quote (("CANCELLED" ("CANCELLED" . t))
+;; 	      ("WAITING" ("WAITING" . t) ("NEXT"))
+;; 	      ("SOMEDAY" ("WAITING" . t))
+;; 	      (done ("NEXT") ("WAITING"))
+;; 	      ("TODO" ("WAITING") ("CANCELLED"))
+;; 	      ("STARTED" ("WAITING") ("NEXT" . t)))))
 ;; Change task state to STARTED when clocking in
 (setq org-clock-in-switch-to-state "STARTED")
 
@@ -611,6 +595,20 @@ Simply add the new block param =:keep-windows= to use this functionality
 (setq org-agenda-before-write-hook nil)
 (setq org-mobile-files '( "~/Copy/ingress/ingress.org" 'org-agenda-files))
 
+   #+end_src
+** Blogging with Hugo
+   #+begin_src emacs-lisp
+(use-package easy-hugo
+  :init
+  (setq easy-hugo-basedir "~/projects/emacs/blogs/gregorygrubbs.com/")
+  (setq easy-hugo-postdir "~/projects/emacs/blogs/gregorygrubbs.com/content/posts/")
+  (setq easy-hugo-url "https://gregorygrubbs.com")
+  (setq easy-hugo-sshdomain "gregorygrubbs")
+  (setq easy-hugo-root "/home/gortsleigh/gregorygrubbs.com")
+  (setq easy-hugo-previewtime "300")
+  (setq easy-hugo-default-ext ".org")
+  (setq easy-hugo-org-header t)
+  :bind ("C-c C-e" . easy-hugo))
    #+end_src
 ** Publishing
    This is for publishing to a website
@@ -824,14 +822,14 @@ Simply add the new block param =:keep-windows= to use this functionality
 #+begin_src emacs-lisp
 ;; When I want transient mark mode, I'll beat it out of you
 (setq transient-mark-mode nil)
-;; display time and battery status in the mode line
+;; (do not) display time and battery status in the mode line
 (display-time-mode 0)
 (display-battery-mode 0)
 ;; turn off that stupid toolbar
 (tool-bar-mode -1)
 ;; scroll bars?
 (scroll-bar-mode -1)
-
+(menu-bar-mode -1)
 ;; don't do that stoopid splash screen
 (setq inhibit-splash-screen t)
 
@@ -852,7 +850,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 (setq explicit-shell-file-name shell-file-name)
 (setq explicit-bash-args '("--noediting" "-i"))
 
-(global-hl-line-mode t) ;; highlight current line - turn off when figuring out faces
+;; (global-hl-line-mode t) ;; highlight current line - turn off when figuring out faces
 
 (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows - nice for UX
 
@@ -1183,7 +1181,7 @@ Simply add the new block param =:keep-windows= to use this functionality
     #+end_src
 *** Theme
     #+begin_src emacs-lisp
-(load-theme 'brutalist-dark t)
+;; (load-theme 'brutalist-dark t)
     #+end_src
 ** Automatic typing - abbrevs and expansions
    #+begin_src emacs-lisp
