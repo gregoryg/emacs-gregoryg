@@ -53,6 +53,7 @@
     diminish
     docker-tramp
     dumb-jump
+    easy-hugo
     edit-indirect
     ;; edit-server
     flx
@@ -122,9 +123,12 @@ Disable some that get in the way
 #+begin_src emacs-lisp
 (eval-after-load 'org
   (progn
-	(define-key org-mode-map (kbd "C-c ;") nil)
-	)
-  )
+	(define-key org-mode-map (kbd "C-c ;") nil)       ; org-toggle-comment
+    (define-key org-mode-map (kbd "C-c C-x C-a") nil) ; org-archive-subtree-default
+    (define-key org-mode-map (kbd "C-c C-x C-s") nil) ; org-archive-to-subtree
+    (define-key org-mode-map (kbd "C-c C-x A") nil)   ; org-archive-to-archive-sibling
+    (define-key org-mode-map (kbd "C-c C-x a") nil)   ; org-toggle-archive-tag
+	))
 #+end_src
 ** Org Babel and Source Code Blocks
   TODO: install ob-jupyter package on systems with Jupyter
@@ -292,8 +296,8 @@ Simply add the new block param =:keep-windows= to use this functionality
 	    ("r" "Regular todo" entry
 	     (file+headline "~/todos.org" "General")
 	     "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
-	    ("p" "D2iQ Phone/Meeting" entry
-	     (file+headline "~/projects/private-orgmode/gjg-notes.org" "Calls and Meetings Log")
+	    ("p" "Phone/Meeting" entry
+	     (file+headline "~/projects/private-orgmode/gjg-notes.org" "Calls and Meetings")
 	     "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
       :PROPERTIES:
       :NOBLOCKING: t
@@ -421,10 +425,12 @@ Simply add the new block param =:keep-windows= to use this functionality
 ;; (setq org-agenda-files '("~/projects/private-orgmode/gjg-notes.org"))
 ;;(global-set-key (kbd "C-c TAB") 'org-cycle-agenda-files)
 ;; Set basic org-mode keys
+(setq org-agenda-span 'day)
+;;(setq org-agenda-skip-scheduled-if-done t)
 (setq org-agenda-hide-tags-regexp "noagenda")
 (setq org-agenda-window-setup 'other-window)
 (setq org-agenda-restore-windows-after-quit t)
-(setq org-agenda-start-with-log-mode t)
+;; (setq org-agenda-start-with-log-mode t)
 (setq org-agenda-entry-text-maxlines 10)
 (setq org-agenda-diary-file "~/projects/diary.org")
 (setq org-agenda-include-diary t)
@@ -435,7 +441,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 	    (org-agenda-add-entry-text-maxlines 10)
 	    (htmlize-output-type 'css)))
 
-(setq org-agenda-start-with-clockreport-mode t)
+;; (setq org-agenda-start-with-clockreport-mode nil)
 (setq org-special-ctrl-a/e t)
 (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
 (setq org-cycle-separator-lines 1) ;
@@ -458,6 +464,10 @@ Simply add the new block param =:keep-windows= to use this functionality
 	          ("da" "GORT Agenda"
 	           ((agenda "")
 		        (todo "STARTED")))
+              ("ds" "Scheduled not DONE" tags "SCHEDULED<>\"\""
+               ((org-agenda-skip-scheduled-if-done t)
+                )
+               )
 	          )))
 
 ;; org-agenda: some handy keys
@@ -719,7 +729,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 #+begin_src emacs-lisp
 ;; make c-y pay attention to current level
 (setq org-yank-adjusted-subtrees t)
-(setq org-yank-folded-subtrees nil)
+;; (setq org-yank-folded-subtrees nil)
 (setq org-insert-heading-respect-content t); new headings go AFTER CONTENT, even from the middle of content area
 (setq org-indirect-buffer-display 'current-window)
 (setq org-reverse-note-order t) ; notes go at the top
@@ -1379,6 +1389,40 @@ Simply add the new block param =:keep-windows= to use this functionality
 (add-hook 'find-file-hook 'my-tramp-header-line-function)
 (add-hook 'dired-mode-hook 'my-tramp-header-line-function)
     #+end_src
+*** Shell sugar
+**** Open remote shell in current remote directory
+#+begin_src emacs-lisp
+(defun gjg/open-remote-shell ()
+  "If current buffer is remote, open a new uniquely named shell based on host name"
+  (interactive)
+  (if (file-remote-p default-directory)
+      (progn
+        ;; do stuff
+        (message "Now I shall do stuff")
+        (shell (concat (file-remote-p default-directory 'host) "-sh"))
+        )
+	(progn
+	  (shell (concat "local-" default-directory "-sh"))
+	  ;; (message "Buffer is local - not opening shell"))
+	  )))
+#+end_src
+**** Open SUDO at current remote directory
+#+begin_src emacs-lisp
+(defun gjg/tramp-sudo-to-etc ()
+  "Dired browse as root (sudo) to /etc on current machine"
+  (interactive)
+  (let* ((trampvec (tramp-dissect-file-name default-directory))
+         (tramphop (elt trampvec 4))
+         (conntype (elt trampvec 0))
+         (trampuser (elt trampvec 1)) ; may be nil, which is cool
+         (tramphost (elt trampvec 2))
+         (sudopath (concat "/" tramphop conntype ":" tramphost "|sudo:" tramphost ":/etc/"))
+         )
+    (find-file sudopath)
+    )
+  )
+#+end_src
+
 ** Rainbow delimiters for various programming modes
    #+begin_src emacs-lisp
 (require 'rainbow-delimiters)
