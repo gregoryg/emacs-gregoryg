@@ -257,22 +257,19 @@ Simply add the new block param =:keep-windows= to use this functionality
 
    #+begin_src emacs-lisp
 ;; *** Org capture
-;; TODO: improve meeting template with
-;;       + :NOBLOCKING: t
-;;       + meeting|call
-
-;; PLEASE SET USING CUSTOMIZATION (setq org-directory "~/Copy/projects/")
-
-
 ;; taken from StackOverflow answer https://stackoverflow.com/questions/11902620/org-mode-how-do-i-create-a-new-file-with-org-capture
 ;; (defun capture-blog-filename (path)
-(defun capture-blog-filename ()
+(defun safe-blog-filename ()
   (let ((thedate (org-read-date nil nil nil "Date of post: "))
-	    (name (read-string "Name of blog post file description: ")))
-    (expand-file-name (format "%s-%s.md"
-			                  (format-time-string "%Y-%m-%d")
-			                  name) "~/projects/jekyll/gregorygrubbs/_posts/")))
-
+	    (name (read-string "Blog post title: ")))
+    (expand-file-name (format "%s-%s.org"
+                              (format-time-string "%Y-%m-%d")
+                              (downcase
+                               (replace-regexp-in-string "-+$" ""
+                                                         (replace-regexp-in-string "[^[:alnum:]]+" "-"
+                                                                                   (replace-regexp-in-string "[[:punct:]]" "" name)))))
+                      "~/projects/emacs/blogs/gregorygrubbs.com/content/post/"
+                      )))
 
 (setq org-default-notes-file "~/projects/notes.org")
 (eval-after-load "org-capture"
@@ -281,16 +278,9 @@ Simply add the new block param =:keep-windows= to use this functionality
 (setq org-capture-templates
       '(
 	    ("b" "Blog post" plain
-	     (file capture-blog-filename)
-	     "---
-      layout: post
-      title:  %^{title|Generic Post}
-      date:   %<%F %T %z>
-      categories: jekyll update
-      ---
-
-      # some thoughts"
-	     )
+	     (file safe-blog-filename)
+         (file "~/.emacs.d/hugo-default-blog.tmpl")
+         :jump-to-captured t)
         ("l" "Link" entry (file+headline "~/projects/links.org" "Links")
          "* %a %^g\n %?\n %T\n %i")
 	    ("r" "Regular todo" entry
@@ -298,7 +288,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 	     "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
 	    ("p" "Phone/Meeting" entry
 	     (file+headline "~/projects/private-orgmode/gjg-notes.org" "Calls and Meetings")
-	     "* %t %^{type|Call|Meeting} with %^{with|Unknown|Kirk Marty}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
+	     "* %t %^{type|Call|Meeting} with %^{with|Unknown|Recruiter}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
       :PROPERTIES:
       :NOBLOCKING: t
       :END:
@@ -306,13 +296,11 @@ Simply add the new block param =:keep-windows= to use this functionality
       :CREATED:%U
       :END:
       %i
-	 + From D2iQ: GG, 
+	 + From MyOrg: GG, 
 	 + From %\\2: 
 	 + %?
        " :prepend t :clock-in t :clock-resume t)
 	    ))
-
-
    #+end_src
 ** Exporting
 *** General preferences
@@ -611,7 +599,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 (use-package easy-hugo
   :init
   (setq easy-hugo-basedir "~/projects/emacs/blogs/gregorygrubbs.com/")
-  (setq easy-hugo-postdir "~/projects/emacs/blogs/gregorygrubbs.com/content/posts/")
+  (setq easy-hugo-postdir "~/projects/emacs/blogs/gregorygrubbs.com/content/post/")
   (setq easy-hugo-url "https://gregorygrubbs.com")
   (setq easy-hugo-sshdomain "gregorygrubbs")
   (setq easy-hugo-root "/home/gortsleigh/gregorygrubbs.com")
