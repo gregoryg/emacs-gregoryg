@@ -12,8 +12,7 @@
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
-# #+SETUPFILE: ~/projects/org-html-themes/setup/theme-readtheorg-local.setup
-#+setupfile: ~/projects/org-html-themes/setup/theme-readtheorg.setup
+#+setupfile: ~/projects/emacs/org-html-themes/setup/theme-readtheorg.setup
 * Should I use =evil-mode=?
 
   No.
@@ -594,6 +593,20 @@ Simply add the new block param =:keep-windows= to use this functionality
 (setq org-mobile-files '( "~/Copy/ingress/ingress.org" 'org-agenda-files))
 
    #+end_src
+** Org Roam - experimental
+#+begin_src emacs-lisp :tangle no
+(use-package org-roam
+  :hook 
+  (after-init . org-roam-mode)
+  :custom
+  (org-roam-directory "~/projects/private-orgmode/")
+  :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-show-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))))
+#+end_src
 ** Blogging with Hugo
    #+begin_src emacs-lisp
 (use-package easy-hugo
@@ -789,18 +802,21 @@ Simply add the new block param =:keep-windows= to use this functionality
    encoded herein.
 
    #+begin_src emacs-lisp
-	 (cond ((or (eq window-system 'mac) (eq window-system 'ns))
-			(set-frame-font "Source Code Pro-17"))
-		   ((eq window-system 'w32)
-			(set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1"))
-		   ((eq window-system 'x)
-			(set-frame-font "Hack-14")
-			;; (set-frame-font "Inconsolata-16")
-			))
-	 (load-library "fontize")
-	 (require 'fontize)
-	 (global-set-key [C-kp-subtract] 'dec-font-size)
-	 (global-set-key [C-kp-add] 'inc-font-size)
+(cond ((or (eq window-system 'mac) (eq window-system 'ns))
+	   (set-frame-font "Source Code Pro-17"))
+	  ((eq window-system 'w32)
+	   (set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1"))
+	  ((eq window-system 'x)
+	   (set-frame-font "Hack-14")
+	   ;; (set-frame-font "Inconsolata-16")
+	   ))
+;; (load-library "fontize")
+;; (require 'fontize)
+(autoload 'inc-font-size "fontize" "Adjust buffer relative font size" t)
+(autoload 'dec-font-size "fontize" "Adjust buffer relative font size" t)
+
+(global-set-key [C-kp-subtract] 'dec-font-size)
+(global-set-key [C-kp-add] 'inc-font-size)
    #+end_src
 ** Desktop save
    #+begin_src emacs-lisp
@@ -1796,6 +1812,7 @@ Open man page in current window, rather than other window with
 	      (setq python-indent-offset 4)
 	      (setq tab-width 4)
 	      (setq prettify-symbols-alist prettify-greek-lower)
+          (pyvenv-mode t)
 	      (prettify-symbols-mode t)))
   )
 
