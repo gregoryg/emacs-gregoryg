@@ -166,13 +166,14 @@ Disable some that get in the way
 						 ("sy" . "src yaml")))
 
   #+end_src
-*** Crazy way to allow babel elisp to modify window configuration
+*** Crazy way to allow babel elisp to modify window configuration  :noexport:
 This disables Org's use of =save-window-excursion= for execution of source blocks
 Stolen from [[https://emacs.stackexchange.com/questions/42096/running-elisp-within-an-orgmode-code-block][Running elisp within an orgmode code block]] (github)
 
 Simply add the new block param =:keep-windows= to use this functionality
 
 #+begin_src emacs-lisp
+(when nil 
 (require 'ob-emacs-lisp)
 (defun transform-tree (tree trafo)
   "Transform TREE by TRAFO."
@@ -226,6 +227,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 			 'save-window-excursion 'save-window-excursion-if '(null (member (cdr (assoc :keep-windows params)) '("yes" "t")))))
 ;; Replace `org-babel-execute:emacs-lisp':
 (advice-add 'org-babel-execute:emacs-lisp :override #'ad-org-babel-execute:emacs-lisp)
+)
 #+end_src
 
 ** Org-mode hook
@@ -821,7 +823,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Desktop save
    #+begin_src emacs-lisp
 (desktop-save-mode 1)
-(setq desktop-restore-eager 5)
+(setq desktop-restore-eager 0)
    #+end_src
 ** Basic defaults that aren't default
    So many defaults in Emacs make no sense.  If starting out with Emacs, consider these
@@ -834,6 +836,8 @@ Simply add the new block param =:keep-windows= to use this functionality
      in the function name and hit "C-h f"
 
 #+begin_src emacs-lisp
+;; fido-mode in emacs 27+: a new thing to hate
+(fido-mode -1)
 ;; When I want transient mark mode, I'll beat it out of you
 (setq transient-mark-mode nil)
 ;; (do not) display time and battery status in the mode line
@@ -1156,33 +1160,38 @@ Simply add the new block param =:keep-windows= to use this functionality
     Saved filter groups provide a nice organization.
 
     #+begin_src emacs-lisp
-	  (global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
-	  (setq ibuffer-expert t)
-	  (setq ibuffer-saved-filter-groups
-			'(("home"
-			   ("Org and Markdown" (or (mode . org-mode)
-									   (mode . markdown-mode)))
-			   ("Shell" (mode . shell-mode))
-			   ("Configs" (or (filename . ".emacs.d")
-							  (mode . emacs-lisp-mode)
-							  (derived-mode .  conf-mode)
-							  (mode . json-mode)))
-			   ("YAML Shmaml" (mode . yaml-mode))
-			   ("Code" (derived-mode .  prog-mode))
-			   ("Magit" (or (mode . magit-diff-mode)
-							(mode . magit-status-mode)
-							(mode . magit-process-mode)
-							(mode . magit-revision-mode)
-							(mode . magit-refs-mode)))
-			   ("Dired" (mode . dired-mode))
-			   ("Tramp sessions" (name . "\*tramp.+"))
-			   ("Remote" (filename . "/\*:.+"))
-			   )))
-	  (add-hook 'ibuffer-mode-hook
-				'(lambda ()
-				   (ibuffer-auto-mode 1)
-				   (ibuffer-switch-to-saved-filter-groups "home")))
+(global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
+(setq ibuffer-expert t)
+(setq ibuffer-saved-filter-groups
+      '(("home"
+	 ("Org and Markdown" (or (mode . org-mode)
+				 (mode . markdown-mode)))
+	 ("Shell" (mode . shell-mode))
+	 ("Configs" (or (filename . ".emacs.d")
+			(mode . emacs-lisp-mode)
+			(derived-mode .  conf-mode)
+			(mode . json-mode)))
+	 ("YAML Shmaml" (mode . yaml-mode))
+	 ("Code" (derived-mode .  prog-mode))
+	 ("Magit" (or (mode . magit-diff-mode)
+		      (mode . magit-status-mode)
+		      (mode . magit-process-mode)
+		      (mode . magit-revision-mode)
+		      (mode . magit-refs-mode)))
+	 ("Dired" (mode . dired-mode))
+	 ("Tramp sessions" (name . "\*tramp.+"))
+	 ("Remote" (filename . "/\*:.+"))
+	 )))
+(add-hook 'ibuffer-mode-hook
+	  '(lambda ()
+	     (ibuffer-auto-mode 1)
+             (auto-revert-mode 1)
+	     (ibuffer-switch-to-saved-filter-groups "home")))
     #+end_src
+
+    #+RESULTS:
+    | lambda | nil | (ibuffer-auto-mode 1) | (ibuffer-switch-to-saved-filter-groups home) |
+
 *** Uniquify
     #+begin_src emacs-lisp
 (autoload 'uniquify "uniquify" "unique buffer names dependent on file name")
@@ -1196,6 +1205,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 *** Theme
     #+begin_src emacs-lisp
 ;; (load-theme 'brutalist-dark t)
+(load-file "~/projects/emacs/brutalist-theme/brutalist-build.el")
     #+end_src
 ** Automatic typing - abbrevs and expansions
    #+begin_src emacs-lisp
@@ -1228,7 +1238,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 *** MOOs and MUDs - NOT legacy - added 2019!
    #+begin_src emacs-lisp
 ;; Moos and MUDs - NOT legacy stuff - added 2019!
-(add-to-list 'load-path "~/projects/rmoo")
+(add-to-list 'load-path "~/projects/emacs/rmoo/")
 (require 'rmoo-autoload)
 (require 'moocode-mode)
 ;; (global-set-key (kbd "C-c C-r") 'rmoo)
