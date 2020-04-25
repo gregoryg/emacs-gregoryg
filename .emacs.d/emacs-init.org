@@ -73,6 +73,8 @@
     org-tree-slide
     ob-async
     ob-http
+    org-superstar
+    pyvenv
     toc-org
     ;; pandoc-mode
     prettify-greek
