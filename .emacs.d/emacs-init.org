@@ -47,12 +47,12 @@
   '(ag
     bash-completion
     bazel-mode
+    cider
     company
     counsel
     diminish
     docker-tramp
     dumb-jump
-    easy-hugo
     edit-indirect
     ;; edit-server
     flx
@@ -176,7 +176,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 
 #+begin_src emacs-lisp
 (when nil 
-(require 'ob-emacs-lisp)
 (defun transform-tree (tree trafo)
   "Transform TREE by TRAFO."
   (let ((next tree))
@@ -586,17 +585,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 
 
    #+end_src
-** TODO Mobile Org - delete or move to modern version
-    
-   #+begin_src emacs-lisp
-;;*** Org-mobile
-(setq org-mobile-directory "~/Dropbox/MobileOrg")
-;;    (setq org-mobile-directory "/gregj@smeagol.hoochiepep.home:/home/gregj/work/org/web")
-(setq org-mobile-inbox-for-pull "~/projectsfrom-mobile.org")
-(setq org-agenda-before-write-hook nil)
-(setq org-mobile-files '( "~/Copy/ingress/ingress.org" 'org-agenda-files))
-
-   #+end_src
 ** Org Roam - experimental
 #+begin_src emacs-lisp :tangle no
 (use-package org-roam
@@ -611,20 +599,6 @@ Simply add the new block param =:keep-windows= to use this functionality
               :map org-mode-map
               (("C-c n i" . org-roam-insert))))
 #+end_src
-** Blogging with Hugo
-   #+begin_src emacs-lisp
-(use-package easy-hugo
-  :init
-  (setq easy-hugo-basedir "~/projects/emacs/blogs/gregorygrubbs.com/")
-  (setq easy-hugo-postdir "~/projects/emacs/blogs/gregorygrubbs.com/content/post/")
-  (setq easy-hugo-url "https://gregorygrubbs.com")
-  (setq easy-hugo-sshdomain "gregorygrubbs")
-  (setq easy-hugo-root "/home/gortsleigh/gregorygrubbs.com")
-  (setq easy-hugo-previewtime "300")
-  (setq easy-hugo-default-ext ".org")
-  (setq easy-hugo-org-header t)
-  :bind ("C-c C-e" . easy-hugo))
-   #+end_src
 ** Publishing
    This is for publishing to a website
    #+begin_src emacs-lisp
@@ -994,7 +968,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 ;; winner
 (winner-mode 1)
 ;; windmove
-(require 'windmove)
+(windmove-default-keybindings)
 (eval-after-load "windmove"
   '(progn
      (windmove-default-keybindings)
@@ -1241,14 +1215,14 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+begin_src emacs-lisp
 ;; Moos and MUDs - NOT legacy stuff - added 2019!
 (add-to-list 'load-path "~/projects/emacs/rmoo/")
-(require 'rmoo-autoload)
-(require 'moocode-mode)
-;; (global-set-key (kbd "C-c C-r") 'rmoo)
-(add-to-list 'auto-mode-alist '("\\.moo$" . moocode-mode))
-(add-hook 'rmoo-interactive-mode-hooks
-          (lambda ()
-            (linum-mode -1)                  ;; ... no line numbers
-            (goto-address-mode t)))          ;; ... clickable links
+;; (require 'rmoo-autoload)
+;; (require 'moocode-mode)
+;; ;; (global-set-key (kbd "C-c C-r") 'rmoo)
+;; (add-to-list 'auto-mode-alist '("\\.moo$" . moocode-mode))
+;; (add-hook 'rmoo-interactive-mode-hooks
+;;           (lambda ()
+;;             (linum-mode -1)                  ;; ... no line numbers
+;;             (goto-address-mode t)))          ;; ... clickable links
 
 
    #+end_src
@@ -1336,7 +1310,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 ;; we need to execute a command like the following
 ;;  dcos task exec --tty --interactive <taskname> -- bash
 ;; example TRAMP URI:   //dcos:jupyter:
-(require 'tramp)
 (add-to-list 'tramp-methods
 	     '("dcos"
 	       (tramp-login-program "dcos")
@@ -1441,7 +1414,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 
 ** Rainbow delimiters for various programming modes
    #+begin_src emacs-lisp
-(require 'rainbow-delimiters)
 ;; rainbow delimiters ; make much stronger (more saturated) colors
 (autoload 'rainbow-delimiters "rainbow-delimiters" "Highlight brackets according to their depth")
 (eval-after-load "rainbow-delimiters"
@@ -1468,10 +1440,8 @@ Simply add the new block param =:keep-windows= to use this functionality
    the directory changes.
 
    #+begin_src emacs-lisp
-(require 'dired)
 (define-key dired-mode-map [mouse-1] 'dired-find-file)
 (define-key dired-mode-map [mouse-2] 'dired-find-file)
-(require 'dired-x)
 (setq dired-dwim-target t)
 (setq dired-omit-files "^\\.?#\\|^\\..*")
 ;; (declare (special dired-x-hands-off-my-keys
@@ -1486,7 +1456,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 ;; 	     (setq dired-x-hands-off-my-keys nil
 ;; 		   dired-bind-vm t))))
 
-(require 'autorevert)
 (setq auto-revert-verbose nil)
 (add-hook 'dired-mode-hook
 	  (function (lambda ()
@@ -1500,7 +1469,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 *** Open file in relevant OS app
 #+begin_src emacs-lisp
 ;; swiped from Gilaras Drakeson <gilaras@gmail.com>
-(require 'dired)
 (defcustom gjg/os-open "xdg-open"
   "Command to open a document, e.g. 'xdg-open' on Linux, 'sensible-browser' on crostini, 'open' on OS X, 'explorer' or 'cygpath' on Windows"
   :type 'string
@@ -1628,7 +1596,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Shell mode
 *** Bash completions
 #+begin_src emacs-lisp
-  (require 'bash-completion)
   (bash-completion-setup)
 #+end_src
 *** Placement of new shell windows
@@ -1693,13 +1660,12 @@ awesome.
   (forward-line -1)
   (indent-according-to-mode))
 
-(require 'smartparens)
 ;; (eval-after-load "smartparens-config"
 ;;   '(progn 
 ;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-(sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-(sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-(sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+;; (sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+;; (sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
 ;; ))
 
    #+end_src
@@ -1730,7 +1696,6 @@ Open man page in current window, rather than other window with
    #+end_src
 ** Clojure
    #+begin_src emacs-lisp
-(require 'ob-clojure) ;; org-babel code evaluation
 ;; (add-hook 'cider-repl-mode-hook #'company-
 (add-hook 'cider-mode-hook #'company-mode) 
 ;; (use-package lsp-mode
@@ -1768,7 +1733,7 @@ Open man page in current window, rather than other window with
 (use-package go
   :ensure nil
   :config)
-(setenv "GOPATH" "/home/gregorygrubbs/go")
+(setenv "GOPATH" "~/projects/coding/go/")
 (defun my-go-mode-hook ()
   ; Use goimports instead of go-fmt
   (setq gofmt-command "goimports")
@@ -1807,8 +1772,6 @@ Open man page in current window, rather than other window with
 *** Python mode setup
    #+begin_src emacs-lisp
 ;; Python
-;; TODO: is the ANSI code problem still existant as of Emacs 26.3?
-;; deal with the horrific ANSI codes in latest ipython
 
 (use-package python
   :ensure nil
@@ -1830,8 +1793,8 @@ Open man page in current window, rather than other window with
 
 (custom-set-variables '(org-babel-python-command "python3"))
 
-(setq ansi-color-drop-regexp
-      "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
+;; (setq ansi-color-drop-regexp
+;;       "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
 
 ;; (require 'elpy)
 
@@ -1862,10 +1825,11 @@ Open man page in current window, rather than other window with
    #+end_src
 ** SQL
    #+begin_src emacs-lisp
-(require 'sql)
 ;; (add-hook 'sql-mode-hook (lambda
-(sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[_a-zA-Z0-9()]*\\]?> ")
-(setq sql-mysql-options '("-C" "-t" "-f" "-n"))
+(eval-after-load "sql"
+  '(progn
+  (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[_a-zA-Z0-9()]*\\]?> ")
+  (setq sql-mysql-options '("-C" "-t" "-f" "-n"))))
 ;; ))
    #+end_src
 * Devops
