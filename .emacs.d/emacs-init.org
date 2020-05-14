@@ -428,9 +428,9 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Agenda
    #+begin_src emacs-lisp
 (global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key "\C-ca" 'org-agenda)
 ;;; ---> Set org-agenda-files in customization
-(setq org-agenda-files '("~/projects/private-orgmode/notes.org" "~/projects/private-orgmode/inbox.org"))
+(setq gjg/org-agenda-directory "~/projects/private-orgmode/")
+(setq org-agenda-files '("~/projects/private-orgmode/notes.org" "~/projects/private-orgmode/inbox.org" "~/projects/private-orgmode/someday.org" "~/projects/private-orgmode/projects.org"))
 ;; Set basic org-mode keys
 (setq org-agenda-span 'day)
 ;;(setq org-agenda-skip-scheduled-if-done t)
@@ -455,30 +455,48 @@ Simply add the new block param =:keep-windows= to use this functionality
 (setq org-clock-history-length 12)
 
 (setq org-agenda-custom-commands
-      (quote (("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
-	          ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
-	          ("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
-	          ("dc" "Clock report" agenda ""
-	           ((org-agenda-ndays 1)
-		        (org-agenda-start-with-clockreport-mode t)
-		        (org-agenda-time-grid nil)
-		        (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
-	          ("dw" "Weekly clock report" agenda ""
-	           ((org-agenda-ndays 7)
-		        (org-agenda-start-with-clockreport-mode t)
-		        (org-agenda-time-grid nil)
-		        (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
-	          ("da" "GORT Agenda"
-	           ((agenda "")
-		        (todo "STARTED")))
-              ("ds" "Scheduled not DONE" tags "SCHEDULED<>\"\""
-               ((org-agenda-skip-scheduled-if-done t)
-                )
-               )
-	          )))
+      `(
+        ("a" "Massive Awesome Agenda"
+         ((agenda ""
+                  ((org-agenda-span 'day)
+                   (org-deadline-warning-days 365)))
+          (todo "TODO"
+                ((org-agenda-overriding-header "To Refile")
+                 (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))))
+          (todo "TODO"
+                ((org-agenda-overriding-header "Emails")
+                 (org-agenda-files '(,(concat gjg/org-agenda-directory "emails.org")))))
+          (todo "NEXT"
+                ((org-agenda-overriding-header "In Progress")
+                 (org-agenda-files '(,(concat gjg/org-agenda-directory "someday.org")
+                                     ,(concat gjg/org-agenda-directory "projects.org")
+                                     ,(concat gjg/org-agenda-directory "next.org")))
+                 ))
+          (todo "TODO"
+                ((org-agenda-overriding-header "Projects")
+                 (org-agenda-files '(,(concat gjg/org-agenda-directory "projects.org")))
+                 ))
+          (todo "TODO"
+                ((org-agenda-overriding-header "One-off Tasks")
+                 (org-agenda-files '(,(concat gjg/org-agenda-directory "next.org")))
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))))
+        ("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
+	    ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
+	    ("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
+	    ("r" "Clock report" agenda ""
+	     ((org-agenda-ndays 1)
+		  (org-agenda-start-with-clockreport-mode t)
+		  (org-agenda-time-grid nil)
+		  (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
+        ("s" "Scheduled not DONE" tags "SCHEDULED<>\"\""
+         ((org-agenda-skip-scheduled-if-done t)
+          )
+         )
+	    ))
 
 ;; org-agenda: some handy keys
-;;(define-key org-agenda-mode-map "o" 'org-agenda-show)
+(define-key org-agenda-mode-map "o" 'org-agenda-show)
+(define-key org-agenda-mode-map "R" 'org-agenda-refile)
 
 ;; you might also want to set:
 ;;   (setq org-agenda-skip-unavailable-files t)
@@ -583,11 +601,13 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+begin_src emacs-lisp
 ;; navigate to files using org-refile; use C-u C-c C-w
 (setq org-outline-path-complete-in-steps nil)
-;; (setq org-refile-targets '(( org-agenda-files :maxlevel . 3))
-;;       org-refile-use-outline-path 'file
-;;       org-refile-target-verify-function
-;;       (lambda ()
-;;         (not (member "ARCHIVE" (org-get-tags)))))
+(setq gjg/refile-targets (seq-remove (lambda (elt) (string= "~/projects/private-orgmode/inbox.org" elt)) org-agenda-files))
+(setq org-refile-targets '((
+                            gjg/refile-targets :maxlevel . 1))
+      org-refile-use-outline-path 'file
+      org-refile-target-verify-function
+      (lambda ()
+        (not (member "ARCHIVE" (org-get-tags)))))
 
 (defadvice org-refile (around org-refile-pseudo-hook )
   "Turn ido flex matching off for org-refile"
