@@ -2,12 +2,14 @@
 (defconst emacs-start-time (current-time))
 ;;   On MacOS, define the meta key up front for usability when init does not load fully
 (setq ns-command-modifier (quote meta))
-
+(setq gc-cons-threshold 64000000)
 ;; initalize all ELPA packages
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-(package-initialize)
+(setq use-package-always-ensure t)
+
+;; (package-initialize)
 
 ;; (setq package-enable-at-startup nil)
 (let ((elapsed (float-time (time-subtract (current-time)
