@@ -255,7 +255,18 @@ Simply add the new block param =:keep-windows= to use this functionality
 	    (setq org-catch-invisible-edits 'show-and-error )
 	    ))
    #+end_src
+** Blogs - linking and image additions
+   For blogging especially, we want to quickly add web links and images.  2 packages from
+   m?elpa help here
+   #+begin_src emacs-lisp
+(use-package org-cliplink)
+(use-package org-download)
+   #+end_src
 ** Capture Templates
+   + N.B. First set up org-protocol (require the library) prior to using the related
+     capture templates.  I'm not doing it at the moment because I can use the JS clip
+     extension from ChromeOS (no =emacsclient= binary on Chrome OS, just in a Linux
+     container I cannot reach) 
 
    #+begin_src emacs-lisp
 ;; *** Org capture
@@ -283,13 +294,14 @@ Simply add the new block param =:keep-windows= to use this functionality
 	     (file safe-blog-filename)
          (file "~/.emacs.d/hugo-default-blog.tmpl")
          :jump-to-captured t)
-        ("l" "Link" entry (file+headline "~/projects/links.org" "Links")
-         "* %a %^g\n %?\n %T\n %i")
-	    ("r" "Regular todo" entry
-	     (file+headline "~/todos.org" "General")
-	     "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
+        ("c" "org-protocol-capture" entry "~/projects/private-orgmode/inbox.org"
+         "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish t)
+        ("i" "inbox" entry
+         (file "~/projects/private-orgmode/inbox.org")
+         "* TODO %?")
+         
 	    ("p" "Phone/Meeting" entry
-	     (file+headline "~/projects/private-orgmode/gjg-notes.org" "Calls and Meetings")
+	     (file+headline "~/projects/private-orgmode/notes.org" "Calls and Meetings")
 	     "* %t %^{type|Call|Meeting} with %^{with|Unknown|Recruiter}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
       :PROPERTIES:
       :NOBLOCKING: t
@@ -302,6 +314,11 @@ Simply add the new block param =:keep-windows= to use this functionality
 	 + From %\\2: 
 	 + %?
        " :prepend t :clock-in t :clock-resume t)
+	    ("r" "Regular todo" entry
+	     (file+headline "~/todos.org" "General")
+	     "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
+        ("w" "Web page" entry (file "~/projects/private-orgmode/inbox.org")
+         "* TODO %(org-cliplink-capture)" :immediate-finish t)
 	    ))
    #+end_src
 ** Exporting
@@ -412,8 +429,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key "\C-ca" 'org-agenda)
 ;;; ---> Set org-agenda-files in customization
-;; (setq org-agenda-files '("~/projects/private-orgmode/gjg-notes.org"))
-;;(global-set-key (kbd "C-c TAB") 'org-cycle-agenda-files)
+(setq org-agenda-files '("~/projects/private-orgmode/notes.org" "~/projects/private-orgmode/inbox.org"))
 ;; Set basic org-mode keys
 (setq org-agenda-span 'day)
 ;;(setq org-agenda-skip-scheduled-if-done t)
@@ -422,7 +438,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 (setq org-agenda-restore-windows-after-quit t)
 ;; (setq org-agenda-start-with-log-mode t)
 (setq org-agenda-entry-text-maxlines 10)
-(setq org-agenda-diary-file "~/projects/diary.org")
+(setq org-agenda-diary-file "~/projects/private-orgmode/diary.org")
 (setq org-agenda-include-diary t)
 
 (setq org-agenda-exporter-settings
@@ -1140,29 +1156,27 @@ Simply add the new block param =:keep-windows= to use this functionality
 (setq ibuffer-expert t)
 (setq ibuffer-saved-filter-groups
       '(("home"
-	 ("Org and Markdown" (or (mode . org-mode)
-				 (mode . markdown-mode)))
-	 ("Shell" (mode . shell-mode))
-	 ("Configs" (or (filename . ".emacs.d")
-			(mode . emacs-lisp-mode)
-			(derived-mode .  conf-mode)
-			(mode . json-mode)))
-	 ("YAML Shmaml" (mode . yaml-mode))
-	 ("Code" (derived-mode .  prog-mode))
-	 ("Magit" (or (mode . magit-diff-mode)
-		      (mode . magit-status-mode)
-		      (mode . magit-process-mode)
-		      (mode . magit-revision-mode)
-		      (mode . magit-refs-mode)))
-	 ("Dired" (mode . dired-mode))
-	 ("Tramp sessions" (name . "\*tramp.+"))
-	 ("Remote" (filename . "/\*:.+"))
-	 )))
+	     ("Org and Markdown" (or (mode . org-mode)
+				                 (mode . markdown-mode)))
+	     ("Shell" (mode . shell-mode))
+	     ("Configs" (or (derived-mode .  conf-mode)
+                        (mode . yaml-mode)
+			            (mode . json-mode)))
+	     ("Code" (derived-mode .  prog-mode))
+	     ("Magit" (or (mode . magit-diff-mode)
+		              (mode . magit-status-mode)
+		              (mode . magit-process-mode)
+		              (mode . magit-revision-mode)
+		              (mode . magit-refs-mode)))
+	     ("Dired" (mode . dired-mode))
+	     ("Tramp sessions" (name . "\*tramp.+"))
+	     ("Remote" (filename . "/\*:.+"))
+	     )))
 (add-hook 'ibuffer-mode-hook
-	  '(lambda ()
-	     (ibuffer-auto-mode 1)
+	      '(lambda ()
+	         (ibuffer-auto-mode 1)
              (auto-revert-mode 1)
-	     (ibuffer-switch-to-saved-filter-groups "home")))
+	         (ibuffer-switch-to-saved-filter-groups "home")))
     #+end_src
 
     #+RESULTS:
@@ -1444,6 +1458,9 @@ Simply add the new block param =:keep-windows= to use this functionality
 (define-key dired-mode-map [mouse-2] 'dired-find-file)
 (setq dired-dwim-target t)
 (setq dired-omit-files "^\\.?#\\|^\\..*")
+;; set key binding in key map prior to dired-x being loaded - for autoload
+(define-key dired-mode-map "\C-x\M-o" 'dired-omit-mode)
+(autoload 'dired-omit-mode "dired-x" "Dired-X")
 ;; (declare (special dired-x-hands-off-my-keys
 ;; 		  dired-bind-vm
 ;; 		  dired-omit-files-p))
@@ -1488,14 +1505,28 @@ Simply add the new block param =:keep-windows= to use this functionality
 (setq ediff-split-window-function 'split-window-horizontally)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
    #+end_src
-** Help mode
+** Help and helpful modes
    #+begin_src emacs-lisp
 (setq help-window-select t)
 (add-hook 'help-mode-hook
-	  (lambda ()
-	    (local-set-key (kbd "M-p") 'help-go-back)
-	    (local-set-key (kbd "M-n") 'help-go-forward)
-	    ))
+	      (lambda ()
+	        (local-set-key (kbd "M-p") 'help-go-back)
+	        (local-set-key (kbd "M-n") 'help-go-forward)
+	        ))
+
+(when (fboundp 'helpful-function)
+  (progn
+    ;; Note that the built-in `describe-function' includes both functions
+    ;; and macros. `helpful-function' is functions only, so we provide
+    ;; `helpful-callable' as a drop-in replacement.
+    (global-set-key (kbd "C-h f") #'helpful-callable)
+    (global-set-key (kbd "C-h v") #'helpful-variable)
+    (global-set-key (kbd "C-h k") #'helpful-key)
+    ;; Lookup the current symbol at point. C-c C-d is a common keybinding
+    ;; for this in lisp modes.
+    (global-set-key (kbd "C-c C-d") #'helpful-at-point)
+    (setq counsel-describe-function-function #'helpful-callable)
+    (setq counsel-describe-variable-function #'helpful-variable)))
    #+end_src
 ** Ivy / Smex / Counsel
    Just starting to make use of =use-package= here.  The =:ensure= param will
