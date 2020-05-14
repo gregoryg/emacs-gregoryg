@@ -318,7 +318,8 @@ Simply add the new block param =:keep-windows= to use this functionality
 	     (file+headline "~/todos.org" "General")
 	     "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
         ("w" "Web page" entry (file "~/projects/private-orgmode/inbox.org")
-         "* TODO %(org-cliplink-capture)" :immediate-finish t)
+         "* TODO Read %(org-cliplink-capture)
+            Captured %u" :immediate-finish t)
 	    ))
    #+end_src
 ** Exporting
