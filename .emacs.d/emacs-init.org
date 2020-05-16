@@ -295,7 +295,7 @@ Simply add the new block param =:keep-windows= to use this functionality
          (file "~/.emacs.d/hugo-default-blog.tmpl")
          :jump-to-captured t)
         ("c" "org-protocol-capture" entry "~/projects/private-orgmode/inbox.org"
-         "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish t)
+         "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish nil)
         ("i" "inbox" entry
          (file "~/projects/private-orgmode/inbox.org")
          "* TODO %?")
@@ -319,7 +319,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 	     "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
         ("w" "Web page" entry (file "~/projects/private-orgmode/inbox.org")
          "* TODO Read %(org-cliplink-capture)
-            Captured %u" :immediate-finish t)
+            Captured %u")
 	    ))
    #+end_src
 ** Exporting
