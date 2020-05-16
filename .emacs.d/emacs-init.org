@@ -432,7 +432,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
 (setq org-agenda-files '("~/projects/private-orgmode/notes.org" "~/projects/private-orgmode/inbox.org" "~/projects/private-orgmode/someday.org" "~/projects/private-orgmode/projects.org"))
 ;; Set basic org-mode keys
-(setq org-agenda-span 'day)
+;;(setq org-agenda-span 'day)
 ;;(setq org-agenda-skip-scheduled-if-done t)
 (setq org-agenda-hide-tags-regexp "noagenda")
 (setq org-agenda-window-setup 'other-window)
@@ -458,14 +458,11 @@ Simply add the new block param =:keep-windows= to use this functionality
       `(
         ("a" "Massive Awesome Agenda"
          ((agenda ""
-                  ((org-agenda-span 'day)
+                  ((org-agenda-span 'week)
                    (org-deadline-warning-days 365)))
           (todo "TODO"
                 ((org-agenda-overriding-header "To Refile")
                  (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))))
-          (todo "TODO"
-                ((org-agenda-overriding-header "Emails")
-                 (org-agenda-files '(,(concat gjg/org-agenda-directory "emails.org")))))
           (todo "NEXT"
                 ((org-agenda-overriding-header "In Progress")
                  (org-agenda-files '(,(concat gjg/org-agenda-directory "someday.org")
@@ -488,49 +485,16 @@ Simply add the new block param =:keep-windows= to use this functionality
 		  (org-agenda-start-with-clockreport-mode t)
 		  (org-agenda-time-grid nil)
 		  (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
-        ("s" "Scheduled not DONE" tags "SCHEDULED<>\"\""
-         ((org-agenda-skip-scheduled-if-done t)
-          )
-         )
 	    ))
 
 ;; org-agenda: some handy keys
 (define-key org-agenda-mode-map "o" 'org-agenda-show)
+;; "R" is used for clock report by default
 (define-key org-agenda-mode-map "R" 'org-agenda-refile)
+(define-key org-agenda-mode-map "K" 'org-agenda-clockreport-mode)
 
 ;; you might also want to set:
-;;   (setq org-agenda-skip-unavailable-files t)
-;; so these warnings won't annoy the little remember-frame
-;; also: I have noted infrequent problems when using ElScreen
-;;  (the wrong frame might be chosen for Remember in about 10% of the cases)
-
-;; (defun popup-remember-frame ()
-;;   "turn the current frame into a small popup frame for remember mode;
-;; this is meant to be called with
-;;      emacsclient -c -e '(popup-remember-frame)'"
-;;   (modify-frame-parameters nil
-;;                         '( (name . "*Remember*") ;; must be same as in mode-hook below
-;;                            (width .  80)
-;;                            (height . 16)
-;;                            (vertical-scroll-bars . nil)
-;;                            (menu-bar-lines . nil)
-;;                            (tool-bar-lines . nil)))
-;;   (org-remember nil ?w)
-;;   (when (fboundp 'x-focus-frame) (x-focus-frame nil)) ;; X only
-;;   (delete-other-windows))
-
-;; when we're in such a remember-frame, close it when done.
-;; (add-hook 'org-remember-mode-hook
-;;        (lambda()
-;;          (define-key org-remember-mode-map (kbd "C-c C-c")
-;;            (lambda()(interactive)
-;;               (let ((remember-frame-p
-;;                      (string= (frame-parameter nil 'name) "*Remember*")))
-;;                 (when remember-frame-p (make-frame-invisible))  ;; hide quickly
-
-;;                 (org-remember-finalize)
-;;                 (when remember-frame-p (delete-frame)))))))
-
+(setq org-agenda-skip-unavailable-files t)
 (add-hook 'org-agenda-mode-hook
 	      (lambda ()
 	        ;; (hl-line-mode 1)
@@ -554,33 +518,38 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Tags/TODOs/Projects Oh My
    #+begin_src emacs-lisp
 (setq org-tag-alist '(("Project" . ?p)
-		      ("NEXT" . ?n)
-		      ("noexport" . ?x)
-		      ("cloud" . ?c)
-		      ("customer")
-		      ("Hadoop" . ?h)
-		      ("m&a" . ?m)
-		      ))
+		              ("NEXT" . ?n)
+		              ("noexport" . ?x)
+		              ("cloud" . ?c)
+                      (:startgroup . nil)
+		              ("@customer")
+                      ("@office" . ?o)
+                      ("@home" . ?h)
+                      ("@errands" . ?e)
+                      ("@happy-hour")
+                      (:endgroup . nil)
+                      ("waiting-for" . ?w)
+		              ))
 ;; Projects are identified by a :Project: tag unless they are marked DONE;
 ;;   Any project must have one sub-task identified by :NEXT: to be considered un-stuck
 ;;   MAYBE: exclude special tags like Someday/Maybe
 (setq org-stuck-projects '("Project|project/-DONE"
-			   nil
-			   ("NEXT")
-			   ""))
+			               nil
+			               ("NEXT")
+			               ""))
 (setq org-columns-default-format "%TODO %CATEGORY %60ITEM(Task)%5Effort(Estim){:} %5CLOCKSUM(Clock) %SCHEDULED(Time) %DEADLINE")
 (setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s!)" "PAUSED(p!)" "|" "DONE(d!)")      ;; ordinary sequence is Todo -> Started -> Done
-				(sequence "WAITING(w@/!)" "MAYBE(m!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
-				;; (sequence "QUOTE(q!)" "QUOTED(Q!)" "|" "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")     ;; sequence for quotes
-				)))
+				                (sequence "WAITING(w@/!)" "MAYBE(m!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
+				                ;; (sequence "QUOTE(q!)" "QUOTED(Q!)" "|" "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")     ;; sequence for quotes
+				                )))
 (setq org-todo-keyword-faces
       '(("TODO"
-	 (:foreground "#ff39a3" :weight bold))
-	("STARTED" . "#E35DBF")
-	("CANCELLED" :foreground "green" :weight bold :strike-through t)
-	("PROPOSED" . "pink")
-    ("PAUSED"  . "yellow")
-	("WAITING" . "yellow")))
+	     (:foreground "#ff39a3" :weight bold))
+	    ("STARTED" . "#E35DBF")
+	    ("CANCELLED" :foreground "green" :weight bold :strike-through t)
+	    ("PROPOSED" . "pink")
+        ("PAUSED"  . "yellow")
+	    ("WAITING" . "yellow")))
 
 ;; (setq org-todo-state-tags-triggers
 ;;       (quote (("CANCELLED" ("CANCELLED" . t))
@@ -593,27 +562,25 @@ Simply add the new block param =:keep-windows= to use this functionality
 (setq org-clock-in-switch-to-state "STARTED")
 
 (setq org-tags-exclude-from-inheritance '("Project" "project" "interview2"))    
-					;(setq org-tag-alist '(("project" . ?p)("car" . ?c)))
+                                        ;(setq org-tag-alist '(("project" . ?p)("car" . ?c)))
 
 (setq org-enforce-todo-dependencies t)
    #+end_src
 ** Refile
    #+begin_src emacs-lisp
 ;; navigate to files using org-refile; use C-u C-c C-w
-(setq org-outline-path-complete-in-steps nil)
+(setq org-outline-path-complete-in-steps nil) ; use ivy for quicker completion
 (setq gjg/refile-targets (seq-remove (lambda (elt) (string= "~/projects/private-orgmode/inbox.org" elt)) org-agenda-files))
 (setq org-refile-targets '((
-                            gjg/refile-targets :maxlevel . 1))
+                            gjg/refile-targets :maxlevel . 2))
       org-refile-use-outline-path 'file
       org-refile-target-verify-function
       (lambda ()
         (not (member "ARCHIVE" (org-get-tags)))))
 
-(defadvice org-refile (around org-refile-pseudo-hook )
-  "Turn ido flex matching off for org-refile"
-  (let ((ido-enable-flex-matching nil))
-    ad-do-it))
-(ad-activate 'org-refile)
+(setcdr (assoc 'org-refile ivy-initial-inputs-alist) "")
+(setcdr (assoc 'org-agenda-refile ivy-initial-inputs-alist) "")
+(setcdr (assoc 'org-capture-refile ivy-initial-inputs-alist) "")
 
 (defun gjg/org-refile-goto ()
   "Call org-refile with arg to visit an org-mode location. A convenience function to bind to a global key."
