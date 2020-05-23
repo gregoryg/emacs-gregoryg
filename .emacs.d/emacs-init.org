@@ -46,22 +46,17 @@
 (defvar gjg/required-packages
   '(ag
     bash-completion
-    bazel-mode
     cider
     company
     counsel
-    diminish
-    docker-tramp
+    counsel-projectile
     dumb-jump
     edit-indirect
-    ;; edit-server
     flx
     go
     go-autocomplete
     go-guru
     htmlize
-    ;; ivy-omni-org
-    ;; ivy-todo
     jupyter
     keychain-environment
     magit
@@ -73,13 +68,11 @@
     org-tree-slide
     ob-async
     ob-http
-    org-superstar
     pyvenv
-    toc-org
-    ;; pandoc-mode
     prettify-greek
+    projectile
+    company-pr
     rainbow-delimiters
-    ;; smart-mode-line
     smartparens
     use-package
     uuid
@@ -92,7 +85,6 @@
     ;; scala-mode
     ssh-config-mode
     smex
-    sql-indent
     terraform-mode
     ;; web-mode
     yafolding
@@ -122,7 +114,7 @@
 ** Org key mappings
 Disable some that get in the way
 #+begin_src emacs-lisp
-(eval-after-load 'org
+(with-eval-after-load 'org
   (progn
 	(define-key org-mode-map (kbd "C-c ;") nil)       ; org-toggle-comment
     (define-key org-mode-map (kbd "C-c C-x C-a") nil) ; org-archive-subtree-default
@@ -285,7 +277,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                       )))
 
 (setq org-default-notes-file "~/projects/notes.org")
-(eval-after-load "org-capture"
+(with-eval-after-load 'org-capture
   '(add-hook 'org-capture-mode-hook 'turn-on-auto-fill))
 (define-key global-map "\C-cc" 'org-capture)
 (setq org-capture-templates
@@ -315,8 +307,8 @@ Simply add the new block param =:keep-windows= to use this functionality
 	 + %?
        " :prepend t :clock-in t :clock-resume t)
 	    ("r" "Regular todo" entry
-	     (file+headline "~/todos.org" "General")
-	     "* TODO %? \nSCHEDULED: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
+	     (file "~/projects/private-orgmode/inbox.org")
+	     "* TODO %? \nDEADLINE: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
         ("w" "Web page" entry (file "~/projects/private-orgmode/inbox.org")
          "* TODO Read %(org-cliplink-capture)
             Captured %u")
@@ -327,10 +319,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 #+begin_src emacs-lisp
   (custom-set-variables '(org-export-with-sub-superscripts nil))
 #+end_src
-*** Atlassian Confluence
-    #+begin_src emacs-lisp
-;;(require 'ox-confluence)
-    #+end_src
 *** Exporting Babel without evaluation
 #+begin_src emacs-lisp
 (custom-set-variables '(org-export-use-babel nil))
@@ -359,29 +347,6 @@ Simply add the new block param =:keep-windows= to use this functionality
   )
 
 #+end_src
-*** (Deprecated method) Exporting so theme does not interfere with source code blocks
-    #+begin_src emacs-lisp :tangle no
-;; ease export/sharing from org-mode
-(defun gjg/org-export-to-odt ()
-  "Export to odt without the theme interfering"
-  (interactive)
-  (let ((gort custom-enabled-themes))
-    (mapc 'disable-theme custom-enabled-themes)
-    (org-odt-export-to-odt)
-    (mapc 'enable-theme gort)))
-
-(defun gjg/org-export-to-html-and-open ()
-  "Export to HTML with no theme active"
-  (interactive)
-  (let ((gort custom-enabled-themes))
-    (mapc 'disable-theme custom-enabled-themes)
-    (org-html-export-to-html)
-    (browse-url (browse-url-file-url (concat (file-name-sans-extension (buffer-file-name)) ".html")))
-    (mapc 'enable-theme gort)
-    ))
-
-(org-defkey org-mode-map (kbd "C-c o") 'gjg/org-export-to-html-and-open)
-    #+end_src
 ** Speed commands
    #+begin_src emacs-lisp
 (setq org-use-speed-commands t) ;; POWER USER BABY
@@ -428,9 +393,8 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Agenda
    #+begin_src emacs-lisp
 (global-set-key (kbd "C-c a") 'org-agenda)
-;;; ---> Set org-agenda-files in customization
 (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
-(setq org-agenda-files '("~/projects/private-orgmode/notes.org" "~/projects/private-orgmode/inbox.org" "~/projects/private-orgmode/someday.org" "~/projects/private-orgmode/projects.org"))
+(setq org-agenda-files '("~/projects/private-orgmode/notes.org" "~/projects/private-orgmode/inbox.org" "~/projects/private-orgmode/someday.org" "~/projects/private-orgmode/projects.org" "~/projects/private-orgmode/next.org"))
 ;; Set basic org-mode keys
 ;;(setq org-agenda-span 'day)
 ;;(setq org-agenda-skip-scheduled-if-done t)
@@ -444,9 +408,9 @@ Simply add the new block param =:keep-windows= to use this functionality
 
 (setq org-agenda-exporter-settings
       '((ps-number-of-columns 1)
-	    (ps-landscape-mode t)
-	    (org-agenda-add-entry-text-maxlines 10)
-	    (htmlize-output-type 'css)))
+	(ps-landscape-mode t)
+	(org-agenda-add-entry-text-maxlines 10)
+	(htmlize-output-type 'css)))
 
 ;; (setq org-agenda-start-with-clockreport-mode nil)
 (setq org-special-ctrl-a/e t)
@@ -458,7 +422,7 @@ Simply add the new block param =:keep-windows= to use this functionality
       `(
         ("a" "Massive Awesome Agenda"
          ((agenda ""
-                  ((org-agenda-span 'week)
+                  ((org-agenda-span 'day)
                    (org-deadline-warning-days 365)))
           (todo "TODO"
                 ((org-agenda-overriding-header "To Refile")
@@ -477,42 +441,48 @@ Simply add the new block param =:keep-windows= to use this functionality
                 ((org-agenda-overriding-header "One-off Tasks")
                  (org-agenda-files '(,(concat gjg/org-agenda-directory "next.org")))
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))))
+        ("i" "Inbox review"
+         ((todo "TODO"
+                ((org-agenda-overriding-header "Review and Refile")
+                 (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))
+                 )
+           ))
+         )
         ("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
-	    ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
-	    ("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
-	    ("r" "Clock report" agenda ""
-	     ((org-agenda-ndays 1)
-		  (org-agenda-start-with-clockreport-mode t)
-		  (org-agenda-time-grid nil)
-		  (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
-	    ))
+	("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
+	("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
+	("r" "Clock report" agenda ""
+	 ((org-agenda-ndays 1)
+	  (org-agenda-start-with-clockreport-mode t)
+	  (org-agenda-time-grid nil)
+	  (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
+	))
 
 ;; org-agenda: some handy keys
-(define-key org-agenda-mode-map "o" 'org-agenda-show)
-;; "R" is used for clock report by default
-(define-key org-agenda-mode-map "R" 'org-agenda-refile)
-(define-key org-agenda-mode-map "K" 'org-agenda-clockreport-mode)
-
 ;; you might also want to set:
 (setq org-agenda-skip-unavailable-files t)
 (add-hook 'org-agenda-mode-hook
-	      (lambda ()
-	        ;; (hl-line-mode 1)
-	        ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
-	        ;;       (local-unset-key "o")
-	        ;; rebind to a sweet and beautiful function
-	        (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
-	        (local-unset-key "a") ;; don't let this accidentally archive a tree!
-	        ))
+	  (lambda ()
+	    ;; (hl-line-mode 1)
+	    ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
+	    ;;       (local-unset-key "o")
+	    ;; rebind to a sweet and beautiful function
+	    (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
+	    (local-unset-key "a") ;; don't let this accidentally archive a tree!
+	    (define-key org-agenda-mode-map "o" 'org-agenda-show)
+	    ;; "R" is used for clock report by default
+	    (define-key org-agenda-mode-map "R" 'org-agenda-refile)
+	    (define-key org-agenda-mode-map "K" 'org-agenda-clockreport-mode)
+	    ))
 (add-hook 'org-export-preprocess-hook
-	      (lambda ()
-	        (org-dblock-update 2) ;; update all dynamic blocks in the buffer
-	        ))
+	  (lambda ()
+	    (org-dblock-update 2) ;; update all dynamic blocks in the buffer
+	    ))
 ;; Function stolen from Bernt Hansen on gmane.emacs.orgmode: insert inactive time stamp for new entries
 
 (setq org-agenda-format-date
       (concat "%Y-%m-%d %a "
-	          (make-string (- (window-width) 15) (string-to-char "_"))))
+	      (make-string (- (window-width) 15) (string-to-char "_"))))
 
    #+end_src
 ** Tags/TODOs/Projects Oh My
@@ -528,6 +498,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                       ("@errands" . ?e)
                       ("@happy-hour")
                       (:endgroup . nil)
+                      ("maybe-someday" . ?m)
                       ("waiting-for" . ?w)
 		              ))
 ;; Projects are identified by a :Project: tag unless they are marked DONE;
@@ -608,22 +579,6 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+begin_src emacs-lisp
 (setq org-publish-project-alist
       '(
-	("director-23-testing" :components("director-23-testing-www" "director-23-testing-static"))
-	("director-23-testing-www"
-	 :base-directory "~/Google Drive/testing/director/2.3"
-	 :base-extension "org"
-	 :publishing-directory "/rsync:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/testing/director/2.3/"
-	 :recursive t
-	 :publishing-function org-html-publish-to-html
-	 :headline-levels 4
-	 :auto-preamble t
-	 )
-	("director-23-testing-static"
-	 :base-directory "~/Google Drive/testing/director/2.3"
-	 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|dxt\\|dxj\\|sdk\\|txt\\|conf"
-	 :publishing-directory "/rsync:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/testing/director/2.3/"
-	 :recursive t
-	 :publishing-function org-publish-attachment)
 	("ted-talks"
 	 :components
 	 ("ted-talks-notes" "ted-talks-static"))
@@ -667,16 +622,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 	 :publishing-function org-publish-org-to-html
 	 :headline-levels 4  ;; default for this project
 	 )
-	("hadoop-howtos-static"
-	 :base-directory "~/syncsort/db/docs/hadoop/howto"
-	 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|dxt\\|dxj\\|sdk\\|txt"
-	 :publishing-directory "/plink:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/private/joins"
-	 :recursive t
-	 :publishing-function org-publish-attachment
-	 )
-	("hadoop-howtos"
-	 :components
-	 ("hadoop-howtos-notes" "hadoop-howtos-static"))
 	("syncsort-pm-blog-posts"
 	 :base-directory "~/syncsort/db/pm"
 	 :base-extension "org"
@@ -694,8 +639,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 	 :publishing-directory "/plink:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/blog"
 	 :publishing-function org-publish-attachment
 	 )
-	("syncsort-blog"
-	 :components ("syncsort-pm-blog-posts" "blog-static"))
 	))
 
 
@@ -973,7 +916,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 (winner-mode 1)
 ;; windmove
 (windmove-default-keybindings)
-(eval-after-load "windmove"
+(with-eval-after-load 'windmove
   '(progn
      (windmove-default-keybindings)
      ;; Make windmove work in org-mode:
@@ -1173,7 +1116,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 *** Uniquify
     #+begin_src emacs-lisp
 (autoload 'uniquify "uniquify" "unique buffer names dependent on file name")
-(eval-after-load "uniquify"
+(with-eval-after-load 'uniquify
   '(progn
      (setq uniquify-buffer-name-style 'reverse)
      (setq uniquify-separator "/")
@@ -1199,8 +1142,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 ;;   in emacs 24.4 yow.el is obsolete; use cookie instead
 (when (featurep 'yow)
   (unload-feature 'yow))
-(require 'cookie1)
-(eval-after-load "cookie1"
+(with-eval-after-load 'cookie1
   '(progn
      (setq yow-file "~/emacs/yow.lines")
      (defun yow ()
@@ -1247,6 +1189,17 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+begin_src emacs-lisp
 (server-start)
    #+end_src
+** Projectile
+   #+begin_src emacs-lisp
+(require 'projectile)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(setq projectile-completion-system 'ivy)
+(setq projectile-mode-line-prefix "Prj")
+(setq projectile-switch-project-action #'projectile-dired)
+(setq projectile-switch-project-action #'projectile-dired)
+(setq projectile-sort-order 'access-time)
+(projectile-mode 1)
+   #+end_src
 ** Company
  #+BEGIN_SRC emacs-lisp
 (use-package company
@@ -1266,7 +1219,7 @@ Simply add the new block param =:keep-windows= to use this functionality
  #+END_SRC
 ** TRAMP
    #+begin_src emacs-lisp
-(require 'tramp)
+;;(require 'tramp)
    #+end_src
 *** Do not restore TRAMP buffers in next emacs session
    #+begin_src emacs-lisp
@@ -1295,76 +1248,75 @@ Simply add the new block param =:keep-windows= to use this functionality
 (add-to-list 'desktop-modes-not-to-save 'Info-mode)
 (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
    #+end_src
-*** Add SSH Agent
-    #+begin_src emacs-lisp
-(defun add-ssh-agent-to-tramp ()
-  (cl-pushnew '("-A")
-	      (cadr (assoc 'tramp-login-args
-			   (assoc "ssh" tramp-methods)))
-	      :test #'equal))
-(add-ssh-agent-to-tramp)
-
-
-    #+end_src
 *** Add methods for Docker, DC/OS, Google Cloud Shell
     #+begin_src emacs-lisp
 ;; Add method to connect to Mesosphere DC/OS tasks
 ;; we need to execute a command like the following
 ;;  dcos task exec --tty --interactive <taskname> -- bash
 ;; example TRAMP URI:   //dcos:jupyter:
-(add-to-list 'tramp-methods
-	     '("dcos"
-	       (tramp-login-program "dcos")
-	       (tramp-login-args
-		(nil
-		 ("task" "exec" "-it")
-		 ("%h")
-		 ("bash")))
-	       (tramp-remote-shell "/bin/sh")
-	       (tramp-remote-shell-args ("-i" "-c"))))
+(require 'tramp)
+;; (with-eval-after-load 'tramp
+;;   '(progn
+     (add-to-list 'tramp-methods
+                  `("docker"
+                    (tramp-login-program      "docker")
+                    (tramp-login-args         (nil ("exec" "-it") ("-u" "%u") ("%h") ("sh")))
+                    (tramp-remote-shell       "/bin/sh")
+                    (tramp-remote-shell-args  ("-i" "-c"))))
+     (add-to-list 'tramp-methods
+		          '("dcos"
+		            (tramp-login-program "dcos")
+		            (tramp-login-args
+		             (nil
+		              ("task" "exec" "-it")
+		              ("%h")
+		              ("bash")))
+		            (tramp-remote-shell "/bin/sh")
+		            (tramp-remote-shell-args ("-i" "-c"))))
 
-;; Add method to connect to Kubernetes pods
-;; we need to execute a command like the following
-;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
-;; example TRAMP URI:   //kexec:jhub@jupyter:
-(add-to-list 'tramp-methods
-	     '("kube"
-	       (tramp-login-program "kubectl")
-	       (tramp-login-args
-		(nil
-		 ("exec" "-it")
-		 ("--namespace" "%u")
-		 ("%h")
-		 ("--" "bash")))
-	       (tramp-remote-shell "/bin/sh")
-	       (tramp-remote-shell-args ("-i" "-c"))))
+     ;; Add method to connect to Kubernetes pods
+     ;; we need to execute a command like the following
+     ;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
+     ;; example TRAMP URI:   //kexec:jhub@jupyter:
+     (add-to-list 'tramp-methods
+		          '("kube"
+		            (tramp-login-program "kubectl")
+		            (tramp-login-args
+		             (nil
+		              ("exec" "-it")
+		              ("--namespace" "%u")
+		              ("%h")
+		              ("--" "sh")))
+		            (tramp-remote-shell "/bin/sh")
+		            (tramp-remote-shell-args ("-i" "-c"))))
 
-;; TRAMP gcloud ssh
-;; Google Cloud Shell
-(add-to-list 'tramp-methods
-	     '("gshell"
-	       (tramp-login-program        "gcloud alpha cloud-shell ssh")
-	       (tramp-default-host "cloud-shell")
-	       (tramp-login-args (("#%h")))
-	       ;; (tramp-login-args           (("%h")))
-	       ;; (tramp-async-args           (("-q")))
-	       (tramp-remote-shell         "/bin/bash")
-	       (tramp-remote-shell-args    ("-c"))
-	       ;; (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
-	       ;;                              ("-o" "UserKnownHostsFile=/dev/null")
-	       ;;                              ("-o" "StrictHostKeyChecking=no")))
-	       (tramp-default-port         22)))
-(add-to-list 'tramp-methods
-             '("gcssh"
-               (tramp-login-program        "gcloud compute ssh")
-               (tramp-login-args           (("%h")))
-               (tramp-async-args           (("-q")))
-               (tramp-remote-shell         "/bin/bash")
-               (tramp-remote-shell-args    ("-c"))
-               (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
-                                            ("-o" "UserKnownHostsFile=/dev/null")
-                                            ("-o" "StrictHostKeyChecking=no")))
-               (tramp-default-port         22)))
+     ;; TRAMP gcloud ssh
+     ;; Google Cloud Shell
+     (add-to-list 'tramp-methods
+		          '("gshell"
+		            (tramp-login-program        "gcloud alpha cloud-shell ssh")
+		            (tramp-default-host "cloud-shell")
+		            (tramp-login-args (("#%h")))
+		            ;; (tramp-login-args           (("%h")))
+		            ;; (tramp-async-args           (("-q")))
+		            (tramp-remote-shell         "/bin/bash")
+		            (tramp-remote-shell-args    ("-c"))
+		            ;; (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+		            ;;                              ("-o" "UserKnownHostsFile=/dev/null")
+		            ;;                              ("-o" "StrictHostKeyChecking=no")))
+		            (tramp-default-port         22)))
+     (add-to-list 'tramp-methods
+		          '("gcssh"
+		            (tramp-login-program        "gcloud compute ssh")
+		            (tramp-login-args           (("%h")))
+		            (tramp-async-args           (("-q")))
+		            (tramp-remote-shell         "/bin/bash")
+		            (tramp-remote-shell-args    ("-c"))
+		            (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+						                         ("-o" "UserKnownHostsFile=/dev/null")
+						                         ("-o" "StrictHostKeyChecking=no")))
+		            (tramp-default-port         22)))
+     ;; ))
 
 
     #+end_src
@@ -1374,11 +1326,12 @@ Simply add the new block param =:keep-windows= to use this functionality
 (defun my-tramp-header-line-function ()
   (when (string-match "^/.*su\\(do\\)?:" default-directory)
     (setq header-line-format
-	  (format-mode-line "----- THIS BUFFER IS VISITED WITH SUDO PRIVILEGES -----"
-			    'font-lock-warning-face))))
+	      (format-mode-line "----- THIS BUFFER IS VISITED WITH SUDO PRIVILEGES -----"
+			                'font-lock-warning-face))))
 
-(add-hook 'find-file-hook 'my-tramp-header-line-function)
-(add-hook 'dired-mode-hook 'my-tramp-header-line-function)
+(with-eval-after-load 'tramp
+  (add-hook 'find-file-hook 'my-tramp-header-line-function)
+  (add-hook 'dired-mode-hook 'my-tramp-header-line-function))
     #+end_src
 *** Shell sugar
 **** Open remote shell in current remote directory
@@ -1418,7 +1371,7 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+begin_src emacs-lisp
 ;; rainbow delimiters ; make much stronger (more saturated) colors
 (autoload 'rainbow-delimiters "rainbow-delimiters" "Highlight brackets according to their depth")
-(eval-after-load "rainbow-delimiters"
+(with-eval-after-load 'rainbow-delimiters
   '(progn
      (require 'cl-lib)
      (require 'color)
@@ -1587,31 +1540,6 @@ Simply add the new block param =:keep-windows= to use this functionality
   (occur-mode-display-occurrence))
 (ad-activate 'occur-prev)
    #+end_src
-*** Occur in buffers that use this current mode
-	Stolen from Sacha Chua in [[https://masteringemacs.org/article/searching-buffers-occur-mode][Mastering Emacs]]
-#+begin_src emacs-lisp
-(eval-when-compile
-  (require 'cl))
-
-(defun get-buffers-matching-mode (mode)
-  "Returns a list of buffers where their major-mode is equal to MODE"
-  (let ((buffer-mode-matches '()))
-    (dolist (buf (buffer-list))
-      (with-current-buffer buf
-	(if (eq mode major-mode)
-	    (add-to-list 'buffer-mode-matches buf))))
-    buffer-mode-matches))
-
-(defun multi-occur-in-this-mode ()
-  "Show all lines matching REGEXP in buffers with this major mode."
-  (interactive)
-  (multi-occur
-   (get-buffers-matching-mode major-mode)
-   (car (occur-read-primary-args))))
-
-;; global key for `multi-occur-in-this-mode' - you should change this.
-(global-set-key (kbd "C-<f2>") 'multi-occur-in-this-mode)
-#+end_src
 ** Shell mode
 *** Bash completions
 #+begin_src emacs-lisp
@@ -1678,6 +1606,12 @@ awesome.
   (indent-according-to-mode)
   (forward-line -1)
   (indent-according-to-mode))
+
+
+;; (with-eval-after-load 'smartparens
+;;   (sp-with-modes
+;;       '(c++-mode objc-mode c-mode js2-mode clojure-mode clojurescript-mode)
+;;     (sp-local-pair "{" nil :post-handlers '(:add ("||\n[i]" "RET")))))
 
 ;; (eval-after-load "smartparens-config"
 ;;   '(progn 
@@ -1845,7 +1779,7 @@ Open man page in current window, rather than other window with
 ** SQL
    #+begin_src emacs-lisp
 ;; (add-hook 'sql-mode-hook (lambda
-(eval-after-load "sql"
+(with-eval-after-load 'sql
   '(progn
   (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[_a-zA-Z0-9()]*\\]?> ")
   (setq sql-mysql-options '("-C" "-t" "-f" "-n"))))
