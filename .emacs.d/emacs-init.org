@@ -1,4 +1,3 @@
-# -*- org-src-preserve-indentation: t; -*-
 #+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
 #+OPTIONS: author:t broken-links:nil c:nil creator:nil
 #+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
@@ -111,6 +110,10 @@
 #+END_SRC
 * Org mode stuff
 
+** Org modules
+   #+begin_src emacs-lisp
+(add-to-list 'org-modules 'org-habit t)
+   #+end_src
 ** Org key mappings
 Disable some that get in the way
 #+begin_src emacs-lisp
@@ -392,97 +395,103 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+end_src
 ** Agenda
    #+begin_src emacs-lisp
-(global-set-key (kbd "C-c a") 'org-agenda)
-(setq gjg/org-agenda-directory "~/projects/private-orgmode/")
-(setq org-agenda-files '("~/projects/private-orgmode/notes.org" "~/projects/private-orgmode/inbox.org" "~/projects/private-orgmode/someday.org" "~/projects/private-orgmode/projects.org" "~/projects/private-orgmode/next.org"))
-;; Set basic org-mode keys
-;;(setq org-agenda-span 'day)
-;;(setq org-agenda-skip-scheduled-if-done t)
-(setq org-agenda-hide-tags-regexp "noagenda")
-(setq org-agenda-window-setup 'other-window)
-(setq org-agenda-restore-windows-after-quit t)
-;; (setq org-agenda-start-with-log-mode t)
-(setq org-agenda-entry-text-maxlines 10)
-(setq org-agenda-diary-file "~/projects/private-orgmode/diary.org")
-(setq org-agenda-include-diary t)
+     (global-set-key (kbd "C-c a") 'org-agenda)
+     (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
+     (setq org-agenda-files '("~/projects/private-orgmode/notes.org"
+                              "~/projects/private-orgmode/inbox.org"
+                              "~/projects/private-orgmode/someday.org"
+                              "~/projects/private-orgmode/projects.org"
+                              "~/projects/private-orgmode/next.org"
+                              "~/projects/private-orgmode/habits.org"))
+     ;; Set basic org-mode keys
+     ;;(setq org-agenda-span 'day)
+     ;;(setq org-agenda-skip-scheduled-if-done t)
+     (setq org-agenda-hide-tags-regexp "noagenda")
+     (setq org-agenda-window-setup 'other-window)
+     (setq org-agenda-restore-windows-after-quit t)
+     ;; (setq org-agenda-start-with-log-mode t)
+     (setq org-agenda-entry-text-maxlines 10)
+     (setq org-agenda-diary-file "~/projects/private-orgmode/diary.org")
+     (setq org-agenda-include-diary t)
 
-(setq org-agenda-exporter-settings
-      '((ps-number-of-columns 1)
-	(ps-landscape-mode t)
-	(org-agenda-add-entry-text-maxlines 10)
-	(htmlize-output-type 'css)))
+     (setq org-agenda-exporter-settings
+           '((ps-number-of-columns 1)
+         (ps-landscape-mode t)
+         (org-agenda-add-entry-text-maxlines 10)
+         (htmlize-output-type 'css)))
 
-;; (setq org-agenda-start-with-clockreport-mode nil)
-(setq org-special-ctrl-a/e t)
-(setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
-(setq org-cycle-separator-lines 1) ;
-(setq org-clock-history-length 12)
+     ;; (setq org-agenda-start-with-clockreport-mode nil)
+     (setq org-special-ctrl-a/e t)
+     (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
+     (setq org-cycle-separator-lines 1) ;
+     (setq org-clock-history-length 12)
 
-(setq org-agenda-custom-commands
-      `(
-        ("a" "Massive Awesome Agenda"
-         ((agenda ""
-                  ((org-agenda-span 'day)
-                   (org-deadline-warning-days 365)))
-          (todo "TODO"
-                ((org-agenda-overriding-header "To Refile")
-                 (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))))
-          (todo "NEXT"
-                ((org-agenda-overriding-header "In Progress")
-                 (org-agenda-files '(,(concat gjg/org-agenda-directory "someday.org")
-                                     ,(concat gjg/org-agenda-directory "projects.org")
-                                     ,(concat gjg/org-agenda-directory "next.org")))
-                 ))
-          (todo "TODO"
-                ((org-agenda-overriding-header "Projects")
-                 (org-agenda-files '(,(concat gjg/org-agenda-directory "projects.org")))
-                 ))
-          (todo "TODO"
-                ((org-agenda-overriding-header "One-off Tasks")
-                 (org-agenda-files '(,(concat gjg/org-agenda-directory "next.org")))
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))))
-        ("i" "Inbox review"
-         ((todo "TODO"
-                ((org-agenda-overriding-header "Review and Refile")
-                 (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))
-                 )
-           ))
-         )
-        ("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
-	("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
-	("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
-	("r" "Clock report" agenda ""
-	 ((org-agenda-ndays 1)
-	  (org-agenda-start-with-clockreport-mode t)
-	  (org-agenda-time-grid nil)
-	  (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
-	))
+     (setq org-agenda-custom-commands
+           `(
+             ("a" "Massive Awesome Agenda"
+              ((agenda ""
+                       ((org-agenda-span 'day)
+                        (org-deadline-warning-days 365)))
+               (todo "TODO"
+                     ((org-agenda-overriding-header "To Refile")
+                      (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))))
+               (todo "NEXT"
+                     ((org-agenda-overriding-header "In Progress")
+                      (org-agenda-files '(,(concat gjg/org-agenda-directory "someday.org")
+                                          ,(concat gjg/org-agenda-directory "projects.org")
+                                          ,(concat gjg/org-agenda-directory "next.org")))
+                      ))
+               (todo "TODO"
+                     ((org-agenda-overriding-header "Projects")
+                      (org-agenda-files '(,(concat gjg/org-agenda-directory "projects.org")))
+                      ))
+               (todo "TODO"
+                     ((org-agenda-overriding-header "One-off Tasks")
+                      (org-agenda-files '(,(concat gjg/org-agenda-directory "next.org")))
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))))
+             ("i" "Inbox review"
+              ((todo "TODO"
+                     ((org-agenda-overriding-header "Review and Refile")
+                      (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))
+                      )
+                ))
+              )
+             ("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
+         ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
+         ("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
+         ("r" "Clock report" agenda ""
+          ((org-agenda-ndays 1)
+           (org-agenda-start-with-clockreport-mode t)
+           (org-agenda-time-grid nil)
+           (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
+         ))
 
-;; org-agenda: some handy keys
-;; you might also want to set:
-(setq org-agenda-skip-unavailable-files t)
-(add-hook 'org-agenda-mode-hook
-	  (lambda ()
-	    ;; (hl-line-mode 1)
-	    ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
-	    ;;       (local-unset-key "o")
-	    ;; rebind to a sweet and beautiful function
-	    (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
-	    (local-unset-key "a") ;; don't let this accidentally archive a tree!
-	    (define-key org-agenda-mode-map "o" 'org-agenda-show)
-	    ;; "R" is used for clock report by default
-	    (define-key org-agenda-mode-map "R" 'org-agenda-refile)
-	    (define-key org-agenda-mode-map "K" 'org-agenda-clockreport-mode)
-	    ))
-(add-hook 'org-export-preprocess-hook
-	  (lambda ()
-	    (org-dblock-update 2) ;; update all dynamic blocks in the buffer
-	    ))
-;; Function stolen from Bernt Hansen on gmane.emacs.orgmode: insert inactive time stamp for new entries
+     ;; org-agenda: some handy keys
+     ;; you might also want to set:
+     (setq org-agenda-skip-unavailable-files t)
+     (add-hook 'org-agenda-mode-hook
+           (lambda ()
+             ;; (hl-line-mode 1)
+             ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
+             ;;       (local-unset-key "o")
+             ;; rebind to a sweet and beautiful function
+             (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
+             (local-unset-key "a") ;; don't let this accidentally archive a tree!
+             (define-key org-agenda-mode-map "o" 'org-agenda-show)
+             ;; "R" is used for clock report by default
+             (define-key org-agenda-mode-map "R" 'org-agenda-refile)
+             (define-key org-agenda-mode-map "'" 'org-agenda-clockreport-mode)
+             ;; (define-key org-agenda-mode-map "h" 'org-habit-toggle-display-in-agenda)
+             ))
+     (add-hook 'org-export-preprocess-hook
+           (lambda ()
+             (org-dblock-update 2) ;; update all dynamic blocks in the buffer
+             ))
+     ;; Function stolen from Bernt Hansen on gmane.emacs.orgmode: insert inactive time stamp for new entries
 
-(setq org-agenda-format-date
-      (concat "%Y-%m-%d %a "
-	      (make-string (- (window-width) 15) (string-to-char "_"))))
+     (setq org-agenda-format-date
+           (concat "%Y-%m-%d %a "
+               (make-string (- (window-width) 15) (string-to-char "_"))))
 
    #+end_src
 ** Tags/TODOs/Projects Oh My
@@ -1191,14 +1200,16 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+end_src
 ** Projectile
    #+begin_src emacs-lisp
-(require 'projectile)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-(setq projectile-completion-system 'ivy)
-(setq projectile-mode-line-prefix "Prj")
-(setq projectile-switch-project-action #'projectile-dired)
-(setq projectile-switch-project-action #'projectile-dired)
-(setq projectile-sort-order 'access-time)
-(projectile-mode 1)
+     (require 'projectile)
+     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+     (setq-default projectile--mode-line " Prj")
+     (setq projectile-completion-system 'ivy)
+     (setq projectile-mode-line-prefix "Prj")
+     (setq projectile-switch-project-action #'projectile-dired)
+     (setq projectile-switch-project-action #'projectile-dired)
+     (setq projectile-sort-order 'access-time)
+     (projectile-mode 1)
    #+end_src
 ** Company
  #+BEGIN_SRC emacs-lisp
@@ -1634,7 +1645,7 @@ Open man page in current window, rather than other window with
 #+begin_src emacs-lisp
 (custom-set-variables '(Man-notify-method 'pushy))
 #+end_src
-
+* Weird experimental modes/packages
 * Programming language modes
 
 ** All modes derived from =prog-mode=
