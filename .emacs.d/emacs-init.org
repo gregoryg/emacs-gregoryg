@@ -112,7 +112,8 @@
 
 ** Org modules
    #+begin_src emacs-lisp
-(add-to-list 'org-modules 'org-habit t)
+     (add-to-list 'org-modules 'org-habit t)
+     (require 'org-habit)
    #+end_src
 ** Org key mappings
 Disable some that get in the way
