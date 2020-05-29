@@ -417,9 +417,9 @@ Simply add the new block param =:keep-windows= to use this functionality
 
      (setq org-agenda-exporter-settings
            '((ps-number-of-columns 1)
-         (ps-landscape-mode t)
-         (org-agenda-add-entry-text-maxlines 10)
-         (htmlize-output-type 'css)))
+             (ps-landscape-mode t)
+             (org-agenda-add-entry-text-maxlines 10)
+             (htmlize-output-type 'css)))
 
      ;; (setq org-agenda-start-with-clockreport-mode nil)
      (setq org-special-ctrl-a/e t)
@@ -429,7 +429,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 
      (setq org-agenda-custom-commands
            `(
-             ("a" "Massive Awesome Agenda"
+             ("A" "Massive Awesome Agenda"
               ((agenda ""
                        ((org-agenda-span 'day)
                         (org-deadline-warning-days 365)))
@@ -450,102 +450,115 @@ Simply add the new block param =:keep-windows= to use this functionality
                      ((org-agenda-overriding-header "One-off Tasks")
                       (org-agenda-files '(,(concat gjg/org-agenda-directory "next.org")))
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))))
+             ("c" "Aaron's simple view"
+              ((tags "PRIORITY=\"A\""
+                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-overriding-header "High priority unfinished tasks")))
+               (agenda "" )
+               (alltodo ""
+                        ((org-agenda-skip-function '(or (air-org-skip-subtree-if-priority ?A)
+                                                        (org-agenda-skip-if nil '(scheduled deadline))
+                                                        )))
+                        (org-agenda-compact-blocks t)
+                        )
+
+               ))
              ("i" "Inbox review"
               ((todo "TODO"
                      ((org-agenda-overriding-header "Review and Refile")
                       (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))
                       )
-                ))
+                     ))
               )
              ("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
-         ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
-         ("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
-         ("r" "Clock report" agenda ""
-          ((org-agenda-ndays 1)
-           (org-agenda-start-with-clockreport-mode t)
-           (org-agenda-time-grid nil)
-           (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
-         ))
+             ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
+             ("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
+             ("r" "Clock report" agenda ""
+              ((org-agenda-ndays 1)
+               (org-agenda-start-with-clockreport-mode t)
+               (org-agenda-time-grid nil)
+               (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
+             ))
 
      ;; org-agenda: some handy keys
      ;; you might also want to set:
      (setq org-agenda-skip-unavailable-files t)
      (add-hook 'org-agenda-mode-hook
-           (lambda ()
-             ;; (hl-line-mode 1)
-             ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
-             ;;       (local-unset-key "o")
-             ;; rebind to a sweet and beautiful function
-             (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
-             (local-unset-key "a") ;; don't let this accidentally archive a tree!
-             (define-key org-agenda-mode-map "o" 'org-agenda-show)
-             ;; "R" is used for clock report by default
-             (define-key org-agenda-mode-map "R" 'org-agenda-refile)
-             (define-key org-agenda-mode-map "'" 'org-agenda-clockreport-mode)
-             ;; (define-key org-agenda-mode-map "h" 'org-habit-toggle-display-in-agenda)
-             ))
+               (lambda ()
+                 ;; (hl-line-mode 1)
+                 ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
+                 ;;       (local-unset-key "o")
+                 ;; rebind to a sweet and beautiful function
+                 (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
+                 (local-unset-key "a") ;; don't let this accidentally archive a tree!
+                 (define-key org-agenda-mode-map "o" 'org-agenda-show)
+                 ;; "R" is used for clock report by default
+                 (define-key org-agenda-mode-map "R" 'org-agenda-refile)
+                 (define-key org-agenda-mode-map "'" 'org-agenda-clockreport-mode)
+                 ;; (define-key org-agenda-mode-map "h" 'org-habit-toggle-display-in-agenda)
+                 ))
      (add-hook 'org-export-preprocess-hook
-           (lambda ()
-             (org-dblock-update 2) ;; update all dynamic blocks in the buffer
-             ))
+               (lambda ()
+                 (org-dblock-update 2) ;; update all dynamic blocks in the buffer
+                 ))
      ;; Function stolen from Bernt Hansen on gmane.emacs.orgmode: insert inactive time stamp for new entries
 
      (setq org-agenda-format-date
            (concat "%Y-%m-%d %a "
-               (make-string (- (window-width) 15) (string-to-char "_"))))
+                   (make-string (- (window-width) 15) (string-to-char "_"))))
 
    #+end_src
 ** Tags/TODOs/Projects Oh My
    #+begin_src emacs-lisp
-(setq org-tag-alist '(("Project" . ?p)
-		              ("NEXT" . ?n)
-		              ("noexport" . ?x)
-		              ("cloud" . ?c)
-                      (:startgroup . nil)
-		              ("@customer")
-                      ("@office" . ?o)
-                      ("@home" . ?h)
-                      ("@errands" . ?e)
-                      ("@happy-hour")
-                      (:endgroup . nil)
-                      ("maybe-someday" . ?m)
-                      ("waiting-for" . ?w)
-		              ))
-;; Projects are identified by a :Project: tag unless they are marked DONE;
-;;   Any project must have one sub-task identified by :NEXT: to be considered un-stuck
-;;   MAYBE: exclude special tags like Someday/Maybe
-(setq org-stuck-projects '("Project|project/-DONE"
-			               nil
-			               ("NEXT")
-			               ""))
-(setq org-columns-default-format "%TODO %CATEGORY %60ITEM(Task)%5Effort(Estim){:} %5CLOCKSUM(Clock) %SCHEDULED(Time) %DEADLINE")
-(setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s!)" "PAUSED(p!)" "|" "DONE(d!)")      ;; ordinary sequence is Todo -> Started -> Done
-				                (sequence "WAITING(w@/!)" "MAYBE(m!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
-				                ;; (sequence "QUOTE(q!)" "QUOTED(Q!)" "|" "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")     ;; sequence for quotes
-				                )))
-(setq org-todo-keyword-faces
-      '(("TODO"
-	     (:foreground "#ff39a3" :weight bold))
-	    ("STARTED" . "#E35DBF")
-	    ("CANCELLED" :foreground "green" :weight bold :strike-through t)
-	    ("PROPOSED" . "pink")
-        ("PAUSED"  . "yellow")
-	    ("WAITING" . "yellow")))
+     (setq org-tag-alist '(("Project" . ?p)
+                           ("NEXT" . ?n)
+                           ("noexport" . ?x)
+                           ("cloud" . ?c)
+                           (:startgroup . nil)
+                           ("@customer")
+                           ("@office" . ?o)
+                           ("@home" . ?h)
+                           ("@errands" . ?e)
+                           ("@happy-hour")
+                           (:endgroup . nil)
+                           ("maybe-someday" . ?m)
+                           ("Writing" . ?w)
+                           ))
+     ;; Projects are identified by a :Project: tag unless they are marked DONE;
+     ;;   Any project must have one sub-task identified by :NEXT: to be considered un-stuck
+     ;;   MAYBE: exclude special tags like Someday/Maybe
+     (setq org-stuck-projects '("Project|project/-DONE"
+                                nil
+                                ("NEXT")
+                                ""))
+     (setq org-columns-default-format "%TODO %CATEGORY %60ITEM(Task)%5Effort(Estim){:} %5CLOCKSUM(Clock) %SCHEDULED(Time) %DEADLINE")
+     (setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s!)" "PAUSED(p!)" "|" "DONE(d!)")      ;; ordinary sequence is Todo -> Started -> Done
+                                     (sequence "WAITING(w@/!)" "MAYBE(m!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
+                                     ;; (sequence "QUOTE(q!)" "QUOTED(Q!)" "|" "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")     ;; sequence for quotes
+                                     )))
+     (setq org-todo-keyword-faces
+           '(("TODO"
+              (:foreground "#ff39a3" :weight bold))
+             ("STARTED" . "#E35DBF")
+             ("CANCELLED" :foreground "green" :weight bold :strike-through t)
+             ("PROPOSED" . "pink")
+             ("PAUSED"  . "yellow")
+             ("WAITING" . "yellow")))
 
-;; (setq org-todo-state-tags-triggers
-;;       (quote (("CANCELLED" ("CANCELLED" . t))
-;; 	      ("WAITING" ("WAITING" . t) ("NEXT"))
-;; 	      ("SOMEDAY" ("WAITING" . t))
-;; 	      (done ("NEXT") ("WAITING"))
-;; 	      ("TODO" ("WAITING") ("CANCELLED"))
-;; 	      ("STARTED" ("WAITING") ("NEXT" . t)))))
-;; Change task state to STARTED when clocking in
-(setq org-clock-in-switch-to-state "STARTED")
+     ;; (setq org-todo-state-tags-triggers
+     ;;       (quote (("CANCELLED" ("CANCELLED" . t))
+     ;; 	      ("WAITING" ("WAITING" . t) ("NEXT"))
+     ;; 	      ("SOMEDAY" ("WAITING" . t))
+     ;; 	      (done ("NEXT") ("WAITING"))
+     ;; 	      ("TODO" ("WAITING") ("CANCELLED"))
+     ;; 	      ("STARTED" ("WAITING") ("NEXT" . t)))))
+     ;; Change task state to STARTED when clocking in
+     (setq org-clock-in-switch-to-state "STARTED")
 
-(setq org-tags-exclude-from-inheritance '("Project" "project" "interview2"))    
-                                        ;(setq org-tag-alist '(("project" . ?p)("car" . ?c)))
+     (setq org-tags-exclude-from-inheritance '("Project" "project" "interview2"))    
+                                             ;(setq org-tag-alist '(("project" . ?p)("car" . ?c)))
 
-(setq org-enforce-todo-dependencies t)
+     (setq org-enforce-todo-dependencies t)
    #+end_src
 ** Refile
    #+begin_src emacs-lisp
