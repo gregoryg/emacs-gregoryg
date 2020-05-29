@@ -1705,13 +1705,13 @@ Open man page in current window, rather than other window with
 
 ** All modes derived from =prog-mode=
    #+begin_src emacs-lisp
-(add-hook 'prog-mode-hook
-	  (lambda ()
-		(rainbow-delimiters-mode 0)
-		(rainbow-delimiters-mode 1)
-		(company-mode 1)
-        (yafolding-mode 1)
-		(smartparens-mode 1)))
+     (add-hook 'prog-mode-hook
+               (lambda ()
+                 (rainbow-delimiters-mode 0)
+                 (rainbow-delimiters-mode 1)
+                 (company-mode 1)
+                 (yafolding-mode 1)
+                 (smartparens-mode 1)))
    #+end_src
 ** Clojure
    #+begin_src emacs-lisp
