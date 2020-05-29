@@ -1147,10 +1147,11 @@ Simply add the new block param =:keep-windows= to use this functionality
      (setq uniquify-ignore-buffers-re "^\\*")))
     #+end_src
 *** Theme
-    #+begin_src emacs-lisp
-;; (load-theme 'brutalist-dark t)
-(load-file "~/projects/emacs/brutalist-theme/brutalist-build.el")
+    #+begin_src emacs-lisp :results none
+      (load-file "~/projects/emacs/brutalist-theme/brutalist-build.el")
+      (load-theme 'brutalist t)
     #+end_src
+
 ** Automatic typing - abbrevs and expansions
    #+begin_src emacs-lisp
 ;; Dynamic abbrevs should expand both words and symbols
