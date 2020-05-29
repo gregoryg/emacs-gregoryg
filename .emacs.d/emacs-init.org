@@ -1276,73 +1276,73 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+end_src
 *** Add methods for Docker, DC/OS, Google Cloud Shell
     #+begin_src emacs-lisp
-;; Add method to connect to Mesosphere DC/OS tasks
-;; we need to execute a command like the following
-;;  dcos task exec --tty --interactive <taskname> -- bash
-;; example TRAMP URI:   //dcos:jupyter:
-(require 'tramp)
-;; (with-eval-after-load 'tramp
-;;   '(progn
-     (add-to-list 'tramp-methods
-                  `("docker"
-                    (tramp-login-program      "docker")
-                    (tramp-login-args         (nil ("exec" "-it") ("-u" "%u") ("%h") ("sh")))
-                    (tramp-remote-shell       "/bin/sh")
-                    (tramp-remote-shell-args  ("-i" "-c"))))
-     (add-to-list 'tramp-methods
-		          '("dcos"
-		            (tramp-login-program "dcos")
-		            (tramp-login-args
-		             (nil
-		              ("task" "exec" "-it")
-		              ("%h")
-		              ("bash")))
-		            (tramp-remote-shell "/bin/sh")
-		            (tramp-remote-shell-args ("-i" "-c"))))
+      ;; Add method to connect to Mesosphere DC/OS tasks
+      ;; we need to execute a command like the following
+      ;;  dcos task exec --tty --interactive <taskname> -- bash
+      ;; example TRAMP URI:   //dcos:jupyter:
+      (require 'tramp)
+      ;; (with-eval-after-load 'tramp
+      ;;   '(progn
+      (add-to-list 'tramp-methods
+                   `("docker"
+                     (tramp-login-program      "docker")
+                     (tramp-login-args         (nil ("exec" "-it") ("-u" "%u") ("%h") ("sh")))
+                     (tramp-remote-shell       "/bin/sh")
+                     (tramp-remote-shell-args  ("-i" "-c"))))
+      (add-to-list 'tramp-methods
+                   '("dcos"
+                     (tramp-login-program "dcos")
+                     (tramp-login-args
+                      (nil
+                       ("task" "exec" "-it")
+                       ("%h")
+                       ("bash")))
+                     (tramp-remote-shell "/bin/sh")
+                     (tramp-remote-shell-args ("-i" "-c"))))
 
-     ;; Add method to connect to Kubernetes pods
-     ;; we need to execute a command like the following
-     ;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
-     ;; example TRAMP URI:   //kexec:jhub@jupyter:
-     (add-to-list 'tramp-methods
-		          '("kube"
-		            (tramp-login-program "kubectl")
-		            (tramp-login-args
-		             (nil
-		              ("exec" "-it")
-		              ("--namespace" "%u")
-		              ("%h")
-		              ("--" "sh")))
-		            (tramp-remote-shell "/bin/sh")
-		            (tramp-remote-shell-args ("-i" "-c"))))
+      ;; Add method to connect to Kubernetes pods
+      ;; we need to execute a command like the following
+      ;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
+      ;; example TRAMP URI:   //kexec:jhub@jupyter:
+      (add-to-list 'tramp-methods
+                   '("kube"
+                     (tramp-login-program "kubectl")
+                     (tramp-login-args
+                      (nil
+                       ("exec" "-it")
+                       ("--namespace" "%u")
+                       ("%h")
+                       ("--" "sh")))
+                     (tramp-remote-shell "/bin/sh")
+                     (tramp-remote-shell-args ("-i" "-c"))))
 
-     ;; TRAMP gcloud ssh
-     ;; Google Cloud Shell
-     (add-to-list 'tramp-methods
-		          '("gshell"
-		            (tramp-login-program        "gcloud alpha cloud-shell ssh")
-		            (tramp-default-host "cloud-shell")
-		            (tramp-login-args (("#%h")))
-		            ;; (tramp-login-args           (("%h")))
-		            ;; (tramp-async-args           (("-q")))
-		            (tramp-remote-shell         "/bin/bash")
-		            (tramp-remote-shell-args    ("-c"))
-		            ;; (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
-		            ;;                              ("-o" "UserKnownHostsFile=/dev/null")
-		            ;;                              ("-o" "StrictHostKeyChecking=no")))
-		            (tramp-default-port         22)))
-     (add-to-list 'tramp-methods
-		          '("gcssh"
-		            (tramp-login-program        "gcloud compute ssh")
-		            (tramp-login-args           (("%h")))
-		            (tramp-async-args           (("-q")))
-		            (tramp-remote-shell         "/bin/bash")
-		            (tramp-remote-shell-args    ("-c"))
-		            (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
-						                         ("-o" "UserKnownHostsFile=/dev/null")
-						                         ("-o" "StrictHostKeyChecking=no")))
-		            (tramp-default-port         22)))
-     ;; ))
+      ;; TRAMP gcloud ssh
+      ;; Google Cloud Shell
+      (add-to-list 'tramp-methods
+                   '("gshell"
+                     (tramp-login-program        "gcloud alpha cloud-shell ssh")
+                     (tramp-default-host "cloud-shell")
+                     (tramp-login-args (("#%h")))
+                     ;; (tramp-login-args           (("%h")))
+                     ;; (tramp-async-args           (("-q")))
+                     (tramp-remote-shell         "/bin/bash")
+                     (tramp-remote-shell-args    ("-c"))
+                     ;; (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+                     ;;                              ("-o" "UserKnownHostsFile=/dev/null")
+                     ;;                              ("-o" "StrictHostKeyChecking=no")))
+                     (tramp-default-port         22)))
+      (add-to-list 'tramp-methods
+                   '("gcssh"
+                     (tramp-login-program        "gcloud compute ssh")
+                     (tramp-login-args           (("%h")))
+                     (tramp-async-args           (("-q")))
+                     (tramp-remote-shell         "/bin/bash")
+                     (tramp-remote-shell-args    ("-c"))
+                     (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+                                                  ("-o" "UserKnownHostsFile=/dev/null")
+                                                  ("-o" "StrictHostKeyChecking=no")))
+                     (tramp-default-port         22)))
+      ;; ))
 
 
     #+end_src
@@ -1506,27 +1506,54 @@ Simply add the new block param =:keep-windows= to use this functionality
 	Smex helps sort commands by most-used 
 
     #+begin_src emacs-lisp
-(use-package counsel
-  :ensure nil
-  :config
-  (use-package swiper
-    :ensure nil)
-  (use-package flx
-    :ensure nil)
-  (use-package smex
-    :ensure nil)
-  (ivy-mode 1)
-  ;; (setq ivy-use-virtual-buffers t)
-  ;; intentional space before end of string
-  (setq ivy-count-format "(%d/%d) ")
-  ;; (setq ivy-re-builders-alist
-  ;;       '((t . ivy--regex-fuzzy)))
-  ;; (setq ivy-re-builders-alist
-  ;; 	    '((swiper . ivy--regex-plus)
-  ;; 		  (counsel-find-file . ivy--regex-plus)
-  ;; 		  (ivy-switch-buffer . ivy--regex-plus)
-  ;; 		  (t . ivy--regex-fuzzy))))
-  (setq ivy-re-builders-alist '((t . ivy--regex-plus))))
+      (use-package counsel
+        :after ivy
+        :config (counsel-mode))
+
+      (use-package smex
+        :ensure nil)
+
+      (use-package swiper
+        :ensure nil)
+
+      (use-package flx
+        :ensure nil)
+      (use-package ivy
+        :defer 0.1
+        :bind (("C-c C-r" . ivy-resume)
+               ("C-x B" . ivy-switch-buffer-other-window))
+        :custom
+        (ivy-count-format "(%d/%d) ")
+        (ivy-use-virtual-buffers t)
+        :config (ivy-mode))
+
+
+      ;; (setq ivy-use-virtual-buffers t)
+      ;; intentional space before end of string
+      ;; (setq ivy-re-builders-alist
+      ;;       '((t . ivy--regex-fuzzy)))
+      ;; (setq ivy-re-builders-alist
+      ;; 	    '((swiper . ivy--regex-plus)
+      ;; 		  (counsel-find-file . ivy--regex-plus)
+      ;; 		  (ivy-switch-buffer . ivy--regex-plus)
+      ;; 		  (t . ivy--regex-fuzzy))))
+      ;; (setq ivy-re-builders-alist '((t . ivy--regex-plus))))
+
+      ;; (use-package ivy-rich
+      ;;   :after ivy
+      ;;     :custom
+      ;;     (ivy-virtual-abbreviate 'full
+      ;;                             ivy-rich-switch-buffer-align-virtual-buffer t
+      ;;                             ivy-rich-path-style 'abbrev)
+      ;;     ;; :config
+      ;;     ;; (ivy-set-display-transformer 'ivy-switch-buffer
+      ;;     ;;                              'ivy-rich-switch-buffer-transformer))
+      ;;     :config (ivy-rich-mode))
+
+      ;; (use-package swiper
+      ;;   :after ivy
+      ;;   :bind (("C-s" . swiper)
+      ;;          ("C-r" . swiper)))
    #+end_src
 
 **** Make some keybindings for these crazy packages
