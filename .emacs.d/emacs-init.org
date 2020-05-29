@@ -1568,6 +1568,19 @@ Simply add the new block param =:keep-windows= to use this functionality
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
      #+end_src
+
+*** Set up a way to use `find-file` without Ivy
+    + I created this as an answer to [[https://emacs.stackexchange.com/a/58785/418][how to open a file without using Ivy - Emacs Stack Exchange]]
+    #+begin_src emacs-lisp
+      (defun gjg/find-file-no-ivy ()
+        (interactive)
+        (let ((ivy-state ivy-mode))
+          (ivy-mode -1)
+          (call-interactively 'find-file)
+          (ivy-mode ivy-state)))
+
+      (global-set-key (kbd "C-x F") 'gjg/find-file-no-ivy) ; steals the default key binding from set-fill-column
+    #+end_src
 ** Grep
    #+begin_src emacs-lisp
 (defun advice-without-ivy (o &rest a)
