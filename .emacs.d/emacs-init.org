@@ -108,6 +108,1037 @@
 	(package-install p)))))
 
 #+END_SRC
+* Greg's customizations!
+
+** Let emacs use more memory in these modern times
+ #+BEGIN_SRC emacs-lisp
+(setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
+ #+END_SRC
+** Microsoft Windows things
+*** Printing
+   #+begin_src emacs-lisp
+;; **** Windows printing that relies on ghostscript and gsview
+
+(defcustom gjg/gsprint "c:/Program Files/Ghostgum/gsview/gsprint.exe"
+  "Path to gsprint.exe: usually in Program Files or Program Files (x86)"
+  :group 'gjg
+  :type 'string)
+
+(when (and (string= (window-system) "w32") (file-exists-p gjg/gsprint))
+  (progn
+    ;;  Windows printer
+    (setq-default ps-lpr-command (expand-file-name gjg/gsprint))
+    (setq-default ps-printer-name t)
+    (setq-default ps-printer-name-option nil)
+    (setq ps-lpr-switches '("-query")) ; show printer dialog
+    (setq ps-right-header '("/pagenumberstring load" ps-time-stamp-mon-dd-yyyy))))
+
+   #+end_src
+*** Info on Windows
+    #+begin_src emacs-lisp
+(when  (eq window-system 'w32)
+  (progn
+    (setq Info-directory-list Info-default-directory-list)
+    (setq Info-additional-directory-list '("c:/emacs/share/info"))))
+    #+end_src
+
+*** File opens
+    #+begin_src emacs-lisp
+(when (eq window-system 'w32)
+  (setq w32-get-true-file-attributes nil)
+  (remove-hook 'find-file-hook 'vc-find-file-hook))
+    #+end_src
+** Chrome OS / Crostini things
+   Assure that web links will open in Chrome OS rather than invoking a browser
+   installed in the Linux container
+   #+begin_src emacs-lisp
+     (setq browse-url-browser-function 'browse-url-generic)
+     (setq browse-url-generic-program "sensible-browser")
+     ;; On the pixelbook, I use a script to open Chrome for Web links in Org
+     ;; this is in custom settings, since I don't know how to detect Crostini/Chrome OS in emacs
+     ;; (setq org-file-apps
+     ;;       '((auto-mode . emacs)
+     ;;         ("\\.mm\\'" . default)
+     ;;         ("\\.x?html?\\'" . "~/bin/open-in-browser-container.sh %s")
+     ;;         ("\\.pdf\\'" . default)))
+   #+end_src
+   #+begin_src bash
+     #!/usr/bin/env bash
+
+     url="http://localhost:80/"
+     fpath=$1
+
+     echo "fpath=${fpath}"
+     ## Get relative path
+     relpath=$(realpath --relative-to="${HOME}" ${fpath})
+
+     echo $relpath
+
+     sensible-browser "${url}${relpath}"
+     # echo "$fpath" >> /tmp/opened_by_script.txt
+   #+end_src
+** Fonts
+   Forever in search of the One True Holy and Apostolic Programmer Font.
+
+   Big fan of Inconsolata, Source Code Pro, and Hack.  Inability to decide on one is
+   encoded herein.
+
+   #+begin_src emacs-lisp
+(cond ((or (eq window-system 'mac) (eq window-system 'ns))
+	   (set-frame-font "Source Code Pro-17"))
+	  ((eq window-system 'w32)
+	   (set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1"))
+	  ((eq window-system 'x)
+	   (set-frame-font "Hack-14")
+	   ;; (set-frame-font "Inconsolata-16")
+	   ))
+;; (load-library "fontize")
+;; (require 'fontize)
+(autoload 'inc-font-size "fontize" "Adjust buffer relative font size" t)
+(autoload 'dec-font-size "fontize" "Adjust buffer relative font size" t)
+
+(global-set-key [C-kp-subtract] 'dec-font-size)
+(global-set-key [C-kp-add] 'inc-font-size)
+   #+end_src
+** Desktop save
+   #+begin_src emacs-lisp
+(desktop-save-mode 1)
+(setq desktop-restore-eager 0)
+(setq desktop-lazy-idle-delay 2)
+   #+end_src
+** Basic defaults that aren't default
+   So many defaults in Emacs make no sense.  If starting out with Emacs, consider these
+   settings to make your first experiences nicer.
+   
+   If you have any questions about what these settings do, use Emacs to explore them:
+   + If it's a variable being set (line starts with the =setq= function, set the point in
+     the variable name and hit =C-h v= for help on that variable.
+   + If it's a function (line starts with almost anything other than =setq=, set the point
+     in the function name and hit "C-h f"
+
+#+begin_src emacs-lisp
+  ;; fido-mode in emacs 27+: a new thing to hate
+  (fido-mode -1)
+  ;; When I want transient mark mode, I'll beat it out of you
+  (setq transient-mark-mode nil)
+  ;; (do not) display time and battery status in the mode line
+  (display-time-mode 0)
+  (display-battery-mode 0)
+  ;; turn off that stupid toolbar
+  (tool-bar-mode -1)
+  ;; scroll bars?
+  (scroll-bar-mode -1)
+  (menu-bar-mode -1)
+  ;; don't do that stoopid splash screen
+  (setq inhibit-splash-screen t)
+
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-always-indent t)
+  (setq-default tab-width 4)
+  ;; blink parens and similar delimiters
+  (show-paren-mode 1)
+  ;; ** Global identity (ie, same on all machines) - Emacs does not make good guesses here
+  (setq user-full-name "Gregory Grubbs"
+        user-mail-address "gregory@dynapse.com")
+
+  (setq confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
+
+  ;; dippy bird FTW - single character y-n for all yes/no question dialogs
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (setq shell-file-name "bash")
+  (setq explicit-shell-file-name shell-file-name)
+  (setq explicit-bash-args '("--noediting" "-i"))
+
+  ;; (global-hl-line-mode t) ;; highlight current line - turn off when figuring out faces
+
+  (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows - nice for UX
+
+  (setq fill-column 90); good default for wider screens - BUT this is buffer-local so should be set in mode hooks only
+
+  ;; ensure that the default for searches is case-insensitive
+  (setq case-fold-search t)
+
+  ;; highlight/colorize everything that can be colorized!
+  (global-font-lock-mode 1)
+
+  ;; never split windows horizontally by default
+  (setq split-width-threshold nil)
+  ;; Here's a choice one: stay in the same column while scrolling!
+  (setq scroll-preserve-screen-position t)
+  ;; in Emacs23+, make line-move move by a line, ignoring wrapping
+  (setq line-move-visual nil)
+  ;; enable hugely useful things that are disabled by default
+  (put 'narrow-to-region 'disabled nil)
+  (put 'set-goal-column 'disabled nil)
+
+  ;; echo quickly
+  (setq echo-keystrokes 0.1)
+  ;; keep the screen from jumping wildly as I cursor down/up
+  (setq scroll-conservatively 5)
+  ;; remember minibuffer history between sessions
+  (savehist-mode t)
+  ;; if point is at end of line, keep it there for vertical movement
+  (setq track-eol t)
+  (setq align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
+  (setq Man-notify-method 'pushy) ;; show man page in current window
+  (setq auth-source-save-behavior nil) ; NEVER store passwords
+#+end_src
+** Custom Functions in a separate file
+   TODO: pull these functions in
+   #+begin_src emacs-lisp
+(add-to-list 'load-path "~/emacs")
+(load-library "gjg-functions")
+(require 'gjg-functions)
+   #+end_src
+** Key bindings
+   #+begin_src emacs-lisp
+(global-set-key [home] (lambda () (interactive) (goto-char (point-min))))
+(global-set-key [end] (quote end-of-buffer))
+;; M-left and M-right on Pixelbook
+(global-unset-key (kbd "<M-left>"))
+(global-unset-key (kbd "<M-right>"))
+(global-set-key (kbd "<M-left>") (lambda () (interactive) (goto-char (point-min))))
+(global-set-key (kbd "<M-right>") 'end-of-buffer)
+(global-unset-key (kbd "C-z"))
+(global-set-key (kbd "C-z") 'undo)
+(global-unset-key (kbd "M-]")) ; unset one next-buffer binding
+(global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
+
+(global-set-key [f1] 'delete-other-windows)
+(global-set-key [f2] 'gjg/switch-to-other-buffer)
+(global-set-key [f3] 'gjg/other-window-or-split)
+(global-set-key [f4] 'narrow-to-defun)
+
+(global-set-key [f5] 'gjg/widen-ask-if-indirect)
+(global-set-key [f6] 'read-only-mode)
+(global-set-key [f7] 'hl-line-mode) ;; toggle hl-line-mode for this window only
+;; (global-set-key [f8] 'bury-buffer)
+
+;; (global-set-key [f9] 'bury-buffer)
+(global-set-key [f10] 'dired-omit-mode)
+;; (global-set-key [f11] 'mac-toggle-max-window)
+(global-set-key [f11] 'gjg/toggle-max-frame)
+(global-set-key [M-f11] 'gjg/toggle-max-frame)
+;; (global-set-key [f11] 'toggle-fullscreen)
+;; (global-set-key [f11] 'switch-full-screen)
+;; (global-set-key (kbd "C-<f11>") 'gjg/emacs-max-coolness)
+(global-set-key [f12] (lambda () (interactive) (message (or (buffer-file-name) "No file associated with this buffer."))))
+(global-set-key (kbd "<C-f12>") 'yow)
+(global-set-key [C-wheel-up] 'text-scale-increase)
+(global-set-key [C-wheel-down] 'text-scale-decrease)
+(global-set-key [S-wheel-up] 'inc-font-size)
+(global-set-key [S-wheel-down] 'dec-font-size)
+(global-set-key (kbd "M-]") 'next-buffer)
+(global-set-key (kbd "M-[") 'previous-buffer)
+(global-set-key (kbd "C-c C-v") 'browse-url-at-point)
+;; EXPERIMENTAL: unbind SPACE and ? in minibuffer, to allow typing in completions with those chars
+(add-hook 'minibuffer-setup-hook (lambda () 
+				   (define-key minibuffer-local-completion-map " " nil)
+				   (define-key minibuffer-local-must-match-map " " nil)
+				   (define-key minibuffer-local-completion-map "?" nil)
+				   (define-key minibuffer-local-must-match-map "?" nil)))
+(defalias 'ss 'gjg/open-remote-shell)
+(defalias 'ht 'gjg/highlight-terraform-stuff)
+(defalias 'rb 'rename-buffer)
+
+   #+end_src
+** Backup files
+   #+begin_src emacs-lisp
+;; backup files
+(setq
+ backup-by-copying t      ; don't clobber symlinks
+ backup-directory-alist
+ '(("." . "~/.emacs.d/backups"))    ; don't litter my fs tree
+ delete-old-versions t
+ kept-new-versions 5
+ kept-old-versions 5
+ version-control nil)   
+   #+end_src
+** Window/buffer management
+*** Modeline and Title
+   Fancy icons may require fonts (like =texlive-fonts-extra=)
+
+    #+begin_src emacs-lisp
+;; show column number in modeline - in addition to line number
+(column-number-mode t)
+
+(setq frame-title-format (concat "emacs@" (system-name) " - %f; %b"))
+;; fancy git icon
+(defadvice vc-mode-line (after strip-backend () activate)
+  (when (stringp vc-mode)
+    (let ((gitlogo (replace-regexp-in-string "^ Git." "  " vc-mode)))
+      (setq vc-mode gitlogo))))
+
+    #+end_src
+*** Winner-mode and Windmove
+   #+begin_src emacs-lisp
+;; winner
+(winner-mode 1)
+;; windmove
+(windmove-default-keybindings)
+(with-eval-after-load 'windmove
+  '(progn
+     (windmove-default-keybindings)
+     ;; Make windmove work in org-mode:
+     (setq org-replace-disputed-keys t)))
+;; (add-hook 'org-shiftup-final-hook 'windmove-up)
+;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
+;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
+;; (add-hook 'org-shiftright-final-hook 'windmove-right)))
+
+
+   #+end_src
+*** GJG full screen, movement, transparency
+    #+begin_src emacs-lisp
+(defun revert-dammit () ; revert buffer without prompting
+  (interactive)
+  ;; revert buffer, don't use auto-save, preserve modes
+  (revert-buffer t t t))
+(defalias 'rd 'revert-dammit)
+(defun gjg/switch-to-other-buffer ()
+  (interactive)
+  (switch-to-buffer (other-buffer))
+  (message "Switched to other-buffer"))
+(defun gjg/other-window-or-split ()
+  "If one window is displayed in current frame, split vertically and go to other window, else go to other window without splitting"
+  (interactive)
+  (if (one-window-p t)
+      (progn
+	(split-window-vertically)
+	(other-window 1)
+	(switch-to-buffer (other-buffer)))
+    (other-window 1)))
+(defun gjg/widen-ask-if-indirect ()
+  "If buffer is indirect, ask before widening"
+  (interactive)
+  (if (buffer-base-buffer)
+      (when (yes-or-no-p "Buffer is indirect; really widen? ")
+	(widen))
+    (widen)))
+(defun toggle-transparency (alpha-level)
+  (interactive "p")
+  (message (format "%s" alpha-level))
+  (if (< alpha-level 50) (setq alpha-level 75))
+  (let ((myalpha (frame-parameter nil 'alpha)))
+    (if (or (not myalpha)
+	    (= myalpha 100))
+	(set-frame-parameter nil 'alpha alpha-level)
+      (set-frame-parameter nil 'alpha 100))
+    )
+  (message (format "Alpha level is %d" (frame-parameter nil 'alpha)))
+  )
+
+(defun set-transparency (alpha-level)
+  (interactive "p")
+  (message (format "Alpha level passed in: %s" alpha-level))
+  (let ((alpha-level (if (< alpha-level 2)
+			 (read-number "Opacity percentage: " 75)
+		       alpha-level))
+	(myalpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter nil 'alpha alpha-level))
+  (message (format "Alpha level is %d" (frame-parameter nil 'alpha))))
+(defalias 'set-opacity 'set-transparency )
+
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
+	(delete-other-windows)
+	(let ((first-win (selected-window)))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))))
+
+(define-key ctl-x-4-map "t" 'toggle-window-split)
+;; *** Full-screen frame defuns
+
+(defun switch-full-screen ()
+  (interactive)
+  (shell-command (concat "/usr/bin/wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -btoggle,fullscreen")))
+
+;; (defun toggle-fullscreen ()
+;;   "toggles whether the currently selected frame consumes the entire display or is decorated with a window border"
+;;   (interactive)
+;;   (let ((f (selected-frame)))
+;;     (modify-frame-parameters f `((fullscreen . ,(if (eq nil (frame-parameter f 'fullscreen)) 'fullboth nil))))))
+
+;; (defun mac-toggle-max-window ()
+;;   "Toggle full-screen frame on Linux and OS X - use maxframe.el for Windows"
+;;   (interactive)
+;;   (if (frame-parameter nil 'fullscreen)
+;;       (set-frame-parameter nil 'fullscreen nil)
+;;     (set-frame-parameter nil 'fullscreen 'fullboth)))
+;; (defun toggle-full-screen ()
+;;   "Toggle between full screen and partial screen display on X11;
+;;     courtesy of http://www.emacswiki.org/cgi-bin/wiki/FullScreen"
+;;   (interactive)
+;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+;;                          '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+
+
+;; ;; add toggle for maxframe.el (works on Windows)
+(when (eq window-system 'w32)
+  (require 'maxframe)
+  (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
+;; (modify-frame-parameters nil '((gjg/frame-maxp . nil)))
+;; ;; (defvar gjg/frame-maxp nil "Store whether frame is maximized using maxframe.el")
+(defun gjg/switch-buffer-by-mode ()
+  "Switch to a buffer after choosing a mode."
+  (interactive)
+  (let* ((active-buffers-with-mode (mapcar #'(lambda (x) (with-current-buffer x (cons (buffer-name) (symbol-name major-mode)))) (buffer-list)))
+	 (distinct-modes (-distinct (mapcar #'cdr active-buffers-with-mode)))
+	 (selected-mode (ido-completing-read "Mode: " distinct-modes))
+	 (candidate-buffers (mapcar #'car (remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
+	 (selected-buffer (ido-completing-read "Buffer: " candidate-buffers)))
+    (switch-to-buffer selected-buffer)))
+(global-set-key (kbd "C-c s") 'gjg/switch-buffer-by-mode)
+
+(defun gjg/max-frame ()
+  "Maximize the current frame and toggle gjg/frame-maxp"
+  (interactive)
+  (cond ((eq window-system 'w32)
+	 (maximize-frame))
+	((eq window-system 'x)
+	 (switch-full-screen))
+	(t
+	 (mac-toggle-max-window)))
+  (modify-frame-parameters nil '((gjg/frame-maxp . t))))
+
+(defun gjg/restore-frame ()
+  "Restore the current frame to its previous size and toggle gjg/frame-maxp"
+  (interactive)
+  (cond ((eq window-system 'w32)
+	 (restore-frame))
+	((eq window-system 'x)
+	 (switch-full-screen))
+	(t
+	 (mac-toggle-max-window)))
+  (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
+
+(defun gjg/toggle-max-frame ()
+  "Check the status of gjg/max-framep and change to whichever mode we're not in now."
+  (interactive)
+  (cond ((eq window-system 'ns)
+	 (toggle-frame-maximized))
+	(t
+	 (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
+
+    #+end_src
+*** Ibuffer FTW
+    Saved filter groups provide a nice organization.
+
+    #+begin_src emacs-lisp
+      (global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
+      (setq ibuffer-expert t)
+      (setq ibuffer-saved-filter-groups
+            '(("home"
+               ("Org and Markdown" (or (mode . org-mode)
+                                       (mode . markdown-mode)))
+               ("Shell" (mode . shell-mode))
+               ("Configs" (or (derived-mode .  conf-mode)
+                              (mode . yaml-mode)
+                              (mode . json-mode)))
+               ("Code" (derived-mode .  prog-mode))
+               ("Magit" (or (mode . magit-diff-mode)
+                            (mode . magit-status-mode)
+                            (mode . magit-process-mode)
+                            (mode . magit-revision-mode)
+                            (mode . magit-refs-mode)))
+               ("Dired" (mode . dired-mode))
+               ("Tramp sessions" (name . "\*tramp.+"))
+               ("Remote" (filename . "/\*:.+"))
+               )))
+      (add-hook 'ibuffer-mode-hook
+                '(lambda ()
+                   (ibuffer-auto-mode 1)
+                   (auto-revert-mode 1)
+                   (ibuffer-switch-to-saved-filter-groups "home")))
+    #+end_src
+
+    #+RESULTS:
+    | lambda | nil | (ibuffer-auto-mode 1) | (ibuffer-switch-to-saved-filter-groups home) |
+
+*** Uniquify
+    #+begin_src emacs-lisp
+(autoload 'uniquify "uniquify" "unique buffer names dependent on file name")
+(with-eval-after-load 'uniquify
+  '(progn
+     (setq uniquify-buffer-name-style 'reverse)
+     (setq uniquify-separator "/")
+     (setq uniquify-after-kill-buffer-p t)
+     (setq uniquify-ignore-buffers-re "^\\*")))
+    #+end_src
+*** Theme
+    #+begin_src emacs-lisp :results none
+      (load-file "~/projects/emacs/brutalist-theme/brutalist-build.el")
+      (load-theme 'brutalist t)
+    #+end_src
+
+** Automatic typing - abbrevs and expansions
+   #+begin_src emacs-lisp
+;; Dynamic abbrevs should expand both words and symbols
+(setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
+;; and now set up hippie-expand
+(global-set-key (kbd "M-/") 'hippie-expand)
+
+   #+end_src
+** Games and silliness
+   #+begin_src emacs-lisp
+;; very important: keep a long list of yow lines
+;;   in emacs 24.4 yow.el is obsolete; use cookie instead
+(when (featurep 'yow)
+  (unload-feature 'yow))
+(with-eval-after-load 'cookie1
+  '(progn
+     (setq yow-file "~/emacs/yow.lines")
+     (defun yow ()
+       (interactive)
+       (let ((suggest-key-bindings nil))
+	 (message (cookie yow-file nil nil))))))
+;; almost as important: keep track of those tetris scores
+(setq tetris-score-file "~/.emacs.d/tetris.score")
+
+
+   #+end_src
+** Weird random rarely used maybe interesting things
+*** MOOs and MUDs - NOT legacy - added 2019!
+   #+begin_src emacs-lisp
+;; Moos and MUDs - NOT legacy stuff - added 2019!
+(add-to-list 'load-path "~/projects/emacs/rmoo/")
+;; (require 'rmoo-autoload)
+;; (require 'moocode-mode)
+;; ;; (global-set-key (kbd "C-c C-r") 'rmoo)
+;; (add-to-list 'auto-mode-alist '("\\.moo$" . moocode-mode))
+;; (add-hook 'rmoo-interactive-mode-hooks
+;;           (lambda ()
+;;             (linum-mode -1)                  ;; ... no line numbers
+;;             (goto-address-mode t)))          ;; ... clickable links
+
+
+   #+end_src
+* Encryption
+  Set value of =epg-gpg-program= to location on local system
+  #+begin_src emacs-lisp
+;; let's get encryption established
+;; For gpg, disable external pinentry - let emacs handle pass phrase
+;; (setenv "GPG_AGENT_INFO" nil)
+(require 'epa-file)
+;; (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
+(epa-file-enable)
+(setq epg-pinentry-mode 'loopback)
+(require 'org-crypt)
+(org-crypt-use-before-save-magic)
+
+  #+end_src
+* Commonly used modes
+** Start emacs server
+   #+begin_src emacs-lisp
+(server-start)
+   #+end_src
+** Projectile
+   #+begin_src emacs-lisp
+     (require 'projectile)
+     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+     (setq-default projectile--mode-line " Prj")
+     (setq projectile-completion-system 'ivy)
+     (setq projectile-mode-line-prefix "Prj")
+     (setq projectile-switch-project-action #'projectile-dired)
+     (setq projectile-switch-project-action #'projectile-dired)
+     (setq projectile-sort-order 'access-time)
+     (setq projectile-ignored-project-function 'file-remote-p)
+     (projectile-mode 1)
+   #+end_src
+** Company
+ #+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t
+  :config
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 3)
+
+  ;; (global-company-mode t)
+  )
+
+;; (use-package company-lsp
+;;   :ensure t
+;;   :config
+;;  (push 'company-lsp company-backends)
+;; )
+ #+END_SRC
+** TRAMP
+   #+begin_src emacs-lisp
+;;(require 'tramp)
+   #+end_src
+*** Do not restore TRAMP buffers in next emacs session
+   #+begin_src emacs-lisp
+(defun tv-list-tramp-buffer-file-name ()
+  "Return a list of buffers that I do not want automatically restored by desktop.el in the next emacs session: TRAMP dirs and files, Info buffer, and Dired buffers"
+  (let* ((desktop-info-list (mapcar #'desktop-buffer-info (buffer-list)))
+	 (tramp-buf-list (loop for i in desktop-info-list
+			       if (and (listp i)
+				       (stringp (car (nth 8 i)))
+				       (or
+					(string= "dired-mode" (nth 3 i))
+					(string= "Info-mode" (nth 3 i))
+					(string-match "^/su:.*\\|^/sudo:.*\\|^/ssh:.*\\|^/scp[^:]*:.*\\|^/smb:.*\\|^/docker:.*" (car (nth 8 i)))))
+			       collect (nth 2 i))))
+    tramp-buf-list))
+
+;; (add-hook 'desktop-save-hook #'(lambda ()
+;;                                  (let ((del-buf-list
+;;                                         (tv-list-tramp-buffer-file-name)))
+;;                                    (dolist (i del-buf-list)
+;;                                      (if (get-buffer i) (kill-buffer i))))))
+;;(setq desktop-buffers-not-to-save
+;;      (concat "\\` "
+;;	      (tv-list-tramp-buffer-file-name)))
+(add-to-list 'desktop-modes-not-to-save 'dired-mode)
+(add-to-list 'desktop-modes-not-to-save 'Info-mode)
+(add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
+   #+end_src
+*** Add methods for Docker, DC/OS, Google Cloud Shell
+    #+begin_src emacs-lisp
+      ;; Add method to connect to Mesosphere DC/OS tasks
+      ;; we need to execute a command like the following
+      ;;  dcos task exec --tty --interactive <taskname> -- bash
+      ;; example TRAMP URI:   //dcos:jupyter:
+      (require 'tramp)
+      ;; (with-eval-after-load 'tramp
+      ;;   '(progn
+      (add-to-list 'tramp-methods
+                   `("docker"
+                     (tramp-login-program      "docker")
+                     (tramp-login-args         (nil ("exec" "-it") ("-u" "%u") ("%h") ("sh")))
+                     (tramp-remote-shell       "/bin/sh")
+                     (tramp-remote-shell-args  ("-i" "-c"))))
+      (add-to-list 'tramp-methods
+                   '("dcos"
+                     (tramp-login-program "dcos")
+                     (tramp-login-args
+                      (nil
+                       ("task" "exec" "-it")
+                       ("%h")
+                       ("bash")))
+                     (tramp-remote-shell "/bin/sh")
+                     (tramp-remote-shell-args ("-i" "-c"))))
+
+      ;; Add method to connect to Kubernetes pods
+      ;; we need to execute a command like the following
+      ;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
+      ;; example TRAMP URI:   //kexec:jhub@jupyter:
+      (add-to-list 'tramp-methods
+                   '("kube"
+                     (tramp-login-program "kubectl")
+                     (tramp-login-args
+                      (nil
+                       ("exec" "-it")
+                       ("--namespace" "%u")
+                       ("%h")
+                       ("--" "sh")))
+                     (tramp-remote-shell "/bin/sh")
+                     (tramp-remote-shell-args ("-i" "-c"))))
+
+      ;; TRAMP gcloud ssh
+      ;; Google Cloud Shell
+      (add-to-list 'tramp-methods
+                   '("gshell"
+                     (tramp-login-program        "gcloud alpha cloud-shell ssh")
+                     (tramp-default-host "cloud-shell")
+                     (tramp-login-args (("#%h")))
+                     ;; (tramp-login-args           (("%h")))
+                     ;; (tramp-async-args           (("-q")))
+                     (tramp-remote-shell         "/bin/bash")
+                     (tramp-remote-shell-args    ("-c"))
+                     ;; (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+                     ;;                              ("-o" "UserKnownHostsFile=/dev/null")
+                     ;;                              ("-o" "StrictHostKeyChecking=no")))
+                     (tramp-default-port         22)))
+      (add-to-list 'tramp-methods
+                   '("gcssh"
+                     (tramp-login-program        "gcloud compute ssh")
+                     (tramp-login-args           (("%h")))
+                     (tramp-async-args           (("-q")))
+                     (tramp-remote-shell         "/bin/bash")
+                     (tramp-remote-shell-args    ("-c"))
+                     (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+                                                  ("-o" "UserKnownHostsFile=/dev/null")
+                                                  ("-o" "StrictHostKeyChecking=no")))
+                     (tramp-default-port         22)))
+      ;; ))
+
+
+    #+end_src
+*** Handle SUDO - root and other users
+    #+begin_src emacs-lisp
+;; TRAMP SUDO FUN - snarfed from Peter Dyballa on gmane.emacs.help
+(defun my-tramp-header-line-function ()
+  (when (string-match "^/.*su\\(do\\)?:" default-directory)
+    (setq header-line-format
+	      (format-mode-line "----- THIS BUFFER IS VISITED WITH SUDO PRIVILEGES -----"
+			                'font-lock-warning-face))))
+
+(with-eval-after-load 'tramp
+  (add-hook 'find-file-hook 'my-tramp-header-line-function)
+  (add-hook 'dired-mode-hook 'my-tramp-header-line-function))
+    #+end_src
+*** Shell sugar
+**** Open remote shell in current remote directory
+#+begin_src emacs-lisp
+(defun gjg/open-remote-shell ()
+  "If current buffer is remote, open a new uniquely named shell based on host name"
+  (interactive)
+  (if (file-remote-p default-directory)
+      (progn
+        ;; do stuff
+        (message "Now I shall do stuff")
+        (shell (concat (file-remote-p default-directory 'host) "-sh"))
+        )
+	(progn
+	  (shell (concat "local-" default-directory "-sh"))
+	  ;; (message "Buffer is local - not opening shell"))
+	  )))
+#+end_src
+**** Open SUDO at current remote directory
+#+begin_src emacs-lisp
+(defun gjg/tramp-sudo-to-etc ()
+  "Dired browse as root (sudo) to /etc on current machine"
+  (interactive)
+  (let* ((trampvec (tramp-dissect-file-name default-directory))
+         (tramphop (elt trampvec 4))
+         (conntype (elt trampvec 0))
+         (trampuser (elt trampvec 1)) ; may be nil, which is cool
+         (tramphost (elt trampvec 2))
+         (sudopath (concat "/" tramphop conntype ":" tramphost "|sudo:" tramphost ":/etc/"))
+         )
+    (find-file sudopath)
+    )
+  )
+#+end_src
+
+** Rainbow delimiters for various programming modes
+   #+begin_src emacs-lisp
+;; rainbow delimiters ; make much stronger (more saturated) colors
+(autoload 'rainbow-delimiters "rainbow-delimiters" "Highlight brackets according to their depth")
+(with-eval-after-load 'rainbow-delimiters
+  '(progn
+     (require 'cl-lib)
+     (require 'color)
+     (cl-loop
+      for index from 1 to rainbow-delimiters-max-face-count
+      do
+      (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
+	(cl-callf color-saturate-name (face-foreground face) 30)))))
+
+   #+end_src
+** Dired
+   =dired-dwim-target= is just awesome.  Whenever you have 2 Dired
+   windows in a frame, hitting Copy or Rename from one Dired buffer
+   automatically suggests the other as the target
+
+   =dired-omit-files= is a regexp for files you want to hide using
+   =dired-omit-mode= Depending on your workflow, that may include
+   compiled files (.elc, .o etc) as well as normally hidden files.
+
+   =auto-revert-mode= refreshes the visible buffer when something in
+   the directory changes.
+
+   #+begin_src emacs-lisp
+(require 'dired) ;; TODO: use-package
+(define-key dired-mode-map [mouse-1] 'dired-find-file)
+(define-key dired-mode-map [mouse-2] 'dired-find-file)
+(setq dired-dwim-target t)
+(setq dired-omit-files "^\\.?#\\|^\\..*")
+;; set key binding in key map prior to dired-x being loaded - for autoload
+(define-key dired-mode-map "\C-x\M-o" 'dired-omit-mode)
+(autoload 'dired-omit-mode "dired-x" "Dired-X")
+;; (declare (special dired-x-hands-off-my-keys
+;; 		  dired-bind-vm
+;; 		  dired-omit-files-p))
+;; (add-hook 'dired-load-hook
+;; 	  (function
+;; 	   (lambda ()
+;; 	     (declare (special dired-x-hands-off-my-keys
+;; 			       dired-bind-vm))
+;; 	     (load-library "dired-x")
+;; 	     (setq dired-x-hands-off-my-keys nil
+;; 		   dired-bind-vm t))))
+
+(setq auto-revert-verbose nil)
+(add-hook 'dired-mode-hook
+	  (function (lambda ()
+		      (auto-revert-mode))))
+;; 		      ;; Set dired-x buffer-local variables here.  For example:
+;; 		      (setq dired-omit-mode t)
+;; 		      (setq dired-omit-files "^\\..*")
+;; 		      )))
+
+   #+end_src
+*** Open file in relevant OS app
+#+begin_src emacs-lisp
+;; swiped from Gilaras Drakeson <gilaras@gmail.com>
+(defcustom gjg/os-open "xdg-open"
+  "Command to open a document, e.g. 'xdg-open' on Linux, 'sensible-browser' on crostini, 'open' on OS X, 'explorer' or 'cygpath' on Windows"
+  :type 'string
+  :group 'gjg)
+
+
+(defun dired-open (&optional file-list)
+  (interactive
+   (list (dired-get-marked-files t current-prefix-arg)))
+  (progn
+    (message (format "Calling %s %s" gjg/os-open file-list))
+    (apply 'call-process gjg/os-open nil 0 nil file-list)))
+(define-key dired-mode-map (kbd "C-;") 'dired-open)
+#+end_src
+** Ediff
+   #+begin_src emacs-lisp
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+   #+end_src
+** Help and helpful modes
+   #+begin_src emacs-lisp
+     (setq help-window-select t)
+     (add-hook 'help-mode-hook
+               (lambda ()
+                 (local-set-key (kbd "M-p") 'help-go-back)
+                 (local-set-key (kbd "M-n") 'help-go-forward)
+                 ))
+
+     (when (fboundp 'helpful-function)
+       (progn
+         ;; Note that the built-in `describe-function' includes both functions
+         ;; and macros. `helpful-function' is functions only, so we provide
+         ;; `helpful-callable' as a drop-in replacement.
+         ;; (global-set-key (kbd "C-h f") #'helpful-callable)
+         ;; (global-set-key (kbd "C-h v") #'helpful-variable)
+         (global-set-key (kbd "C-h k") #'helpful-key)
+         ;; Lookup the current symbol at point. C-c C-d is a common keybinding
+         ;; for this in lisp modes.
+         (global-set-key (kbd "C-c C-d") #'helpful-at-point)
+         (setq counsel-describe-function-function #'helpful-callable)
+         (setq counsel-describe-variable-function #'helpful-variable)))
+   #+end_src
+** Ivy / Smex / Counsel
+   Just starting to make use of =use-package= here.  The =:ensure= param will
+   automagically install the package if it is not already installed. 
+
+*** Set up Ivy basics
+    This setup includes reliance on other packages such as Swiper for incremental search,
+    and Counsel for symbol completion and selection.
+
+	Smex helps sort commands by most-used 
+
+    #+begin_src emacs-lisp
+      (use-package counsel
+        :after ivy
+        :config (counsel-mode))
+
+      (use-package smex
+        :ensure nil)
+
+      (use-package swiper
+        :ensure nil)
+
+      (use-package flx
+        :ensure nil)
+      (use-package ivy
+        :defer 0.1
+        :bind (("C-c C-r" . ivy-resume)
+               ("C-x B" . ivy-switch-buffer-other-window))
+        :custom
+        (ivy-count-format "(%d/%d) ")
+        (ivy-use-virtual-buffers t)
+        :config (ivy-mode))
+
+
+      ;; (setq ivy-use-virtual-buffers t)
+      ;; intentional space before end of string
+      ;; (setq ivy-re-builders-alist
+      ;;       '((t . ivy--regex-fuzzy)))
+      ;; (setq ivy-re-builders-alist
+      ;; 	    '((swiper . ivy--regex-plus)
+      ;; 		  (counsel-find-file . ivy--regex-plus)
+      ;; 		  (ivy-switch-buffer . ivy--regex-plus)
+      ;; 		  (t . ivy--regex-fuzzy))))
+      ;; (setq ivy-re-builders-alist '((t . ivy--regex-plus))))
+
+      ;; (use-package ivy-rich
+      ;;   :after ivy
+      ;;     :custom
+      ;;     (ivy-virtual-abbreviate 'full
+      ;;                             ivy-rich-switch-buffer-align-virtual-buffer t
+      ;;                             ivy-rich-path-style 'abbrev)
+      ;;     ;; :config
+      ;;     ;; (ivy-set-display-transformer 'ivy-switch-buffer
+      ;;     ;;                              'ivy-rich-switch-buffer-transformer))
+      ;;     :config (ivy-rich-mode))
+
+      ;; (use-package swiper
+      ;;   :after ivy
+      ;;   :bind (("C-s" . swiper)
+      ;;          ("C-r" . swiper)))
+   #+end_src
+
+**** Make some keybindings for these crazy packages
+     Use =M-j= during a Swiper search to add the sub-word at point to
+     the search - similar to =C-s C-w= in built-in isearch.
+
+     #+begin_src emacs-lisp
+;; (global-set-key (kbd "C-s") 'swiper)
+;; (global-set-key (kbd "C-M-s") 'swiper-isearch)
+;; (global-set-key (kbd "C-M-r") 'swiper-isearch-backward)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+     #+end_src
+
+*** Set up a way to use `find-file` without Ivy
+    + I created this as an answer to [[https://emacs.stackexchange.com/a/58785/418][how to open a file without using Ivy - Emacs Stack Exchange]]
+    #+begin_src emacs-lisp
+      (defun gjg/find-file-no-ivy ()
+        (interactive)
+        (let ((ivy-state ivy-mode))
+          (ivy-mode -1)
+          (call-interactively 'find-file)
+          (ivy-mode ivy-state)))
+
+      (global-set-key (kbd "C-x F") 'gjg/find-file-no-ivy) ; steals the default key binding from set-fill-column
+    #+end_src
+** Grep
+   #+begin_src emacs-lisp
+(defun advice-without-ivy (o &rest a)
+  (ivy-mode -1)
+  (prog1 (apply o a)
+    (ivy-mode 1)))
+
+(advice-add 'grep-read-files :around #'advice-without-ivy)
+   #+end_src
+** Occur
+*** Navigation
+   #+begin_src emacs-lisp
+;;     Some simple sex-ups for occur-mode
+
+(define-key occur-mode-map "n" 'occur-next)
+(define-key occur-mode-map "p" 'occur-prev)
+(defadvice occur-next (after gjg/occur-navigation-other-window)
+  "Show match in other window as you navigate, as in rgrep"
+  (occur-mode-display-occurrence))
+(ad-activate 'occur-next)
+(defadvice occur-prev (after gjg/occur-navigation-other-window)
+  "Show match in other window as you navigate, as in rgrep"
+  (occur-mode-display-occurrence))
+(ad-activate 'occur-prev)
+   #+end_src
+** Shell mode
+*** Bash completions
+#+begin_src emacs-lisp
+  (bash-completion-setup)
+#+end_src
+*** Placement of new shell windows
+I want new shell buffers to open in the currently selected window, not replacing the text
+I'm referencing in a different window.  This is absurdly difficult to do because
+=shell-mode= does not offer a setting to control this behavior.  The solution I found was
+given in an answer [[https://stackoverflow.com/a/40351851/457574][here on stackoverflow]] 
+
+#+begin_src emacs-lisp
+(defun shell-same-window-advice (orig-fn &optional buffer)
+  "Advice to make `shell' reuse the current window.
+
+Intended as :around advice."
+  (let* ((buffer-regexp
+          (regexp-quote
+           (cond ((bufferp buffer)  (buffer-name buffer))
+                 ((stringp buffer)  buffer)
+                 (:else             "*shell*"))))
+         (display-buffer-alist
+          (cons `(,buffer-regexp display-buffer-same-window)
+                display-buffer-alist)))
+    (funcall orig-fn buffer)))
+
+(advice-add 'shell :around #'shell-same-window-advice)
+#+end_src
+*** ANSI color
+The =xterm-color-filter= function is part of the =xterm-color= package.  It does the
+lawd's work in translating ANSI color codes to font properties so that things can look
+awesome.
+
+   #+begin_src emacs-lisp
+(ansi-color-for-comint-mode-on)
+;; try some xterm coloring in shell buffers
+(setq comint-output-filter-functions
+      (remove 'ansi-color-process-output comint-output-filter-functions))
+(add-hook 'shell-mode-hook
+	  (lambda ()
+	    (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))
+   #+end_src
+*** SSH Agent in subprocesses
+    + Not really related to shell-mode, this assures our keychain is activated for things
+      such as magit that fire off subproceess
+      #+begin_src emacs-lisp
+(keychain-refresh-environment)
+      #+end_src
+
+** Magit
+   Initiate =magit-todos= only on =magit= invocation, since it loads slowly
+   #+begin_export emacs-lisp
+   (add-hook 'magit-status-mode-hook
+             (lambda ()
+               (magit-todos-mode 1)
+               ))
+   #+end_export
+** Smartparens
+   #+begin_src emacs-lisp
+(autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
+(defun my-create-newline-and-enter-sexp (&rest _ignored)
+  "Open a new brace or bracket expression, with relevant newlines and indent. "
+  (newline)
+  (indent-according-to-mode)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+
+;; (with-eval-after-load 'smartparens
+;;   (sp-with-modes
+;;       '(c++-mode objc-mode c-mode js2-mode clojure-mode clojurescript-mode)
+;;     (sp-local-pair "{" nil :post-handlers '(:add ("||\n[i]" "RET")))))
+
+;; (eval-after-load "smartparens-config"
+;;   '(progn 
+;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+;; (sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+;; (sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+;; ))
+
+   #+end_src
+** Spelling
+   #+begin_src emacs-lisp
+;; redefine the obsolete spell-word
+(defalias 'spell-word  'ispell-word)
+
+(defalias 'spell-buffer 'ispell-buffer)
+   #+end_src
+** Man pages
+Open man page in current window, rather than other window with 
+#+begin_src emacs-lisp
+(custom-set-variables '(Man-notify-method 'pushy))
+#+end_src
 * Org mode stuff
 
 ** Org modules
@@ -485,13 +1516,12 @@ Simply add the new block param =:keep-windows= to use this functionality
      (setq org-agenda-skip-unavailable-files t)
      (add-hook 'org-agenda-mode-hook
                (lambda ()
-                 ;; (hl-line-mode 1)
+                 (hl-line-mode 1)
                  ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
                  ;;       (local-unset-key "o")
                  ;; rebind to a sweet and beautiful function
                  (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
                  (local-unset-key "a") ;; don't let this accidentally archive a tree!
-                 (define-key org-agenda-mode-map "o" 'org-agenda-show)
                  ;; "R" is used for clock report by default
                  (define-key org-agenda-mode-map "R" 'org-agenda-refile)
                  (define-key org-agenda-mode-map "'" 'org-agenda-clockreport-mode)
@@ -703,1003 +1733,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 
 #+end_src
 
-* Greg's customizations!
 
-** Let emacs use more memory in these modern times
- #+BEGIN_SRC emacs-lisp
-(setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
- #+END_SRC
-** Microsoft Windows things
-*** Printing
-   #+begin_src emacs-lisp
-;; **** Windows printing that relies on ghostscript and gsview
-
-(defcustom gjg/gsprint "c:/Program Files/Ghostgum/gsview/gsprint.exe"
-  "Path to gsprint.exe: usually in Program Files or Program Files (x86)"
-  :group 'gjg
-  :type 'string)
-
-(when (and (string= (window-system) "w32") (file-exists-p gjg/gsprint))
-  (progn
-    ;;  Windows printer
-    (setq-default ps-lpr-command (expand-file-name gjg/gsprint))
-    (setq-default ps-printer-name t)
-    (setq-default ps-printer-name-option nil)
-    (setq ps-lpr-switches '("-query")) ; show printer dialog
-    (setq ps-right-header '("/pagenumberstring load" ps-time-stamp-mon-dd-yyyy))))
-
-   #+end_src
-*** Info on Windows
-    #+begin_src emacs-lisp
-(when  (eq window-system 'w32)
-  (progn
-    (setq Info-directory-list Info-default-directory-list)
-    (setq Info-additional-directory-list '("c:/emacs/share/info"))))
-    #+end_src
-
-*** File opens
-    #+begin_src emacs-lisp
-(when (eq window-system 'w32)
-  (setq w32-get-true-file-attributes nil)
-  (remove-hook 'find-file-hook 'vc-find-file-hook))
-    #+end_src
-** Fonts
-   Forever in search of the One True Holy and Apostolic Programmer Font.
-
-   Big fan of Inconsolata, Source Code Pro, and Hack.  Inability to decide on one is
-   encoded herein.
-
-   #+begin_src emacs-lisp
-(cond ((or (eq window-system 'mac) (eq window-system 'ns))
-	   (set-frame-font "Source Code Pro-17"))
-	  ((eq window-system 'w32)
-	   (set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1"))
-	  ((eq window-system 'x)
-	   (set-frame-font "Hack-14")
-	   ;; (set-frame-font "Inconsolata-16")
-	   ))
-;; (load-library "fontize")
-;; (require 'fontize)
-(autoload 'inc-font-size "fontize" "Adjust buffer relative font size" t)
-(autoload 'dec-font-size "fontize" "Adjust buffer relative font size" t)
-
-(global-set-key [C-kp-subtract] 'dec-font-size)
-(global-set-key [C-kp-add] 'inc-font-size)
-   #+end_src
-** Desktop save
-   #+begin_src emacs-lisp
-(desktop-save-mode 1)
-(setq desktop-restore-eager 0)
-   #+end_src
-** Basic defaults that aren't default
-   So many defaults in Emacs make no sense.  If starting out with Emacs, consider these
-   settings to make your first experiences nicer.
-   
-   If you have any questions about what these settings do, use Emacs to explore them:
-   + If it's a variable being set (line starts with the =setq= function, set the point in
-     the variable name and hit =C-h v= for help on that variable.
-   + If it's a function (line starts with almost anything other than =setq=, set the point
-     in the function name and hit "C-h f"
-
-#+begin_src emacs-lisp
-;; fido-mode in emacs 27+: a new thing to hate
-(fido-mode -1)
-;; When I want transient mark mode, I'll beat it out of you
-(setq transient-mark-mode nil)
-;; (do not) display time and battery status in the mode line
-(display-time-mode 0)
-(display-battery-mode 0)
-;; turn off that stupid toolbar
-(tool-bar-mode -1)
-;; scroll bars?
-(scroll-bar-mode -1)
-(menu-bar-mode -1)
-;; don't do that stoopid splash screen
-(setq inhibit-splash-screen t)
-
-(setq-default indent-tabs-mode nil)
-(setq-default tab-always-indent t)
-(setq-default tab-width 4)
-;; blink parens and similar delimiters
-(show-paren-mode 1)
-;; ** Global identity (ie, same on all machines) - Emacs does not make good guesses here
-(setq user-full-name "Gregory Grubbs"
-      user-mail-address "gregory@dynapse.com")
-
-(setq confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
-
-;; dippy bird FTW - single character y-n for all yes/no question dialogs
-(fset 'yes-or-no-p 'y-or-n-p)
-(setq shell-file-name "bash")
-(setq explicit-shell-file-name shell-file-name)
-(setq explicit-bash-args '("--noediting" "-i"))
-
-;; (global-hl-line-mode t) ;; highlight current line - turn off when figuring out faces
-
-(temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows - nice for UX
-
-(setq fill-column 90); good default for wider screens - BUT this is buffer-local so should be set in mode hooks only
-
-;; ensure that the default for searches is case-insensitive
-(setq case-fold-search t)
-
-;; highlight/colorize everything that can be colorized!
-(global-font-lock-mode 1)
-
-;; never split windows horizontally by default
-(setq split-width-threshold nil)
-;; Here's a choice one: stay in the same column while scrolling!
-(setq scroll-preserve-screen-position t)
-;; in Emacs23+, make line-move move by a line, ignoring wrapping
-(setq line-move-visual nil)
-;; enable hugely useful things that are disabled by default
-(put 'narrow-to-region 'disabled nil)
-(put 'set-goal-column 'disabled nil)
-
-;; echo quickly
-(setq echo-keystrokes 0.1)
-;; keep the screen from jumping wildly as I cursor down/up
-(setq scroll-conservatively 5)
-;; remember minibuffer history between sessions
-(savehist-mode t)
-;; if point is at end of line, keep it there for vertical movement
-(setq track-eol t)
-(setq align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
-#+end_src
-** Custom Functions in a separate file
-   TODO: pull these functions in
-   #+begin_src emacs-lisp
-(add-to-list 'load-path "~/emacs")
-(load-library "gjg-functions")
-(require 'gjg-functions)
-   #+end_src
-** Key bindings
-   #+begin_src emacs-lisp
-(global-set-key [home] (lambda () (interactive) (goto-char (point-min))))
-(global-set-key [end] (quote end-of-buffer))
-;; M-left and M-right on Pixelbook
-(global-unset-key (kbd "<M-left>"))
-(global-unset-key (kbd "<M-right>"))
-(global-set-key (kbd "<M-left>") (lambda () (interactive) (goto-char (point-min))))
-(global-set-key (kbd "<M-right>") 'end-of-buffer)
-(global-unset-key (kbd "C-z"))
-(global-set-key (kbd "C-z") 'undo)
-(global-unset-key (kbd "M-]")) ; unset one next-buffer binding
-(global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
-
-(global-set-key [f1] 'delete-other-windows)
-(global-set-key [f2] 'gjg/switch-to-other-buffer)
-(global-set-key [f3] 'gjg/other-window-or-split)
-(global-set-key [f4] 'narrow-to-defun)
-
-(global-set-key [f5] 'gjg/widen-ask-if-indirect)
-(global-set-key [f6] 'read-only-mode)
-(global-set-key [f7] 'hl-line-mode) ;; toggle hl-line-mode for this window only
-;; (global-set-key [f8] 'bury-buffer)
-
-;; (global-set-key [f9] 'bury-buffer)
-(global-set-key [f10] 'dired-omit-mode)
-;; (global-set-key [f11] 'mac-toggle-max-window)
-(global-set-key [f11] 'gjg/toggle-max-frame)
-(global-set-key [M-f11] 'gjg/toggle-max-frame)
-;; (global-set-key [f11] 'toggle-fullscreen)
-;; (global-set-key [f11] 'switch-full-screen)
-;; (global-set-key (kbd "C-<f11>") 'gjg/emacs-max-coolness)
-(global-set-key [f12] (lambda () (interactive) (message (or (buffer-file-name) "No file associated with this buffer."))))
-(global-set-key (kbd "<C-f12>") 'yow)
-(global-set-key [C-wheel-up] 'text-scale-increase)
-(global-set-key [C-wheel-down] 'text-scale-decrease)
-(global-set-key [S-wheel-up] 'inc-font-size)
-(global-set-key [S-wheel-down] 'dec-font-size)
-(global-set-key (kbd "M-]") 'next-buffer)
-(global-set-key (kbd "M-[") 'previous-buffer)
-(global-set-key (kbd "C-c C-v") 'browse-url-at-point)
-;; EXPERIMENTAL: unbind SPACE and ? in minibuffer, to allow typing in completions with those chars
-(add-hook 'minibuffer-setup-hook (lambda () 
-				   (define-key minibuffer-local-completion-map " " nil)
-				   (define-key minibuffer-local-must-match-map " " nil)
-				   (define-key minibuffer-local-completion-map "?" nil)
-				   (define-key minibuffer-local-must-match-map "?" nil)))
-(defalias 'ss 'gjg/open-remote-shell)
-(defalias 'ht 'gjg/highlight-terraform-stuff)
-(defalias 'rb 'rename-buffer)
-
-   #+end_src
-** Backup files
-   #+begin_src emacs-lisp
-;; backup files
-(setq
- backup-by-copying t      ; don't clobber symlinks
- backup-directory-alist
- '(("." . "~/.emacs.d/backups"))    ; don't litter my fs tree
- delete-old-versions t
- kept-new-versions 5
- kept-old-versions 5
- version-control nil)   
-   #+end_src
-** Window/buffer management
-*** Modeline and Title
-   Fancy icons may require fonts (like =texlive-fonts-extra=)
-
-    #+begin_src emacs-lisp
-;; show column number in modeline - in addition to line number
-(column-number-mode t)
-
-(setq frame-title-format (concat "emacs@" (system-name) " - %f; %b"))
-;; fancy git icon
-(defadvice vc-mode-line (after strip-backend () activate)
-  (when (stringp vc-mode)
-    (let ((gitlogo (replace-regexp-in-string "^ Git." "  " vc-mode)))
-      (setq vc-mode gitlogo))))
-
-    #+end_src
-*** Winner-mode and Windmove
-   #+begin_src emacs-lisp
-;; winner
-(winner-mode 1)
-;; windmove
-(windmove-default-keybindings)
-(with-eval-after-load 'windmove
-  '(progn
-     (windmove-default-keybindings)
-     ;; Make windmove work in org-mode:
-     (setq org-replace-disputed-keys t)))
-;; (add-hook 'org-shiftup-final-hook 'windmove-up)
-;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
-;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
-;; (add-hook 'org-shiftright-final-hook 'windmove-right)))
-
-
-   #+end_src
-*** GJG full screen, movement, transparency
-    #+begin_src emacs-lisp
-(defun revert-dammit () ; revert buffer without prompting
-  (interactive)
-  ;; revert buffer, don't use auto-save, preserve modes
-  (revert-buffer t t t))
-(defalias 'rd 'revert-dammit)
-(defun gjg/switch-to-other-buffer ()
-  (interactive)
-  (switch-to-buffer (other-buffer))
-  (message "Switched to other-buffer"))
-(defun gjg/other-window-or-split ()
-  "If one window is displayed in current frame, split vertically and go to other window, else go to other window without splitting"
-  (interactive)
-  (if (one-window-p t)
-      (progn
-	(split-window-vertically)
-	(other-window 1)
-	(switch-to-buffer (other-buffer)))
-    (other-window 1)))
-(defun gjg/widen-ask-if-indirect ()
-  "If buffer is indirect, ask before widening"
-  (interactive)
-  (if (buffer-base-buffer)
-      (when (yes-or-no-p "Buffer is indirect; really widen? ")
-	(widen))
-    (widen)))
-(defun toggle-transparency (alpha-level)
-  (interactive "p")
-  (message (format "%s" alpha-level))
-  (if (< alpha-level 50) (setq alpha-level 75))
-  (let ((myalpha (frame-parameter nil 'alpha)))
-    (if (or (not myalpha)
-	    (= myalpha 100))
-	(set-frame-parameter nil 'alpha alpha-level)
-      (set-frame-parameter nil 'alpha 100))
-    )
-  (message (format "Alpha level is %d" (frame-parameter nil 'alpha)))
-  )
-
-(defun set-transparency (alpha-level)
-  (interactive "p")
-  (message (format "Alpha level passed in: %s" alpha-level))
-  (let ((alpha-level (if (< alpha-level 2)
-			 (read-number "Opacity percentage: " 75)
-		       alpha-level))
-	(myalpha (frame-parameter nil 'alpha)))
-    (set-frame-parameter nil 'alpha alpha-level))
-  (message (format "Alpha level is %d" (frame-parameter nil 'alpha))))
-(defalias 'set-opacity 'set-transparency )
-
-(defun toggle-window-split ()
-  (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-	     (next-win-buffer (window-buffer (next-window)))
-	     (this-win-edges (window-edges (selected-window)))
-	     (next-win-edges (window-edges (next-window)))
-	     (this-win-2nd (not (and (<= (car this-win-edges)
-					 (car next-win-edges))
-				     (<= (cadr this-win-edges)
-					 (cadr next-win-edges)))))
-	     (splitter
-	      (if (= (car this-win-edges)
-		     (car (window-edges (next-window))))
-		  'split-window-horizontally
-		'split-window-vertically)))
-	(delete-other-windows)
-	(let ((first-win (selected-window)))
-	  (funcall splitter)
-	  (if this-win-2nd (other-window 1))
-	  (set-window-buffer (selected-window) this-win-buffer)
-	  (set-window-buffer (next-window) next-win-buffer)
-	  (select-window first-win)
-	  (if this-win-2nd (other-window 1))))))
-
-(define-key ctl-x-4-map "t" 'toggle-window-split)
-;; *** Full-screen frame defuns
-
-(defun switch-full-screen ()
-  (interactive)
-  (shell-command (concat "/usr/bin/wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -btoggle,fullscreen")))
-
-;; (defun toggle-fullscreen ()
-;;   "toggles whether the currently selected frame consumes the entire display or is decorated with a window border"
-;;   (interactive)
-;;   (let ((f (selected-frame)))
-;;     (modify-frame-parameters f `((fullscreen . ,(if (eq nil (frame-parameter f 'fullscreen)) 'fullboth nil))))))
-
-;; (defun mac-toggle-max-window ()
-;;   "Toggle full-screen frame on Linux and OS X - use maxframe.el for Windows"
-;;   (interactive)
-;;   (if (frame-parameter nil 'fullscreen)
-;;       (set-frame-parameter nil 'fullscreen nil)
-;;     (set-frame-parameter nil 'fullscreen 'fullboth)))
-;; (defun toggle-full-screen ()
-;;   "Toggle between full screen and partial screen display on X11;
-;;     courtesy of http://www.emacswiki.org/cgi-bin/wiki/FullScreen"
-;;   (interactive)
-;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-;;                          '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
-
-
-;; ;; add toggle for maxframe.el (works on Windows)
-(when (eq window-system 'w32)
-  (require 'maxframe)
-  (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
-;; (modify-frame-parameters nil '((gjg/frame-maxp . nil)))
-;; ;; (defvar gjg/frame-maxp nil "Store whether frame is maximized using maxframe.el")
-(defun gjg/switch-buffer-by-mode ()
-  "Switch to a buffer after choosing a mode."
-  (interactive)
-  (let* ((active-buffers-with-mode (mapcar #'(lambda (x) (with-current-buffer x (cons (buffer-name) (symbol-name major-mode)))) (buffer-list)))
-	 (distinct-modes (-distinct (mapcar #'cdr active-buffers-with-mode)))
-	 (selected-mode (ido-completing-read "Mode: " distinct-modes))
-	 (candidate-buffers (mapcar #'car (remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
-	 (selected-buffer (ido-completing-read "Buffer: " candidate-buffers)))
-    (switch-to-buffer selected-buffer)))
-(global-set-key (kbd "C-c s") 'gjg/switch-buffer-by-mode)
-
-(defun gjg/max-frame ()
-  "Maximize the current frame and toggle gjg/frame-maxp"
-  (interactive)
-  (cond ((eq window-system 'w32)
-	 (maximize-frame))
-	((eq window-system 'x)
-	 (switch-full-screen))
-	(t
-	 (mac-toggle-max-window)))
-  (modify-frame-parameters nil '((gjg/frame-maxp . t))))
-
-(defun gjg/restore-frame ()
-  "Restore the current frame to its previous size and toggle gjg/frame-maxp"
-  (interactive)
-  (cond ((eq window-system 'w32)
-	 (restore-frame))
-	((eq window-system 'x)
-	 (switch-full-screen))
-	(t
-	 (mac-toggle-max-window)))
-  (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
-
-(defun gjg/toggle-max-frame ()
-  "Check the status of gjg/max-framep and change to whichever mode we're not in now."
-  (interactive)
-  (cond ((eq window-system 'ns)
-	 (toggle-frame-maximized))
-	(t
-	 (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
-
-    #+end_src
-*** Ibuffer FTW
-    Saved filter groups provide a nice organization.
-
-    #+begin_src emacs-lisp
-(global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
-(setq ibuffer-expert t)
-(setq ibuffer-saved-filter-groups
-      '(("home"
-	     ("Org and Markdown" (or (mode . org-mode)
-				                 (mode . markdown-mode)))
-	     ("Shell" (mode . shell-mode))
-	     ("Configs" (or (derived-mode .  conf-mode)
-                        (mode . yaml-mode)
-			            (mode . json-mode)))
-	     ("Code" (derived-mode .  prog-mode))
-	     ("Magit" (or (mode . magit-diff-mode)
-		              (mode . magit-status-mode)
-		              (mode . magit-process-mode)
-		              (mode . magit-revision-mode)
-		              (mode . magit-refs-mode)))
-	     ("Dired" (mode . dired-mode))
-	     ("Tramp sessions" (name . "\*tramp.+"))
-	     ("Remote" (filename . "/\*:.+"))
-	     )))
-(add-hook 'ibuffer-mode-hook
-	      '(lambda ()
-	         (ibuffer-auto-mode 1)
-             (auto-revert-mode 1)
-	         (ibuffer-switch-to-saved-filter-groups "home")))
-    #+end_src
-
-    #+RESULTS:
-    | lambda | nil | (ibuffer-auto-mode 1) | (ibuffer-switch-to-saved-filter-groups home) |
-
-*** Uniquify
-    #+begin_src emacs-lisp
-(autoload 'uniquify "uniquify" "unique buffer names dependent on file name")
-(with-eval-after-load 'uniquify
-  '(progn
-     (setq uniquify-buffer-name-style 'reverse)
-     (setq uniquify-separator "/")
-     (setq uniquify-after-kill-buffer-p t)
-     (setq uniquify-ignore-buffers-re "^\\*")))
-    #+end_src
-*** Theme
-    #+begin_src emacs-lisp :results none
-      (load-file "~/projects/emacs/brutalist-theme/brutalist-build.el")
-      (load-theme 'brutalist t)
-    #+end_src
-
-** Automatic typing - abbrevs and expansions
-   #+begin_src emacs-lisp
-;; Dynamic abbrevs should expand both words and symbols
-(setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
-;; and now set up hippie-expand
-(global-set-key (kbd "M-/") 'hippie-expand)
-
-   #+end_src
-** Games and silliness
-   #+begin_src emacs-lisp
-;; very important: keep a long list of yow lines
-;;   in emacs 24.4 yow.el is obsolete; use cookie instead
-(when (featurep 'yow)
-  (unload-feature 'yow))
-(with-eval-after-load 'cookie1
-  '(progn
-     (setq yow-file "~/emacs/yow.lines")
-     (defun yow ()
-       (interactive)
-       (let ((suggest-key-bindings nil))
-	 (message (cookie yow-file nil nil))))))
-;; almost as important: keep track of those tetris scores
-(setq tetris-score-file "~/.emacs.d/tetris.score")
-
-
-   #+end_src
-** Weird random rarely used maybe interesting things
-*** MOOs and MUDs - NOT legacy - added 2019!
-   #+begin_src emacs-lisp
-;; Moos and MUDs - NOT legacy stuff - added 2019!
-(add-to-list 'load-path "~/projects/emacs/rmoo/")
-;; (require 'rmoo-autoload)
-;; (require 'moocode-mode)
-;; ;; (global-set-key (kbd "C-c C-r") 'rmoo)
-;; (add-to-list 'auto-mode-alist '("\\.moo$" . moocode-mode))
-;; (add-hook 'rmoo-interactive-mode-hooks
-;;           (lambda ()
-;;             (linum-mode -1)                  ;; ... no line numbers
-;;             (goto-address-mode t)))          ;; ... clickable links
-
-
-   #+end_src
-* Encryption
-  Set value of =epg-gpg-program= to location on local system
-  #+begin_src emacs-lisp
-;; let's get encryption established
-;; For gpg, disable external pinentry - let emacs handle pass phrase
-;; (setenv "GPG_AGENT_INFO" nil)
-(require 'epa-file)
-;; (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
-(epa-file-enable)
-(setq epg-pinentry-mode 'loopback)
-(require 'org-crypt)
-(org-crypt-use-before-save-magic)
-
-  #+end_src
-* Commonly used modes
-** Start emacs server
-   #+begin_src emacs-lisp
-(server-start)
-   #+end_src
-** Projectile
-   #+begin_src emacs-lisp
-     (require 'projectile)
-     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-
-     (setq-default projectile--mode-line " Prj")
-     (setq projectile-completion-system 'ivy)
-     (setq projectile-mode-line-prefix "Prj")
-     (setq projectile-switch-project-action #'projectile-dired)
-     (setq projectile-switch-project-action #'projectile-dired)
-     (setq projectile-sort-order 'access-time)
-     (projectile-mode 1)
-   #+end_src
-** Company
- #+BEGIN_SRC emacs-lisp
-(use-package company
-  :ensure t
-  :config
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 3)
-
-  ;; (global-company-mode t)
-  )
-
-;; (use-package company-lsp
-;;   :ensure t
-;;   :config
-;;  (push 'company-lsp company-backends)
-;; )
- #+END_SRC
-** TRAMP
-   #+begin_src emacs-lisp
-;;(require 'tramp)
-   #+end_src
-*** Do not restore TRAMP buffers in next emacs session
-   #+begin_src emacs-lisp
-(defun tv-list-tramp-buffer-file-name ()
-  "Return a list of buffers that I do not want automatically restored by desktop.el in the next emacs session: TRAMP dirs and files, Info buffer, and Dired buffers"
-  (let* ((desktop-info-list (mapcar #'desktop-buffer-info (buffer-list)))
-	 (tramp-buf-list (loop for i in desktop-info-list
-			       if (and (listp i)
-				       (stringp (car (nth 8 i)))
-				       (or
-					(string= "dired-mode" (nth 3 i))
-					(string= "Info-mode" (nth 3 i))
-					(string-match "^/su:.*\\|^/sudo:.*\\|^/ssh:.*\\|^/scp[^:]*:.*\\|^/smb:.*\\|^/docker:.*" (car (nth 8 i)))))
-			       collect (nth 2 i))))
-    tramp-buf-list))
-
-;; (add-hook 'desktop-save-hook #'(lambda ()
-;;                                  (let ((del-buf-list
-;;                                         (tv-list-tramp-buffer-file-name)))
-;;                                    (dolist (i del-buf-list)
-;;                                      (if (get-buffer i) (kill-buffer i))))))
-;;(setq desktop-buffers-not-to-save
-;;      (concat "\\` "
-;;	      (tv-list-tramp-buffer-file-name)))
-(add-to-list 'desktop-modes-not-to-save 'dired-mode)
-(add-to-list 'desktop-modes-not-to-save 'Info-mode)
-(add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
-   #+end_src
-*** Add methods for Docker, DC/OS, Google Cloud Shell
-    #+begin_src emacs-lisp
-      ;; Add method to connect to Mesosphere DC/OS tasks
-      ;; we need to execute a command like the following
-      ;;  dcos task exec --tty --interactive <taskname> -- bash
-      ;; example TRAMP URI:   //dcos:jupyter:
-      (require 'tramp)
-      ;; (with-eval-after-load 'tramp
-      ;;   '(progn
-      (add-to-list 'tramp-methods
-                   `("docker"
-                     (tramp-login-program      "docker")
-                     (tramp-login-args         (nil ("exec" "-it") ("-u" "%u") ("%h") ("sh")))
-                     (tramp-remote-shell       "/bin/sh")
-                     (tramp-remote-shell-args  ("-i" "-c"))))
-      (add-to-list 'tramp-methods
-                   '("dcos"
-                     (tramp-login-program "dcos")
-                     (tramp-login-args
-                      (nil
-                       ("task" "exec" "-it")
-                       ("%h")
-                       ("bash")))
-                     (tramp-remote-shell "/bin/sh")
-                     (tramp-remote-shell-args ("-i" "-c"))))
-
-      ;; Add method to connect to Kubernetes pods
-      ;; we need to execute a command like the following
-      ;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
-      ;; example TRAMP URI:   //kexec:jhub@jupyter:
-      (add-to-list 'tramp-methods
-                   '("kube"
-                     (tramp-login-program "kubectl")
-                     (tramp-login-args
-                      (nil
-                       ("exec" "-it")
-                       ("--namespace" "%u")
-                       ("%h")
-                       ("--" "sh")))
-                     (tramp-remote-shell "/bin/sh")
-                     (tramp-remote-shell-args ("-i" "-c"))))
-
-      ;; TRAMP gcloud ssh
-      ;; Google Cloud Shell
-      (add-to-list 'tramp-methods
-                   '("gshell"
-                     (tramp-login-program        "gcloud alpha cloud-shell ssh")
-                     (tramp-default-host "cloud-shell")
-                     (tramp-login-args (("#%h")))
-                     ;; (tramp-login-args           (("%h")))
-                     ;; (tramp-async-args           (("-q")))
-                     (tramp-remote-shell         "/bin/bash")
-                     (tramp-remote-shell-args    ("-c"))
-                     ;; (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
-                     ;;                              ("-o" "UserKnownHostsFile=/dev/null")
-                     ;;                              ("-o" "StrictHostKeyChecking=no")))
-                     (tramp-default-port         22)))
-      (add-to-list 'tramp-methods
-                   '("gcssh"
-                     (tramp-login-program        "gcloud compute ssh")
-                     (tramp-login-args           (("%h")))
-                     (tramp-async-args           (("-q")))
-                     (tramp-remote-shell         "/bin/bash")
-                     (tramp-remote-shell-args    ("-c"))
-                     (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
-                                                  ("-o" "UserKnownHostsFile=/dev/null")
-                                                  ("-o" "StrictHostKeyChecking=no")))
-                     (tramp-default-port         22)))
-      ;; ))
-
-
-    #+end_src
-*** Handle SUDO - root and other users
-    #+begin_src emacs-lisp
-;; TRAMP SUDO FUN - snarfed from Peter Dyballa on gmane.emacs.help
-(defun my-tramp-header-line-function ()
-  (when (string-match "^/.*su\\(do\\)?:" default-directory)
-    (setq header-line-format
-	      (format-mode-line "----- THIS BUFFER IS VISITED WITH SUDO PRIVILEGES -----"
-			                'font-lock-warning-face))))
-
-(with-eval-after-load 'tramp
-  (add-hook 'find-file-hook 'my-tramp-header-line-function)
-  (add-hook 'dired-mode-hook 'my-tramp-header-line-function))
-    #+end_src
-*** Shell sugar
-**** Open remote shell in current remote directory
-#+begin_src emacs-lisp
-(defun gjg/open-remote-shell ()
-  "If current buffer is remote, open a new uniquely named shell based on host name"
-  (interactive)
-  (if (file-remote-p default-directory)
-      (progn
-        ;; do stuff
-        (message "Now I shall do stuff")
-        (shell (concat (file-remote-p default-directory 'host) "-sh"))
-        )
-	(progn
-	  (shell (concat "local-" default-directory "-sh"))
-	  ;; (message "Buffer is local - not opening shell"))
-	  )))
-#+end_src
-**** Open SUDO at current remote directory
-#+begin_src emacs-lisp
-(defun gjg/tramp-sudo-to-etc ()
-  "Dired browse as root (sudo) to /etc on current machine"
-  (interactive)
-  (let* ((trampvec (tramp-dissect-file-name default-directory))
-         (tramphop (elt trampvec 4))
-         (conntype (elt trampvec 0))
-         (trampuser (elt trampvec 1)) ; may be nil, which is cool
-         (tramphost (elt trampvec 2))
-         (sudopath (concat "/" tramphop conntype ":" tramphost "|sudo:" tramphost ":/etc/"))
-         )
-    (find-file sudopath)
-    )
-  )
-#+end_src
-
-** Rainbow delimiters for various programming modes
-   #+begin_src emacs-lisp
-;; rainbow delimiters ; make much stronger (more saturated) colors
-(autoload 'rainbow-delimiters "rainbow-delimiters" "Highlight brackets according to their depth")
-(with-eval-after-load 'rainbow-delimiters
-  '(progn
-     (require 'cl-lib)
-     (require 'color)
-     (cl-loop
-      for index from 1 to rainbow-delimiters-max-face-count
-      do
-      (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
-	(cl-callf color-saturate-name (face-foreground face) 30)))))
-
-   #+end_src
-** Dired
-   =dired-dwim-target= is just awesome.  Whenever you have 2 Dired
-   windows in a frame, hitting Copy or Rename from one Dired buffer
-   automatically suggests the other as the target
-
-   =dired-omit-files= is a regexp for files you want to hide using
-   =dired-omit-mode= Depending on your workflow, that may include
-   compiled files (.elc, .o etc) as well as normally hidden files.
-
-   =auto-revert-mode= refreshes the visible buffer when something in
-   the directory changes.
-
-   #+begin_src emacs-lisp
-(define-key dired-mode-map [mouse-1] 'dired-find-file)
-(define-key dired-mode-map [mouse-2] 'dired-find-file)
-(setq dired-dwim-target t)
-(setq dired-omit-files "^\\.?#\\|^\\..*")
-;; set key binding in key map prior to dired-x being loaded - for autoload
-(define-key dired-mode-map "\C-x\M-o" 'dired-omit-mode)
-(autoload 'dired-omit-mode "dired-x" "Dired-X")
-;; (declare (special dired-x-hands-off-my-keys
-;; 		  dired-bind-vm
-;; 		  dired-omit-files-p))
-;; (add-hook 'dired-load-hook
-;; 	  (function
-;; 	   (lambda ()
-;; 	     (declare (special dired-x-hands-off-my-keys
-;; 			       dired-bind-vm))
-;; 	     (load-library "dired-x")
-;; 	     (setq dired-x-hands-off-my-keys nil
-;; 		   dired-bind-vm t))))
-
-(setq auto-revert-verbose nil)
-(add-hook 'dired-mode-hook
-	  (function (lambda ()
-		      (auto-revert-mode))))
-;; 		      ;; Set dired-x buffer-local variables here.  For example:
-;; 		      (setq dired-omit-mode t)
-;; 		      (setq dired-omit-files "^\\..*")
-;; 		      )))
-
-   #+end_src
-*** Open file in relevant OS app
-#+begin_src emacs-lisp
-;; swiped from Gilaras Drakeson <gilaras@gmail.com>
-(defcustom gjg/os-open "xdg-open"
-  "Command to open a document, e.g. 'xdg-open' on Linux, 'sensible-browser' on crostini, 'open' on OS X, 'explorer' or 'cygpath' on Windows"
-  :type 'string
-  :group 'gjg)
-
-
-(defun dired-open (&optional file-list)
-  (interactive
-   (list (dired-get-marked-files t current-prefix-arg)))
-  (progn
-    (message (format "Calling %s %s" gjg/os-open file-list))
-    (apply 'call-process gjg/os-open nil 0 nil file-list)))
-(define-key dired-mode-map (kbd "C-;") 'dired-open)
-#+end_src
-** Ediff
-   #+begin_src emacs-lisp
-(setq ediff-split-window-function 'split-window-horizontally)
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-   #+end_src
-** Help and helpful modes
-   #+begin_src emacs-lisp
-(setq help-window-select t)
-(add-hook 'help-mode-hook
-	      (lambda ()
-	        (local-set-key (kbd "M-p") 'help-go-back)
-	        (local-set-key (kbd "M-n") 'help-go-forward)
-	        ))
-
-(when (fboundp 'helpful-function)
-  (progn
-    ;; Note that the built-in `describe-function' includes both functions
-    ;; and macros. `helpful-function' is functions only, so we provide
-    ;; `helpful-callable' as a drop-in replacement.
-    (global-set-key (kbd "C-h f") #'helpful-callable)
-    (global-set-key (kbd "C-h v") #'helpful-variable)
-    (global-set-key (kbd "C-h k") #'helpful-key)
-    ;; Lookup the current symbol at point. C-c C-d is a common keybinding
-    ;; for this in lisp modes.
-    (global-set-key (kbd "C-c C-d") #'helpful-at-point)
-    (setq counsel-describe-function-function #'helpful-callable)
-    (setq counsel-describe-variable-function #'helpful-variable)))
-   #+end_src
-** Ivy / Smex / Counsel
-   Just starting to make use of =use-package= here.  The =:ensure= param will
-   automagically install the package if it is not already installed. 
-
-*** Set up Ivy basics
-    This setup includes reliance on other packages such as Swiper for incremental search,
-    and Counsel for symbol completion and selection.
-
-	Smex helps sort commands by most-used 
-
-    #+begin_src emacs-lisp
-      (use-package counsel
-        :after ivy
-        :config (counsel-mode))
-
-      (use-package smex
-        :ensure nil)
-
-      (use-package swiper
-        :ensure nil)
-
-      (use-package flx
-        :ensure nil)
-      (use-package ivy
-        :defer 0.1
-        :bind (("C-c C-r" . ivy-resume)
-               ("C-x B" . ivy-switch-buffer-other-window))
-        :custom
-        (ivy-count-format "(%d/%d) ")
-        (ivy-use-virtual-buffers t)
-        :config (ivy-mode))
-
-
-      ;; (setq ivy-use-virtual-buffers t)
-      ;; intentional space before end of string
-      ;; (setq ivy-re-builders-alist
-      ;;       '((t . ivy--regex-fuzzy)))
-      ;; (setq ivy-re-builders-alist
-      ;; 	    '((swiper . ivy--regex-plus)
-      ;; 		  (counsel-find-file . ivy--regex-plus)
-      ;; 		  (ivy-switch-buffer . ivy--regex-plus)
-      ;; 		  (t . ivy--regex-fuzzy))))
-      ;; (setq ivy-re-builders-alist '((t . ivy--regex-plus))))
-
-      ;; (use-package ivy-rich
-      ;;   :after ivy
-      ;;     :custom
-      ;;     (ivy-virtual-abbreviate 'full
-      ;;                             ivy-rich-switch-buffer-align-virtual-buffer t
-      ;;                             ivy-rich-path-style 'abbrev)
-      ;;     ;; :config
-      ;;     ;; (ivy-set-display-transformer 'ivy-switch-buffer
-      ;;     ;;                              'ivy-rich-switch-buffer-transformer))
-      ;;     :config (ivy-rich-mode))
-
-      ;; (use-package swiper
-      ;;   :after ivy
-      ;;   :bind (("C-s" . swiper)
-      ;;          ("C-r" . swiper)))
-   #+end_src
-
-**** Make some keybindings for these crazy packages
-     Use =M-j= during a Swiper search to add the sub-word at point to
-     the search - similar to =C-s C-w= in built-in isearch.
-
-     #+begin_src emacs-lisp
-;; (global-set-key (kbd "C-s") 'swiper)
-;; (global-set-key (kbd "C-M-s") 'swiper-isearch)
-;; (global-set-key (kbd "C-M-r") 'swiper-isearch-backward)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "C-x b") 'ivy-switch-buffer)
-     #+end_src
-
-*** Set up a way to use `find-file` without Ivy
-    + I created this as an answer to [[https://emacs.stackexchange.com/a/58785/418][how to open a file without using Ivy - Emacs Stack Exchange]]
-    #+begin_src emacs-lisp
-      (defun gjg/find-file-no-ivy ()
-        (interactive)
-        (let ((ivy-state ivy-mode))
-          (ivy-mode -1)
-          (call-interactively 'find-file)
-          (ivy-mode ivy-state)))
-
-      (global-set-key (kbd "C-x F") 'gjg/find-file-no-ivy) ; steals the default key binding from set-fill-column
-    #+end_src
-** Grep
-   #+begin_src emacs-lisp
-(defun advice-without-ivy (o &rest a)
-  (ivy-mode -1)
-  (prog1 (apply o a)
-    (ivy-mode 1)))
-
-(advice-add 'grep-read-files :around #'advice-without-ivy)
-   #+end_src
-** Occur
-*** Navigation
-   #+begin_src emacs-lisp
-;;     Some simple sex-ups for occur-mode
-
-(define-key occur-mode-map "n" 'occur-next)
-(define-key occur-mode-map "p" 'occur-prev)
-(defadvice occur-next (after gjg/occur-navigation-other-window)
-  "Show match in other window as you navigate, as in rgrep"
-  (occur-mode-display-occurrence))
-(ad-activate 'occur-next)
-(defadvice occur-prev (after gjg/occur-navigation-other-window)
-  "Show match in other window as you navigate, as in rgrep"
-  (occur-mode-display-occurrence))
-(ad-activate 'occur-prev)
-   #+end_src
-** Shell mode
-*** Bash completions
-#+begin_src emacs-lisp
-  (bash-completion-setup)
-#+end_src
-*** Placement of new shell windows
-I want new shell buffers to open in the currently selected window, not replacing the text
-I'm referencing in a different window.  This is absurdly difficult to do because
-=shell-mode= does not offer a setting to control this behavior.  The solution I found was
-given in an answer [[https://stackoverflow.com/a/40351851/457574][here on stackoverflow]] 
-
-#+begin_src emacs-lisp
-(defun shell-same-window-advice (orig-fn &optional buffer)
-  "Advice to make `shell' reuse the current window.
-
-Intended as :around advice."
-  (let* ((buffer-regexp
-          (regexp-quote
-           (cond ((bufferp buffer)  (buffer-name buffer))
-                 ((stringp buffer)  buffer)
-                 (:else             "*shell*"))))
-         (display-buffer-alist
-          (cons `(,buffer-regexp display-buffer-same-window)
-                display-buffer-alist)))
-    (funcall orig-fn buffer)))
-
-(advice-add 'shell :around #'shell-same-window-advice)
-#+end_src
-*** ANSI color
-The =xterm-color-filter= function is part of the =xterm-color= package.  It does the
-lawd's work in translating ANSI color codes to font properties so that things can look
-awesome.
-
-   #+begin_src emacs-lisp
-(ansi-color-for-comint-mode-on)
-;; try some xterm coloring in shell buffers
-(setq comint-output-filter-functions
-      (remove 'ansi-color-process-output comint-output-filter-functions))
-(add-hook 'shell-mode-hook
-	  (lambda ()
-	    (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))
-   #+end_src
-*** SSH Agent in subprocesses
-    + Not really related to shell-mode, this assures our keychain is activated for things
-      such as magit that fire off subproceess
-      #+begin_src emacs-lisp
-(keychain-refresh-environment)
-      #+end_src
-
-** Magit
-   Initiate =magit-todos= only on =magit= invocation, since it loads slowly
-   #+begin_export emacs-lisp
-   (add-hook 'magit-status-mode-hook
-             (lambda ()
-               (magit-todos-mode 1)
-               ))
-   #+end_export
-** Smartparens
-   #+begin_src emacs-lisp
-(autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
-(defun my-create-newline-and-enter-sexp (&rest _ignored)
-  "Open a new brace or bracket expression, with relevant newlines and indent. "
-  (newline)
-  (indent-according-to-mode)
-  (forward-line -1)
-  (indent-according-to-mode))
-
-
-;; (with-eval-after-load 'smartparens
-;;   (sp-with-modes
-;;       '(c++-mode objc-mode c-mode js2-mode clojure-mode clojurescript-mode)
-;;     (sp-local-pair "{" nil :post-handlers '(:add ("||\n[i]" "RET")))))
-
-;; (eval-after-load "smartparens-config"
-;;   '(progn 
-;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-;; (sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-;; (sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-;; ))
-
-   #+end_src
-** Spelling
-   #+begin_src emacs-lisp
-;; redefine the obsolete spell-word
-(defalias 'spell-word  'ispell-word)
-
-(defalias 'spell-buffer 'ispell-buffer)
-   #+end_src
-** Man pages
-Open man page in current window, rather than other window with 
-#+begin_src emacs-lisp
-(custom-set-variables '(Man-notify-method 'pushy))
-#+end_src
 * Weird experimental modes/packages
 * Programming language modes
 
