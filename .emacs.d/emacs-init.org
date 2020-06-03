@@ -1308,7 +1308,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                                     (replace-regexp-in-string "-+$" ""
                                                               (replace-regexp-in-string "[^[:alnum:]]+" "-"
                                                                                         (replace-regexp-in-string "[[:punct:]]" "" name)))))
-                           "~/projects/emacs/blogs/gregorygrubbs.com/content/post/"
+                           "~/projects/emacs/blogs/hypecyclist/content/post/"
                            )))
 
      (setq org-default-notes-file "~/projects/notes.org")
@@ -1326,7 +1326,7 @@ Simply add the new block param =:keep-windows= to use this functionality
              ("i" "inbox" entry
               (file "~/projects/private-orgmode/inbox.org")
               "* TODO %?")
-         
+
              ("p" "Phone/Meeting" entry
               (file+headline "~/projects/private-orgmode/projects.org" "Calls and Meetings")
               "* %t %^{type|Call|Meeting} with %^{with|Unknown|Recruiter}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
@@ -1460,7 +1460,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 
      (setq org-agenda-custom-commands
            `(
-             ("A" "Massive Awesome Agenda"
+             ("A" "Awesome Work/Project Focus"
               ((agenda ""
                        ((org-agenda-span 'day)
                         (org-deadline-warning-days 365)))
@@ -1480,7 +1480,20 @@ Simply add the new block param =:keep-windows= to use this functionality
                (todo "TODO"
                      ((org-agenda-overriding-header "One-off Tasks")
                       (org-agenda-files '(,(concat gjg/org-agenda-directory "next.org")))
-                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))))
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))))
+               ((org-agenda-tag-filter-preset '("-fitness"))
+               ))
+             ("h" "thing TODO at Home"
+              ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"")
+               (agenda "" ((org-agenda-ndays 1)
+                           (org-agenda-span 'day)
+                           (org-agenda-sorting-strategy
+                            (quote ((agenda time-up priority-down tag-up))))
+                           (org-deadline-warning-days 0)))
+               (tags "reading")
+               (tags "Writing")
+               (tags-todo "REFILE"))
+              ((org-agenda-tag-filter-preset '("-project" "-@office"))))
              ("c" "Aaron's simple view"
               ((tags "PRIORITY=\"A\""
                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
