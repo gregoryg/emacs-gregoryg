@@ -1553,7 +1553,7 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+end_src
 ** Tags/TODOs/Projects Oh My
    #+begin_src emacs-lisp
-     (setq org-tag-alist '(("Project" . ?p)
+     (setq org-tag-alist '(("project" . ?p)
                            ("NEXT" . ?n)
                            ("noexport" . ?x)
                            ("cloud" . ?c)
@@ -1565,7 +1565,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                            ("@happy-hour")
                            (:endgroup . nil)
                            ("maybe-someday" . ?m)
-                           ("Writing" . ?w)
+                           ("writing" . ?w)
                            ))
      ;; Projects are identified by a :Project: tag unless they are marked DONE;
      ;;   Any project must have one sub-task identified by :NEXT: to be considered un-stuck
@@ -1711,11 +1711,13 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+end_src
 ** Clock
 #+begin_src emacs-lisp
-(setq org-clock-persist 'history)
-(org-clock-persistence-insinuate)
-(setq org-clock-report-include-clocking-task t)
-(setq org-read-date-prefer-future 'time)
-
+  (setq org-clock-persist 'history)
+  (org-clock-persistence-insinuate)
+  (setq org-clock-report-include-clocking-task t)
+  (setq org-read-date-prefer-future 'time)
+  ;; make the clock jump key global!
+  (define-key comint-mode-map (kbd "C-c C-x") nil)
+  (global-set-key (kbd "C-c C-x j") 'org-clock-goto)
 #+end_src
 ** Behavior
 #+begin_src emacs-lisp
@@ -1890,14 +1892,19 @@ Simply add the new block param =:keep-windows= to use this functionality
 
    #+end_src
 ** SQL
+*** MySQL / MariaDB
+    + Assure that client prompt is recognized for both products
    #+begin_src emacs-lisp
-;; (add-hook 'sql-mode-hook (lambda
 (with-eval-after-load 'sql
   '(progn
   (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[_a-zA-Z0-9()]*\\]?> ")
   (setq sql-mysql-options '("-C" "-t" "-f" "-n"))))
-;; ))
    #+end_src
+   + Allow for alternative port
+     #+begin_src emacs-lisp
+       (setq sql-mysql-login-params '(user password server database port))
+       (setq sql-port 3306)
+     #+end_src
 * Devops
 ** Working with containers
    This is largely a function of TRAMP.  I have added simple ways to
