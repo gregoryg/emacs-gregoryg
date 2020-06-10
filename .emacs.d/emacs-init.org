@@ -1325,7 +1325,7 @@ Simply add the new block param =:keep-windows= to use this functionality
               "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish nil)
              ("i" "inbox" entry
               (file "~/projects/private-orgmode/inbox.org")
-              "* TODO %?")
+              "* TODO %?\n  :LOGBOOK:\n  CREATED: %U\n  :END:")
 
              ("p" "Phone/Meeting" entry
               (file+headline "~/projects/private-orgmode/projects.org" "Calls and Meetings")
@@ -1334,7 +1334,7 @@ Simply add the new block param =:keep-windows= to use this functionality
            :NOBLOCKING: t
            :END:
            :LOGBOOK:
-           :CREATED:%U
+           CREATED: %U
            :END:
            %i
           + From MyOrg: GG, 
@@ -1343,7 +1343,7 @@ Simply add the new block param =:keep-windows= to use this functionality
             " :prepend t :clock-in t :clock-resume t)
              ("r" "Regular todo" entry
               (file "~/projects/private-orgmode/inbox.org")
-              "* TODO %? \nDEADLINE: %^T\n:LOGBOOK:\n:CREATED:%U\n:END:\n%i\n " :prepend nil :time-prompt t)
+              "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
              ("w" "Web page" entry (file "~/projects/private-orgmode/inbox.org")
               "* TODO Read %(org-cliplink-capture)
                  Captured %u")
