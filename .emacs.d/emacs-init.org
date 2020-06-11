@@ -1265,22 +1265,22 @@ Simply add the new block param =:keep-windows= to use this functionality
    using =C-c C-l= (=org-insert-link=)
 
    #+begin_src emacs-lisp
-(add-hook 'org-mode-hook
-	  (lambda ()
-	    (auto-fill-mode 1)
-        (org-superstar-mode 1)
-	    (setq fill-column 90) ; good default for wide screens
-	    (org-defkey org-mode-map [(control tab)] 'org-next-link)
-	    ;; steal back my keys
-	    (org-defkey org-mode-map [home] 'beginning-of-buffer)
-	    (org-defkey org-mode-map [end] 'end-of-buffer)
-	    ;; 	    ;; (local-set-key (kbd "C-c TAB") 'org-next-link)
-	    ;; 	    ;; (local-set-key (kbd "S C-c TAB") 'org-previous-link)
-	    ;; 	    (abbrev-mode 1)
-	    ;; 	    ;; set sub/superscript interpretation OFFFFFFOOOFFF
-	    ;; 	    (setq org-use-sub-superscripts nil)
-	    (setq org-catch-invisible-edits 'show-and-error )
-	    ))
+     (add-hook 'org-mode-hook
+           (lambda ()
+             (auto-fill-mode 1)
+             (org-superstar-mode 1)
+             (setq fill-column 90) ; good default for wide screens
+             (org-defkey org-mode-map [(control tab)] 'org-next-link)
+             ;; steal back my keys
+             (org-defkey org-mode-map [home] 'beginning-of-buffer)
+             (org-defkey org-mode-map [end] 'end-of-buffer)
+             ;; 	    ;; (local-set-key (kbd "C-c TAB") 'org-next-link)
+             ;; 	    ;; (local-set-key (kbd "S C-c TAB") 'org-previous-link)
+             ;; 	    (abbrev-mode 1)
+             ;; 	    ;; set sub/superscript interpretation OFFFFFFOOOFFF
+             ;; 	    (setq org-use-sub-superscripts nil)
+             (setq org-catch-invisible-edits 'show-and-error )
+             ))
    #+end_src
 ** Blogs - linking and image additions
    For blogging especially, we want to quickly add web links and images.  2 packages from
