@@ -1129,10 +1129,13 @@ awesome.
    #+end_src
 ** Spelling
    #+begin_src emacs-lisp
-;; redefine the obsolete spell-word
-(defalias 'spell-word  'ispell-word)
+     ;; don't try to spell shit in Org property drawers and code blocks
+     (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
+     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
+     ;; redefine the obsolete spell-word
+     (defalias 'spell-word  'ispell-word)
 
-(defalias 'spell-buffer 'ispell-buffer)
+     (defalias 'spell-buffer 'ispell-buffer)
    #+end_src
 ** Man pages
 Open man page in current window, rather than other window with 
