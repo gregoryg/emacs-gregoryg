@@ -1485,6 +1485,11 @@ Simply add the new block param =:keep-windows= to use this functionality
                       (org-agenda-files '(,(concat gjg/org-agenda-directory "next.org")))
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))))
                ((org-agenda-tag-filter-preset '("-fitness"))
+                ))
+             ;; TODO Filter on fitness tag
+             ("f" "Fitness"
+              ((agenda "" ((org-agenda-files '(,(concat gjg/org-agenda-directory "habits.org")))
+                           (org-agenda-span 'day)))
                ))
              ("h" "thing TODO at Home"
               ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"")
