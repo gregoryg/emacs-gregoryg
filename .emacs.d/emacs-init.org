@@ -1930,15 +1930,34 @@ Simply add the new block param =:keep-windows= to use this functionality
    + Docker build (Step n/n)
 
   #+begin_src emacs-lisp
-(defun gjg/highlight-terraform-stuff ()
-  (interactive)
-  ; Terraform patterns
-  (highlight-regexp "Creation complete" 'hi-green)
-  (highlight-regexp "Destruction complete" 'hi-pink)
-  ; Docker build
-  (highlight-regexp "Step [0-9]+/[0-9]+ : [A-Z]+" 'hi-aquamarine)
-  ; Ansible
-  (highlight-regexp "\\(RUNNING\\|STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
+    (defun gjg/highlight-terraform-stuff ()
+      (interactive)
+      ; Terraform patterns
+      (highlight-regexp "Creation complete" 'hi-green)
+      (highlight-regexp "Destruction complete" 'hi-pink)
+      ; Docker build
+      (highlight-regexp "Step [0-9]+/[0-9]+ : [A-Z]+" 'hi-aquamarine)
+      ; Ansible
+      (highlight-regexp "\\(RUNNING\\|STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
+
+    (defun gjg/highlight-squid ()
+      (interactive)
+      ; Squid caching patterns
+      (highlight-regexp "[A-Z_]*_HIT[A-Z_]*" 'hi-green)
+      (highlight-regexp "[A-Z_]*_MISS[A-Z_]*" 'hi-pink)
+      (highlight-regexp "[A-Z_]*_UNMODIFIED[A-Z_]*" 'hi-green)
+      (highlight-regexp "application/[-a-z0-9A-Z]+" 'hi-yellow)
+      (highlight-regexp "/[^/]+\.rpm" 'hi-black-b)
+      (highlight-regexp "/[^/]+\.deb" 'hi-black-b))
+
+
+
+
+
+
+
+
+
   #+end_src
 
 * Final steps
