@@ -800,19 +800,21 @@
 *** Shell sugar
 **** Open remote shell in current remote directory
 #+begin_src emacs-lisp
-(defun gjg/open-remote-shell ()
-  "If current buffer is remote, open a new uniquely named shell based on host name"
-  (interactive)
-  (if (file-remote-p default-directory)
+  (defun gjg/open-remote-shell ()
+    "If current buffer is remote, open a new uniquely named shell based on host name"
+    (interactive)
+    (if (file-remote-p default-directory)
+        (progn
+          ;; do stuff
+          (message "Now I shall do stuff")
+          (shell (concat (file-remote-p default-directory 'host) "-sh")))
       (progn
-        ;; do stuff
-        (message "Now I shall do stuff")
-        (shell (concat (file-remote-p default-directory 'host) "-sh"))
-        )
-	(progn
-	  (shell (concat "local-" default-directory "-sh"))
-	  ;; (message "Buffer is local - not opening shell"))
-	  )))
+        (shell
+         (concat
+         (file-name-nondirectory
+          (directory-file-name
+           (file-name-directory
+            default-directory))) "-sh")))))
 #+end_src
 **** Open SUDO at current remote directory
 #+begin_src emacs-lisp
@@ -1729,22 +1731,23 @@ Simply add the new block param =:keep-windows= to use this functionality
 #+end_src
 ** Behavior
 #+begin_src emacs-lisp
-;; make c-y pay attention to current level
-(setq org-yank-adjusted-subtrees t)
-;; (setq org-yank-folded-subtrees nil)
-(setq org-insert-heading-respect-content t); new headings go AFTER CONTENT, even from the middle of content area
-(setq org-indirect-buffer-display 'current-window)
-(setq org-reverse-note-order t) ; notes go at the top
-(setq org-return-follows-link t)
-(setq org-treat-S-cursor-todo-selection-as-state-change nil) ;; use S-arrow without having to log state change!
-(setq org-log-into-drawer t)
+  ;; make c-y pay attention to current level
+  (setq org-yank-adjusted-subtrees t)
+  ;; (setq org-yank-folded-subtrees nil)
+  (setq org-insert-heading-respect-content t); new headings go AFTER CONTENT, even from the middle of content area
+  (setq org-indirect-buffer-display 'current-window)
+  (setq org-reverse-note-order t) ; notes go at the top
+  (setq org-return-follows-link t)
+  (setq org-treat-S-cursor-todo-selection-as-state-change nil) ;; use S-arrow without having to log state change!
+  (setq org-log-into-drawer t)
 
-;; delete the seleted region when something is typed - don't do that
-(delete-selection-mode -1)
+  ;; delete the seleted region when something is typed - don't do that
+  (delete-selection-mode -1)
 
-;; show only current/today's/all time in the clock task modeline
-;; this SHOULD be settable on a file basis by using property CLOCK_MODELINE_TOTAL
-(setq org-clock-modeline-total 'current)
+  ;; show only current/today's/all time in the clock task modeline
+  ;; this SHOULD be settable on a file basis by using property CLOCK_MODELINE_TOTAL
+  (setq org-clock-modeline-total 'current)
+  (setq org-loop-over-headlines-in-active-region t)
 #+end_src
 ** Org Drill flashcards
 #+begin_src emacs-lisp
