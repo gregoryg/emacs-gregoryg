@@ -1154,14 +1154,24 @@ Open man page in current window, rather than other window with
 ** Org key mappings
 Disable some that get in the way
 #+begin_src emacs-lisp
-(with-eval-after-load 'org
-  (progn
-	(define-key org-mode-map (kbd "C-c ;") nil)       ; org-toggle-comment
-    (define-key org-mode-map (kbd "C-c C-x C-a") nil) ; org-archive-subtree-default
-    (define-key org-mode-map (kbd "C-c C-x C-s") nil) ; org-archive-to-subtree
-    (define-key org-mode-map (kbd "C-c C-x A") nil)   ; org-archive-to-archive-sibling
-    (define-key org-mode-map (kbd "C-c C-x a") nil)   ; org-toggle-archive-tag
-	))
+  (with-eval-after-load 'org
+    (progn
+      ;; little use for header COMMENT keyword
+      (define-key org-mode-map (kbd "C-c ;") nil)       ; org-toggle-comment
+      ;; don't accidentally archive things
+      (define-key org-mode-map (kbd "C-c C-x C-a") nil) ; org-archive-subtree-default
+      (define-key org-mode-map (kbd "C-c C-x C-s") nil) ; org-archive-to-subtree
+      (define-key org-mode-map (kbd "C-c C-x A") nil)   ; org-archive-to-archive-sibling
+      (define-key org-mode-map (kbd "C-c C-x a") nil)   ; org-toggle-archive-tag
+      ;; keys that conflict with buffer movement
+      (define-key org-mode-map (kbd "<M-right>") nil)     ; org-metaright
+      (define-key org-mode-map (kbd "<M-left>") nil)     ; org-metaleft
+      ;; keys that conflict with windmove package
+      (define-key org-mode-map (kbd "<S-up>") nil)       ; org-shiftup
+      (define-key org-mode-map (kbd "<S-down>") nil)       ; org-shiftdown
+      (define-key org-mode-map (kbd "<S-left>") nil)       ; org-shiftleft
+      (define-key org-mode-map (kbd "<S-right>") nil)       ; org-shiftright
+      ))
 #+end_src
 ** Org Babel and Source Code Blocks
   TODO: install ob-jupyter package on systems with Jupyter
