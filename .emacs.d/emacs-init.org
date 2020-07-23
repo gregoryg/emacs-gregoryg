@@ -1146,10 +1146,13 @@ Open man page in current window, rather than other window with
 #+end_src
 * Org mode stuff
 
-** Org modules
+** Habits
    #+begin_src emacs-lisp
      (add-to-list 'org-modules 'org-habit t)
      (require 'org-habit)
+     (setq org-habit-show-all-today t
+           org-habit-show-habits nil
+           org-habit-show-habits-only-for-today nil)
    #+end_src
 ** Org key mappings
 Disable some that get in the way
@@ -1176,38 +1179,42 @@ Disable some that get in the way
 ** Org Babel and Source Code Blocks
   TODO: install ob-jupyter package on systems with Jupyter
   #+begin_src emacs-lisp
-	;; (unless (version< org-version "9.2")
-	;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
-	;;   )
-	(org-babel-do-load-languages
-	 'org-babel-load-languages
-	 (append org-babel-load-languages
-		 '(
-		   (clojure . t)
-		   (http . t) ;; curl 
-		   (js . t)
-		   (latex . t)
-		   (python . t)
-		   (shell  . t)
-		   (sql . t)
-		   (jupyter . t)
-		   )))
-	;; ;; The Dreadful Timeline has brought us indentation-sensitive languages
-	;; ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
-	;; (setq org-src-preserve-indentation nil) 
-	(setq org-src-window-setup 'current-window)
-	(setq org-structure-template-alist '(("C" . "comment")
-						 ("e" . "example")
-						 ("E" . "export")
-						 ("h" . "export html")
-						 ("l" . "export latex")
-						 ("q" . "quote")
-						 ("S" . "src")
+    ;; (unless (version< org-version "9.2")
+    ;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
+    ;;   )
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     (append org-babel-load-languages
+         '(
+           (clojure . t)
+           (http . t) ;; curl 
+           (js . t)
+           (latex . t)
+           (python . t)
+           (shell  . t)
+           (sql . t)
+           (jupyter . t)
+           )))
+    (setq org-confirm-babel-evaluate nil
+          org-export-use-babel nil
+          org-export-with-sub-superscripts nil)
+
+    ;; ;; The Dreadful Timeline has brought us indentation-sensitive languages
+    ;; ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
+    ;; (setq org-src-preserve-indentation nil) 
+    (setq org-src-window-setup 'current-window)
+    (setq org-structure-template-alist '(("C" . "comment")
+                         ("e" . "example")
+                         ("E" . "export")
+                         ("h" . "export html")
+                         ("l" . "export latex")
+                         ("q" . "quote")
+                         ("S" . "src")
                          ("sj" . "src json")
-						 ("sl" . "src emacs-lisp")
-						 ("sp" . "src python")
-						 ("ss" . "src bash")
-						 ("sy" . "src yaml")))
+                         ("sl" . "src emacs-lisp")
+                         ("sp" . "src python")
+                         ("ss" . "src bash")
+                         ("sy" . "src yaml")))
 
   #+end_src
 *** Crazy way to allow babel elisp to modify window configuration  :noexport:
@@ -1284,7 +1291,9 @@ Simply add the new block param =:keep-windows= to use this functionality
            (lambda ()
              (auto-fill-mode 1)
              (org-superstar-mode 1)
+             (setq org-hide-leading-stars t)
              (setq fill-column 90) ; good default for wide screens
+             (setq org-use-property-inheritance t)
              (org-defkey org-mode-map [(control tab)] 'org-next-link)
              ;; steal back my keys
              (org-defkey org-mode-map [home] 'beginning-of-buffer)
