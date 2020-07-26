@@ -1981,7 +1981,14 @@ Simply add the new block param =:keep-windows= to use this functionality
 
 
   #+end_src
-
+* Employer-specific things
+** Harvest time tracking
+   Well, of course I must use Org Mode, so let's try an integration
+   #+begin_src emacs-lisp
+     (use-package reaper
+       :ensure t ; If using package.el, alternatively :straight t.
+       :bind ("C-c h" . reaper))
+   #+end_src
 * Final steps
 #+begin_src emacs-lisp
 (shell (get-buffer-create "sh1"))
