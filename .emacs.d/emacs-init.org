@@ -1170,8 +1170,8 @@ Disable some that get in the way
       (define-key org-mode-map (kbd "<M-right>") nil)     ; org-metaright
       (define-key org-mode-map (kbd "<M-left>") nil)     ; org-metaleft
       ;; keys that conflict with windmove package
-      (define-key org-mode-map (kbd "<S-up>") nil)       ; org-shiftup
-      (define-key org-mode-map (kbd "<S-down>") nil)       ; org-shiftdown
+      ;; (define-key org-mode-map (kbd "<S-up>") nil)       ; org-shiftup
+      ;; (define-key org-mode-map (kbd "<S-down>") nil)       ; org-shiftdown
       (define-key org-mode-map (kbd "<S-left>") nil)       ; org-shiftleft
       (define-key org-mode-map (kbd "<S-right>") nil)       ; org-shiftright
       ))
@@ -1280,6 +1280,15 @@ Simply add the new block param =:keep-windows= to use this functionality
 )
 #+end_src
 
+** Org num mode
+   #+begin_src emacs-lisp
+     ;; for use with org-num-mode
+     (defun org-num-skip-top-level-format (numbering)
+       "Number from subtree display function.
+     NUMBERING is a list of numbers."
+       (concat (mapconcat #'number-to-string (cdr numbering) ".") " "))
+     (setq org-num-format-function 'org-num-skip-top-level-format)
+   #+end_src
 ** Org-mode hook
    On =auto-fill-mode=: I prefer to have it on, but hate when
    creating links and having it wrap while typing the description.
@@ -1352,7 +1361,7 @@ Simply add the new block param =:keep-windows= to use this functionality
               "* TODO %?\n  :LOGBOOK:\n  CREATED: %U\n  :END:")
 
              ("p" "Phone/Meeting" entry
-              (file+headline "~/projects/private-orgmode/projects.org" "Calls and Meetings")
+              (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Calls and Meetings")
               "* %t %^{type|Call|Meeting} with %^{with|Unknown|Recruiter}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
            :PROPERTIES:
            :NOBLOCKING: t
@@ -1408,45 +1417,48 @@ Simply add the new block param =:keep-windows= to use this functionality
 #+end_src
 ** Speed commands
    #+begin_src emacs-lisp
-(setq org-use-speed-commands t) ;; POWER USER BABY
-;; (setq org-speed-commands-user 
-;;       '(
-;;         ("," . org-columns)
-;;         ("q" . bury-buffer)))
-;; DAN DAVISON nifty speed commands
-(defun ded/org-show-next-heading-tidily ()
-  "Show next entry, keeping other entries closed."
-  (if (save-excursion (end-of-line) (outline-invisible-p))
-      (progn (org-show-entry) (outline-show-children))
-    (outline-next-heading)
-    (unless (and (bolp) (org-at-heading-p))
-      (org-up-heading-safe)
-      (outline-hide-subtree)
-      (error "Boundary reached"))
-    (org-overview)
-    (org-reveal t)
-    (org-show-entry)
-    (outline-show-children)))
+     (setq org-use-speed-commands t) ;; POWER USER BABY
+     ;; (setq org-speed-commands-user 
+     ;;       '(
+     ;;         ("," . org-columns)
+     ;;         ("q" . bury-buffer)))
+     ;; DAN DAVISON nifty speed commands
+     (defun ded/org-show-next-heading-tidily ()
+       "Show next entry, keeping other entries closed."
+       (if (save-excursion (end-of-line) (outline-invisible-p))
+           (progn (org-show-entry) (outline-show-children))
+         (outline-next-heading)
+         (unless (and (bolp) (org-at-heading-p))
+           (org-up-heading-safe)
+           (outline-hide-subtree)
+           (error "Boundary reached"))
+         (org-overview)
+         (org-reveal t)
+         (org-show-entry)
+         (outline-show-children)))
 
-(defun ded/org-show-previous-heading-tidily ()
-  "Show previous entry, keeping other entries closed."
-  (let ((pos (point)))
-    (outline-previous-heading)
-    (unless (and (< (point) pos) (bolp) (org-at-heading-p))
-      (goto-char pos)
-      (outline-hide-subtree)
-      (error "Boundary reached"))
-    (org-overview)
-    (org-reveal t)
-    (org-show-entry)
-    (outline-show-children)))
+     (defun ded/org-show-previous-heading-tidily ()
+       "Show previous entry, keeping other entries closed."
+       (let ((pos (point)))
+         (outline-previous-heading)
+         (unless (and (< (point) pos) (bolp) (org-at-heading-p))
+           (goto-char pos)
+           (outline-hide-subtree)
+           (error "Boundary reached"))
+         (org-overview)
+         (org-reveal t)
+         (org-show-entry)
+         (outline-show-children)))
 
-(add-to-list 'org-speed-commands-user
-	     '("]" ded/org-show-next-heading-tidily))
-(add-to-list 'org-speed-commands-user 
-	     '("[" ded/org-show-previous-heading-tidily))
+     (add-to-list 'org-speed-commands-user
+              '("]" ded/org-show-next-heading-tidily))
+     (add-to-list 'org-speed-commands-user 
+              '("[" ded/org-show-previous-heading-tidily))
+     (add-to-list 'org-speed-commands-user 
+              '("s" save-buffer))
 
-;; END DAN DAVISON nifty speed commands
+
+     ;; END DAN DAVISON nifty speed commands
 
    #+end_src
 ** Agenda
@@ -1484,6 +1496,21 @@ Simply add the new block param =:keep-windows= to use this functionality
 
      (setq org-agenda-custom-commands
            `(
+             ("R" "Rancher"
+              ((agenda ""
+                       ((org-agenda-span 'day)
+                        (org-deadline-warning-days 21)
+                        (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")
+                                            ,(concat gjg/org-agenda-directory "rancher/ramp.org")))
+                        )
+                       )
+               (todo "TODO"
+                       ((org-agenda-span 'day)
+                        (org-deadline-warning-days 21)
+                        (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")
+                                            ,(concat gjg/org-agenda-directory "rancher/ramp.org")))
+
+                     ))))
              ("A" "Awesome Work/Project Focus"
               ((agenda ""
                        ((org-agenda-span 'day)
@@ -1583,6 +1610,9 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Tags/TODOs/Projects Oh My
    #+begin_src emacs-lisp
      (setq org-tag-alist '(("project" . ?p)
+                           ("dan" . ?d)
+                           ("greg" . ?g)
+                           ("onboarding" . ?b)
                            ("NEXT" . ?n)
                            ("noexport" . ?x)
                            ("cloud" . ?c)
