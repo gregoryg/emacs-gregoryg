@@ -22,21 +22,21 @@
   (let ((fill-column (point-max)))
     (fill-paragraph nil)))
 
-;; (defun gjg/nag-timer () "Nag me when there isn't a clock running"  
-;;   (unless (marker-buffer org-clock-marker)
-;;     (call-process-shell-command gjg/visual-notify-command nil 0 nil "Org-Mode\\ Nudge" "What\\'s\\ \\going\\ on?")
-;;     ;;    (call-process gjg/say-command nil 0 nil "What's going on?")
-;; ;;     (call-process "/usr/bin/aoss" nil 0 nil "/usr/bin/flite" "-t" "What is going on?")
-;;     (call-process "espeak" nil nil nil  "What is going on?")
-;;     ))
+(defun gjg/nag-timer () "Nag me when there isn't a clock running"  
+  (unless (marker-buffer org-clock-marker)
+    (call-process-shell-command gjg/visual-notify-command nil 0 nil "Org-Mode\\ Nudge" "What\\'s\\ \\going\\ on?")
+    ;;    (call-process gjg/say-command nil 0 nil "What's going on?")
+;;     (call-process "/usr/bin/aoss" nil 0 nil "/usr/bin/flite" "-t" "What is going on?")
+    (call-process "espeak" nil nil nil  "What is going on?")
+    ))
 
-;; (defun gjg/nag () "Start nagging me every 15 minutes when not clocked in to an Org task"
-;;   (interactive)
-;;   (run-with-timer 1 900 'gjg/nag-timer))
+(defun gjg/nag () "Start nagging me every 15 minutes when not clocked in to an Org task"
+  (interactive)
+  (run-with-timer 1 900 'gjg/nag-timer))
 
-;; (defun gjg/cancel-nag () "Cancel the org-mode clock nag timer"
-;;   (interactive)
-;;   (cancel-function-timers 'gjg/nag-timer))
+(defun gjg/cancel-nag () "Cancel the org-mode clock nag timer"
+  (interactive)
+  (cancel-function-timers 'gjg/nag-timer))
 
 (defun gjg/acronyminize (text &optional do-capitalize)
   "Make an acronym from the text 
