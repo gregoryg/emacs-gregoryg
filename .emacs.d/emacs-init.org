@@ -1470,7 +1470,9 @@ Simply add the new block param =:keep-windows= to use this functionality
                               "~/projects/private-orgmode/someday.org"
                               "~/projects/private-orgmode/projects.org"
                               "~/projects/private-orgmode/next.org"
-                              "~/projects/private-orgmode/habits.org"))
+                              "~/projects/private-orgmode/habits.org"
+                              "~/projects/private-orgmode/rancher/ramp.org"
+                              "~/projects/private-orgmode/rancher/rancher.org.gpg"))
      ;; Set basic org-mode keys
      ;;(setq org-agenda-span 'day)
      ;;(setq org-agenda-skip-scheduled-if-done t)
