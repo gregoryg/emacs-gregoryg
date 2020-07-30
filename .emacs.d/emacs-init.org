@@ -217,6 +217,8 @@
      in the function name and hit "C-h f"
 
 #+begin_src emacs-lisp
+  ;; show parens: useful even in text modes
+  (show-paren-mode 1)
   ;; fido-mode in emacs 27+: a new thing to hate
   (fido-mode -1)
   ;; When I want transient mark mode, I'll beat it out of you
