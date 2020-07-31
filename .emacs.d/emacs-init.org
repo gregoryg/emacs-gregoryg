@@ -587,7 +587,9 @@
     #+end_src
 *** Theme
     #+begin_src emacs-lisp :results none
-      (load-file "~/projects/emacs/brutalist-theme/brutalist-build.el")
+      (when (boundp 'custom-theme-load-path)
+        (add-to-list 'custom-theme-load-path
+                     "~/projects/emacs/"))
       (load-theme 'brutalist t)
     #+end_src
 
