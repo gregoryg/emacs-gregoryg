@@ -151,9 +151,13 @@
 ** Chrome OS / Crostini things
    Assure that web links will open in Chrome OS rather than invoking a browser
    installed in the Linux container
+   
+   As of [2020-07-31 Fri] I don't know how to determine I'm running in a Crostini
+   container, so we set this only if =sensible-browser= is found on the path
    #+begin_src emacs-lisp
-     (setq browse-url-browser-function 'browse-url-generic)
-     (setq browse-url-generic-program "sensible-browser")
+     (when (executable-find "sensible-browser")
+       (setq browse-url-browser-function 'browse-url-generic)
+       (setq browse-url-generic-program "sensible-browser"))
      ;; On the pixelbook, I use a script to open Chrome for Web links in Org
      ;; this is in custom settings, since I don't know how to detect Crostini/Chrome OS in emacs
      ;; (setq org-file-apps
