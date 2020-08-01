@@ -593,7 +593,9 @@
     #+begin_src emacs-lisp :results none
       (when (boundp 'custom-theme-load-path)
         (add-to-list 'custom-theme-load-path
-                     "~/projects/emacs/"))
+                     "~/projects/emacs/brutalist-theme/")
+        (add-to-list 'load-path
+                     "~/projects/emacs/brutalist-theme/"))
       (load-theme 'brutalist t)
     #+end_src
 
