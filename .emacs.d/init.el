@@ -33,3 +33,4 @@
 (let ((elapsed (float-time (time-subtract (current-time)
                                           emacs-start-time))))
   (message "Loading complete config...done (%.3fs)" elapsed))
+(put 'list-timers 'disabled nil)

@@ -55,6 +55,7 @@
     go
     go-autocomplete
     go-guru
+    highlight-indentation
     htmlize
     jupyter
     keychain-environment
@@ -1380,10 +1381,10 @@ Simply add the new block param =:keep-windows= to use this functionality
            CREATED: %U
            :END:
            %i
-          + From MyOrg: GG, 
+          + From Rancher: GG, 
           + From %\\2: 
           + %?
-            " :prepend t :clock-in t :clock-resume t)
+            " :prepend t :clock-in t)
              ("r" "Regular todo" entry
               (file "~/projects/private-orgmode/inbox.org")
               "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
