@@ -1405,6 +1405,14 @@ Simply add the new block param =:keep-windows= to use this functionality
              ("r" "Regular todo" entry
               (file "~/projects/private-orgmode/inbox.org")
               "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
+             ("s" "Status update for Slack" entry
+              (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Write Daily Status to #consulting")
+              "* Status update %u
+           ,*Today*
+             ,* %?
+           ,*Tomorrow*
+             ,* another thing"
+              :prepend t )
              ("w" "Web page" entry (file "~/projects/private-orgmode/inbox.org")
               "* TODO Read %(org-cliplink-capture)
                  Captured %u")
