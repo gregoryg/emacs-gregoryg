@@ -656,6 +656,23 @@
 (org-crypt-use-before-save-magic)
 
   #+end_src
+* ExWM Experiment
+#+begin_src emacs-lisp
+  (require 'exwm)
+  (require 'exwm-config)
+  (exwm-config-example)
+  ;; (exwm-config-default)
+  (require 'exwm-randr)
+  (setq exwm-randr-workspace-output-plist '(0 "eDP-1"))
+  (add-hook 'exwm-randr-screen-change-hook
+            (lambda()
+              (start-process-shell-command
+               "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal")))
+  (exwm-randr-enable)
+  (require 'exwm-systemtray)
+  (exwm-systemtray-enable)
+
+#+end_src
 * Commonly used modes
 ** Start emacs server
    #+begin_src emacs-lisp
