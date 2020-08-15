@@ -1548,10 +1548,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                (todo "TODO"
                        ((org-agenda-span 'day)
                         (org-deadline-warning-days 21)
-                        (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")
-                                            ,(concat gjg/org-agenda-directory "rancher/ramp.org")))
-
-                     ))))
+                        (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")))))))
              ("A" "Awesome Work/Project Focus"
               ((agenda ""
                        ((org-agenda-span 'day)
