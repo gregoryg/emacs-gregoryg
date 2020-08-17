@@ -1993,10 +1993,17 @@ Simply add the new block param =:keep-windows= to use this functionality
 *** MySQL / MariaDB
     + Assure that client prompt is recognized for both products
    #+begin_src emacs-lisp
-(with-eval-after-load 'sql
-  '(progn
-  (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[_a-zA-Z0-9()]*\\]?> ")
-  (setq sql-mysql-options '("-C" "-t" "-f" "-n"))))
+     ;; (with-eval-after-load 'sql
+     ;;   '(progn
+     ;;   ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
+     ;;      (sql-set-product-feature 'mysql :prompt-regexp 
+     ;;                               "^\\(MariaDB\\|MySQL\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
+     ;;   (setq sql-mysql-options '("-C" "-t" "-f" "-n"))))
+     (require 'sql)
+     ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
+     (sql-set-product-feature 'mysql :prompt-regexp 
+                              "^\\(MariaDB\\|MySQL\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
+     (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
    #+end_src
    + Allow for alternative port
      #+begin_src emacs-lisp
