@@ -299,54 +299,55 @@
    #+end_src
 ** Key bindings
    #+begin_src emacs-lisp
-(global-set-key [home] (lambda () (interactive) (goto-char (point-min))))
-(global-set-key [end] (quote end-of-buffer))
-;; M-left and M-right on Pixelbook
-(global-unset-key (kbd "<M-left>"))
-(global-unset-key (kbd "<M-right>"))
-(global-set-key (kbd "<M-left>") (lambda () (interactive) (goto-char (point-min))))
-(global-set-key (kbd "<M-right>") 'end-of-buffer)
-(global-unset-key (kbd "C-z"))
-(global-set-key (kbd "C-z") 'undo)
-(global-unset-key (kbd "M-]")) ; unset one next-buffer binding
-(global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
+     (global-set-key [home] (lambda () (interactive) (goto-char (point-min))))
+     (global-set-key [end] (quote end-of-buffer))
+     ;; M-left and M-right on Pixelbook
+     (global-unset-key (kbd "<M-left>"))
+     (global-unset-key (kbd "<M-right>"))
+     (global-set-key (kbd "<M-left>") (lambda () (interactive) (goto-char (point-min))))
+     (global-set-key (kbd "<M-right>") 'end-of-buffer)
+     (global-unset-key (kbd "C-z"))
+     (global-set-key (kbd "C-z") 'undo)
+     (global-unset-key (kbd "M-]")) ; unset one next-buffer binding
+     (global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
 
-(global-set-key [f1] 'delete-other-windows)
-(global-set-key [f2] 'gjg/switch-to-other-buffer)
-(global-set-key [f3] 'gjg/other-window-or-split)
-(global-set-key [f4] 'narrow-to-defun)
+     (global-set-key [f1] 'delete-other-windows)
+     (global-set-key [f2] 'gjg/switch-to-other-buffer)
+     (global-set-key [f3] 'gjg/other-window-or-split)
+     (global-set-key [f4] 'narrow-to-defun)
 
-(global-set-key [f5] 'gjg/widen-ask-if-indirect)
-(global-set-key [f6] 'read-only-mode)
-(global-set-key [f7] 'hl-line-mode) ;; toggle hl-line-mode for this window only
-;; (global-set-key [f8] 'bury-buffer)
+     (global-set-key [f5] 'gjg/widen-ask-if-indirect)
+     ;; (global-set-key [f6] 'read-only-mode)
+     (global-set-key [f6] (lambda () (interactive) (org-agenda nil "R")))
+     (global-set-key [f7] 'hl-line-mode) ;; toggle hl-line-mode for this window only
+     ;; (global-set-key [f8] 'bury-buffer)
 
-;; (global-set-key [f9] 'bury-buffer)
-(global-set-key [f10] 'dired-omit-mode)
-;; (global-set-key [f11] 'mac-toggle-max-window)
-(global-set-key [f11] 'gjg/toggle-max-frame)
-(global-set-key [M-f11] 'gjg/toggle-max-frame)
-;; (global-set-key [f11] 'toggle-fullscreen)
-;; (global-set-key [f11] 'switch-full-screen)
-;; (global-set-key (kbd "C-<f11>") 'gjg/emacs-max-coolness)
-(global-set-key [f12] (lambda () (interactive) (message (or (buffer-file-name) "No file associated with this buffer."))))
-(global-set-key (kbd "<C-f12>") 'yow)
-(global-set-key [C-wheel-up] 'text-scale-increase)
-(global-set-key [C-wheel-down] 'text-scale-decrease)
-(global-set-key [S-wheel-up] 'inc-font-size)
-(global-set-key [S-wheel-down] 'dec-font-size)
-(global-set-key (kbd "M-]") 'next-buffer)
-(global-set-key (kbd "M-[") 'previous-buffer)
-(global-set-key (kbd "C-c C-v") 'browse-url-at-point)
-;; EXPERIMENTAL: unbind SPACE and ? in minibuffer, to allow typing in completions with those chars
-(add-hook 'minibuffer-setup-hook (lambda () 
-				   (define-key minibuffer-local-completion-map " " nil)
-				   (define-key minibuffer-local-must-match-map " " nil)
-				   (define-key minibuffer-local-completion-map "?" nil)
-				   (define-key minibuffer-local-must-match-map "?" nil)))
-(defalias 'ss 'gjg/open-remote-shell)
-(defalias 'ht 'gjg/highlight-terraform-stuff)
-(defalias 'rb 'rename-buffer)
+     ;; (global-set-key [f9] 'bury-buffer)
+     (global-set-key [f10] 'dired-omit-mode)
+     ;; (global-set-key [f11] 'mac-toggle-max-window)
+     (global-set-key [f11] 'gjg/toggle-max-frame)
+     (global-set-key [M-f11] 'gjg/toggle-max-frame)
+     ;; (global-set-key [f11] 'toggle-fullscreen)
+     ;; (global-set-key [f11] 'switch-full-screen)
+     ;; (global-set-key (kbd "C-<f11>") 'gjg/emacs-max-coolness)
+     (global-set-key [f12] (lambda () (interactive) (message (or (buffer-file-name) "No file associated with this buffer."))))
+     (global-set-key (kbd "<C-f12>") 'yow)
+     (global-set-key [C-wheel-up] 'text-scale-increase)
+     (global-set-key [C-wheel-down] 'text-scale-decrease)
+     (global-set-key [S-wheel-up] 'inc-font-size)
+     (global-set-key [S-wheel-down] 'dec-font-size)
+     (global-set-key (kbd "M-]") 'next-buffer)
+     (global-set-key (kbd "M-[") 'previous-buffer)
+     (global-set-key (kbd "C-c C-v") 'browse-url-at-point)
+     ;; EXPERIMENTAL: unbind SPACE and ? in minibuffer, to allow typing in completions with those chars
+     (add-hook 'minibuffer-setup-hook (lambda () 
+                        (define-key minibuffer-local-completion-map " " nil)
+                        (define-key minibuffer-local-must-match-map " " nil)
+                        (define-key minibuffer-local-completion-map "?" nil)
+                        (define-key minibuffer-local-must-match-map "?" nil)))
+     (defalias 'ss 'gjg/open-remote-shell)
+     (defalias 'ht 'gjg/highlight-terraform-stuff)
+     (defalias 'rb 'rename-buffer)
 
    #+end_src
 ** Backup files
