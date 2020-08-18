@@ -379,19 +379,18 @@
     #+end_src
 *** Winner-mode and Windmove
    #+begin_src emacs-lisp
-;; winner
-(winner-mode 1)
-;; windmove
-(windmove-default-keybindings)
-(with-eval-after-load 'windmove
-  '(progn
+     ;; winner
+     (winner-mode 1)
+     ;; windmove
      (windmove-default-keybindings)
-     ;; Make windmove work in org-mode:
-     (setq org-replace-disputed-keys t)))
-;; (add-hook 'org-shiftup-final-hook 'windmove-up)
-;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
-;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
-;; (add-hook 'org-shiftright-final-hook 'windmove-right)))
+     (with-eval-after-load 'windmove
+       (windmove-default-keybindings)
+       ;; Make windmove work in org-mode:
+       (setq org-replace-disputed-keys t))
+     ;; (add-hook 'org-shiftup-final-hook 'windmove-up)
+     ;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
+     ;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
+     ;; (add-hook 'org-shiftright-final-hook 'windmove-right)))
 
 
    #+end_src
@@ -582,13 +581,12 @@
 
 *** Uniquify
     #+begin_src emacs-lisp
-(autoload 'uniquify "uniquify" "unique buffer names dependent on file name")
-(with-eval-after-load 'uniquify
-  '(progn
-     (setq uniquify-buffer-name-style 'reverse)
-     (setq uniquify-separator "/")
-     (setq uniquify-after-kill-buffer-p t)
-     (setq uniquify-ignore-buffers-re "^\\*")))
+      (autoload 'uniquify "uniquify" "unique buffer names dependent on file name")
+      (with-eval-after-load 'uniquify
+        (setq uniquify-buffer-name-style 'reverse)
+        (setq uniquify-separator "/")
+        (setq uniquify-after-kill-buffer-p t)
+        (setq uniquify-ignore-buffers-re "^\\*"))
     #+end_src
 *** Theme
     #+begin_src emacs-lisp :results none
@@ -610,19 +608,19 @@
    #+end_src
 ** Games and silliness
    #+begin_src emacs-lisp
-;; very important: keep a long list of yow lines
-;;   in emacs 24.4 yow.el is obsolete; use cookie instead
-(when (featurep 'yow)
-  (unload-feature 'yow))
-(with-eval-after-load 'cookie1
-  '(progn
-     (setq yow-file "~/emacs/yow.lines")
-     (defun yow ()
-       (interactive)
-       (let ((suggest-key-bindings nil))
-	 (message (cookie yow-file nil nil))))))
-;; almost as important: keep track of those tetris scores
-(setq tetris-score-file "~/.emacs.d/tetris.score")
+     ;; very important: keep a long list of yow lines
+     ;;   in emacs 24.4 yow.el is obsolete; use cookie instead
+     (when (featurep 'yow)
+       (unload-feature 'yow))
+     (with-eval-after-load 'cookie1
+       (setq yow-file "~/emacs/yow.lines")
+       (defun yow ()
+         (interactive)
+         (let ((suggest-key-bindings nil))
+           (message (cookie yow-file nil nil)))))
+     ;; )
+     ;; almost as important: keep track of those tetris scores
+     (setq tetris-score-file "~/.emacs.d/tetris.score")
 
 
    #+end_src
@@ -663,15 +661,45 @@
   (exwm-config-example)
   ;; (exwm-config-default)
   (require 'exwm-randr)
-  (setq exwm-randr-workspace-output-plist '(0 "eDP-1"))
+  (setq exwm-randr-workspace-monitor-plist '(0 "DP-1" 1 "eDP-1")) ;; DP-1 is the big monitor, if connected
+
   (add-hook 'exwm-randr-screen-change-hook
             (lambda()
               (start-process-shell-command
-               "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal")))
+               ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
+               "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
+               )))
+  (exwm-enable)
   (exwm-randr-enable)
   (require 'exwm-systemtray)
   (exwm-systemtray-enable)
-
+  (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")
+                      (lambda ()
+                        (interactive)
+                        (call-process-shell-command "gjg-bright.sh +5")))
+  (exwm-input-set-key (kbd "<XF86MonBrightnessDown>")
+                      (lambda ()
+                        (interactive)
+                        (call-process-shell-command "gjg-bright.sh -5")))
+  (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
+                      (lambda ()
+                        (interactive)
+                        (call-process-shell-command "amixer sset 'Master' 5%+")))
+  (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
+                      (lambda ()
+                        (interactive)
+                        (call-process-shell-command "amixer sset 'Master' 5%-")))
+  (exwm-input-set-key (kbd "<XF86AudioMute>")
+                      (lambda ()
+                        (interactive)
+                        (call-process-shell-command "amixer sset 'Master' toggle")))
+  ;; lock screen
+  (exwm-input-set-key (kbd "s-l")  ;; super/windows l
+                      (lambda ()
+                        (interactive)
+                        (call-process-shell-command "xscreensaver-command -lock")))
+  (require 'buffer-expose)
+  (buffer-expose-mode 1)
 #+end_src
 * Commonly used modes
 ** Start emacs server
@@ -747,68 +775,67 @@
       ;;  dcos task exec --tty --interactive <taskname> -- bash
       ;; example TRAMP URI:   //dcos:jupyter:
       (require 'tramp)
-      ;; (with-eval-after-load 'tramp
-      ;;   '(progn
-      (add-to-list 'tramp-methods
-                   `("docker"
-                     (tramp-login-program      "docker")
-                     (tramp-login-args         (nil ("exec" "-it") ("-u" "%u") ("%h") ("sh")))
-                     (tramp-remote-shell       "/bin/sh")
-                     (tramp-remote-shell-args  ("-i" "-c"))))
-      (add-to-list 'tramp-methods
-                   '("dcos"
-                     (tramp-login-program "dcos")
-                     (tramp-login-args
-                      (nil
-                       ("task" "exec" "-it")
-                       ("%h")
-                       ("bash")))
-                     (tramp-remote-shell "/bin/sh")
-                     (tramp-remote-shell-args ("-i" "-c"))))
+      (with-eval-after-load 'tramp
+        (add-to-list 'tramp-methods
+                     `("docker"
+                       (tramp-login-program      "docker")
+                       (tramp-login-args         (nil ("exec" "-it") ("-u" "%u") ("%h") ("sh")))
+                       (tramp-remote-shell       "/bin/sh")
+                       (tramp-remote-shell-args  ("-i" "-c"))))
+        (add-to-list 'tramp-methods
+                     '("dcos"
+                       (tramp-login-program "dcos")
+                       (tramp-login-args
+                        (nil
+                         ("task" "exec" "-it")
+                         ("%h")
+                         ("bash")))
+                       (tramp-remote-shell "/bin/sh")
+                       (tramp-remote-shell-args ("-i" "-c"))))
 
-      ;; Add method to connect to Kubernetes pods
-      ;; we need to execute a command like the following
-      ;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
-      ;; example TRAMP URI:   //kexec:jhub@jupyter:
-      (add-to-list 'tramp-methods
-                   '("kube"
-                     (tramp-login-program "kubectl")
-                     (tramp-login-args
-                      (nil
-                       ("exec" "-it")
-                       ("--namespace" "%u")
-                       ("%h")
-                       ("--" "sh")))
-                     (tramp-remote-shell "/bin/sh")
-                     (tramp-remote-shell-args ("-i" "-c"))))
+        ;; Add method to connect to Kubernetes pods
+        ;; we need to execute a command like the following
+        ;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
+        ;; example TRAMP URI:   //kexec:jhub@jupyter:
+        (add-to-list 'tramp-methods
+                     '("kube"
+                       (tramp-login-program "kubectl")
+                       (tramp-login-args
+                        (nil
+                         ("exec" "-it")
+                         ("--namespace" "%u")
+                         ("%h")
+                         ("--" "sh")))
+                       (tramp-remote-shell "/bin/sh")
+                       (tramp-remote-shell-args ("-i" "-c"))))
 
-      ;; TRAMP gcloud ssh
-      ;; Google Cloud Shell
-      (add-to-list 'tramp-methods
-                   '("gshell"
-                     (tramp-login-program        "gcloud alpha cloud-shell ssh")
-                     (tramp-default-host "cloud-shell")
-                     (tramp-login-args (("#%h")))
-                     ;; (tramp-login-args           (("%h")))
-                     ;; (tramp-async-args           (("-q")))
-                     (tramp-remote-shell         "/bin/bash")
-                     (tramp-remote-shell-args    ("-c"))
-                     ;; (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
-                     ;;                              ("-o" "UserKnownHostsFile=/dev/null")
-                     ;;                              ("-o" "StrictHostKeyChecking=no")))
-                     (tramp-default-port         22)))
-      (add-to-list 'tramp-methods
-                   '("gcssh"
-                     (tramp-login-program        "gcloud compute ssh")
-                     (tramp-login-args           (("%h")))
-                     (tramp-async-args           (("-q")))
-                     (tramp-remote-shell         "/bin/bash")
-                     (tramp-remote-shell-args    ("-c"))
-                     (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
-                                                  ("-o" "UserKnownHostsFile=/dev/null")
-                                                  ("-o" "StrictHostKeyChecking=no")))
-                     (tramp-default-port         22)))
-      ;; ))
+        ;; TRAMP gcloud ssh
+        ;; Google Cloud Shell
+        (add-to-list 'tramp-methods
+                     '("gshell"
+                       (tramp-login-program        "gcloud alpha cloud-shell ssh")
+                       (tramp-default-host "cloud-shell")
+                       (tramp-login-args (("#%h")))
+                       ;; (tramp-login-args           (("%h")))
+                       ;; (tramp-async-args           (("-q")))
+                       (tramp-remote-shell         "/bin/bash")
+                       (tramp-remote-shell-args    ("-c"))
+                       ;; (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+                       ;;                              ("-o" "UserKnownHostsFile=/dev/null")
+                       ;;                              ("-o" "StrictHostKeyChecking=no")))
+                       (tramp-default-port         22)))
+        (add-to-list 'tramp-methods
+                     '("gcssh"
+                       (tramp-login-program        "gcloud compute ssh")
+                       (tramp-login-args           (("%h")))
+                       (tramp-async-args           (("-q")))
+                       (tramp-remote-shell         "/bin/bash")
+                       (tramp-remote-shell-args    ("-c"))
+                       (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+                                                    ("-o" "UserKnownHostsFile=/dev/null")
+                                                    ("-o" "StrictHostKeyChecking=no")))
+                       (tramp-default-port         22)))
+        )
 
 
     #+end_src
@@ -863,17 +890,16 @@
 
 ** Rainbow delimiters for various programming modes
    #+begin_src emacs-lisp
-;; rainbow delimiters ; make much stronger (more saturated) colors
-(autoload 'rainbow-delimiters "rainbow-delimiters" "Highlight brackets according to their depth")
-(with-eval-after-load 'rainbow-delimiters
-  '(progn
-     (require 'cl-lib)
-     (require 'color)
-     (cl-loop
-      for index from 1 to rainbow-delimiters-max-face-count
-      do
-      (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
-	(cl-callf color-saturate-name (face-foreground face) 30)))))
+     ;; rainbow delimiters ; make much stronger (more saturated) colors
+     (autoload 'rainbow-delimiters "rainbow-delimiters" "Highlight brackets according to their depth")
+     (with-eval-after-load 'rainbow-delimiters
+       (require 'cl-lib)
+       (require 'color)
+       (cl-loop
+        for index from 1 to rainbow-delimiters-max-face-count
+        do
+        (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
+          (cl-callf color-saturate-name (face-foreground face) 30))))
 
    #+end_src
 ** Dired
@@ -1186,23 +1212,21 @@ Open man page in current window, rather than other window with
 Disable some that get in the way
 #+begin_src emacs-lisp
   (with-eval-after-load 'org
-    (progn
-      ;; little use for header COMMENT keyword
-      (define-key org-mode-map (kbd "C-c ;") nil)       ; org-toggle-comment
-      ;; don't accidentally archive things
-      (define-key org-mode-map (kbd "C-c C-x C-a") nil) ; org-archive-subtree-default
-      (define-key org-mode-map (kbd "C-c C-x C-s") nil) ; org-archive-to-subtree
-      (define-key org-mode-map (kbd "C-c C-x A") nil)   ; org-archive-to-archive-sibling
-      (define-key org-mode-map (kbd "C-c C-x a") nil)   ; org-toggle-archive-tag
-      ;; keys that conflict with buffer movement
-      (define-key org-mode-map (kbd "<M-right>") nil)     ; org-metaright
-      (define-key org-mode-map (kbd "<M-left>") nil)     ; org-metaleft
-      ;; keys that conflict with windmove package
-      ;; (define-key org-mode-map (kbd "<S-up>") nil)       ; org-shiftup
-      ;; (define-key org-mode-map (kbd "<S-down>") nil)       ; org-shiftdown
-      (define-key org-mode-map (kbd "<S-left>") nil)       ; org-shiftleft
-      (define-key org-mode-map (kbd "<S-right>") nil)       ; org-shiftright
-      ))
+    ;; little use for header COMMENT keyword
+    (define-key org-mode-map (kbd "C-c ;") nil)       ; org-toggle-comment
+    ;; don't accidentally archive things
+    (define-key org-mode-map (kbd "C-c C-x C-a") nil) ; org-archive-subtree-default
+    (define-key org-mode-map (kbd "C-c C-x C-s") nil) ; org-archive-to-subtree
+    (define-key org-mode-map (kbd "C-c C-x A") nil)   ; org-archive-to-archive-sibling
+    (define-key org-mode-map (kbd "C-c C-x a") nil)   ; org-toggle-archive-tag
+    ;; keys that conflict with buffer movement
+    (define-key org-mode-map (kbd "<M-right>") nil)     ; org-metaright
+    (define-key org-mode-map (kbd "<M-left>") nil)     ; org-metaleft
+    ;; keys that conflict with windmove package
+    ;; (define-key org-mode-map (kbd "<S-up>") nil)       ; org-shiftup
+    ;; (define-key org-mode-map (kbd "<S-down>") nil)       ; org-shiftdown
+    (define-key org-mode-map (kbd "<S-left>") nil)       ; org-shiftleft
+    (define-key org-mode-map (kbd "<S-right>") nil)       ; org-shiftright)
 #+end_src
 ** Org Babel and Source Code Blocks
   TODO: install ob-jupyter package on systems with Jupyter
@@ -1993,17 +2017,16 @@ Simply add the new block param =:keep-windows= to use this functionality
 *** MySQL / MariaDB
     + Assure that client prompt is recognized for both products
    #+begin_src emacs-lisp
-     ;; (with-eval-after-load 'sql
-     ;;   '(progn
-     ;;   ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
-     ;;      (sql-set-product-feature 'mysql :prompt-regexp 
-     ;;                               "^\\(MariaDB\\|MySQL\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
-     ;;   (setq sql-mysql-options '("-C" "-t" "-f" "-n"))))
-     (require 'sql)
+     (with-eval-after-load 'sql
+       ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
+       (sql-set-product-feature 'mysql :prompt-regexp 
+                                "^\\(MariaDB\\|MySQL\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
+       (setq sql-mysql-options '("-C" "-t" "-f" "-n")))
+     ;; (require 'sql)
      ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
-     (sql-set-product-feature 'mysql :prompt-regexp 
-                              "^\\(MariaDB\\|MySQL\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
-     (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
+     ;; (sql-set-product-feature 'mysql :prompt-regexp 
+     ;;                          "^\\(MariaDB\\|MySQL\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
+     ;; (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
    #+end_src
    + Allow for alternative port
      #+begin_src emacs-lisp
