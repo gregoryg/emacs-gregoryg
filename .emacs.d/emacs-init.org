@@ -322,7 +322,7 @@
      (global-set-key [f7] 'hl-line-mode) ;; toggle hl-line-mode for this window only
      ;; (global-set-key [f8] 'bury-buffer)
 
-     ;; (global-set-key [f9] 'bury-buffer)
+     (global-set-key [f9] 'bury-buffer)
      (global-set-key [f10] 'dired-omit-mode)
      ;; (global-set-key [f11] 'mac-toggle-max-window)
      (global-set-key [f11] 'gjg/toggle-max-frame)
