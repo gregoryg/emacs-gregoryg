@@ -1242,7 +1242,7 @@ Disable some that get in the way
     ;; (define-key org-mode-map (kbd "<S-up>") nil)       ; org-shiftup
     ;; (define-key org-mode-map (kbd "<S-down>") nil)       ; org-shiftdown
     (define-key org-mode-map (kbd "<S-left>") nil)       ; org-shiftleft
-    (define-key org-mode-map (kbd "<S-right>") nil)       ; org-shiftright)
+    (define-key org-mode-map (kbd "<S-right>") nil))       ; org-shiftright
 #+end_src
 ** Org Babel and Source Code Blocks
   TODO: install ob-jupyter package on systems with Jupyter
@@ -1250,39 +1250,40 @@ Disable some that get in the way
     ;; (unless (version< org-version "9.2")
     ;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
     ;;   )
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     (append org-babel-load-languages
-         '(
-           (clojure . t)
-           (http . t) ;; curl 
-           (js . t)
-           (latex . t)
-           (python . t)
-           (shell  . t)
-           (sql . t)
-           (jupyter . t)
-           )))
-    (setq org-confirm-babel-evaluate nil
-          org-export-use-babel nil
-          org-export-with-sub-superscripts nil)
+    (with-eval-after-load 'org
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       (append org-babel-load-languages
+               '(
+                 (clojure . t)
+                 (http . t) ;; curl 
+                 (js . t)
+                 (latex . t)
+                 (python . t)
+                 (shell  . t)
+                 (sql . t)
+                 (jupyter . t)
+                 )))
+      (setq org-confirm-babel-evaluate nil
+            org-export-use-babel nil
+            org-export-with-sub-superscripts nil)
 
-    ;; ;; The Dreadful Timeline has brought us indentation-sensitive languages
-    ;; ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
-    ;; (setq org-src-preserve-indentation nil) 
-    (setq org-src-window-setup 'current-window)
-    (setq org-structure-template-alist '(("C" . "comment")
-                         ("e" . "example")
-                         ("E" . "export")
-                         ("h" . "export html")
-                         ("l" . "export latex")
-                         ("q" . "quote")
-                         ("S" . "src")
-                         ("sj" . "src json")
-                         ("sl" . "src emacs-lisp")
-                         ("sp" . "src python")
-                         ("ss" . "src bash")
-                         ("sy" . "src yaml")))
+      ;; ;; The Dreadful Timeline has brought us indentation-sensitive languages
+      ;; ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
+      ;; (setq org-src-preserve-indentation nil) 
+      (setq org-src-window-setup 'current-window)
+      (setq org-structure-template-alist '(("C" . "comment")
+                                           ("e" . "example")
+                                           ("E" . "export")
+                                           ("h" . "export html")
+                                           ("l" . "export latex")
+                                           ("q" . "quote")
+                                           ("S" . "src")
+                                           ("sj" . "src json")
+                                           ("sl" . "src emacs-lisp")
+                                           ("sp" . "src python")
+                                           ("ss" . "src bash")
+                                           ("sy" . "src yaml"))))
 
   #+end_src
 *** Crazy way to allow babel elisp to modify window configuration  :noexport:
@@ -1409,7 +1410,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                                     (replace-regexp-in-string "-+$" ""
                                                               (replace-regexp-in-string "[^[:alnum:]]+" "-"
                                                                                         (replace-regexp-in-string "[[:punct:]]" "" name)))))
-                           "~/projects/emacs/blogs/hypecyclist/content/post/"
+                           "~/projects/blogs/hypecyclist/content/post/"
                            )))
 
      (setq org-default-notes-file "~/projects/notes.org")
