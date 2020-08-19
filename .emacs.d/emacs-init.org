@@ -657,50 +657,65 @@
   #+end_src
 * ExWM Experiment
 #+begin_src emacs-lisp
-  (require 'exwm)
-  (require 'exwm-config)
-  (exwm-config-example)
-  ;; (exwm-config-default)
-  (require 'exwm-randr)
-  (setq exwm-randr-workspace-monitor-plist '(0 "DP-1" 1 "eDP-1")) ;; DP-1 is the big monitor, if connected
+  (shell-command "wmctrl -m|grep Name|cut -d':' -f2|tr -d ' ' ; echo $?" "*window-manager*" "*window-manager-error*")
+  ;; (shell-command "wmctrl -m" "*window-manager*")
+  ;; (shell-command "inxi -Sxx|grep  'wm'" "*window-manager*")
+  (message (concat "At the start of EXWM config the window manager is "
+                   (with-current-buffer (get-buffer "*window-manager*")
+                     (substring 
+                      (buffer-string) 0 -1))))
+  ;; if there was an error detecting the window manager, initialize EXWM
+  (when (and (get-buffer "*window-manager-error*")
+             (eq window-system 'x))
+             ;; (< 0 (length (with-current-buffer "*window-manager-error*" (buffer-string)))))
+    (require 'exwm)
+    (require 'exwm-config)
+    (exwm-config-example)
+    ;; (exwm-config-default)
+    (require 'exwm-randr)
+    ;; (setq exwm-randr-workspace-monitor-plist '(0 "DP-1")) ;; DP-1 is the big monitor, if connected
+    (setq exwm-randr-workspace-monitor-plist '(0 "DP-3" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
 
-  (add-hook 'exwm-randr-screen-change-hook
-            (lambda()
-              (start-process-shell-command
-               ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
-               "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
-               )))
-  (exwm-enable)
-  (exwm-randr-enable)
-  (require 'exwm-systemtray)
-  (exwm-systemtray-enable)
-  (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")
-                      (lambda ()
-                        (interactive)
-                        (call-process-shell-command "gjg-bright.sh +5")))
-  (exwm-input-set-key (kbd "<XF86MonBrightnessDown>")
-                      (lambda ()
-                        (interactive)
-                        (call-process-shell-command "gjg-bright.sh -5")))
-  (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
-                      (lambda ()
-                        (interactive)
-                        (call-process-shell-command "amixer sset 'Master' 5%+")))
-  (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
-                      (lambda ()
-                        (interactive)
-                        (call-process-shell-command "amixer sset 'Master' 5%-")))
-  (exwm-input-set-key (kbd "<XF86AudioMute>")
-                      (lambda ()
-                        (interactive)
-                        (call-process-shell-command "amixer sset 'Master' toggle")))
-  ;; lock screen
-  (exwm-input-set-key (kbd "s-l")  ;; super/windows l
-                      (lambda ()
-                        (interactive)
-                        (call-process-shell-command "xscreensaver-command -lock")))
-  (require 'buffer-expose)
-  (buffer-expose-mode 1)
+    (add-hook 'exwm-randr-screen-change-hook
+              (lambda()
+                (start-process-shell-command
+                 ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
+                 "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
+                 )))
+    (exwm-enable)
+    (exwm-randr-enable)
+    (require 'exwm-systemtray)
+    (exwm-systemtray-enable)
+    (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")
+                        (lambda ()
+                          (interactive)
+                          (call-process-shell-command "gjg-bright.sh +5")))
+    (exwm-input-set-key (kbd "<XF86MonBrightnessDown>")
+                        (lambda ()
+                          (interactive)
+                          (call-process-shell-command "gjg-bright.sh -5")))
+    (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
+                        (lambda ()
+                          (interactive)
+                          (call-process-shell-command "amixer sset 'Master' 5%+")))
+    (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
+                        (lambda ()
+                          (interactive)
+                          (call-process-shell-command "amixer sset 'Master' 5%-")))
+    (exwm-input-set-key (kbd "<XF86AudioMute>")
+                        (lambda ()
+                          (interactive)
+                          (call-process-shell-command "amixer sset 'Master' toggle")))
+    ;; lock screen
+    (exwm-input-set-key (kbd "s-l")  ;; super/windows l
+                        (lambda ()
+                          (interactive)
+                          (call-process-shell-command "xscreensaver-command -lock")))
+    (require 'buffer-expose)
+    (buffer-expose-mode 1)
+    (add-to-list 'exwm-manage-configurations '((equal exwm-class-name "Slack") managed t))
+    ;; (shell-command "~/bin/emacswm.sh &" )
+    )
 #+end_src
 * Commonly used modes
 ** Start emacs server
