@@ -711,12 +711,28 @@
     (exwm-input-set-key (kbd "s-l")  ;; super/windows l
                         (lambda ()
                           (interactive)
+                          (exwm-input-toggle-keyboard)))
+    ;; Toggle EXWM input mode
+    (exwm-input-set-key (kbd "s-l")  ;; super/windows i
+                        (lambda ()
+                          (interactive)
                           (call-process-shell-command "xscreensaver-command -lock")))
     (require 'buffer-expose)
     (buffer-expose-mode 1)
     (add-to-list 'exwm-manage-configurations '((equal exwm-class-name "Slack") managed t))
+    ;; https://github.com/ch11ng/exwm/wiki#unable-to-resize-an-x-window-by-dragging-its-right-edge
+    (setq window-divider-default-right-width 1)
+    (window-divider-mode)
+
     ;; (shell-command "~/bin/emacswm.sh &" )
     )
+
+
+  (defun exwm-logout ()
+    (interactive)
+    (recentf-save-list)
+    (save-some-buffers)
+    (start-process-shell-command "logout" nil "lxsession-logout"))
 #+end_src
 * Commonly used modes
 ** Start emacs server
