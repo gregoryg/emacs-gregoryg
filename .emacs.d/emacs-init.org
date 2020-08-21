@@ -694,6 +694,7 @@
                         (lambda ()
                           (interactive)
                           (call-process-shell-command "gjg-bright.sh -5")))
+    ;; N.B. keyboard backlight level (0 1 2) is kept in /sys/class/leds/dell\:\:kbd_backlight/brightness
     (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
                         (lambda ()
                           (interactive)
