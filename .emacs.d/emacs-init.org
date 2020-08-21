@@ -722,8 +722,10 @@
     (add-to-list 'exwm-manage-configurations '((equal exwm-class-name "Slack") managed t))
     ;; https://github.com/ch11ng/exwm/wiki#unable-to-resize-an-x-window-by-dragging-its-right-edge
     (setq window-divider-default-right-width 1)
-    (window-divider-mode)
-
+    (window-divider-mode 1)
+    ;; TODO: find a system-tray/panel solution to showing clock and battery - modeline is so crowded already
+    (display-time)
+    (display-battery-mode 1)
     ;; (shell-command "~/bin/emacswm.sh &" )
     )
 
