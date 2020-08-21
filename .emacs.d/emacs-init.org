@@ -656,6 +656,12 @@
 
   #+end_src
 * ExWM Experiment
+  + TODO: find solution for clock and battery widgets
+    LXDE or Xfce4 panels would be great, BUT they obscure the echo area below the
+    modeline/minibuffer - if I can find a fix for that, I'd be pretty happy with
+    =xfce4-panel=.
+
+    Another option would be something to run in the EXWM system tray, as I do with =nm-applet=
 #+begin_src emacs-lisp
   (shell-command "wmctrl -m|grep Name|cut -d':' -f2|tr -d ' ' ; echo $?" "*window-manager*" "*window-manager-error*")
   ;; (shell-command "wmctrl -m" "*window-manager*")
