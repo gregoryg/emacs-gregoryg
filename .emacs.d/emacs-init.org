@@ -656,10 +656,17 @@
 
   #+end_src
 * ExWM Experiment
-  + TODO: find solution for clock and battery widgets
+    =xfce4-panel= works a treat!  Make sure you do *not* check =Don't reserve space on
+    borders=  - that way the panel will not obscure the echo area at the very bottom of
+    the screen
     LXDE or Xfce4 panels would be great, BUT they obscure the echo area below the
     modeline/minibuffer - if I can find a fix for that, I'd be pretty happy with
     =xfce4-panel=.
+
+  + TODO: more applets
+    + blueman-tray
+    + hp-systray
+    + (lxde panel lock, digital clock)
 
     Another option would be something to run in the EXWM system tray, as I do with =nm-applet=
 #+begin_src emacs-lisp
@@ -690,8 +697,8 @@
                  )))
     (exwm-enable)
     (exwm-randr-enable)
-    (require 'exwm-systemtray)
-    (exwm-systemtray-enable)
+    ;; (require 'exwm-systemtray)
+    ;; (exwm-systemtray-enable)
     (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")
                         (lambda ()
                           (interactive)
