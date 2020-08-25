@@ -1600,14 +1600,15 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+begin_src emacs-lisp
      (global-set-key (kbd "C-c a") 'org-agenda)
      (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
-     (setq org-agenda-files '("~/projects/private-orgmode/notes.org"
+     (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
                               "~/projects/private-orgmode/inbox.org"
                               "~/projects/private-orgmode/someday.org"
                               "~/projects/private-orgmode/projects.org"
                               "~/projects/private-orgmode/next.org"
-                              "~/projects/private-orgmode/habits.org"
+                              "~/projects/private-orgmode/habits.org"))
+     (setq org-agenda-files '("~/projects/private-orgmode/rancher/rancher.org.gpg"
                               "~/projects/private-orgmode/rancher/ramp.org"
-                              "~/projects/private-orgmode/rancher/rancher.org.gpg"))
+                              "~/projects/private-orgmode/rancher/engagements/"))
      ;; Set basic org-mode keys
      ;;(setq org-agenda-span 'day)
      ;;(setq org-agenda-skip-scheduled-if-done t)
@@ -1637,14 +1638,15 @@ Simply add the new block param =:keep-windows= to use this functionality
               ((agenda ""
                        ((org-agenda-span 'day)
                         (org-deadline-warning-days 21)
-                        (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")
-                                            ,(concat gjg/org-agenda-directory "rancher/ramp.org")))
+                        ;; (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")
+                        ;;                     ,(concat gjg/org-agenda-directory "rancher/ramp.org")))
                         )
                        )
                (todo "TODO"
                        ((org-agenda-span 'day)
                         (org-deadline-warning-days 21)
-                        (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")))))))
+                        (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")))
+                        ))))
              ("A" "Awesome Work/Project Focus"
               ((agenda ""
                        ((org-agenda-span 'day)
