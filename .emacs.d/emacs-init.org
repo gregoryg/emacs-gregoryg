@@ -740,6 +740,19 @@
     (display-time)
     (display-battery-mode 1)
     ;; (shell-command "~/bin/emacswm.sh &" )
+  (exwm-input-set-simulation-keys
+     '(([?\C-b] . left)
+       ([?\C-f] . right)
+       ([?\C-p] . up)
+       ([?\C-n] . down)
+       ([?\C-a] . home)
+       ([?\C-e] . end)
+       ([?\M-v] . prior)
+       ([?\C-v] . next)
+       ([?\C-s] . [?\C-f])
+       ([?\M-w] . [?\C-c])
+       ((kbd "s-p") . [?\C-p])
+       ))
     )
 
 
