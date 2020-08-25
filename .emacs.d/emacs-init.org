@@ -762,6 +762,16 @@
     (save-some-buffers)
     (start-process-shell-command "logout" nil "lxsession-logout"))
 #+end_src
+* xwwp Browser Experiment
+  + GitHub source (fork): [[https://github.com/gregoryg/xwwp][GitHub - gregoryg/xwwp: Enhance the Emacs xwidget-webkit browser]]
+    #+begin_src emacs-lisp
+;      (use-package xwwp-follow-link
+;        :load-path "~/projects/emacs/xwwp/xwwp.el"
+;        :custom
+;        (xwwp-follow-link-completion-system 'ivy)
+;        :bind (:map xwidget-webkit-mode-map
+;                    ("v" . xwwp-follow-link)))
+    #+end_src
 * Commonly used modes
 ** Start emacs server
    #+begin_src emacs-lisp
