@@ -1799,25 +1799,29 @@ Simply add the new block param =:keep-windows= to use this functionality
      (setq org-enforce-todo-dependencies t)
    #+end_src
 ** Refile
+   I think the best approach here is to use =org-agenda-files= as the source for refile
+   targets.  Then set =org-agenda-files= to whatever is appropriate for current context -
+   i.e., work vs home
+
    #+begin_src emacs-lisp
-;; navigate to files using org-refile; use C-u C-c C-w
-(setq org-outline-path-complete-in-steps nil) ; use ivy for quicker completion
-(setq gjg/refile-targets (seq-remove (lambda (elt) (string= "~/projects/private-orgmode/inbox.org" elt)) org-agenda-files))
-(setq org-refile-targets '((
-                            gjg/refile-targets :maxlevel . 2))
-      org-refile-use-outline-path 'file
-      org-refile-target-verify-function
-      (lambda ()
-        (not (member "ARCHIVE" (org-get-tags)))))
+     ;; navigate to files using org-refile; use C-u C-c C-w
+     (setq org-outline-path-complete-in-steps nil) ; use ivy for quicker completion
+     (setq gjg/refile-targets (seq-remove (lambda (elt) (string= "~/projects/private-orgmode/inbox.org" elt)) org-agenda-files))
+     (setq org-refile-targets '((
+                                 org-agenda-files :maxlevel . 2))
+           org-refile-use-outline-path 'file
+           org-refile-target-verify-function
+           (lambda ()
+             (not (member "ARCHIVE" (org-get-tags)))))
 
-(setcdr (assoc 'org-refile ivy-initial-inputs-alist) "")
-(setcdr (assoc 'org-agenda-refile ivy-initial-inputs-alist) "")
-(setcdr (assoc 'org-capture-refile ivy-initial-inputs-alist) "")
+     (setcdr (assoc 'org-refile ivy-initial-inputs-alist) "")
+     (setcdr (assoc 'org-agenda-refile ivy-initial-inputs-alist) "")
+     (setcdr (assoc 'org-capture-refile ivy-initial-inputs-alist) "")
 
-(defun gjg/org-refile-goto ()
-  "Call org-refile with arg to visit an org-mode location. A convenience function to bind to a global key."
-  (interactive)
-  (org-refile 1))
+     (defun gjg/org-refile-goto ()
+       "Call org-refile with arg to visit an org-mode location. A convenience function to bind to a global key."
+       (interactive)
+       (org-refile 1))
 
 
    #+end_src
