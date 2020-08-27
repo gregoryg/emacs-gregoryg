@@ -764,6 +764,7 @@
 #+end_src
 * xwwp Browser Experiment
   + GitHub source (fork): [[https://github.com/gregoryg/xwwp][GitHub - gregoryg/xwwp: Enhance the Emacs xwidget-webkit browser]]
+  + My local clone [[file:~/projects/emacs/xwwp/]]
     #+begin_src emacs-lisp
 ;      (use-package xwwp-follow-link
 ;        :load-path "~/projects/emacs/xwwp/xwwp.el"
@@ -1598,6 +1599,12 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+end_src
 ** Agenda
    #+begin_src emacs-lisp
+     ;; Assure that Org Agenda matches encrypted files as well
+     ;; ref https://emacs.stackexchange.com/a/36543/418
+     (unless (string-match-p "\\.gpg" org-agenda-file-regexp)
+       (setq org-agenda-file-regexp
+             (replace-regexp-in-string "\\\\\\.org" "\\\\.org\\\\(\\\\.gpg\\\\)?"
+                                       org-agenda-file-regexp)))
      (global-set-key (kbd "C-c a") 'org-agenda)
      (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
      (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
@@ -1607,7 +1614,6 @@ Simply add the new block param =:keep-windows= to use this functionality
                               "~/projects/private-orgmode/next.org"
                               "~/projects/private-orgmode/habits.org"))
      (setq org-agenda-files '("~/projects/private-orgmode/rancher/rancher.org.gpg"
-                              "~/projects/private-orgmode/rancher/ramp.org"
                               "~/projects/private-orgmode/rancher/engagements/"))
      ;; Set basic org-mode keys
      ;;(setq org-agenda-span 'day)
@@ -1645,7 +1651,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                (todo "TODO"
                        ((org-agenda-span 'day)
                         (org-deadline-warning-days 21)
-                        (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")))
+                        ;; (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")))
                         ))))
              ("A" "Awesome Work/Project Focus"
               ((agenda ""
