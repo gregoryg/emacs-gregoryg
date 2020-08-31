@@ -239,6 +239,10 @@
   ;; don't do that stoopid splash screen
   (setq inhibit-splash-screen t)
 
+
+  ;; tab indents - if line is already indented, try to auto-complete
+  (setq tab-always-indent 'complete)
+
   (setq-default indent-tabs-mode nil)
   (setq-default tab-always-indent t)
   (setq-default tab-width 4)
