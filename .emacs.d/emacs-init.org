@@ -758,7 +758,7 @@
        ([?\C-v] . next)
        ([?\C-s] . [?\C-f])
        ([?\M-w] . [?\C-c])
-       ((kbd "s-p") . [?\C-p])
+       ([?\S-p] . [?\C-p])
        ))
     )
 
@@ -773,12 +773,13 @@
   + GitHub source (fork): [[https://github.com/gregoryg/xwwp][GitHub - gregoryg/xwwp: Enhance the Emacs xwidget-webkit browser]]
   + My local clone [[file:~/projects/emacs/xwwp/]]
     #+begin_src emacs-lisp
-;      (use-package xwwp-follow-link
-;        :load-path "~/projects/emacs/xwwp/xwwp.el"
-;        :custom
-;        (xwwp-follow-link-completion-system 'ivy)
-;        :bind (:map xwidget-webkit-mode-map
-;                    ("v" . xwwp-follow-link)))
+      ;; (use-package xwwp-full
+      ;;   :load-path "~/projects/emacs/xwwp/"
+      ;;   :custom
+      ;;   (xwwp-follow-link-completion-system 'ivy)
+      ;;   :bind (:map xwidget-webkit-mode-map
+      ;;               ("v" . xwwp-follow-link)
+      ;;               ("t" . xwwp-ace-toggle)))
     #+end_src
 * Commonly used modes
 ** Start emacs server
@@ -791,7 +792,7 @@
      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
      (setq-default projectile--mode-line " Prj")
-     (setq projectile-completion-system 'ivy)
+     ;; (setq projectile-completion-system 'ivy)
      (setq projectile-mode-line-prefix "Prj")
      (setq projectile-switch-project-action #'projectile-dired)
      (setq projectile-switch-project-action #'projectile-dired)
@@ -1069,6 +1070,14 @@
          (setq counsel-describe-function-function #'helpful-callable)
          (setq counsel-describe-variable-function #'helpful-variable)))
    #+end_src
+** Tab Completion
+   #+begin_src emacs-lisp
+   #+end_src
+** Selectrum (will it replace Ivy which replaced Ido?)
+   #+begin_src emacs-lisp
+     (selectrum-mode +1)
+     (selectrum-prescient-mode +1)
+   #+end_src
 ** Ivy / Smex / Counsel
    Just starting to make use of =use-package= here.  The =:ensure= param will
    automagically install the package if it is not already installed. 
@@ -1080,54 +1089,54 @@
 	Smex helps sort commands by most-used 
 
     #+begin_src emacs-lisp
-      (use-package counsel
-        :after ivy
-        :config (counsel-mode))
-
-      (use-package smex
-        :ensure nil)
-
-      (use-package swiper
-        :ensure nil)
-
-      (use-package flx
-        :ensure nil)
-      (use-package ivy
-        :defer 0.1
-        :bind (("C-c C-r" . ivy-resume)
-               ("C-x B" . ivy-switch-buffer-other-window))
-        :custom
-        (ivy-count-format "(%d/%d) ")
-        (ivy-use-virtual-buffers t)
-        :config (ivy-mode))
-
-
-      ;; (setq ivy-use-virtual-buffers t)
-      ;; intentional space before end of string
-      ;; (setq ivy-re-builders-alist
-      ;;       '((t . ivy--regex-fuzzy)))
-      ;; (setq ivy-re-builders-alist
-      ;; 	    '((swiper . ivy--regex-plus)
-      ;; 		  (counsel-find-file . ivy--regex-plus)
-      ;; 		  (ivy-switch-buffer . ivy--regex-plus)
-      ;; 		  (t . ivy--regex-fuzzy))))
-      ;; (setq ivy-re-builders-alist '((t . ivy--regex-plus))))
-
-      ;; (use-package ivy-rich
+      ;; (use-package counsel
       ;;   :after ivy
-      ;;     :custom
-      ;;     (ivy-virtual-abbreviate 'full
-      ;;                             ivy-rich-switch-buffer-align-virtual-buffer t
-      ;;                             ivy-rich-path-style 'abbrev)
-      ;;     ;; :config
-      ;;     ;; (ivy-set-display-transformer 'ivy-switch-buffer
-      ;;     ;;                              'ivy-rich-switch-buffer-transformer))
-      ;;     :config (ivy-rich-mode))
+      ;;   :config (counsel-mode))
+
+      ;; (use-package smex
+      ;;   :ensure nil)
 
       ;; (use-package swiper
-      ;;   :after ivy
-      ;;   :bind (("C-s" . swiper)
-      ;;          ("C-r" . swiper)))
+      ;;   :ensure nil)
+
+      ;; (use-package flx
+      ;;   :ensure nil)
+      ;; (use-package ivy
+      ;;   :defer 0.1
+      ;;   :bind (("C-c C-r" . ivy-resume)
+      ;;          ("C-x B" . ivy-switch-buffer-other-window))
+      ;;   :custom
+      ;;   (ivy-count-format "(%d/%d) ")
+      ;;   (ivy-use-virtual-buffers t)
+      ;;   :config (ivy-mode))
+
+
+      ;; ;; (setq ivy-use-virtual-buffers t)
+      ;; ;; intentional space before end of string
+      ;; ;; (setq ivy-re-builders-alist
+      ;; ;;       '((t . ivy--regex-fuzzy)))
+      ;; ;; (setq ivy-re-builders-alist
+      ;; ;; 	    '((swiper . ivy--regex-plus)
+      ;; ;; 		  (counsel-find-file . ivy--regex-plus)
+      ;; ;; 		  (ivy-switch-buffer . ivy--regex-plus)
+      ;; ;; 		  (t . ivy--regex-fuzzy))))
+      ;; ;; (setq ivy-re-builders-alist '((t . ivy--regex-plus))))
+
+      ;; ;; (use-package ivy-rich
+      ;; ;;   :after ivy
+      ;; ;;     :custom
+      ;; ;;     (ivy-virtual-abbreviate 'full
+      ;; ;;                             ivy-rich-switch-buffer-align-virtual-buffer t
+      ;; ;;                             ivy-rich-path-style 'abbrev)
+      ;; ;;     ;; :config
+      ;; ;;     ;; (ivy-set-display-transformer 'ivy-switch-buffer
+      ;; ;;     ;;                              'ivy-rich-switch-buffer-transformer))
+      ;; ;;     :config (ivy-rich-mode))
+
+      ;; ;; (use-package swiper
+      ;; ;;   :after ivy
+      ;; ;;   :bind (("C-s" . swiper)
+      ;; ;;          ("C-r" . swiper)))
    #+end_src
 
 **** Make some keybindings for these crazy packages
@@ -1135,12 +1144,12 @@
      the search - similar to =C-s C-w= in built-in isearch.
 
      #+begin_src emacs-lisp
-;; (global-set-key (kbd "C-s") 'swiper)
-;; (global-set-key (kbd "C-M-s") 'swiper-isearch)
-;; (global-set-key (kbd "C-M-r") 'swiper-isearch-backward)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+       ;; ;; (global-set-key (kbd "C-s") 'swiper)
+       ;; ;; (global-set-key (kbd "C-M-s") 'swiper-isearch)
+       ;; ;; (global-set-key (kbd "C-M-r") 'swiper-isearch-backward)
+       ;; (global-set-key (kbd "M-x") 'counsel-M-x)
+       ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+       ;; (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
      #+end_src
 
 *** Set up a way to use `find-file` without Ivy
@@ -1157,12 +1166,12 @@
     #+end_src
 ** Grep
    #+begin_src emacs-lisp
-(defun advice-without-ivy (o &rest a)
-  (ivy-mode -1)
-  (prog1 (apply o a)
-    (ivy-mode 1)))
+     ;; (defun advice-without-ivy (o &rest a)
+     ;;   (ivy-mode -1)
+     ;;   (prog1 (apply o a)
+     ;;     (ivy-mode 1)))
 
-(advice-add 'grep-read-files :around #'advice-without-ivy)
+     ;; (advice-add 'grep-read-files :around #'advice-without-ivy)
    #+end_src
 ** Occur
 *** Navigation
@@ -1606,12 +1615,6 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+end_src
 ** Agenda
    #+begin_src emacs-lisp
-     ;; Assure that Org Agenda matches encrypted files as well
-     ;; ref https://emacs.stackexchange.com/a/36543/418
-     (unless (string-match-p "\\.gpg" org-agenda-file-regexp)
-       (setq org-agenda-file-regexp
-             (replace-regexp-in-string "\\\\\\.org" "\\\\.org\\\\(\\\\.gpg\\\\)?"
-                                       org-agenda-file-regexp)))
      (global-set-key (kbd "C-c a") 'org-agenda)
      (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
      (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
@@ -1827,9 +1830,9 @@ Simply add the new block param =:keep-windows= to use this functionality
            (lambda ()
              (not (member "ARCHIVE" (org-get-tags)))))
 
-     (setcdr (assoc 'org-refile ivy-initial-inputs-alist) "")
-     (setcdr (assoc 'org-agenda-refile ivy-initial-inputs-alist) "")
-     (setcdr (assoc 'org-capture-refile ivy-initial-inputs-alist) "")
+     ;; (setcdr (assoc 'org-refile ivy-initial-inputs-alist) "")
+     ;; (setcdr (assoc 'org-agenda-refile ivy-initial-inputs-alist) "")
+     ;; (setcdr (assoc 'org-capture-refile ivy-initial-inputs-alist) "")
 
      (defun gjg/org-refile-goto ()
        "Call org-refile with arg to visit an org-mode location. A convenience function to bind to a global key."
@@ -1961,8 +1964,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 
 #+end_src
 
-
-* Weird experimental modes/packages
 * Programming language modes
 
 ** All modes derived from =prog-mode=
