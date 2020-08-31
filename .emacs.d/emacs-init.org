@@ -684,7 +684,7 @@
   ;; if there was an error detecting the window manager, initialize EXWM
   (when (and (get-buffer "*window-manager-error*")
              (eq window-system 'x))
-             ;; (< 0 (length (with-current-buffer "*window-manager-error*" (buffer-string)))))
+    ;; (< 0 (length (with-current-buffer "*window-manager-error*" (buffer-string)))))
     (require 'exwm)
     (require 'exwm-config)
     (exwm-config-example)
@@ -743,8 +743,11 @@
     ;; TODO: find a system-tray/panel solution to showing clock and battery - modeline is so crowded already
     (display-time)
     (display-battery-mode 1)
-    ;; (shell-command "~/bin/emacswm.sh &" )
-  (exwm-input-set-simulation-keys
+    (call-process-shell-command "~/bin/emacswm.sh")
+    ;; The emacswm.sh script starts the compositor, so make sure we start out at full opacity to avoid screen brightness confusion
+    (set-opacity 100)
+
+    (exwm-input-set-simulation-keys
      '(([?\C-b] . left)
        ([?\C-f] . right)
        ([?\C-p] . up)
