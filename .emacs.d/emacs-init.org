@@ -746,6 +746,7 @@
     (call-process-shell-command "~/bin/emacswm.sh")
     ;; The emacswm.sh script starts the compositor, so make sure we start out at full opacity to avoid screen brightness confusion
     (set-opacity 100)
+    (setenv "EDITOR" "emacsclient")
 
     (exwm-input-set-simulation-keys
      '(([?\C-b] . left)
