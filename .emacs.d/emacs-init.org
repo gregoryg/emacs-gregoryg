@@ -2016,6 +2016,16 @@ Simply add the new block param =:keep-windows= to use this functionality
                  (yafolding-mode 1)
                  (smartparens-mode 1)))
    #+end_src
+** Shall we try =lsp-mode= for the umpteenth time?
+   + Maybe.  ref [[https://cestlaz.github.io/post/using-emacs-74-eglot/][Using Emacs 74 Eglot - C'est la Z (reddit)]]
+   + 
+     #+begin_src emacs-lisp
+       (use-package eglot :ensure t)
+       ;; (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd-10"))
+       ;; (add-hook 'c-mode-hook 'eglot-ensure)
+       ;; (add-hook 'c++-mode-hook 'eglot-ensure)
+       (add-hook 'python-mode-hook 'eglot-ensure)
+     #+end_src
 ** Clojure
    #+begin_src emacs-lisp
 ;; (add-hook 'cider-repl-mode-hook #'company-
