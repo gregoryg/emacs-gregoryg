@@ -789,7 +789,12 @@
    #+end_src
 ** Projectile
    #+begin_src emacs-lisp
+     (defun gjg/projectile-minimal-mode-line ()
+       "Report project name and type in the modeline - uh, no.  Just report that it's a project."
+       (format "%s" projectile-mode-line-prefix))
+
      (require 'projectile)
+     (setq projectile-mode-line-function 'gjg/projectile-minimal-mode-line)
      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
      (setq-default projectile--mode-line " Prj")
