@@ -1620,7 +1620,41 @@ Simply add the new block param =:keep-windows= to use this functionality
 
    #+end_src
 ** Agenda
+*** Clock table
+    #+begin_src emacs-lisp
+      (setq org-clocktable-defaults
+            '(:maxlevel 2 
+                 :lang "en" 
+                 :scope file 
+                 :block nil 
+                 :wstart 1 
+                 :mstart 1 
+                 :tstart nil 
+                 :tend nil 
+                 :step nil 
+                 :stepskip0 nil 
+                 :fileskip0 t
+                 :tags nil 
+                 :match nil 
+                 :emphasize t
+                 :link t
+                 :narrow 55! 
+                 :indent t 
+                 :hidefiles nil 
+                 :formula nil 
+                 :timestamp nil 
+                 :level nil 
+                 :tcolumns nil 
+                 :formatter nil)
+            )
+    #+end_src
    #+begin_src emacs-lisp
+     ;; Make sure we match encrypted files for Agenda
+     ;; ref https://emacs.stackexchange.com/a/36543/418
+     (unless (string-match-p "\\.gpg" org-agenda-file-regexp)
+       (setq org-agenda-file-regexp
+             (replace-regexp-in-string "\\\\\\.org" "\\\\.org\\\\(\\\\.gpg\\\\)?"
+                                       org-agenda-file-regexp)))
      (global-set-key (kbd "C-c a") 'org-agenda)
      (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
      (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
