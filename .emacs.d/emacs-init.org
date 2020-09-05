@@ -671,117 +671,203 @@
 (org-crypt-use-before-save-magic)
 
   #+end_src
-* ExWM Experiment
-    =xfce4-panel= works a treat!  Make sure you do *not* check =Don't reserve space on
-    borders=  - that way the panel will not obscure the echo area at the very bottom of
-    the screen
-    LXDE or Xfce4 panels would be great, BUT they obscure the echo area below the
-    modeline/minibuffer - if I can find a fix for that, I'd be pretty happy with
-    =xfce4-panel=.
+* EXWM : The Emacs X Window Manager
+   This crazy idea is better than I thought it could be!
+** System tray widgets
+   EXWM has a system tray that can be enabled, and some panel widgets work with it.  For
+   me, I'd rather either use pure Emacs or Linux shell methods of getting info and setting
+   values, *or* just go ahead and use a "proper" panel.
 
-  + TODO: more applets
-    + blueman-tray
-    + hp-systray
-    + (lxde panel lock, digital clock)
+    I have found that both =xfce4-panel= and the LXDE panel work a treat!  For
+    =xfce4-panel= do *not* check =Don't reserve space on borders= - that way the panel
+    will not obscure the echo area at the very bottom of the screen 
 
-    Another option would be something to run in the EXWM system tray, as I do with =nm-applet=
+    One can either bring up Emacs with no DE and then run the panels as processes, or
+    hijack the default window manager in one of the lightweight DEs.
+** My specific config function
+   I did not want =ido= integration and wanted to evolve my config.  So I copied the
+   default config function and commenced modifying
 #+begin_src emacs-lisp
-  (shell-command "wmctrl -m|grep Name|cut -d':' -f2|tr -d ' ' ; echo $?" "*window-manager*" "*window-manager-error*")
-  ;; (shell-command "wmctrl -m" "*window-manager*")
-  ;; (shell-command "inxi -Sxx|grep  'wm'" "*window-manager*")
-  (message (concat "At the start of EXWM config the window manager is "
-                   (with-current-buffer (get-buffer "*window-manager*")
-                     (substring 
-                      (buffer-string) 0 -1))))
-  ;; if there was an error detecting the window manager, initialize EXWM
-  (when (and (get-buffer "*window-manager-error*")
-             (eq window-system 'x))
-    ;; (< 0 (length (with-current-buffer "*window-manager-error*" (buffer-string)))))
-    (require 'exwm)
-    (require 'exwm-config)
-    (exwm-config-example)
-    ;; (exwm-config-default)
-    (require 'exwm-randr)
-    ;; (setq exwm-randr-workspace-monitor-plist '(0 "DP-1")) ;; DP-1 is the big monitor, if connected
-    (setq exwm-randr-workspace-monitor-plist '(0 "DP-3" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
-
-    (add-hook 'exwm-randr-screen-change-hook
-              (lambda()
-                (start-process-shell-command
-                 ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
-                 "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
-                 )))
+  (defun gjg/exwm-config ()
+    "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
+    ;; Set the initial workspace number.
+    (unless (get 'exwm-workspace-number 'saved-value)
+      (setq exwm-workspace-number 1)) ; GJG changed from default
+    ;; Global keybindings.
+    (unless (get 'exwm-input-global-keys 'saved-value)
+      (setq exwm-input-global-keys
+            `(
+              ;; 's-r': Reset (to line-mode).
+              ([?\s-r] . exwm-reset)
+              ;; 's-w': Switch workspace.
+              ([?\s-w] . exwm-workspace-switch)
+              ;; 's-&': Launch application. - poor man's albert/launchy
+              ([?\s-&] . (lambda (command)
+                           (interactive (list (read-shell-command "$ ")))
+                           (start-process-shell-command command nil command)))
+              ;; 's-N': Switch to certain workspace.
+              ,@(mapcar (lambda (i)
+                          `(,(kbd (format "s-%d" i)) .
+                            (lambda ()
+                              (interactive)
+                              (exwm-workspace-switch-create ,i))))
+                        (number-sequence 0 9)))))
+    ;; Line-editing shortcuts
+    (unless (get 'exwm-input-simulation-keys 'saved-value)
+      (setq exwm-input-simulation-keys
+            '(([?\C-b] . [left])
+              ([?\C-f] . [right])
+              ([?\C-p] . [up])
+              ([?\C-n] . [down])
+              ([?\C-a] . [home])
+              ([?\C-e] . [end])
+              ([?\M-v] . [prior])
+              ([?\C-v] . [next])
+              ([?\C-d] . [delete])
+              ([?\C-k] . [S-end delete]))))
+    ;; Enable EXWM
     (exwm-enable)
-    (exwm-randr-enable)
-    ;; (require 'exwm-systemtray)
-    ;; (exwm-systemtray-enable)
-    (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")
-                        (lambda ()
-                          (interactive)
-                          (call-process-shell-command "gjg-bright.sh +5")))
-    (exwm-input-set-key (kbd "<XF86MonBrightnessDown>")
-                        (lambda ()
-                          (interactive)
-                          (call-process-shell-command "gjg-bright.sh -5")))
-    ;; N.B. keyboard backlight level (0 1 2) is kept in /sys/class/leds/dell\:\:kbd_backlight/brightness
-    (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
-                        (lambda ()
-                          (interactive)
-                          (call-process-shell-command "amixer sset 'Master' 5%+")))
-    (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
-                        (lambda ()
-                          (interactive)
-                          (call-process-shell-command "amixer sset 'Master' 5%-")))
-    (exwm-input-set-key (kbd "<XF86AudioMute>")
-                        (lambda ()
-                          (interactive)
-                          (call-process-shell-command "amixer sset 'Master' toggle")))
-    ;; lock screen
-    (exwm-input-set-key (kbd "s-l")  ;; super/windows l
-                        (lambda ()
-                          (interactive)
-                          (exwm-input-toggle-keyboard)))
-    ;; Toggle EXWM input mode
-    (exwm-input-set-key (kbd "s-l")  ;; super/windows i
-                        (lambda ()
-                          (interactive)
-                          (call-process-shell-command "xscreensaver-command -lock")))
-    (require 'buffer-expose)
-    (buffer-expose-mode 1)
-    (add-to-list 'exwm-manage-configurations '((equal exwm-class-name "Slack") managed t))
-    ;; https://github.com/ch11ng/exwm/wiki#unable-to-resize-an-x-window-by-dragging-its-right-edge
-    (setq window-divider-default-right-width 1)
-    (window-divider-mode 1)
-    ;; TODO: find a system-tray/panel solution to showing clock and battery - modeline is so crowded already
-    (display-time)
-    (display-battery-mode 1)
-    (call-process-shell-command "~/bin/emacswm.sh")
-    ;; The emacswm.sh script starts the compositor, so make sure we start out at full opacity to avoid screen brightness confusion
-    (set-opacity 100)
-    (setenv "EDITOR" "emacsclient")
-
-    (exwm-input-set-simulation-keys
-     '(([?\C-b] . left)
-       ([?\C-f] . right)
-       ([?\C-p] . up)
-       ([?\C-n] . down)
-       ([?\C-a] . home)
-       ([?\C-e] . end)
-       ([?\M-v] . prior)
-       ([?\C-v] . next)
-       ([?\C-s] . [?\C-f])
-       ([?\M-w] . [?\C-c])
-       ([?\S-p] . [?\C-p])
-       ))
-    )
-
-
+    ;; ;; Configure Ido
+    ;; (exwm-config-ido)
+    ;; Other configurations
+    (exwm-config-misc))
+#+end_src
+** Define special logout if using LXDE
+#+begin_src emacs-lisp
   (defun exwm-logout ()
     (interactive)
-    (recentf-save-list)
+    ;; (recentf-save-list)
     (save-some-buffers)
     (start-process-shell-command "logout" nil "lxsession-logout"))
 #+end_src
+** To launch or not to launch
+   My configuration tests for the existence of a window manager.  If one is already
+   running, just skip all the EXWM setup and bring up a "normal" Emacs instance.
+
+#+begin_src emacs-lisp
+  (when (get-buffer "*window-manager*")
+    (kill-buffer "*window-manager*"))
+  (when (get-buffer "*window-manager-error*")
+    (kill-buffer "*window-manager-error*"))
+  (when (executable-find "wmctrl")
+    (progn
+      (shell-command "wmctrl -m ; echo $?" "*window-manager*" "*window-manager-error*")))
+  ;; if there was an error detecting the window manager, initialize EXWM
+#+end_src
+** Let's get this show on the road - if no window manager was detected
+  #+begin_src emacs-lisp
+    (when (and (get-buffer "*window-manager-error*")
+               (eq window-system 'x))
+      ;; (< 0 (length (with-current-buffer "*window-manager-error*" (buffer-string)))))
+      (require 'exwm)
+      (require 'exwm-config)
+
+
+      (gjg/exwm-config)
+      (require 'exwm-randr)
+      ;; (setq exwm-randr-workspace-monitor-plist '(0 "DP-1")) ;; DP-1 is the big monitor, if connected
+      (setq exwm-randr-workspace-monitor-plist '(0 "DP-3" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
+
+      (add-hook 'exwm-randr-screen-change-hook
+                (lambda()
+                  (start-process-shell-command
+                   ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
+                   "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
+                   ;; and here's how I might get a mirrored setup
+                   ;; xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --mode 1920x1080 --same-as eDP-1
+                   )))
+      ;; Make class name the buffer name
+      (add-hook 'exwm-update-class-hook
+                (lambda ()
+                  (cond 
+                   (:else
+                    (exwm-workspace-rename-buffer exwm-class-name)))))
+      (add-hook 'exwm-update-title-hook
+                (lambda ()
+                  (cond ((string= "Mail - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
+                         (exwm-workspace-rename-buffer "email"))
+                        ((string= "Calendar - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
+                         (exwm-workspace-rename-buffer "calendar"))
+                        ((string= "Google Hangouts - Mozilla Firefox" exwm-title)
+                         (exwm-workspace-rename-buffer "hangouts"))
+                        ((string= "Slack" (substring exwm-title 0 5))
+                         (exwm-workspace-rename-buffer "slack")) 
+                        ((string= "zoom" exwm-class-name)
+                         (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
+                        ;; catch-all for Firefox
+                        ((string= "Firefox" exwm-class-name)
+                         (exwm-workspace-rename-buffer exwm-title))
+                        (:else
+                         (exwm-workspace-rename-buffer exwm-class-name)))))
+
+
+      (exwm-enable)
+      (exwm-randr-enable)
+      ;; (require 'exwm-systemtray)
+      ;; (exwm-systemtray-enable)
+      (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")
+                          (lambda ()
+                            (interactive)
+                            (call-process-shell-command "gjg-bright.sh +5")))
+      (exwm-input-set-key (kbd "<XF86MonBrightnessDown>")
+                          (lambda ()
+                            (interactive)
+                            (call-process-shell-command "gjg-bright.sh -5")))
+      ;; N.B. keyboard backlight level (0 1 2) is kept in /sys/class/leds/dell\:\:kbd_backlight/brightness
+      (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
+                          (lambda ()
+                            (interactive)
+                            (call-process-shell-command "amixer sset 'Master' 5%+")))
+      (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
+                          (lambda ()
+                            (interactive)
+                            (call-process-shell-command "amixer sset 'Master' 5%-")))
+      (exwm-input-set-key (kbd "<XF86AudioMute>")
+                          (lambda ()
+                            (interactive)
+                            (call-process-shell-command "amixer sset 'Master' toggle")))
+      ;; lock screen
+      (exwm-input-set-key (kbd "s-l")  ;; super/windows l
+                          (lambda ()
+                            (interactive)
+                            (exwm-input-toggle-keyboard)))
+      ;; Toggle EXWM input mode
+      (exwm-input-set-key (kbd "s-i")  ;; super/windows i
+                          (lambda ()
+                            (interactive)
+                            (call-process-shell-command "xscreensaver-command -lock")))
+      (require 'buffer-expose)
+      (buffer-expose-mode 1)
+      (add-to-list 'exwm-manage-configurations '((equal exwm-class-name "Slack") managed t))
+      ;; https://github.com/ch11ng/exwm/wiki#unable-to-resize-an-x-window-by-dragging-its-right-edge
+      (setq window-divider-default-right-width 1)
+      (window-divider-mode 1)
+      ;; TODO: find a system-tray/panel solution to showing clock and battery - modeline is so crowded already
+      (display-time)
+      (display-battery-mode 1)
+      (call-process-shell-command "~/bin/emacswm.sh")
+      ;; The emacswm.sh script starts the compositor, so make sure we start out at full opacity to avoid screen brightness confusion
+      (set-opacity 100)
+      (setenv "EDITOR" "emacsclient")
+
+      (exwm-input-set-simulation-keys
+       '(([?\C-b] . left)
+         ([?\C-f] . right)
+         ([?\C-p] . up)
+         ([?\C-n] . down)
+         ([?\C-a] . home)
+         ([?\C-e] . end)
+         ([?\M-v] . prior)
+         ([?\C-v] . next)
+         ([?\C-s] . [?\C-f])
+         ([?\M-w] . [?\C-c])
+         ([?\S-p] . [?\C-p])
+         ))
+      )
+
+
+  #+end_src
+
 * xwwp Browser Experiment
   + GitHub source (fork): [[https://github.com/gregoryg/xwwp][GitHub - gregoryg/xwwp: Enhance the Emacs xwidget-webkit browser]]
   + My local clone [[file:~/projects/emacs/xwwp/]]
