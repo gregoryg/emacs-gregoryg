@@ -755,118 +755,234 @@
   ;; if there was an error detecting the window manager, initialize EXWM
 #+end_src
 ** Let's get this show on the road - if no window manager was detected
+   We start a large =when= block here
+ #+begin_src emacs-lisp
+   (setq gjg/exwm-needed-p
+         (and (get-buffer "*window-manager-error*")
+              (eq window-system 'x)))
+   (when gjg/exwm-needed-p
+ #+end_src
+*** Require libs and run my custom conifg
   #+begin_src emacs-lisp
-    (when (and (get-buffer "*window-manager-error*")
-               (eq window-system 'x))
-      ;; (< 0 (length (with-current-buffer "*window-manager-error*" (buffer-string)))))
-      (require 'exwm)
-      (require 'exwm-config)
+    ;; (< 0 (length (with-current-buffer "*window-manager-error*" (buffer-string)))))
+    (require 'exwm)
+    (require 'exwm-config)
+    (gjg/exwm-config)
+  #+end_src
+*** Deal with displays
+    When an external monitor is connected or disconnected, =exwm-randr-screen-change-hook=
+    is called.
 
+    The single command I currently run adds my external widescreen monitor to the left of
+    the internal display.
 
-      (gjg/exwm-config)
-      (require 'exwm-randr)
-      ;; (setq exwm-randr-workspace-monitor-plist '(0 "DP-1")) ;; DP-1 is the big monitor, if connected
-      (setq exwm-randr-workspace-monitor-plist '(0 "DP-3" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
+    TODO: Fix *disconnecting* the external monitor. Currently things are not working!
 
-      (add-hook 'exwm-randr-screen-change-hook
-                (lambda()
-                  (start-process-shell-command
-                   ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
-                   "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
-                   ;; and here's how I might get a mirrored setup
-                   ;; xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --mode 1920x1080 --same-as eDP-1
-                   )))
-      ;; Make class name the buffer name
-      (add-hook 'exwm-update-class-hook
-                (lambda ()
-                  (cond 
-                   (:else
-                    (exwm-workspace-rename-buffer exwm-class-name)))))
-      (add-hook 'exwm-update-title-hook
-                (lambda ()
-                  (cond ((string= "Mail - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
-                         (exwm-workspace-rename-buffer "email"))
-                        ((string= "Calendar - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
-                         (exwm-workspace-rename-buffer "calendar"))
-                        ((string= "Google Hangouts - Mozilla Firefox" exwm-title)
-                         (exwm-workspace-rename-buffer "hangouts"))
-                        ((string= "Slack" (substring exwm-title 0 5))
-                         (exwm-workspace-rename-buffer "slack")) 
-                        ((string= "zoom" exwm-class-name)
-                         (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
-                        ;; catch-all for Firefox
-                        ((string= "Firefox" exwm-class-name)
-                         (exwm-workspace-rename-buffer exwm-title))
-                        (:else
-                         (exwm-workspace-rename-buffer exwm-class-name)))))
+        #+begin_src emacs-lisp
+        (require 'exwm-randr)
+        ;; (setq exwm-randr-workspace-monitor-plist '(0 "DP-1")) ;; DP-1 is the big monitor, if connected
+        (setq exwm-randr-workspace-monitor-plist '(0 "DP-3" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
 
+        (add-hook 'exwm-randr-screen-change-hook
+                  (lambda()
+                    (start-process-shell-command
+                     ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
+                     "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
+                     ;; and here's how I might get a mirrored setup
+                     ;; xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --mode 1920x1080 --same-as eDP-1
+                     )))
+        #+end_src
+*** Intellegintly rename new buffers
+    By default, each new window's buffer is named by the 'class name': So Firefox, Slack,
+    Alacritty and so on.  This means that I will get similar buffer names for each new
+    Firefox window: Firefox<1>, Firefox<2>....
 
-      (exwm-enable)
-      (exwm-randr-enable)
-      ;; (require 'exwm-systemtray)
-      ;; (exwm-systemtray-enable)
-      (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")
-                          (lambda ()
-                            (interactive)
-                            (call-process-shell-command "gjg-bright.sh +5")))
-      (exwm-input-set-key (kbd "<XF86MonBrightnessDown>")
-                          (lambda ()
-                            (interactive)
-                            (call-process-shell-command "gjg-bright.sh -5")))
-      ;; N.B. keyboard backlight level (0 1 2) is kept in /sys/class/leds/dell\:\:kbd_backlight/brightness
-      (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
-                          (lambda ()
-                            (interactive)
-                            (call-process-shell-command "amixer sset 'Master' 5%+")))
-      (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
-                          (lambda ()
-                            (interactive)
-                            (call-process-shell-command "amixer sset 'Master' 5%-")))
-      (exwm-input-set-key (kbd "<XF86AudioMute>")
-                          (lambda ()
-                            (interactive)
-                            (call-process-shell-command "amixer sset 'Master' toggle")))
+    Examining both =exwm-class-name= and =exwm-title= allows us to rename the buffers so
+    that navigation via regular Emacs commands is made easy.  
+
+        #+begin_src emacs-lisp
+        ;; Make class name the buffer name
+        (add-hook 'exwm-update-class-hook
+                  (lambda ()
+                    (cond 
+                     (:else
+                      (exwm-workspace-rename-buffer exwm-class-name)))))
+        (add-hook 'exwm-update-title-hook
+                  (lambda ()
+                    (cond ((string= "Mail - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
+                           (exwm-workspace-rename-buffer "email"))
+                          ((string= "Calendar - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
+                           (exwm-workspace-rename-buffer "calendar"))
+                          ((string= "Google Hangouts - Mozilla Firefox" exwm-title)
+                           (exwm-workspace-rename-buffer "hangouts"))
+                          ((string= "Slack" (substring exwm-title 0 5))
+                           (exwm-workspace-rename-buffer "slack")) 
+                          ((string= "zoom" exwm-class-name)
+                           (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
+                          ;; catch-all for Firefox
+                          ((string= "Firefox" exwm-class-name)
+                           (exwm-workspace-rename-buffer exwm-title))
+                          (:else
+                           (exwm-workspace-rename-buffer exwm-class-name)))))
+        #+end_src
+
+*** Start up the window manager
+    There is a system tray, but I find it quite limited as to what widgets will work with
+    it.  So far I prefer running a lightweight panel instead (see above)
+        #+begin_src emacs-lisp
+        (exwm-enable)
+        (exwm-randr-enable)
+        ;; (require 'exwm-systemtray)
+        ;; (exwm-systemtray-enable)
+        #+end_src
+*** Set SUPER window manager behavior toggles
+    Each window managed by EXWM is either in 'line' or 'char' mode.  For some X
+    applications, you may prefer to use 'char' mode, which directly sends all your
+    keyboard input directly to the application.  "Super-i" will let you toggle between
+    modes.
+
+    "Super-l" is a shortcut to lock the screen using =xscreensaver=
+    #+begin_src emacs-lisp
       ;; lock screen
-      (exwm-input-set-key (kbd "s-l")  ;; super/windows l
+      (exwm-input-set-key (kbd "s-i")  ;; super/windows l
                           (lambda ()
                             (interactive)
                             (exwm-input-toggle-keyboard)))
       ;; Toggle EXWM input mode
-      (exwm-input-set-key (kbd "s-i")  ;; super/windows i
+      (exwm-input-set-key (kbd "s-l")  ;; super/windows i
                           (lambda ()
                             (interactive)
                             (call-process-shell-command "xscreensaver-command -lock")))
-      (require 'buffer-expose)
-      (buffer-expose-mode 1)
-      (add-to-list 'exwm-manage-configurations '((equal exwm-class-name "Slack") managed t))
-      ;; https://github.com/ch11ng/exwm/wiki#unable-to-resize-an-x-window-by-dragging-its-right-edge
-      (setq window-divider-default-right-width 1)
-      (window-divider-mode 1)
-      ;; TODO: find a system-tray/panel solution to showing clock and battery - modeline is so crowded already
-      (display-time)
-      (display-battery-mode 1)
-      (call-process-shell-command "~/bin/emacswm.sh")
-      ;; The emacswm.sh script starts the compositor, so make sure we start out at full opacity to avoid screen brightness confusion
-      (set-opacity 100)
-      (setenv "EDITOR" "emacsclient")
+    #+end_src
+*** Deal with brightness and volume, since we don't have a DE
 
-      (exwm-input-set-simulation-keys
-       '(([?\C-b] . left)
-         ([?\C-f] . right)
-         ([?\C-p] . up)
-         ([?\C-n] . down)
-         ([?\C-a] . home)
-         ([?\C-e] . end)
-         ([?\M-v] . prior)
-         ([?\C-v] . next)
-         ([?\C-s] . [?\C-f])
-         ([?\M-w] . [?\C-c])
-         ([?\S-p] . [?\C-p])
-         ))
-      )
+        #+begin_src emacs-lisp
+          (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")
+                              (lambda ()
+                                (interactive)
+                                (call-process-shell-command "gjg-bright.sh +5")))
+          (exwm-input-set-key (kbd "<XF86MonBrightnessDown>")
+                              (lambda ()
+                                (interactive)
+                                (call-process-shell-command "gjg-bright.sh -5")))
+          ;; N.B. keyboard backlight level (0 1 2) is kept in /sys/class/leds/dell\:\:kbd_backlight/brightness
+          (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
+                              (lambda ()
+                                (interactive)
+                                (call-process-shell-command "amixer sset 'Master' 5%+")))
+          (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
+                              (lambda ()
+                                (interactive)
+                                (call-process-shell-command "amixer sset 'Master' 5%-")))
+          (exwm-input-set-key (kbd "<XF86AudioMute>")
+                              (lambda ()
+                                (interactive)
+                                (call-process-shell-command "amixer sset 'Master' toggle")))
+        #+end_src
+*** Navigate and manipulate windows
+    Now that we will be running *everything* in Emacs, we will be doing a lot of window
+    switching and frame splitting.  Here are some ways to bring sanity to that process and
+    hopefully ease Emacs Pinky Syndrome.
+    
+    =buffer-expose= is an alternative to alt-tab
 
+    =window-divider-mode= let's us resize vertically split windows - for some reason, EXWM
+    makes it impossible to select the vertical margin
 
-  #+end_src
+    =zoom-mode= is also hugely useful to avoid having to manually resize horizontal and
+    vertical splits - so useful I have add it in as part of my normal Emacs config
+        #+begin_src emacs-lisp
+        (require 'buffer-expose)
+        (buffer-expose-mode 1)
+
+        ;; https://github.com/ch11ng/exwm/wiki#unable-to-resize-an-x-window-by-dragging-its-right-edge
+        (setq window-divider-default-right-width 1)
+        (window-divider-mode 1)
+        #+end_src
+*** Changes to modeline
+    Now that I don't have the typical DE panels, I want to show clock and battery in the modeline
+        #+begin_src emacs-lisp
+          ;; TODO: find a system-tray/panel solution to showing clock and battery - modeline is so crowded already
+          (display-time)
+          (display-battery-mode 1)
+        #+end_src
+*** Run autostart apps including compositor
+    I run a shell script which 
+    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/emacswm.sh
+      # Network Manager using CLI
+      # ref https://core.docs.ubuntu.com/en/stacks/network/network-manager/docs/configure-wifi-connections
+      # If you get 'secrets were required' when trying to connect, delete the connection first
+      # sudo nmcli d wifi   # to scan wifi
+      # nmcli connection delete moodseer-5G
+      # nmcli d wifi connect moodseer-5G password blah
+
+      echo "Running emacswm.sh script from `pwd`"
+      # Set CAPS LOCK as control
+      setxkbmap -verbose  -option "ctrl:nocaps"
+      # To re-enable caps lock
+      # setxkbmap -option
+
+      # Control scrolling direction - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
+      #         Option "NaturalScrolling" "on"
+
+      # Set scrolling direction to "natural"
+      xmodmap -e "pointer = 1 2 3 4 5"
+
+      # Make a left-handed mouse
+      # xmodmap -e "pointer = 3 2 1"
+
+      rm -vf nohup.out
+      echo Start compositor
+      nohup picom &
+
+      echo Start albert
+      nohup albert &
+      # nohup nm-applet&
+
+      echo Remember iflipb for changing buffers - and/or buffer-expose-mode
+      # xrandr --output eDP-1 --brightness .8
+
+      echo Start xscreensaver
+      xscreensaver &
+
+      ## Deal with LXDE if running as the WM
+      ## pcmanfm --desktop-off
+    #+end_src
+        #+begin_src emacs-lisp
+          (call-process-shell-command "~/bin/emacswm.sh")
+          ;; The emacswm.sh script starts the compositor, so make sure we start out at full opacity to avoid screen brightness confusion
+          (set-opacity 100)
+          (setenv "EDITOR" "emacsclient")
+        #+end_src
+
+*** Set the amazing simulation keys
+    Now what does this little miracle do for us?  It gives us Emacs keys in Firefox,
+    that's what it does!  And other X applications, of course.
+
+    So now we can hit =C-n= to move to the next line.  I use =C-s= to search in Firefox,
+    which translates to sending a =C-f=.  There's more I want to configure but I haven't
+    entirely figured out how this works in char mode, whether is works with the Super key
+    and so forth.
+        
+        #+begin_src emacs-lisp
+        (exwm-input-set-simulation-keys
+         '(([?\C-b] . left)
+           ([?\C-f] . right)
+           ([?\C-p] . up)
+           ([?\C-n] . down)
+           ([?\C-a] . home)
+           ([?\C-e] . end)
+           ([?\M-v] . prior)
+           ([?\C-v] . next)
+           ([?\C-s] . [?\C-f])
+           ([?\M-w] . [?\C-c])
+           ([?\S-p] . [?\C-p])
+           ))
+        #+end_src
+** And FINALLY - this must be last - close out the =when= clause
+        #+begin_src emacs-lisp
+        ) ;; when gjg/exwm-needed-p
+        #+end_src
 
 * xwwp Browser Experiment
   + GitHub source (fork): [[https://github.com/gregoryg/xwwp][GitHub - gregoryg/xwwp: Enhance the Emacs xwidget-webkit browser]]
