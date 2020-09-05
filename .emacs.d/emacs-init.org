@@ -399,6 +399,17 @@
 
 
    #+end_src
+*** Window balancing
+    Use the Golden Ration
+#+begin_src emacs-lisp
+  ;; Resize active frame according to 'golden ratio' principles
+  (use-package zoom
+    :config
+    (custom-set-variables
+     '(zoom-ignored-buffer-name-regexps '("^*magit" "^*magit-diff" "^*COMMIT_EDITMSG")))
+    (setq zoom-size '(0.618 . 0.618))
+    (zoom-mode t))
+#+end_src
 *** GJG full screen, movement, transparency
     #+begin_src emacs-lisp
 (defun revert-dammit () ; revert buffer without prompting
