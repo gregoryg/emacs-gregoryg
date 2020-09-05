@@ -572,6 +572,7 @@
                ("Org and Markdown" (or (mode . org-mode)
                                        (mode . markdown-mode)))
                ("Shell" (mode . shell-mode))
+               ("EXWM X Apps" (mode . exwm-mode))
                ("Configs" (or (derived-mode .  conf-mode)
                               (mode . yaml-mode)
                               (mode . json-mode)))
