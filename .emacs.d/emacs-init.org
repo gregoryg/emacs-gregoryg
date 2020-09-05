@@ -1181,6 +1181,7 @@
    #+begin_src emacs-lisp
      (selectrum-mode +1)
      (selectrum-prescient-mode +1)
+     (prescient-persist-mode +1)
    #+end_src
 ** Ivy / Smex / Counsel
    Just starting to make use of =use-package= here.  The =:ensure= param will
