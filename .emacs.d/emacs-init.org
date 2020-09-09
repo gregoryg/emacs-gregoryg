@@ -844,12 +844,10 @@
     "Super-l" is a shortcut to lock the screen using =xscreensaver=
     #+begin_src emacs-lisp
       ;; lock screen
-      (exwm-input-set-key (kbd "s-i")  ;; super/windows l
-                          (lambda ()
-                            (interactive)
-                            (exwm-input-toggle-keyboard)))
+      (exwm-input-set-key (kbd "s-i")  ;; super/windows i
+                            'exwm-input-toggle-keyboard)
       ;; Toggle EXWM input mode
-      (exwm-input-set-key (kbd "s-l")  ;; super/windows i
+      (exwm-input-set-key (kbd "s-l")  ;; super/windows l
                           (lambda ()
                             (interactive)
                             (call-process-shell-command "xscreensaver-command -lock")))
