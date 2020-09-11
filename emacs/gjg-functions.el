@@ -1,4 +1,3 @@
-
 (defun replace-smart-quotes (beg end)
   "Replace 'smart quotes' in buffer or region with ascii quotes."
   (interactive "r")
@@ -16,7 +15,7 @@
                           nil beg end))
 
 ;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph    
-(defun unfill-paragraph ()
+(defun gjg/unfill-paragraph ()
   "Takes a multi-line paragraph and makes it into a single line of text."
   (interactive)
   (let ((fill-column (point-max)))
