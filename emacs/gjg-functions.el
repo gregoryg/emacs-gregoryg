@@ -127,4 +127,15 @@ do-capitalize: t means run text through capitalize function, nil will respect Ca
 ;; #+end_src
 
 
+(defun gjg/go-dark ()
+  "switch to preferred dark theme"
+  (interactive)
+  (load-theme 'brutalist-dark t)
+  (disable-theme 'brutalist))
+(defun gjg/go-light ()
+  "switch to preferred light theme"
+  (interactive)
+  (load-theme 'brutalist t)
+  (disable-theme 'brutalist-dark))
+
 (provide 'gjg-functions)
