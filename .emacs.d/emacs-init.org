@@ -462,7 +462,6 @@
       (defun gjg/other-window-with-winum ()
         "if 2 windows, jump to other-window.  Elsecase use winum"
         (interactive)
-        SH1
         (cond ((= 1 winum--window-count)
                (gjg/switch-to-other-buffer))
               ((= 2 winum--window-count)
