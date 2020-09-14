@@ -412,153 +412,203 @@
 #+end_src
 *** GJG full screen, movement, transparency
     #+begin_src emacs-lisp
-(defun revert-dammit () ; revert buffer without prompting
-  (interactive)
-  ;; revert buffer, don't use auto-save, preserve modes
-  (revert-buffer t t t))
-(defalias 'rd 'revert-dammit)
-(defun gjg/switch-to-other-buffer ()
-  (interactive)
-  (switch-to-buffer (other-buffer))
-  (message "Switched to other-buffer"))
-(defun gjg/other-window-or-split ()
-  "If one window is displayed in current frame, split vertically and go to other window, else go to other window without splitting"
-  (interactive)
-  (if (one-window-p t)
-      (progn
-	(split-window-vertically)
-	(other-window 1)
-	(switch-to-buffer (other-buffer)))
-    (other-window 1)))
-(defun gjg/widen-ask-if-indirect ()
-  "If buffer is indirect, ask before widening"
-  (interactive)
-  (if (buffer-base-buffer)
-      (when (yes-or-no-p "Buffer is indirect; really widen? ")
-	(widen))
-    (widen)))
-(defun toggle-transparency (alpha-level)
-  (interactive "p")
-  (message (format "%s" alpha-level))
-  (if (< alpha-level 50) (setq alpha-level 75))
-  (let ((myalpha (frame-parameter nil 'alpha)))
-    (if (or (not myalpha)
-	    (= myalpha 100))
-	(set-frame-parameter nil 'alpha alpha-level)
-      (set-frame-parameter nil 'alpha 100))
-    )
-  (message (format "Alpha level is %d" (frame-parameter nil 'alpha)))
-  )
+      (defun revert-dammit () ; revert buffer without prompting
+        (interactive)
+        ;; revert buffer, don't use auto-save, preserve modes
+        (revert-buffer t t t))
+      (defalias 'rd 'revert-dammit)
+      (defun gjg/switch-to-other-buffer ()
+        (interactive)
+        (switch-to-buffer (other-buffer))
+        (message "Switched to other-buffer"))
+      (defun gjg/split-window-below ()
+        "Split window below, switch to the new window AND switch buffer in that window"
+        (interactive)
+        (split-window-below)
+        (other-window 1)
+        (switch-to-buffer (other-buffer)))
+      (defun gjg/split-window-right ()
+        "Split window right, switch to the new window AND switch buffer in that window"
+        (interactive)
+        (split-window-right)
+        (other-window 1)
+        (switch-to-buffer (other-buffer)))
+      (bind-key "C-x 2" 'gjg/split-window-below)
+      (bind-key "C-x 3" 'gjg/split-window-right)
 
-(defun set-transparency (alpha-level)
-  (interactive "p")
-  (message (format "Alpha level passed in: %s" alpha-level))
-  (let ((alpha-level (if (< alpha-level 2)
-			 (read-number "Opacity percentage: " 75)
-		       alpha-level))
-	(myalpha (frame-parameter nil 'alpha)))
-    (set-frame-parameter nil 'alpha alpha-level))
-  (message (format "Alpha level is %d" (frame-parameter nil 'alpha))))
-(defalias 'set-opacity 'set-transparency )
+      ;; (require 'ace-window)
+      ;; (custom-set-faces
+      ;;  '(aw-leading-char-face
+      ;;    ((t (:foreground "deep sky blue" :height 5.0)))))
+      ;; (bind-key "C-x o" 'ace-window)
+      ;; (setq winum-keymap
+      ;;       (let ((map (make-sparse-keymap)))
+      ;;         (define-key map (kbd "C-`") 'winum-select-window-by-number)
+      ;;         (define-key map (kbd "M-0") 'winum-select-window-0)
+      ;;         (define-key map (kbd "M-1") 'winum-select-window-1)
+      ;;         (define-key map (kbd "M-2") 'winum-select-window-2)
+      ;;         (define-key map (kbd "M-3") 'winum-select-window-3)
+      ;;         (define-key map (kbd "M-4") 'winum-select-window-4)
+      ;;         (define-key map (kbd "M-5") 'winum-select-window-5)
+      ;;         )
+      ;;       )
+      (require 'winum)
+      (setq winum-scope                       'frame-local
+            winum-auto-assign-0-to-minibuffer t
+            winum-auto-setup-mode-line        t
+       )
+      (winum-mode)
+      (set-face-attribute 'winum-face nil :weight 'bold)
+      (defun gjg/other-window-with-winum ()
+        "if 2 windows, jump to other-window.  Elsecase use winum"
+        (interactive)
+        SH1
+        (cond ((= 1 winum--window-count)
+               (gjg/switch-to-other-buffer))
+              ((= 2 winum--window-count)
+               (other-window 1))
+              ((> 10 winum--window-count)
+               ;; jump immediately to window
+               (let ((jwin (read-number (format "Jump to window num[1-%d]: " winum--window-count))))
+                 (message "Jumping to %d" jwin)
+                 (winum-select-window-by-number jwin)))
+              (t
+               (let ((jwin (read-number (format "Jump to window num[1-%d]: " winum--window-count))))
+                 (message "Jumping to %d" jwin)
+                 (winum-select-window-by-number jwin)))
+               ))
+      (bind-key "C-x o" 'gjg/other-window-with-winum)
 
-(defun toggle-window-split ()
-  (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-	     (next-win-buffer (window-buffer (next-window)))
-	     (this-win-edges (window-edges (selected-window)))
-	     (next-win-edges (window-edges (next-window)))
-	     (this-win-2nd (not (and (<= (car this-win-edges)
-					 (car next-win-edges))
-				     (<= (cadr this-win-edges)
-					 (cadr next-win-edges)))))
-	     (splitter
-	      (if (= (car this-win-edges)
-		     (car (window-edges (next-window))))
-		  'split-window-horizontally
-		'split-window-vertically)))
-	(delete-other-windows)
-	(let ((first-win (selected-window)))
-	  (funcall splitter)
-	  (if this-win-2nd (other-window 1))
-	  (set-window-buffer (selected-window) this-win-buffer)
-	  (set-window-buffer (next-window) next-win-buffer)
-	  (select-window first-win)
-	  (if this-win-2nd (other-window 1))))))
+      ;; (set-face-attribute 'winum-face nil :foreground "deep sky blue")
+      (defun gjg/widen-ask-if-indirect ()
+        "If buffer is indirect, ask before widening"
+        (interactive)
+        (if (buffer-base-buffer)
+            (when (yes-or-no-p "Buffer is indirect; really widen? ")
+          (widen))
+          (widen)))
+      (defun toggle-transparency (alpha-level)
+        (interactive "p")
+        (message (format "%s" alpha-level))
+        (if (< alpha-level 50) (setq alpha-level 75))
+        (let ((myalpha (frame-parameter nil 'alpha)))
+          (if (or (not myalpha)
+      t	    (= myalpha 100))
+          (set-frame-parameter nil 'alpha alpha-level)
+            (set-frame-parameter nil 'alpha 100))
+          )
+        (message (format "Alpha level is %d" (frame-parameter nil 'alpha)))
+        )
 
-(define-key ctl-x-4-map "t" 'toggle-window-split)
-;; *** Full-screen frame defuns
+      (defun set-transparency (alpha-level)
+        (interactive "p")
+        (message (format "Alpha level passed in: %s" alpha-level))
+        (let ((alpha-level (if (< alpha-level 2)
+                   (read-number "Opacity percentage: " 75)
+                     alpha-level))
+          (myalpha (frame-parameter nil 'alpha)))
+          (set-frame-parameter nil 'alpha alpha-level))
+        (message (format "Alpha level is %d" (frame-parameter nil 'alpha))))
+      (defalias 'set-opacity 'set-transparency )
 
-(defun switch-full-screen ()
-  (interactive)
-  (shell-command (concat "/usr/bin/wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -btoggle,fullscreen")))
+      (defun toggle-window-split ()
+        (interactive)
+        (if (= (count-windows) 2)
+            (let* ((this-win-buffer (window-buffer))
+               (next-win-buffer (window-buffer (next-window)))
+               (this-win-edges (window-edges (selected-window)))
+               (next-win-edges (window-edges (next-window)))
+               (this-win-2nd (not (and (<= (car this-win-edges)
+                           (car next-win-edges))
+                           (<= (cadr this-win-edges)
+                           (cadr next-win-edges)))))
+               (splitter
+                (if (= (car this-win-edges)
+                   (car (window-edges (next-window))))
+                'split-window-horizontally
+              'split-window-vertically)))
+          (delete-other-windows)
+          (let ((first-win (selected-window)))
+            (funcall splitter)
+            (if this-win-2nd (other-window 1))
+            (set-window-buffer (selected-window) this-win-buffer)
+            (set-window-buffer (next-window) next-win-buffer)
+            (select-window first-win)
+            (if this-win-2nd (other-window 1))))))
 
-;; (defun toggle-fullscreen ()
-;;   "toggles whether the currently selected frame consumes the entire display or is decorated with a window border"
-;;   (interactive)
-;;   (let ((f (selected-frame)))
-;;     (modify-frame-parameters f `((fullscreen . ,(if (eq nil (frame-parameter f 'fullscreen)) 'fullboth nil))))))
+      (define-key ctl-x-4-map "t" 'toggle-window-split)
+      ;; *** Full-screen frame defuns
 
-;; (defun mac-toggle-max-window ()
-;;   "Toggle full-screen frame on Linux and OS X - use maxframe.el for Windows"
-;;   (interactive)
-;;   (if (frame-parameter nil 'fullscreen)
-;;       (set-frame-parameter nil 'fullscreen nil)
-;;     (set-frame-parameter nil 'fullscreen 'fullboth)))
-;; (defun toggle-full-screen ()
-;;   "Toggle between full screen and partial screen display on X11;
-;;     courtesy of http://www.emacswiki.org/cgi-bin/wiki/FullScreen"
-;;   (interactive)
-;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-;;                          '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+      (defun switch-full-screen ()
+        (interactive)
+        (shell-command (concat "/usr/bin/wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -btoggle,fullscreen")))
+
+      ;; (defun toggle-fullscreen ()
+      ;;   "toggles whether the currently selected frame consumes the entire display or is decorated with a window border"
+      ;;   (interactive)
+      ;;   (let ((f (selected-frame)))
+      ;;     (modify-frame-parameters f `((fullscreen . ,(if (eq nil (frame-parameter f 'fullscreen)) 'fullboth nil))))))
+
+      ;; (defun mac-toggle-max-window ()
+      ;;   "Toggle full-screen frame on Linux and OS X - use maxframe.el for Windows"
+      ;;   (interactive)
+      ;;   (if (frame-parameter nil 'fullscreen)
+      ;;       (set-frame-parameter nil 'fullscreen nil)
+      ;;     (set-frame-parameter nil 'fullscreen 'fullboth)))
+      ;; (defun toggle-full-screen ()
+      ;;   "Toggle between full screen and partial screen display on X11;
+      ;;     courtesy of http://www.emacswiki.org/cgi-bin/wiki/FullScreen"
+      ;;   (interactive)
+      ;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+      ;;                          '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
 
 
-;; ;; add toggle for maxframe.el (works on Windows)
-(when (eq window-system 'w32)
-  (require 'maxframe)
-  (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
-;; (modify-frame-parameters nil '((gjg/frame-maxp . nil)))
-;; ;; (defvar gjg/frame-maxp nil "Store whether frame is maximized using maxframe.el")
-(defun gjg/switch-buffer-by-mode ()
-  "Switch to a buffer after choosing a mode."
-  (interactive)
-  (let* ((active-buffers-with-mode (mapcar #'(lambda (x) (with-current-buffer x (cons (buffer-name) (symbol-name major-mode)))) (buffer-list)))
-	 (distinct-modes (-distinct (mapcar #'cdr active-buffers-with-mode)))
-	 (selected-mode (ido-completing-read "Mode: " distinct-modes))
-	 (candidate-buffers (mapcar #'car (remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
-	 (selected-buffer (ido-completing-read "Buffer: " candidate-buffers)))
-    (switch-to-buffer selected-buffer)))
-(global-set-key (kbd "C-c s") 'gjg/switch-buffer-by-mode)
+      ;; ;; add toggle for maxframe.el (works on Windows)
+      (when (eq window-system 'w32)
+        (require 'maxframe)
+        (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
+      ;; (modify-frame-parameters nil '((gjg/frame-maxp . nil)))
+      ;; ;; (defvar gjg/frame-maxp nil "Store whether frame is maximized using maxframe.el")
+      (defun gjg/switch-buffer-by-mode ()
+        "Switch to a buffer after choosing a mode."
+        (interactive)
+        (let* ((active-buffers-with-mode (mapcar #'(lambda (x) (with-current-buffer x (cons (buffer-name) (symbol-name major-mode)))) (buffer-list)))
+           (distinct-modes (-distinct (mapcar #'cdr active-buffers-with-mode)))
+           (selected-mode (ido-completing-read "Mode: " distinct-modes))
+           (candidate-buffers (mapcar #'car (remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
+           (selected-buffer (ido-completing-read "Buffer: " candidate-buffers)))
+          (switch-to-buffer selected-buffer)))
+      (global-set-key (kbd "C-c s") 'gjg/switch-buffer-by-mode)
 
-(defun gjg/max-frame ()
-  "Maximize the current frame and toggle gjg/frame-maxp"
-  (interactive)
-  (cond ((eq window-system 'w32)
-	 (maximize-frame))
-	((eq window-system 'x)
-	 (switch-full-screen))
-	(t
-	 (mac-toggle-max-window)))
-  (modify-frame-parameters nil '((gjg/frame-maxp . t))))
+      (defun gjg/max-frame ()
+        "Maximize the current frame and toggle gjg/frame-maxp"
+        (interactive)
+        (cond ((eq window-system 'w32)
+           (maximize-frame))
+          ((eq window-system 'x)
+           (switch-full-screen))
+          (t
+           (mac-toggle-max-window)))
+        (modify-frame-parameters nil '((gjg/frame-maxp . t))))
 
-(defun gjg/restore-frame ()
-  "Restore the current frame to its previous size and toggle gjg/frame-maxp"
-  (interactive)
-  (cond ((eq window-system 'w32)
-	 (restore-frame))
-	((eq window-system 'x)
-	 (switch-full-screen))
-	(t
-	 (mac-toggle-max-window)))
-  (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
+      (defun gjg/restore-frame ()
+        "Restore the current frame to its previous size and toggle gjg/frame-maxp"
+        (interactive)
+        (cond ((eq window-system 'w32)
+           (restore-frame))
+          ((eq window-system 'x)
+           (switch-full-screen))
+          (t
+           (mac-toggle-max-window)))
+        (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
 
-(defun gjg/toggle-max-frame ()
-  "Check the status of gjg/max-framep and change to whichever mode we're not in now."
-  (interactive)
-  (cond ((eq window-system 'ns)
-	 (toggle-frame-maximized))
-	(t
-	 (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
+      (defun gjg/toggle-max-frame ()
+        "Check the status of gjg/max-framep and change to whichever mode we're not in now."
+        (interactive)
+        (cond ((eq window-system 'ns)
+           (toggle-frame-maximized))
+          (t
+           (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
 
     #+end_src
 *** Ibuffer FTW
@@ -910,19 +960,22 @@
     I run a shell script which starts up key helper apps like albert, picom and
     xscreensaver.  Also some common mouse and keyboard settings that are ordinarily
     handled in the DE.
+    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/capsctrl.sh
+      # Set CAPS LOCK as control
+      setxkbmap -verbose  -option "ctrl:nocaps"
+      # To re-enable caps lock
+      # setxkbmap -option
+    #+end_src
     #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/emacswm.sh
+      echo "Running emacswm.sh script from `pwd`"
+      # Set CAPS LOCK key as CTRL
+      ~/bin/capsctrl.sh
       # Network Manager using CLI
       # ref https://core.docs.ubuntu.com/en/stacks/network/network-manager/docs/configure-wifi-connections
       # If you get 'secrets were required' when trying to connect, delete the connection first
       # sudo nmcli d wifi   # to scan wifi
       # nmcli connection delete moodseer-5G
       # nmcli d wifi connect moodseer-5G password blah
-
-      echo "Running emacswm.sh script from `pwd`"
-      # Set CAPS LOCK as control
-      setxkbmap -verbose  -option "ctrl:nocaps"
-      # To re-enable caps lock
-      # setxkbmap -option
 
       # Control scrolling direction - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
       #         Option "NaturalScrolling" "on"
@@ -1536,6 +1589,7 @@ Open man page in current window, rather than other window with
      (require 'org-habit)
      (setq org-habit-show-all-today t
            org-habit-show-habits nil
+           org-habit-graph-column 60
            org-habit-show-habits-only-for-today nil)
    #+end_src
 ** Org key mappings
@@ -2213,6 +2267,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Behavior
 #+begin_src emacs-lisp
   ;; make c-y pay attention to current level
+  (setq org-agenda-window-setup 'current-window)
   (setq org-yank-adjusted-subtrees t)
   ;; (setq org-yank-folded-subtrees nil)
   (setq org-insert-heading-respect-content t); new headings go AFTER CONTENT, even from the middle of content area
