@@ -367,49 +367,6 @@
  version-control nil)   
    #+end_src
 ** Window/buffer management
-*** Modeline and Title
-   Fancy icons may require fonts (like =texlive-fonts-extra=)
-
-    #+begin_src emacs-lisp
-;; show column number in modeline - in addition to line number
-(column-number-mode t)
-
-(setq frame-title-format (concat "emacs@" (system-name) " - %f; %b"))
-;; fancy git icon
-(defadvice vc-mode-line (after strip-backend () activate)
-  (when (stringp vc-mode)
-    (let ((gitlogo (replace-regexp-in-string "^ Git." "  " vc-mode)))
-      (setq vc-mode gitlogo))))
-
-    #+end_src
-*** Winner-mode and Windmove
-   #+begin_src emacs-lisp
-     ;; winner
-     (winner-mode 1)
-     ;; windmove
-     (windmove-default-keybindings)
-     (with-eval-after-load 'windmove
-       (windmove-default-keybindings)
-       ;; Make windmove work in org-mode:
-       (setq org-replace-disputed-keys t))
-     ;; (add-hook 'org-shiftup-final-hook 'windmove-up)
-     ;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
-     ;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
-     ;; (add-hook 'org-shiftright-final-hook 'windmove-right)))
-
-
-   #+end_src
-*** Window balancing
-    Use the Golden Ration
-#+begin_src emacs-lisp
-  ;; Resize active frame according to 'golden ratio' principles
-  (use-package zoom
-    :config
-    (custom-set-variables
-     '(zoom-ignored-buffer-name-regexps '("^*magit" "^*magit-diff" "^*COMMIT_EDITMSG" "^*Ediff.*" "^*help")))
-    (setq zoom-size '(0.618 . 0.618))
-    (zoom-mode t))
-#+end_src
 *** GJG full screen, movement, transparency
     #+begin_src emacs-lisp
       (defun revert-dammit () ; revert buffer without prompting
@@ -454,7 +411,7 @@
       ;;       )
       (require 'winum)
       (setq winum-scope                       'frame-local
-            winum-auto-assign-0-to-minibuffer t
+            winum-auto-assign-0-to-minibuffer nil
             winum-auto-setup-mode-line        t
        )
       (winum-mode)
@@ -610,6 +567,52 @@
            (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
 
     #+end_src
+*** Modeline and Title
+   Fancy icons may require fonts (like =texlive-fonts-extra=)
+
+    #+begin_src emacs-lisp
+      (require 'spaceline-config)
+      (spaceline-spacemacs-theme)
+
+      ;; show column number in modeline - in addition to line number
+      (column-number-mode t)
+
+      (setq frame-title-format (concat "emacs@" (system-name) " - %f; %b"))
+      ;; fancy git icon
+      (defadvice vc-mode-line (after strip-backend () activate)
+        (when (stringp vc-mode)
+          (let ((gitlogo (replace-regexp-in-string "^ Git." "  " vc-mode)))
+            (setq vc-mode gitlogo))))
+
+    #+end_src
+*** Winner-mode and Windmove
+   #+begin_src emacs-lisp
+     ;; winner
+     (winner-mode 1)
+     ;; windmove
+     (windmove-default-keybindings)
+     (with-eval-after-load 'windmove
+       (windmove-default-keybindings)
+       ;; Make windmove work in org-mode:
+       (setq org-replace-disputed-keys t))
+     ;; (add-hook 'org-shiftup-final-hook 'windmove-up)
+     ;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
+     ;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
+     ;; (add-hook 'org-shiftright-final-hook 'windmove-right)))
+
+
+   #+end_src
+*** Window balancing
+    Use the Golden Ration
+#+begin_src emacs-lisp
+  ;; Resize active frame according to 'golden ratio' principles
+  (use-package zoom
+    :config
+    (custom-set-variables
+     '(zoom-ignored-buffer-name-regexps '("^*magit" "^*magit-diff" "^*COMMIT_EDITMSG" "^*Ediff.*" "^*help")))
+    (setq zoom-size '(0.618 . 0.618))
+    (zoom-mode t))
+#+end_src
 *** Ibuffer FTW
     Saved filter groups provide a nice organization.
 
