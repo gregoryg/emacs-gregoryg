@@ -1331,17 +1331,17 @@
     TODO: Figure out zoom config for this.  The below is a hack - I should be able to
     disable Zoom in its config by matching mode or buffer name.
     #+begin_src emacs-lisp
-     (add-hook 'ediff-before-setup-hook
-               '(lambda ()
-                  (setq gjg/zoom-mode zoom-mode) ;; save current state
-                  (zoom-mode -1) ;; off unconditionally for Ediff
-                  ))
+      (add-hook 'ediff-before-setup-hook
+                '(lambda ()
+                   (setq gjg/zoom-mode zoom-mode) ;; save current state
+                   (zoom-mode -1) ;; off unconditionally for Ediff
+                   ))
 
-     (add-hook 'ediff-quit-hook
-               '(lambda ()
-                  (zoom-mode (if gjg/zoom-mode 1 -1)  ;; reset to prior state
-                  (message (format "gjg/zoom-mode is %s, zoom-mode is now %s" gjg/zoom-mode zoom-mode))
-                  )))
+      (add-hook 'ediff-quit-hook
+                '(lambda ()
+                   (zoom-mode (if gjg/zoom-mode 1 -1))  ;; reset to prior state
+                   (message (format "gjg/zoom-mode is %s, zoom-mode is now %s" gjg/zoom-mode zoom-mode))
+                   ))
     #+end_src
 ** Help and helpful modes
    #+begin_src emacs-lisp
