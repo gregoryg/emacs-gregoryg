@@ -725,6 +725,21 @@
   #+end_src
 * EXWM : The Emacs X Window Manager
    This crazy idea is better than I thought it could be!
+** Unresolved problems
+*** TODO Fix clipboard integration / behavior
+    + The problem is consistent cut/paste copy/yank behavior between Emacs windows and
+      managed X windows.
+      
+      + Copy text in Emacs -> paste to Firefox works in =char= mode
+        
+      + Copy text in Emacs -> paste to Firefox in =line= mode no worky - have to use right
+        mouse click or =S-<insert>  *how to define simulation key??*
+
+      + Copy text in Firefox =char= mode -> yank in Emacs works
+
+      + Copy text in Firefox =line= mode using =M-w= -> yank in Emacs works
+        
+
 ** System tray widgets
    EXWM has a system tray that can be enabled, and some panel widgets work with it.  For
    me, I'd rather either use pure Emacs or Linux shell methods of getting info and setting
@@ -739,6 +754,16 @@
 ** My specific config function
    I did not want =ido= integration and wanted to evolve my config.  So I copied the
    default config function and commenced modifying
+
+   This sets the amazing simulation keys.  What does that little miracle do for us? It
+   gives us Emacs keys in Firefox, that's what it does!  And other X applications, of
+   course.
+
+   So now we can hit =C-n= to move to the next line.  I use =C-s= to search in Firefox,
+   which translates to sending a =C-f=.  There's more I want to configure but I haven't
+   entirely figured out how this works in char mode, whether is works with the Super key
+   and so forth.
+
 #+begin_src emacs-lisp
   (defun gjg/exwm-config ()
     "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
@@ -767,7 +792,7 @@
     ;; Line-editing shortcuts
     (unless (get 'exwm-input-simulation-keys 'saved-value)
       (setq exwm-input-simulation-keys
-            '(([?\C-b] . [left])
+            '(([?\C-b] . left)
               ([?\C-f] . [right])
               ([?\C-p] . [up])
               ([?\C-n] . [down])
@@ -776,7 +801,12 @@
               ([?\M-v] . [prior])
               ([?\C-v] . [next])
               ([?\C-d] . [delete])
-              ([?\C-k] . [S-end delete]))))
+              ([?\C-k] . [S-end delete])
+            ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way to talk
+            ([?\M-w] . [?\C-c]) ; Copy that!
+            ([?\S-p] . [?\C-p]) ; TODO Print - not working 
+            ([?\C-y] . [?\C-v]) ; yank/paste
+            )))
     ;; Enable EXWM
     (exwm-enable)
     ;; ;; Configure Ido
@@ -844,7 +874,7 @@
                      ;; xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --mode 1920x1080 --same-as eDP-1
                      )))
         #+end_src
-*** Intellegintly rename new buffers
+*** Intelligently rename new buffers
     By default, each new window's buffer is named by the 'class name': So Firefox, Slack,
     Alacritty and so on.  This means that I will get similar buffer names for each new
     Firefox window: Firefox<1>, Firefox<2>....
@@ -1025,19 +1055,20 @@
     and so forth.
         
         #+begin_src emacs-lisp
-        (exwm-input-set-simulation-keys
-         '(([?\C-b] . left)
-           ([?\C-f] . right)
-           ([?\C-p] . up)
-           ([?\C-n] . down)
-           ([?\C-a] . home)
-           ([?\C-e] . end)
-           ([?\M-v] . prior)
-           ([?\C-v] . next)
-           ([?\C-s] . [?\C-f])
-           ([?\M-w] . [?\C-c])
-           ([?\S-p] . [?\C-p])
-           ))
+          ;; (exwm-input-set-simulation-keys
+          ;;  '(([?\C-b] . left)
+          ;;    ([?\C-f] . right)
+          ;;    ([?\C-p] . up)
+          ;;    ([?\C-n] . down)
+          ;;    ([?\C-a] . home)
+          ;;    ([?\C-e] . end)
+          ;;    ([?\M-v] . prior)
+          ;;    ([?\C-v] . next)
+          ;;    ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way to talk
+          ;;    ([?\M-w] . [?\C-c]) ; Copy that!
+          ;;    ([?\S-p] . [?\C-p]) ; TODO Print - not working 
+          ;;    ([?\C-y] . [?\C-v]) ; yank/paste
+          ;;    ))
         #+end_src
 ** And FINALLY - this must be last - close out the =when= clause
         #+begin_src emacs-lisp
