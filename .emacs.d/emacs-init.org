@@ -587,6 +587,8 @@
 
       ;; show column number in modeline - in addition to line number
       (column-number-mode t)
+      ;; do not show load average
+      (setq display-time-default-load-average nil)
 
       (setq frame-title-format (concat "emacs@" (system-name) " - %f; %b"))
       ;; fancy git icon
