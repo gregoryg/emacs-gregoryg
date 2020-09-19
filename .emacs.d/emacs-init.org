@@ -765,6 +765,86 @@
 
     One can either bring up Emacs with no DE and then run the panels as processes, or
     hijack the default window manager in one of the lightweight DEs.
+
+** Shell scripts that become useful when no DE is available
+*** Script to run autostart apps including compositor
+   I run a shell script which starts up key helper apps like albert, picom and
+   xscreensaver.  Also some common mouse and keyboard settings that are ordinarily
+   handled in the DE.
+   #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/capsctrl.sh
+     # Set CAPS LOCK as control
+     setxkbmap -verbose  -option "ctrl:nocaps"
+     # To re-enable caps lock
+     # setxkbmap -option
+   #+end_src
+   #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/emacswm.sh
+     echo "Running emacswm.sh script from `pwd`"
+     # Set CAPS LOCK key as CTRL
+     ~/bin/capsctrl.sh
+     # Network Manager using CLI
+     # ref https://core.docs.ubuntu.com/en/stacks/network/network-manager/docs/configure-wifi-connections
+     # If you get 'secrets were required' when trying to connect, delete the connection first
+     # sudo nmcli d wifi   # to scan wifi
+     # nmcli connection delete moodseer-5G
+     # nmcli d wifi connect moodseer-5G password blah
+
+     # Control scrolling direction - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
+     #         Option "NaturalScrolling" "on"
+
+     # Set scrolling direction to "natural"
+     xmodmap -e "pointer = 1 2 3 4 5"
+
+     # Make a left-handed mouse
+     # xmodmap -e "pointer = 3 2 1"
+
+     rm -vf nohup.out
+     echo Start compositor
+     nohup picom &
+
+     echo Starting notification daemon
+     nohup /usr/libexec/notification-daemon &
+
+     echo Start albert
+     nohup albert &
+     # nohup nm-applet&
+
+     echo Remember iflipb for changing buffers - and/or buffer-expose-mode
+     # xrandr --output eDP-1 --brightness .8
+
+     echo Start xscreensaver
+     xscreensaver &
+
+     ## Deal with LXDE if running as the WM
+     ## pcmanfm --desktop-off
+   #+end_src
+*** Scripts to rotate wallpaper on multiple screens
+    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/rotate-wallpapers.sh
+      # # Get active monitors
+      # IFS=$'\n'
+      # for monitor in `xrandr --listactivemonitors| egrep '^ *[0-9]'`
+      # do
+      #     cleaned=`echo $monitor | sed -E 's/^ *([0-9]+): [\+\*]+([-0-9a-zA-Z]+) ([0-9]+)[^x]*x([0-9]+).+/\1 \2 \3x\4/'`
+      #     # echo $cleaned
+      #     IFS=' ' read mon name res <<< ${cleaned}
+      #     echo "Monitor #${mon} named ${name} has resolution ${res}"
+      #     # naiively assume correct dir exists
+      #     DISPLAY=:0 /usr/bin/feh --xinerama-index ${mon} --bg-max --randomize ~/backgrounds/safe/${res}/
+      # done
+
+      # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 1 --bg-max --randomize ~/backgrounds/safe/1920x1200/
+      # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 0 --bg-max --randomize ~/backgrounds/safe/3440x1440/
+
+      DISPLAY=:0 /usr/bin/feh --bg-fill --randomize --recursive  ~/backgrounds/safe/
+    #+end_src
+    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/schedule-rotate-wallpapers.sh
+      #!/usr/bin/env bash
+      while true
+            do
+                # DISPLAY=:0.0 /usr/bin/feh --bg-max --randomize ~/backgrounds/safe/1920x1200/
+                /home/gregj/bin/rotate-wallpapers.sh 
+                sleep 900
+      done
+    #+end_src
 ** My specific config function
    I did not want =ido= integration and wanted to evolve my config.  So I copied the
    default config function and commenced modifying
@@ -1002,63 +1082,6 @@
           (display-time)
           (display-battery-mode 1)
         #+end_src
-*** Run autostart apps including compositor
-    I run a shell script which starts up key helper apps like albert, picom and
-    xscreensaver.  Also some common mouse and keyboard settings that are ordinarily
-    handled in the DE.
-    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/capsctrl.sh
-      # Set CAPS LOCK as control
-      setxkbmap -verbose  -option "ctrl:nocaps"
-      # To re-enable caps lock
-      # setxkbmap -option
-    #+end_src
-    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/emacswm.sh
-      echo "Running emacswm.sh script from `pwd`"
-      # Set CAPS LOCK key as CTRL
-      ~/bin/capsctrl.sh
-      # Network Manager using CLI
-      # ref https://core.docs.ubuntu.com/en/stacks/network/network-manager/docs/configure-wifi-connections
-      # If you get 'secrets were required' when trying to connect, delete the connection first
-      # sudo nmcli d wifi   # to scan wifi
-      # nmcli connection delete moodseer-5G
-      # nmcli d wifi connect moodseer-5G password blah
-
-      # Control scrolling direction - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
-      #         Option "NaturalScrolling" "on"
-
-      # Set scrolling direction to "natural"
-      xmodmap -e "pointer = 1 2 3 4 5"
-
-      # Make a left-handed mouse
-      # xmodmap -e "pointer = 3 2 1"
-
-      rm -vf nohup.out
-      echo Start compositor
-      nohup picom &
-
-      echo Starting notification daemon
-      nohup /usr/libexec/notification-daemon &
-
-      echo Start albert
-      nohup albert &
-      # nohup nm-applet&
-
-      echo Remember iflipb for changing buffers - and/or buffer-expose-mode
-      # xrandr --output eDP-1 --brightness .8
-
-      echo Start xscreensaver
-      xscreensaver &
-
-      ## Deal with LXDE if running as the WM
-      ## pcmanfm --desktop-off
-    #+end_src
-        #+begin_src emacs-lisp
-          (call-process-shell-command "~/bin/emacswm.sh")
-          ;; The emacswm.sh script starts the compositor, so make sure we start out at full opacity to avoid screen brightness confusion
-          (set-opacity 100)
-          (setenv "EDITOR" "emacsclient")
-        #+end_src
-
 *** Set the amazing simulation keys
     Now what does this little miracle do for us?  It gives us Emacs keys in Firefox,
     that's what it does!  And other X applications, of course.
@@ -1084,6 +1107,14 @@
           ;;    ([?\C-y] . [?\C-v]) ; yank/paste
           ;;    ))
         #+end_src
+*** Start the OS processes
+    #+begin_src emacs-lisp
+      (call-process-shell-command "~/bin/emacswm.sh")
+      ;; The emacswm.sh script starts the compositor, so make sure we start out at full opacity to avoid screen brightness confusion
+      (set-opacity 100)
+      (setenv "EDITOR" "emacsclient")
+    #+end_src
+
 ** And FINALLY - this must be last - close out the =when= clause
         #+begin_src emacs-lisp
         ) ;; when gjg/exwm-needed-p
@@ -1118,6 +1149,7 @@
 
      (setq-default projectile--mode-line " Prj")
      ;; (setq projectile-completion-system 'ivy)
+     (setq projectile-completion-system 'selectrum-completing-read)
      (setq projectile-mode-line-prefix "Prj")
      (setq projectile-switch-project-action #'projectile-dired)
      (setq projectile-switch-project-action #'projectile-dired)
@@ -2002,6 +2034,8 @@ Simply add the new block param =:keep-windows= to use this functionality
                               "~/projects/private-orgmode/habits.org"))
      (setq org-agenda-files '("~/projects/private-orgmode/rancher/rancher.org.gpg"
                               "~/projects/private-orgmode/rancher/engagements/"))
+     (setq org-agenda-files (directory-files-recursively "~/projects/private-orgmode/rancher/" org-agenda-file-regexp))
+     ;;                        "~/org/" "\\.org$"))
      ;; Set basic org-mode keys
      ;;(setq org-agenda-span 'day)
      ;;(setq org-agenda-skip-scheduled-if-done t)
@@ -2035,11 +2069,12 @@ Simply add the new block param =:keep-windows= to use this functionality
                         ;;                     ,(concat gjg/org-agenda-directory "rancher/ramp.org")))
                         )
                        )
-               (todo "TODO"
-                       ((org-agenda-span 'day)
-                        (org-deadline-warning-days 21)
-                        ;; (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")))
-                        ))))
+               ;; (todo "TODO"
+               ;;         ((org-agenda-span 'day)
+               ;;          (org-deadline-warning-days 21)
+               ;;          ;; (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")))
+               ;;          ))
+               ))
              ("A" "Awesome Work/Project Focus"
               ((agenda ""
                        ((org-agenda-span 'day)
