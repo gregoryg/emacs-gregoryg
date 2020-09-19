@@ -149,6 +149,17 @@
   (setq w32-get-true-file-attributes nil)
   (remove-hook 'find-file-hook 'vc-find-file-hook))
     #+end_src
+** Linux things
+   Fix to make Org export to HTML and open do the right thing: open in the preferred
+   browser rather than just HTML in an Emacs buffer
+   #+begin_src emacs-lisp
+     (when (eq window-system 'x)
+       (setq org-file-apps
+             '((auto-mode . emacs)
+               ("\\.mm\\'" . default)
+               ("\\.x?html?\\'" . "/usr/bin/firefox %s")
+               ("\\.pdf\\'" . default))))
+   #+end_src
 ** Chrome OS / Crostini things
    Assure that web links will open in Chrome OS rather than invoking a browser
    installed in the Linux container
