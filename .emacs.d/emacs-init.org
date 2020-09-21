@@ -2032,9 +2032,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                               "~/projects/private-orgmode/projects.org"
                               "~/projects/private-orgmode/next.org"
                               "~/projects/private-orgmode/habits.org"))
-     (setq org-agenda-files '("~/projects/private-orgmode/rancher/rancher.org.gpg"
-                              "~/projects/private-orgmode/rancher/engagements/"))
-     (setq org-agenda-files (directory-files-recursively "~/projects/private-orgmode/rancher/" org-agenda-file-regexp))
+     (setq gjg/work-agenda-files (directory-files-recursively "~/projects/private-orgmode/rancher/" org-agenda-file-regexp))
      ;;                        "~/org/" "\\.org$"))
      ;; Set basic org-mode keys
      ;;(setq org-agenda-span 'day)
@@ -2074,7 +2072,9 @@ Simply add the new block param =:keep-windows= to use this functionality
                ;;          (org-deadline-warning-days 21)
                ;;          ;; (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")))
                ;;          ))
-               ))
+               )
+              ((org-agenda-files gjg/work-agenda-files))
+              )
              ("A" "Awesome Work/Project Focus"
               ((agenda ""
                        ((org-agenda-span 'day)
@@ -2101,10 +2101,10 @@ Simply add the new block param =:keep-windows= to use this functionality
              ;; TODO Filter on fitness tag
              ("f" "Fitness"
               ((agenda "" ((org-agenda-files '(,(concat gjg/org-agenda-directory "habits.org")))
-                           (org-agenda-span 'day)))
-               ))
+                           (org-agenda-span 'day))))
+              ((org-agenda-files gjg/personal-org-agenda-files)))
              ("h" "thing TODO at Home"
-              ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"")
+              ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
                (agenda "" ((org-agenda-ndays 1)
                            (org-agenda-span 'day)
                            (org-agenda-sorting-strategy
@@ -2113,7 +2113,9 @@ Simply add the new block param =:keep-windows= to use this functionality
                (tags "reading")
                (tags "writing")
                (tags-todo "refile"))
-              ((org-agenda-tag-filter-preset '("-project" "-@office"))))
+              ((org-agenda-tag-filter-preset '("-project" "-@office"))
+               (org-agenda-files gjg/personal-org-agenda-files)
+               ))
              ("c" "Aaron's simple view"
               ((tags "PRIORITY=\"A\""
                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
@@ -2130,10 +2132,7 @@ Simply add the new block param =:keep-windows= to use this functionality
              ("i" "Inbox review"
               ((todo "TODO"
                      ((org-agenda-overriding-header "Review and Refile")
-                      (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))
-                      )
-                     ))
-              )
+                      (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))))))
              ("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
              ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
              ("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
