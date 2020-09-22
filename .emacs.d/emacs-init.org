@@ -766,156 +766,6 @@
     One can either bring up Emacs with no DE and then run the panels as processes, or
     hijack the default window manager in one of the lightweight DEs.
 
-** Shell scripts that become useful when no DE is available
-*** Script to run autostart apps including compositor
-   I run a shell script which starts up key helper apps like albert, picom and
-   xscreensaver.  Also some common mouse and keyboard settings that are ordinarily
-   handled in the DE.
-   #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/capsctrl.sh
-     # Set CAPS LOCK as control
-     setxkbmap -verbose  -option "ctrl:nocaps"
-     # To re-enable caps lock
-     # setxkbmap -option
-   #+end_src
-   #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/emacswm.sh
-     echo "Running emacswm.sh script from `pwd`"
-     # Set CAPS LOCK key as CTRL
-     ~/bin/capsctrl.sh
-     # Network Manager using CLI
-     # ref https://core.docs.ubuntu.com/en/stacks/network/network-manager/docs/configure-wifi-connections
-     # If you get 'secrets were required' when trying to connect, delete the connection first
-     # sudo nmcli d wifi   # to scan wifi
-     # nmcli connection delete moodseer-5G
-     # nmcli d wifi connect moodseer-5G password blah
-
-     # Control scrolling direction - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
-     #         Option "NaturalScrolling" "on"
-
-     # Set scrolling direction to "natural"
-     xmodmap -e "pointer = 1 2 3 4 5"
-
-     # Make a left-handed mouse
-     # xmodmap -e "pointer = 3 2 1"
-
-     rm -vf nohup.out
-     echo Start compositor
-     nohup picom &
-
-     echo Starting notification daemon
-     nohup /usr/libexec/notification-daemon &
-
-     echo Start albert
-     nohup albert &
-     # nohup nm-applet&
-
-     echo Remember iflipb for changing buffers - and/or buffer-expose-mode
-     # xrandr --output eDP-1 --brightness .8
-
-     echo Start xscreensaver
-     xscreensaver &
-
-     ## Deal with LXDE if running as the WM
-     ## pcmanfm --desktop-off
-   #+end_src
-*** Scripts to rotate wallpaper on multiple screens
-    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/rotate-wallpapers.sh
-      # # Get active monitors
-      # IFS=$'\n'
-      # for monitor in `xrandr --listactivemonitors| egrep '^ *[0-9]'`
-      # do
-      #     cleaned=`echo $monitor | sed -E 's/^ *([0-9]+): [\+\*]+([-0-9a-zA-Z]+) ([0-9]+)[^x]*x([0-9]+).+/\1 \2 \3x\4/'`
-      #     # echo $cleaned
-      #     IFS=' ' read mon name res <<< ${cleaned}
-      #     echo "Monitor #${mon} named ${name} has resolution ${res}"
-      #     # naiively assume correct dir exists
-      #     DISPLAY=:0 /usr/bin/feh --xinerama-index ${mon} --bg-max --randomize ~/backgrounds/safe/${res}/
-      # done
-
-      # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 1 --bg-max --randomize ~/backgrounds/safe/1920x1200/
-      # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 0 --bg-max --randomize ~/backgrounds/safe/3440x1440/
-
-      DISPLAY=:0 /usr/bin/feh --bg-fill --randomize --recursive  ~/backgrounds/safe/
-    #+end_src
-    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/schedule-rotate-wallpapers.sh
-      #!/usr/bin/env bash
-      while true
-            do
-                # DISPLAY=:0.0 /usr/bin/feh --bg-max --randomize ~/backgrounds/safe/1920x1200/
-                /home/gregj/bin/rotate-wallpapers.sh 
-                sleep 900
-      done
-    #+end_src
-** My specific config function
-   I did not want =ido= integration and wanted to evolve my config.  So I copied the
-   default config function and commenced modifying
-
-   This sets the amazing simulation keys.  What does that little miracle do for us? It
-   gives us Emacs keys in Firefox, that's what it does!  And other X applications, of
-   course.
-
-   So now we can hit =C-n= to move to the next line.  I use =C-s= to search in Firefox,
-   which translates to sending a =C-f=.  There's more I want to configure but I haven't
-   entirely figured out how this works in char mode, whether is works with the Super key
-   and so forth.
-
-#+begin_src emacs-lisp
-  (defun gjg/exwm-config ()
-    "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
-    ;; Set the initial workspace number.
-    (unless (get 'exwm-workspace-number 'saved-value)
-      (setq exwm-workspace-number 1)) ; GJG changed from default
-    ;; Global keybindings.
-    (unless (get 'exwm-input-global-keys 'saved-value)
-      (setq exwm-input-global-keys
-            `(
-              ;; 's-r': Reset (to line-mode).
-              ([?\s-r] . exwm-reset)
-              ;; 's-w': Switch workspace.
-              ([?\s-w] . exwm-workspace-switch)
-              ;; 's-&': Launch application. - poor man's albert/launchy
-              ([?\s-&] . (lambda (command)
-                           (interactive (list (read-shell-command "$ ")))
-                           (start-process-shell-command command nil command)))
-              ;; 's-N': Switch to certain workspace.
-              ,@(mapcar (lambda (i)
-                          `(,(kbd (format "s-%d" i)) .
-                            (lambda ()
-                              (interactive)
-                              (exwm-workspace-switch-create ,i))))
-                        (number-sequence 0 9)))))
-    ;; Line-editing shortcuts
-    (unless (get 'exwm-input-simulation-keys 'saved-value)
-      (setq exwm-input-simulation-keys
-            '(([?\C-b] . left)
-              ([?\C-f] . [right])
-              ([?\C-p] . [up])
-              ([?\C-n] . [down])
-              ([?\C-a] . [home])
-              ([?\C-e] . [end])
-              ([?\M-v] . [prior])
-              ([?\C-v] . [next])
-              ([?\C-d] . [delete])
-              ([?\C-k] . [S-end delete])
-            ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way to talk
-            ([?\M-w] . [?\C-c]) ; Copy that!
-            ([?\S-p] . [?\C-p]) ; TODO Print - not working 
-            ([?\C-y] . [?\C-v]) ; yank/paste
-            )))
-    ;; Enable EXWM
-    (exwm-enable)
-    ;; ;; Configure Ido
-    ;; (exwm-config-ido)
-    ;; Other configurations
-    (exwm-config-misc))
-#+end_src
-** Define special logout if using LXDE
-#+begin_src emacs-lisp
-  (defun exwm-logout ()
-    (interactive)
-    ;; (recentf-save-list)
-    (save-some-buffers)
-    (start-process-shell-command "logout" nil "lxsession-logout"))
-#+end_src
 ** To launch or not to launch
    My configuration tests for the existence of a window manager.  If one is already
    running, just skip all the EXWM setup and bring up a "normal" Emacs instance.
@@ -937,6 +787,156 @@
          (and (get-buffer "*window-manager-error*")
               (eq window-system 'x)))
    (when gjg/exwm-needed-p
+ #+end_src
+*** Shell scripts that become useful when no DE is available
+**** Script to run autostart apps including compositor
+    I run a shell script which starts up key helper apps like albert, picom and
+    xscreensaver.  Also some common mouse and keyboard settings that are ordinarily
+    handled in the DE.
+    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/capsctrl.sh
+      # Set CAPS LOCK as control
+      setxkbmap -verbose  -option "ctrl:nocaps"
+      # To re-enable caps lock
+      # setxkbmap -option
+    #+end_src
+    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/emacswm.sh
+      echo "Running emacswm.sh script from `pwd`"
+      # Set CAPS LOCK key as CTRL
+      ~/bin/capsctrl.sh
+      # Network Manager using CLI
+      # ref https://core.docs.ubuntu.com/en/stacks/network/network-manager/docs/configure-wifi-connections
+      # If you get 'secrets were required' when trying to connect, delete the connection first
+      # sudo nmcli d wifi   # to scan wifi
+      # nmcli connection delete moodseer-5G
+      # nmcli d wifi connect moodseer-5G password blah
+
+      # Control scrolling direction - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
+      #         Option "NaturalScrolling" "on"
+
+      # Set scrolling direction to "natural"
+      xmodmap -e "pointer = 1 2 3 4 5"
+
+      # Make a left-handed mouse
+      # xmodmap -e "pointer = 3 2 1"
+
+      rm -vf nohup.out
+      echo Start compositor
+      nohup picom &
+
+      echo Starting notification daemon
+      nohup /usr/libexec/notification-daemon &
+
+      echo Start albert
+      nohup albert &
+      # nohup nm-applet&
+
+      echo Remember iflipb for changing buffers - and/or buffer-expose-mode
+      # xrandr --output eDP-1 --brightness .8
+
+      echo Start xscreensaver
+      xscreensaver &
+
+      ## Deal with LXDE if running as the WM
+      ## pcmanfm --desktop-off
+    #+end_src
+**** Scripts to rotate wallpaper on multiple screens
+     #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/rotate-wallpapers.sh
+       # # Get active monitors
+       # IFS=$'\n'
+       # for monitor in `xrandr --listactivemonitors| egrep '^ *[0-9]'`
+       # do
+       #     cleaned=`echo $monitor | sed -E 's/^ *([0-9]+): [\+\*]+([-0-9a-zA-Z]+) ([0-9]+)[^x]*x([0-9]+).+/\1 \2 \3x\4/'`
+       #     # echo $cleaned
+       #     IFS=' ' read mon name res <<< ${cleaned}
+       #     echo "Monitor #${mon} named ${name} has resolution ${res}"
+       #     # naiively assume correct dir exists
+       #     DISPLAY=:0 /usr/bin/feh --xinerama-index ${mon} --bg-max --randomize ~/backgrounds/safe/${res}/
+       # done
+
+       # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 1 --bg-max --randomize ~/backgrounds/safe/1920x1200/
+       # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 0 --bg-max --randomize ~/backgrounds/safe/3440x1440/
+
+       DISPLAY=:0 /usr/bin/feh --bg-fill --randomize --recursive  ~/backgrounds/safe/
+     #+end_src
+     #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/schedule-rotate-wallpapers.sh
+       #!/usr/bin/env bash
+       while true
+             do
+                 # DISPLAY=:0.0 /usr/bin/feh --bg-max --randomize ~/backgrounds/safe/1920x1200/
+                 /home/gregj/bin/rotate-wallpapers.sh 
+                 sleep 900
+       done
+     #+end_src
+*** My specific config function
+    I did not want =ido= integration and wanted to evolve my config.  So I copied the
+    default config function and commenced modifying
+
+    This sets the amazing simulation keys.  What does that little miracle do for us? It
+    gives us Emacs keys in Firefox, that's what it does!  And other X applications, of
+    course.
+
+    So now we can hit =C-n= to move to the next line.  I use =C-s= to search in Firefox,
+    which translates to sending a =C-f=.  There's more I want to configure but I haven't
+    entirely figured out how this works in char mode, whether is works with the Super key
+    and so forth.
+
+ #+begin_src emacs-lisp
+   (defun gjg/exwm-config ()
+     "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
+     ;; Set the initial workspace number.
+     (unless (get 'exwm-workspace-number 'saved-value)
+       (setq exwm-workspace-number 1)) ; GJG changed from default
+     ;; Global keybindings.
+     (unless (get 'exwm-input-global-keys 'saved-value)
+       (setq exwm-input-global-keys
+             `(
+               ;; 's-r': Reset (to line-mode).
+               ([?\s-r] . exwm-reset)
+               ;; 's-w': Switch workspace.
+               ([?\s-w] . exwm-workspace-switch)
+               ;; 's-&': Launch application. - poor man's albert/launchy
+               ([?\s-&] . (lambda (command)
+                            (interactive (list (read-shell-command "$ ")))
+                            (start-process-shell-command command nil command)))
+               ;; 's-N': Switch to certain workspace.
+               ,@(mapcar (lambda (i)
+                           `(,(kbd (format "s-%d" i)) .
+                             (lambda ()
+                               (interactive)
+                               (exwm-workspace-switch-create ,i))))
+                         (number-sequence 0 9)))))
+     ;; Line-editing shortcuts
+     (unless (get 'exwm-input-simulation-keys 'saved-value)
+       (setq exwm-input-simulation-keys
+             '(([?\C-b] . left)
+               ([?\C-f] . [right])
+               ([?\C-p] . [up])
+               ([?\C-n] . [down])
+               ([?\C-a] . [home])
+               ([?\C-e] . [end])
+               ([?\M-v] . [prior])
+               ([?\C-v] . [next])
+               ([?\C-d] . [delete])
+               ([?\C-k] . [S-end delete])
+             ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way to talk
+             ([?\M-w] . [?\C-c]) ; Copy that!
+             ([?\S-p] . [?\C-p]) ; TODO Print - not working 
+             ([?\C-y] . [?\C-v]) ; yank/paste
+             )))
+     ;; Enable EXWM
+     (exwm-enable)
+     ;; ;; Configure Ido
+     ;; (exwm-config-ido)
+     ;; Other configurations
+     (exwm-config-misc))
+ #+end_src
+*** Define special logout if using LXDE
+ #+begin_src emacs-lisp
+   (defun exwm-logout ()
+     (interactive)
+     ;; (recentf-save-list)
+     (save-some-buffers)
+     (start-process-shell-command "logout" nil "lxsession-logout"))
  #+end_src
 *** Require libs and run my custom conifg
   #+begin_src emacs-lisp
