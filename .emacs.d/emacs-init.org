@@ -2007,7 +2007,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                  :match nil 
                  :emphasize t
                  :link t
-                 :narrow 55! 
+                 :narrow 75! 
                  :indent t 
                  :hidefiles nil 
                  :formula nil 
