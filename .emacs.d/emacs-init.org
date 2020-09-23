@@ -436,7 +436,8 @@
                (other-window 1))
               ((> 10 winum--window-count)
                ;; jump immediately to window
-               (let ((jwin (read-number (format "Jump to window num[1-%d]: " winum--window-count))))
+               ;; (let ((jwin (read-number (format "Jump to window num[1-%d]: " winum--window-count))))
+               (let ((jwin (string-to-number (char-to-string (read-char (format "Jump to window num[1-%d]: " winum--window-count))))))
                  (message "Jumping to %d" jwin)
                  (winum-select-window-by-number jwin)))
               (t
