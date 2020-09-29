@@ -1139,6 +1139,19 @@
    #+begin_src emacs-lisp
 (server-start)
    #+end_src
+** Eshell
+   Okay, not yet "commonly used" (as of [2020-09-23 Wed]) ... but it appears to be
+   awesome.
+
+   Ref Howard Abrams' [[https://www.youtube.com/watch?v=RhYNu6i_uY4&t=1548s][Introduction to EShell - YouTube]] 
+
+   + Eshell uses =term= when a non-line-mode command is invoked.  Set it so that the
+     =term= window goes away when the process ends.  Also make various =git= things work
+     nicely.
+   #+begin_src emacs-lisp
+     (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
+     (setq eshell-destroy-buffer-when-process-dies t)
+   #+end_src
 ** Projectile
    #+begin_src emacs-lisp
      (defun gjg/projectile-minimal-mode-line ()
