@@ -638,7 +638,8 @@
             '(("home"
                ("Org and Markdown" (or (mode . org-mode)
                                        (mode . markdown-mode)))
-               ("Shell" (mode . shell-mode))
+               ("Shells" (or (mode . shell-mode)
+                             (mode . eshell-mode)))
                ("EXWM X Apps" (mode . exwm-mode))
                ("Configs" (or (derived-mode .  conf-mode)
                               (mode . yaml-mode)
