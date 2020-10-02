@@ -2157,11 +2157,16 @@ Simply add the new block param =:keep-windows= to use this functionality
              ("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
              ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
              ("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
-             ("r" "Clock report" agenda ""
-              ((org-agenda-ndays 1)
+             ("rc" "Clock report" agenda ""
+              ((org-agenda-files gjg/work-agenda-files)
+               (org-agenda-ndays 1)
                (org-agenda-start-with-clockreport-mode t)
                (org-agenda-time-grid nil)
                (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
+             ("rt" "Rancher TODOs" alltodo ""
+              ((org-agenda-files gjg/work-agenda-files)
+               (org-agenda-ndays 1)
+              ))
              ))
 
      ;; org-agenda: some handy keys
