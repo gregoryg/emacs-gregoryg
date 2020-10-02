@@ -2050,9 +2050,11 @@ Simply add the new block param =:keep-windows= to use this functionality
                               "~/projects/private-orgmode/someday.org"
                               "~/projects/private-orgmode/projects.org"
                               "~/projects/private-orgmode/next.org"
+                              "~/projects/private-orgmode/fit.org"
                               "~/projects/private-orgmode/habits.org"))
      (setq gjg/work-agenda-files (directory-files-recursively "~/projects/private-orgmode/rancher/" org-agenda-file-regexp))
-     ;;                        "~/org/" "\\.org$"))
+     ;; Set agenda files to personal, override in work-related templates
+     (setq org-agenda-files gjg/personal-org-agenda-files)
      ;; Set basic org-mode keys
      ;;(setq org-agenda-span 'day)
      ;;(setq org-agenda-skip-scheduled-if-done t)
