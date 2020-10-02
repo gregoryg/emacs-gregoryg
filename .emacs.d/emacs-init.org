@@ -801,10 +801,14 @@
       # To re-enable caps lock
       # setxkbmap -option
     #+end_src
+    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/numlockon.sh
+      numlockx on
+    #+end_src
     #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/emacswm.sh
       echo "Running emacswm.sh script from `pwd`"
       # Set CAPS LOCK key as CTRL
       ~/bin/capsctrl.sh
+      ~/bin/numlockon.sh
       # Network Manager using CLI
       # ref https://core.docs.ubuntu.com/en/stacks/network/network-manager/docs/configure-wifi-connections
       # If you get 'secrets were required' when trying to connect, delete the connection first
