@@ -2084,14 +2084,11 @@ Simply add the new block param =:keep-windows= to use this functionality
               ((agenda ""
                        ((org-agenda-span 'day)
                         (org-deadline-warning-days 21)
-                        ;; (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")
-                        ;;                     ,(concat gjg/org-agenda-directory "rancher/ramp.org")))
                         )
                        )
                ;; (todo "TODO"
                ;;         ((org-agenda-span 'day)
                ;;          (org-deadline-warning-days 21)
-               ;;          ;; (org-agenda-files '(,(concat gjg/org-agenda-directory "rancher/rancher.org.gpg")))
                ;;          ))
                )
               ((org-agenda-files gjg/work-agenda-files))
@@ -2102,28 +2099,22 @@ Simply add the new block param =:keep-windows= to use this functionality
                         (org-deadline-warning-days 365)))
                (todo "TODO"
                      ((org-agenda-overriding-header "To Refile")
-                      (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))))
+                      ))
                (todo "NEXT"
                      ((org-agenda-overriding-header "In Progress")
-                      (org-agenda-files '(,(concat gjg/org-agenda-directory "someday.org")
-                                          ,(concat gjg/org-agenda-directory "projects.org")
-                                          ,(concat gjg/org-agenda-directory "next.org")))
                       ))
                (todo "TODO"
                      ((org-agenda-overriding-header "Projects")
-                      (org-agenda-files '(,(concat gjg/org-agenda-directory "projects.org")))
                       ))
                (todo "TODO"
                      ((org-agenda-overriding-header "One-off Tasks")
-                      (org-agenda-files '(,(concat gjg/org-agenda-directory "next.org")))
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))))
                ((org-agenda-tag-filter-preset '("-fitness"))
                 ))
              ;; TODO Filter on fitness tag
              ("f" "Fitness"
-              ((agenda "" ((org-agenda-files '(,(concat gjg/org-agenda-directory "habits.org")))
-                           (org-agenda-span 'day))))
-              ((org-agenda-files gjg/personal-org-agenda-files)))
+              ((agenda "" (
+                           (org-agenda-span 'day)))))
              ("h" "thing TODO at Home"
               ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
                (agenda "" ((org-agenda-ndays 1)
@@ -2135,7 +2126,6 @@ Simply add the new block param =:keep-windows= to use this functionality
                (tags "writing")
                (tags-todo "refile"))
               ((org-agenda-tag-filter-preset '("-project" "-@office"))
-               (org-agenda-files gjg/personal-org-agenda-files)
                ))
              ("c" "Aaron's simple view"
               ((tags "PRIORITY=\"A\""
