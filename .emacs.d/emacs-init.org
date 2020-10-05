@@ -2021,6 +2021,7 @@ Simply add the new block param =:keep-windows= to use this functionality
       (setq org-clocktable-defaults
             '(:maxlevel 2 
                  :lang "en" 
+                 :properties ("harvest")
                  :scope file 
                  :block nil 
                  :wstart 1 
