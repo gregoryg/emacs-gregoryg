@@ -741,6 +741,14 @@
   #+end_src
 * EXWM : The Emacs X Window Manager
    This crazy idea is better than I thought it could be!
+** System things that change
+*** Browser should open new windows rather than tabs
+    Doing this allows Emacs to search window/tab titles.  It's a weird change at first,
+    but it's a much better experience in a tiling window manager that has good search.
+
+    In Firefox, you can go to =about:preferences=.  Under the *Tabs*, uncheck =Open links
+    in tabs instead of new windows=
+
 ** Unresolved problems
 *** TODO Fix clipboard integration / behavior
     + The problem is consistent cut/paste copy/yank behavior between Emacs windows and
