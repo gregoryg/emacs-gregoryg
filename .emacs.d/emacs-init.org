@@ -788,6 +788,10 @@
     One can either bring up Emacs with no DE and then run the panels as processes, or
     hijack the default window manager in one of the lightweight DEs.
 
+*** TODO Determine full set of panel widgets
+    + Method: launch =xfce4-session= and look at the large set of widget processes it
+      launches for the panel
+
 ** To launch or not to launch
    My configuration tests for the existence of a window manager.  If one is already
    running, just skip all the EXWM setup and bring up a "normal" Emacs instance.
