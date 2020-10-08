@@ -2405,7 +2405,7 @@ Simply add the new block param =:keep-windows= to use this functionality
   (setq org-yank-adjusted-subtrees t)
   ;; (setq org-yank-folded-subtrees nil)
   (setq org-insert-heading-respect-content t); new headings go AFTER CONTENT, even from the middle of content area
-  (setq org-indirect-buffer-display 'current-window)
+  (setq org-indirect-buffer-display 'other-window)
   (setq org-reverse-note-order t) ; notes go at the top
   (setq org-return-follows-link t)
   (setq org-treat-S-cursor-todo-selection-as-state-change nil) ;; use S-arrow without having to log state change!
