@@ -379,6 +379,7 @@
    #+end_src
 ** Window/buffer management
 *** GJG full screen, movement, transparency
+    TODO: figure out global Super key chords in exwm map vs global key map
     #+begin_src emacs-lisp
       (defun revert-dammit () ; revert buffer without prompting
         (interactive)
@@ -446,6 +447,17 @@
                  (winum-select-window-by-number jwin)))
                ))
       (bind-key "C-x o" 'gjg/other-window-with-winum)
+      (bind-key "s-o" 'gjg/other-window-with-winum)
+      (bind-key "s-b" 'gjg/switch-to-other-buffer)
+      (bind-key "s-<up>" 'windmove-up)
+      (bind-key "s-<down>" 'windmove-down)
+      (bind-key "s-<right>" 'windmove-right)
+      (bind-key "s-<left>" 'windmove-left)
+
+      ;; (bind-key "s-0" 'delete-window)
+      ;; (bind-key "s-1" 'delete-other-windows)
+      ;; (bind-key "s-2" 'gjg/split-window-below)
+      ;; (bind-key "s-3" 'gjg/split-window-right)
 
       ;; (set-face-attribute 'winum-face nil :foreground "deep sky blue")
       (defun gjg/widen-ask-if-indirect ()
@@ -1035,12 +1047,23 @@
     #+begin_src emacs-lisp
       ;; lock screen
       (exwm-input-set-key (kbd "s-i")  ;; super/windows i
-                            'exwm-input-toggle-keyboard)
+                          'exwm-input-toggle-keyboard)
       ;; Toggle EXWM input mode
       (exwm-input-set-key (kbd "s-l")  ;; super/windows l
                           (lambda ()
                             (interactive)
                             (call-process-shell-command "xscreensaver-command -lock")))
+      (exwm-input-set-key (kbd "s-o") 'gjg/other-window-with-winum)
+      (exwm-input-set-key (kbd "s-b") 'gjg/switch-to-other-buffer)
+      (exwm-input-set-key (kbd "s-0") 'delete-window)
+      (exwm-input-set-key (kbd "s-1") 'delete-other-windows)
+      (exwm-input-set-key (kbd "s-2") 'gjg/split-window-below)
+      (exwm-input-set-key (kbd "s-3") 'gjg/split-window-right)
+      (exwm-input-set-key "s-<up>" 'windmove-up)
+      (exwm-input-set-key "s-<down>" 'windmove-down)
+      (exwm-input-set-key "s-<right>" 'windmove-right)
+      (exwm-input-set-key "s-<left>" 'windmove-left)
+
     #+end_src
 *** Deal with brightness and volume, since we don't have a DE
 
