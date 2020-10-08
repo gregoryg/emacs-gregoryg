@@ -2068,156 +2068,159 @@ Simply add the new block param =:keep-windows= to use this functionality
                  :formatter nil)
             )
     #+end_src
+*** Custom Agenda definitions
+       TODO why does starting with clocktable and/or log-mode not work??
+
    #+begin_src emacs-lisp
-          ;; Make sure we match encrypted files for Agenda
-          ;; ref https://emacs.stackexchange.com/a/36543/418
-          (unless (string-match-p "\\.gpg" org-agenda-file-regexp)
-            (setq org-agenda-file-regexp
-                  (replace-regexp-in-string "\\\\\\.org" "\\\\.org\\\\(\\\\.gpg\\\\)?"
-                                            org-agenda-file-regexp)))
-          (global-set-key (kbd "C-c a") 'org-agenda)
-          (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
-          (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
-                                   "~/projects/private-orgmode/inbox.org"
-                                   "~/projects/private-orgmode/someday.org"
-                                   "~/projects/private-orgmode/projects.org"
-                                   "~/projects/private-orgmode/next.org"
-                                   "~/projects/private-orgmode/fit.org"
-                                   "~/projects/private-orgmode/habits.org"))
-          (setq gjg/work-agenda-files (directory-files-recursively "~/projects/private-orgmode/rancher/" org-agenda-file-regexp))
-          ;; Set agenda files to personal, override in work-related templates
-          (setq org-agenda-files gjg/personal-org-agenda-files)
-          ;; Set basic org-mode keys
-          ;;(setq org-agenda-span 'day)
-          ;;(setq org-agenda-skip-scheduled-if-done t)
-          (setq org-agenda-hide-tags-regexp "noagenda")
-          (setq org-agenda-window-setup 'other-window)
-          (setq org-agenda-restore-windows-after-quit t)
-          ;; (setq org-agenda-start-with-log-mode t)
-          (setq org-agenda-entry-text-maxlines 10)
-          (setq org-agenda-diary-file "~/projects/private-orgmode/diary.org")
-          (setq org-agenda-include-diary t)
+     ;; Make sure we match encrypted files for Agenda
+     ;; ref https://emacs.stackexchange.com/a/36543/418
+     (unless (string-match-p "\\.gpg" org-agenda-file-regexp)
+       (setq org-agenda-file-regexp
+             (replace-regexp-in-string "\\\\\\.org" "\\\\.org\\\\(\\\\.gpg\\\\)?"
+                                       org-agenda-file-regexp)))
+     (global-set-key (kbd "C-c a") 'org-agenda)
+     (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
+     (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
+                              "~/projects/private-orgmode/inbox.org"
+                              "~/projects/private-orgmode/someday.org"
+                              "~/projects/private-orgmode/projects.org"
+                              "~/projects/private-orgmode/next.org"
+                              "~/projects/private-orgmode/fit.org"
+                              "~/projects/private-orgmode/habits.org"))
+     (setq gjg/work-agenda-files (directory-files-recursively "~/projects/private-orgmode/rancher/" org-agenda-file-regexp))
+     ;; Set agenda files to personal, override in work-related templates
+     (setq org-agenda-files gjg/personal-org-agenda-files)
+     ;; Set basic org-mode keys
+     ;;(setq org-agenda-span 'day)
+     ;;(setq org-agenda-skip-scheduled-if-done t)
+     (setq org-agenda-hide-tags-regexp "noagenda")
+     (setq org-agenda-window-setup 'other-window)
+     (setq org-agenda-restore-windows-after-quit t)
+     ;; (setq org-agenda-start-with-log-mode t)
+     (setq org-agenda-entry-text-maxlines 10)
+     (setq org-agenda-diary-file "~/projects/private-orgmode/diary.org")
+     (setq org-agenda-include-diary t)
 
-          (setq org-agenda-exporter-settings
-                '((ps-number-of-columns 1)
-                  (ps-landscape-mode t)
-                  (org-agenda-add-entry-text-maxlines 10)
-                  (htmlize-output-type 'css)))
+     (setq org-agenda-exporter-settings
+           '((ps-number-of-columns 1)
+             (ps-landscape-mode t)
+             (org-agenda-add-entry-text-maxlines 10)
+             (htmlize-output-type 'css)))
 
-          ;; (setq org-agenda-start-with-clockreport-mode nil)
-          (setq org-special-ctrl-a/e t)
-          (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
-          (setq org-cycle-separator-lines 1) ;
-          (setq org-clock-history-length 12)
+     ;; (setq org-agenda-start-with-clockreport-mode nil)
+     (setq org-special-ctrl-a/e t)
+     (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
+     (setq org-cycle-separator-lines 1) ;
+     (setq org-clock-history-length 12)
 
-          (setq org-agenda-custom-commands
-                `(
-                  ("R" "Rancher"
-                   ((agenda ""
-                            ((org-agenda-span 'day)
-                             (org-agenda-start-with-log-mode '(clock))
-                             (org-deadline-warning-days 2)
-                             (org-agenda-start-with-clockreport-mode t)
-                             )
-                            )
-                    ;; (todo "TODO"
-                    ;;         ((org-agenda-span 'day)
-                    ;;          (org-deadline-warning-days 21)
-                    ;;          ))
-                    )
-                   ((org-agenda-files gjg/work-agenda-files))
-                   )
-                  ("A" "Awesome Work/Project Focus"
-                   ((agenda ""
-                            ((org-agenda-span 'day)
-                             (org-deadline-warning-days 365)))
-                    (todo "TODO"
-                          ((org-agenda-overriding-header "To Refile")
-                           ))
-                    (todo "NEXT"
-                          ((org-agenda-overriding-header "In Progress")
-                           ))
-                    (todo "TODO"
-                          ((org-agenda-overriding-header "Projects")
-                           ))
-                    (todo "TODO"
-                          ((org-agenda-overriding-header "One-off Tasks")
-                           (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))))
-                    ((org-agenda-tag-filter-preset '("-fitness"))
-                     ))
-                  ;; TODO Filter on fitness tag
-                  ("f" "Fitness"
-                   ((agenda "" (
-                                (org-agenda-span 'day)))))
-                  ("h" "thing TODO at Home"
-                   ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
-                    (agenda "" ((org-agenda-ndays 1)
-                                (org-agenda-span 'day)
-                                (org-agenda-sorting-strategy
-                                 (quote ((agenda time-up priority-down tag-up))))
-                                (org-deadline-warning-days 0)))
-                    (tags "reading")
-                    (tags "writing")
-                    (tags-todo "refile"))
-                   ((org-agenda-tag-filter-preset '("-project" "-@office"))
-                    ))
-                  ("c" "Aaron's simple view"
-                   ((tags "PRIORITY=\"A\""
-                          ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                           (org-agenda-overriding-header "High priority unfinished tasks")))
-                    (agenda "" )
-                    (alltodo ""
-                             ((org-agenda-skip-function '(or (air-org-skip-subtree-if-priority ?A)
-                                                             (org-agenda-skip-if nil '(scheduled deadline))
-                                                             )))
-                             (org-agenda-compact-blocks t)
-                             )
-
-                    ))
-                  ("i" "Inbox review"
-                   ((todo "TODO"
-                          ((org-agenda-overriding-header "Review and Refile")
-                           (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))))))
-                  ("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
-                  ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
-                  ("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
-                  ("rc" "Clock report" agenda ""
-                   ((org-agenda-files gjg/work-agenda-files)
-                    (org-agenda-ndays 1)
-                    (org-agenda-start-with-clockreport-mode t)
-                    (org-agenda-time-grid nil)
-                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
-                  ("rt" "Rancher TODOs" alltodo ""
-                   ((org-agenda-files gjg/work-agenda-files)
-                    (org-agenda-ndays 1)
-                   ))
-                  ))
-
-          ;; org-agenda: some handy keys
-          ;; you might also want to set:
-          (setq org-agenda-skip-unavailable-files t)
-          (add-hook 'org-agenda-mode-hook
-                    (lambda ()
-                      (hl-line-mode 1)
-                      ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
-                      ;;       (local-unset-key "o")
-                      ;; rebind to a sweet and beautiful function
-                      (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
-                      (local-unset-key "a") ;; don't let this accidentally archive a tree!
-                      ;; "R" is used for clock report by default
-                      (define-key org-agenda-mode-map "R" 'org-agenda-refile)
-                      (define-key org-agenda-mode-map "'" 'org-agenda-clockreport-mode)
-                      ;; (define-key org-agenda-mode-map "h" 'org-habit-toggle-display-in-agenda)
+     (setq org-agenda-custom-commands
+           `(
+             ("R" "Rancher"
+              ((agenda ""
+                       ((org-agenda-span 'day)
+                        (org-agenda-start-with-log-mode '(clock))
+                        (org-deadline-warning-days 2)
+                        (org-agenda-start-with-clockreport-mode t)
+                        )
+                       )
+               ;; (todo "TODO"
+               ;;         ((org-agenda-span 'day)
+               ;;          (org-deadline-warning-days 21)
+               ;;          ))
+               )
+              ((org-agenda-files gjg/work-agenda-files))
+              )
+             ("A" "Awesome Work/Project Focus"
+              ((agenda ""
+                       ((org-agenda-span 'day)
+                        (org-deadline-warning-days 365)))
+               (todo "TODO"
+                     ((org-agenda-overriding-header "To Refile")
                       ))
-          (add-hook 'org-export-preprocess-hook
-                    (lambda ()
-                      (org-dblock-update 2) ;; update all dynamic blocks in the buffer
+               (todo "NEXT"
+                     ((org-agenda-overriding-header "In Progress")
                       ))
-          ;; Function stolen from Bernt Hansen on gmane.emacs.orgmode: insert inactive time stamp for new entries
+               (todo "TODO"
+                     ((org-agenda-overriding-header "Projects")
+                      ))
+               (todo "TODO"
+                     ((org-agenda-overriding-header "One-off Tasks")
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))))
+               ((org-agenda-tag-filter-preset '("-fitness"))
+                ))
+             ;; TODO Filter on fitness tag
+             ("f" "Fitness"
+              ((agenda "" (
+                           (org-agenda-span 'day)))))
+             ("h" "thing TODO at Home"
+              ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
+               (agenda "" ((org-agenda-ndays 1)
+                           (org-agenda-span 'day)
+                           (org-agenda-sorting-strategy
+                            (quote ((agenda time-up priority-down tag-up))))
+                           (org-deadline-warning-days 0)))
+               (tags "reading")
+               (tags "writing")
+               (tags-todo "refile"))
+              ((org-agenda-tag-filter-preset '("-project" "-@office"))
+               ))
+             ("c" "Aaron's simple view"
+              ((tags "PRIORITY=\"A\""
+                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-overriding-header "High priority unfinished tasks")))
+               (agenda "" )
+               (alltodo ""
+                        ((org-agenda-skip-function '(or (air-org-skip-subtree-if-priority ?A)
+                                                        (org-agenda-skip-if nil '(scheduled deadline))
+                                                        )))
+                        (org-agenda-compact-blocks t)
+                        )
 
-          (setq org-agenda-format-date
-                (concat "%Y-%m-%d %a "
-                        (make-string (- (window-width) 15) (string-to-char "_"))))
+               ))
+             ("i" "Inbox review"
+              ((todo "TODO"
+                     ((org-agenda-overriding-header "Review and Refile")
+                      (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))))))
+             ("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
+             ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
+             ("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
+             ("rc" "Clock report" agenda ""
+              ((org-agenda-files gjg/work-agenda-files)
+               (org-agenda-ndays 1)
+               (org-agenda-start-with-clockreport-mode t)
+               (org-agenda-time-grid nil)
+               (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
+             ("rt" "Rancher TODOs" alltodo ""
+              ((org-agenda-files gjg/work-agenda-files)
+               (org-agenda-ndays 1)
+              ))
+             ))
+
+     ;; org-agenda: some handy keys
+     ;; you might also want to set:
+     (setq org-agenda-skip-unavailable-files t)
+     (add-hook 'org-agenda-mode-hook
+               (lambda ()
+                 (hl-line-mode 1)
+                 ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
+                 ;;       (local-unset-key "o")
+                 ;; rebind to a sweet and beautiful function
+                 (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
+                 (local-unset-key "a") ;; don't let this accidentally archive a tree!
+                 ;; "R" is used for clock report by default
+                 (define-key org-agenda-mode-map "R" 'org-agenda-refile)
+                 (define-key org-agenda-mode-map "'" 'org-agenda-clockreport-mode)
+                 ;; (define-key org-agenda-mode-map "h" 'org-habit-toggle-display-in-agenda)
+                 ))
+     (add-hook 'org-export-preprocess-hook
+               (lambda ()
+                 (org-dblock-update 2) ;; update all dynamic blocks in the buffer
+                 ))
+     ;; Function stolen from Bernt Hansen on gmane.emacs.orgmode: insert inactive time stamp for new entries
+
+     (setq org-agenda-format-date
+           (concat "%Y-%m-%d %a "
+                   (make-string (- (window-width) 15) (string-to-char "_"))))
 
    #+end_src
 ** Tags/TODOs/Projects Oh My
