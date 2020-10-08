@@ -911,7 +911,7 @@
      "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
      ;; Set the initial workspace number.
      (unless (get 'exwm-workspace-number 'saved-value)
-       (setq exwm-workspace-number 1)) ; GJG changed from default
+       (setq exwm-workspace-number 2)) ; GJG changed from default
      ;; Global keybindings.
      (unless (get 'exwm-input-global-keys 'saved-value)
        (setq exwm-input-global-keys
@@ -919,18 +919,19 @@
                ;; 's-r': Reset (to line-mode).
                ([?\s-r] . exwm-reset)
                ;; 's-w': Switch workspace.
-               ([?\s-w] . exwm-workspace-switch)
+               ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
                ;; 's-&': Launch application. - poor man's albert/launchy
                ([?\s-&] . (lambda (command)
                             (interactive (list (read-shell-command "$ ")))
                             (start-process-shell-command command nil command)))
-               ;; 's-N': Switch to certain workspace.
+               's-N': Switch to certain workspace.
                ,@(mapcar (lambda (i)
                            `(,(kbd (format "s-%d" i)) .
                              (lambda ()
                                (interactive)
                                (exwm-workspace-switch-create ,i))))
-                         (number-sequence 0 9)))))
+                         (number-sequence 0 9))
+               )))
      ;; Line-editing shortcuts
      (unless (get 'exwm-input-simulation-keys 'saved-value)
        (setq exwm-input-simulation-keys
