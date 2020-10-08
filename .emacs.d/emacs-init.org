@@ -1004,29 +1004,28 @@
     that navigation via regular Emacs commands is made easy.  
 
         #+begin_src emacs-lisp
-        ;; Make class name the buffer name
-        (add-hook 'exwm-update-class-hook
-                  (lambda ()
-                    (cond 
-                     (:else
-                      (exwm-workspace-rename-buffer exwm-class-name)))))
-        (add-hook 'exwm-update-title-hook
-                  (lambda ()
-                    (cond ((string= "Mail - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
-                           (exwm-workspace-rename-buffer "email"))
-                          ((string= "Calendar - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
-                           (exwm-workspace-rename-buffer "calendar"))
-                          ((string= "Google Hangouts - Mozilla Firefox" exwm-title)
-                           (exwm-workspace-rename-buffer "hangouts"))
-                          ((string= "Slack" (substring exwm-title 0 5))
-                           (exwm-workspace-rename-buffer "slack")) 
-                          ((string= "zoom" exwm-class-name)
-                           (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
-                          ;; catch-all for Firefox
-                          ((string= "Firefox" exwm-class-name)
-                           (exwm-workspace-rename-buffer exwm-title))
-                          (:else
-                           (exwm-workspace-rename-buffer exwm-class-name)))))
+          ;; Make class name the buffer name
+          (add-hook 'exwm-update-class-hook
+                    (lambda ()
+                      (cond
+                       (:else
+                        (exwm-workspace-rename-buffer exwm-class-name)))))
+          (add-hook 'exwm-update-title-hook
+                    (lambda ()
+                      (cond ((string= "Mail - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
+                             (exwm-workspace-rename-buffer "email"))
+                            ((string= "Calendar - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
+                             (exwm-workspace-rename-buffer "calendar"))
+                            ((string= "Google Hangouts - Mozilla Firefox" exwm-title)
+                             (exwm-workspace-rename-buffer "hangouts"))
+                            ((and (> (length exwm-title) 4)  (string= "Slack" (substring exwm-title 0 5)))
+                             (exwm-workspace-rename-buffer "slack"))
+                            ((string= "zoom" exwm-class-name)
+                             (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
+                            ((string= "Rancher Labs - Agent - Mozilla Firefox" exwm-title)
+                             (exwm-workspace-rename-buffer "Zendesk Tickets - Mozilla Firefox"))
+                            (:else
+                             (exwm-workspace-rename-buffer exwm-title)))))
         #+end_src
 
 *** Start up the window manager
