@@ -641,6 +641,7 @@
     (zoom-mode t))
 #+end_src
 *** Ibuffer FTW
+**** Filter groups
     Saved filter groups provide a nice organization.
 
     #+begin_src emacs-lisp
@@ -672,9 +673,20 @@
                    (auto-revert-mode 1)
                    (ibuffer-switch-to-saved-filter-groups "home")))
     #+end_src
-
-    #+RESULTS:
-    | lambda | nil | (ibuffer-auto-mode 1) | (ibuffer-switch-to-saved-filter-groups home) |
+**** Preview buffer in side window
+    #+begin_src emacs-lisp
+      (defun gjg/ibuffer-preview ()
+          "View the current file in other window but to do select"
+        (interactive)
+        (let ((buf (ibuffer-current-buffer t)))
+          (when (not (window-parent)) ;; only one window, so split
+            (split-window nil nil 'right))
+          (let ((curwin (selected-window)))
+            (pop-to-buffer buf)
+            (select-window curwin))
+          )
+          )
+    #+end_src
 
 *** Uniquify
     #+begin_src emacs-lisp
