@@ -654,6 +654,7 @@
     Saved filter groups provide a nice organization.
 
     #+begin_src emacs-lisp
+      (require 'ibuffer)
       (global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
       (setq ibuffer-expert t)
       (setq ibuffer-saved-filter-groups
@@ -695,6 +696,8 @@
             (select-window curwin))
           )
           )
+
+      (define-key ibuffer-mode-map (kbd "SPC") 'gjg/ibuffer-preview)
     #+end_src
 
 *** Uniquify
