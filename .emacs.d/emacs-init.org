@@ -594,10 +594,19 @@
 *** Modeline and Title
    Fancy icons may require fonts (like =texlive-fonts-extra=)
 
+**** Smart Mode line
+     + Smart mode line defines a face for battery charging/discharging - thus green for
+       10% plugged in, and red for 90% on battery.  I prefer the way =battery.el= sets
+       faces for level of charge with +/- optionally for charging/discharging.
+     #+begin_src emacs-lisp
+       (sml/setup)
+       (advice-remove 'battery-update 'ad-Advice-battery-update)
+     #+end_src
+**** Frame title and mode line tweaks
     #+begin_src emacs-lisp
-      (require 'spaceline-config)
-      (spaceline-spacemacs-theme)
-
+      ;; (require 'spaceline-config)
+      ;; (setq spaceline-always-show-segments t)
+      ;; (spaceline-spacemacs-theme)
       ;; show column number in modeline - in addition to line number
       (column-number-mode t)
       ;; do not show load average
