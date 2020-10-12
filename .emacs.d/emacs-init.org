@@ -837,14 +837,13 @@
   (when (executable-find "wmctrl")
     (progn
       (shell-command "wmctrl -m ; echo $?" "*window-manager*" "*window-manager-error*")))
-  ;; if there was an error detecting the window manager, initialize EXWM
+  (setq gjg/exwm-needed-p
+        (and (get-buffer "*window-manager-error*")
+             (eq window-system 'x)))
 #+end_src
 ** Let's get this show on the road - if no window manager was detected
    We start a large =when= block here
  #+begin_src emacs-lisp
-   (setq gjg/exwm-needed-p
-         (and (get-buffer "*window-manager-error*")
-              (eq window-system 'x)))
    (when gjg/exwm-needed-p
  #+end_src
 *** Shell scripts that become useful when no DE is available
@@ -981,9 +980,13 @@
 
     So now we can hit =C-n= to move to the next line.  I use =C-s= to search in Firefox,
     which translates to sending a =C-f=.  There's more I want to configure but I haven't
-    entirely figured out how this works in char mode, whether is works with the Super key
+    entirely figured out how this works in char mode, whether it works with the Super key
     and so forth.
 
+    TODO: Define super-{left,right,0,1,2} to mean the same thing I have in the global
+    keymap: windmove etc.
+
+    TODO: Define simulation key for "Print"
  #+begin_src emacs-lisp
    (defun gjg/exwm-config ()
      "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
@@ -1002,13 +1005,15 @@
                ([?\s-&] . (lambda (command)
                             (interactive (list (read-shell-command "$ ")))
                             (start-process-shell-command command nil command)))
-               's-N': Switch to certain workspace.
-               ,@(mapcar (lambda (i)
-                           `(,(kbd (format "s-%d" i)) .
-                             (lambda ()
-                               (interactive)
-                               (exwm-workspace-switch-create ,i))))
-                         (number-sequence 0 9))
+               ;; ([?\s-<left>] . 'windmove-left)
+               ;; ([?\s-<right>] . 'windmove-right)
+               ;; 's-N': Switch to certain workspace.
+               ;; ,@(mapcar (lambda (i)
+               ;;             `(,(kbd (format "s-%d" i)) .
+               ;;               (lambda ()
+               ;;                 (interactive)
+               ;;                 (exwm-workspace-switch-create ,i))))
+               ;;           (number-sequence 0 9))
                )))
      ;; Line-editing shortcuts
      (unless (get 'exwm-input-simulation-keys 'saved-value)
@@ -1016,6 +1021,7 @@
              '(([?\C-b] . left)
                ([?\C-f] . [right])
                ([?\C-p] . [up])
+               ([?\C-P] . [?\C-p]) ; Print
                ([?\C-n] . [down])
                ([?\C-a] . [home])
                ([?\C-e] . [end])
@@ -1137,10 +1143,10 @@
       (exwm-input-set-key (kbd "s-1") 'delete-other-windows)
       (exwm-input-set-key (kbd "s-2") 'gjg/split-window-below)
       (exwm-input-set-key (kbd "s-3") 'gjg/split-window-right)
-      (exwm-input-set-key "s-<up>" 'windmove-up)
-      (exwm-input-set-key "s-<down>" 'windmove-down)
-      (exwm-input-set-key "s-<right>" 'windmove-right)
-      (exwm-input-set-key "s-<left>" 'windmove-left)
+      ;; (exwm-input-set-key "s-<up>" 'windmove-up)
+      ;; (exwm-input-set-key "s-<down>" 'windmove-down)
+      ;; (exwm-input-set-key "s-<right>" 'windmove-right)
+      ;; (exwm-input-set-key "s-<left>" 'windmove-left)
 
     #+end_src
 *** Deal with brightness and volume, since we don't have a DE
