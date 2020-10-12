@@ -816,9 +816,14 @@
     One can either bring up Emacs with no DE and then run the panels as processes, or
     hijack the default window manager in one of the lightweight DEs.
 
-*** TODO Determine full set of panel widgets
-    + Method: launch =xfce4-session= and look at the large set of widget processes it
-      launches for the panel
+*** Useful panel widgets
+      + [[https://docs.xfce.org/panel-plugins/clipman/start][xfce4-clipman - a clipboard manager]]
+      + parcellite - a different clipboard manager
+      + /usr/bin/python3 /usr/share/system-config-printer/applet.py - printer notifications
+      + nm-applet --indicator  - NetworkManager applet - absolutely needed
+      + /usr/lib/blueberry/blueberry-tray.py - a Blueberry setup app triggered from the panel
+      + /usr/bin/python3 /usr/bin/blueman-applet - a *nicer* bluetooth applet with setup
+        and file transfer
 
 ** To launch or not to launch
    My configuration tests for the existence of a window manager.  If one is already
@@ -924,6 +929,47 @@
                  /home/gregj/bin/rotate-wallpapers.sh 
                  sleep 900
        done
+     #+end_src
+**** Script to launch panel with good widgets
+     #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/xfce-panel-widgets.sh
+       nohup xfce4-panel &
+       # Clipboard manager
+       nohup parcellite &
+       # Network Manager applet
+       nohup nm-applet --indicator &
+       # Bluetooth setup + file transfer
+       nohup /usr/bin/python3 /usr/bin/blueman-applet &
+       # # Printer notifications - this applet was causing problems with EXWM - somehow added an unseen dedicated window
+       # nohup /usr/bin/python3 /usr/share/system-config-printer/applet.py &
+     #+end_src
+**** Script to toggle autohiding of xfce4-panel
+     #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/toggle-xfce4-panel-hide.sh
+       #!/bin/bash
+
+       ##### EDIT these values to suit
+       # the panel to affect
+       PANEL=1
+
+       # the hide behaviour setting (1=intelligently, 2=always)
+       HIDE=2
+
+       ##### Don't edit anything below
+       # get the current setting
+       CURR=$(xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/autohide-behavior)
+
+       xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/disable-struts -s false
+       # show hidden or hide displayed
+       case $CURR in
+               #currently visible, so hide it
+           0) xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/autohide-behavior -s $HIDE ;;
+               # currently intelligent, set to visible
+           1) xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/autohide-behavior -s 0 ;;
+               # currently always hidden, set to visible
+           2) xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/autohide-behavior -s 0 ;;
+               # otherwise ignore
+           ,*) ;;
+       esac
+
      #+end_src
 *** My specific config function
     I did not want =ido= integration and wanted to evolve my config.  So I copied the
