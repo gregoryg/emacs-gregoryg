@@ -599,6 +599,7 @@
        10% plugged in, and red for 90% on battery.  I prefer the way =battery.el= sets
        faces for level of charge with +/- optionally for charging/discharging.
      #+begin_src emacs-lisp
+       (require 'smart-mode-line-powerline-theme)
        (sml/setup)
        (advice-remove 'battery-update 'ad-Advice-battery-update)
      #+end_src
