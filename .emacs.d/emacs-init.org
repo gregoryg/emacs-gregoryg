@@ -995,9 +995,15 @@
      (unless (get 'exwm-workspace-number 'saved-value)
        (setq exwm-workspace-number 2)) ; GJG changed from default
      ;; Global keybindings.
-     (unless (get 'exwm-input-global-keys 'saved-value)
+     ;; (unless (get 'exwm-input-global-keys 'saved-value)
+       (message "Setting exwm-input-global-keys")
        (setq exwm-input-global-keys
              `(
+               ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
+               ([?\s-l] .   ;; super/windows l
+                       (lambda ()
+                         (interactive)
+                         (call-process-shell-command "xscreensaver-command -lock")))
                ;; 's-r': Reset (to line-mode).
                ([?\s-r] . exwm-reset)
                ;; 's-w': Switch workspace.
@@ -1006,23 +1012,35 @@
                ([?\s-&] . (lambda (command)
                             (interactive (list (read-shell-command "$ ")))
                             (start-process-shell-command command nil command)))
-               ;; ([?\s-<left>] . 'windmove-left)
-               ;; ([?\s-<right>] . 'windmove-right)
+               ([?\s-o] .  gjg/other-window-with-winum)
+               ([s-left] . windmove-left)
+               ([s-right] . windmove-right)
+               ([s-up] . windmove-up)
+               ([s-down] . windmove-down)
+               ([s-backspace] . bury-buffer)
+               ([?\s-\\] . switch-to-buffer )
+               ([?\s-b] . gjg/switch-to-other-buffer)
+               ([?\s-0] . delete-window)
+               ([?\s-1] . delete-other-windows)
+               ([?\s-2] . gjg/split-window-below)
+               ([?\s-3] . gjg/split-window-right)
+               ;; GJG: I don't make use of workspaces, so don't need the insta-create capability
                ;; 's-N': Switch to certain workspace.
                ;; ,@(mapcar (lambda (i)
                ;;             `(,(kbd (format "s-%d" i)) .
                ;;               (lambda ()
                ;;                 (interactive)
                ;;                 (exwm-workspace-switch-create ,i))))
-               ;;           (number-sequence 0 9))
-               )))
+               ;;           (number-sequence 4 9))
+               ))
+       ;; )
      ;; Line-editing shortcuts
      (unless (get 'exwm-input-simulation-keys 'saved-value)
        (setq exwm-input-simulation-keys
              '(([?\C-b] . left)
                ([?\C-f] . [right])
                ([?\C-p] . [up])
-               ([?\C-P] . [?\C-p]) ; Print
+               ;; ([?\C-P] . [?\C-p]) ; Print
                ([?\C-n] . [down])
                ([?\C-a] . [home])
                ([?\C-e] . [end])
@@ -1040,7 +1058,8 @@
      ;; ;; Configure Ido
      ;; (exwm-config-ido)
      ;; Other configurations
-     (exwm-config-misc))
+     ;; (exwm-config-misc)
+     )
  #+end_src
 *** Define special logout if using LXDE
  #+begin_src emacs-lisp
@@ -1056,6 +1075,33 @@
     (require 'exwm)
     (require 'exwm-config)
     (gjg/exwm-config)
+    ;; delete the below at some point
+    ;; (exwm-input-set-key (kbd "s-0") 'delete-window)
+    ;; (require 'windmove)
+    ;; (unless (get 'exwm-input-global-keys 'saved-value)
+    ;;   (message "Setting exwm-input-global-keys") ;
+    ;;   (setq exwm-input-global-keys
+    ;;         `(
+    ;;           ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
+    ;;           ([?\s-l] .   ;; super/windows l
+    ;;            (lambda ()
+    ;;              (interactive)
+    ;;              (call-process-shell-command "xscreensaver-command -lock")))
+    ;;           ;; 's-r': Reset (to line-mode).
+    ;;           ([?\s-r] . exwm-reset)
+    ;;           ;; 's-w': Switch workspace.
+    ;;           ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
+    ;;           ;; 's-&': Launch application. - poor man's albert/launchy
+    ;;           ([?\s-&] . (lambda (command)
+    ;;                        (interactive (list (read-shell-command "$ ")))
+    ;;                        (start-process-shell-command command nil command)))
+    ;;           ([?\s-o] .  gjg/other-window-with-winum)
+    ;;           ([?\s-b] .  gjg/switch-to-other-buffer)
+    ;;           ([s-left] . windmove-left)
+    ;;           ([?\s-x] . windmove-left)
+    ;;           ;; ([s-<right>] . windmove-right)
+
+    ;;           )))
   #+end_src
 *** Deal with displays
     When an external monitor is connected or disconnected, =exwm-randr-screen-change-hook=
@@ -1131,19 +1177,19 @@
     "Super-l" is a shortcut to lock the screen using =xscreensaver=
     #+begin_src emacs-lisp
       ;; lock screen
-      (exwm-input-set-key (kbd "s-i")  ;; super/windows i
-                          'exwm-input-toggle-keyboard)
+      ;; (exwm-input-set-key (kbd "s-i")  ;; super/windows i
+      ;;                     'exwm-input-toggle-keyboard)
       ;; Toggle EXWM input mode
-      (exwm-input-set-key (kbd "s-l")  ;; super/windows l
-                          (lambda ()
-                            (interactive)
-                            (call-process-shell-command "xscreensaver-command -lock")))
-      (exwm-input-set-key (kbd "s-o") 'gjg/other-window-with-winum)
-      (exwm-input-set-key (kbd "s-b") 'gjg/switch-to-other-buffer)
-      (exwm-input-set-key (kbd "s-0") 'delete-window)
-      (exwm-input-set-key (kbd "s-1") 'delete-other-windows)
-      (exwm-input-set-key (kbd "s-2") 'gjg/split-window-below)
-      (exwm-input-set-key (kbd "s-3") 'gjg/split-window-right)
+      ;; (exwm-input-set-key (kbd "s-l")  ;; super/windows l
+      ;;                     (lambda ()
+      ;;                       (interactive)
+      ;;                       (call-process-shell-command "xscreensaver-command -lock")))
+      ;; (exwm-input-set-key (kbd "s-o") 'gjg/other-window-with-winum)
+      ;; (exwm-input-set-key (kbd "s-b") 'gjg/switch-to-other-buffer)
+      ;; (exwm-input-set-key (kbd "s-0") 'delete-window)
+      ;; (exwm-input-set-key (kbd "s-1") 'delete-other-windows)
+      ;; (exwm-input-set-key (kbd "s-2") 'gjg/split-window-below)
+      ;; (exwm-input-set-key (kbd "s-3") 'gjg/split-window-right)
       ;; (exwm-input-set-key "s-<up>" 'windmove-up)
       ;; (exwm-input-set-key "s-<down>" 'windmove-down)
       ;; (exwm-input-set-key "s-<right>" 'windmove-right)
@@ -1203,31 +1249,6 @@
           ;; TODO: find a system-tray/panel solution to showing clock and battery - modeline is so crowded already
           (display-time)
           (display-battery-mode 1)
-        #+end_src
-*** Set the amazing simulation keys
-    Now what does this little miracle do for us?  It gives us Emacs keys in Firefox,
-    that's what it does!  And other X applications, of course.
-
-    So now we can hit =C-n= to move to the next line.  I use =C-s= to search in Firefox,
-    which translates to sending a =C-f=.  There's more I want to configure but I haven't
-    entirely figured out how this works in char mode, whether is works with the Super key
-    and so forth.
-        
-        #+begin_src emacs-lisp
-          ;; (exwm-input-set-simulation-keys
-          ;;  '(([?\C-b] . left)
-          ;;    ([?\C-f] . right)
-          ;;    ([?\C-p] . up)
-          ;;    ([?\C-n] . down)
-          ;;    ([?\C-a] . home)
-          ;;    ([?\C-e] . end)
-          ;;    ([?\M-v] . prior)
-          ;;    ([?\C-v] . next)
-          ;;    ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way to talk
-          ;;    ([?\M-w] . [?\C-c]) ; Copy that!
-          ;;    ([?\S-p] . [?\C-p]) ; TODO Print - not working 
-          ;;    ([?\C-y] . [?\C-v]) ; yank/paste
-          ;;    ))
         #+end_src
 *** Start the OS processes
     #+begin_src emacs-lisp
