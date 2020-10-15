@@ -927,7 +927,7 @@
              do
                  # DISPLAY=:0.0 /usr/bin/feh --bg-max --randomize ~/backgrounds/safe/1920x1200/
                  /home/gregj/bin/rotate-wallpapers.sh 
-                 sleep 900
+                 sleep 1200
        done
      #+end_src
 **** Script to launch panel with good widgets
