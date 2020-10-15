@@ -1048,9 +1048,11 @@
                ([?\C-v] . [next])
                ([?\C-d] . [delete])
                ([?\C-k] . [S-end delete])
-             ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way to talk
+               ([?\C-l] . [?\C-l])
+               ([?\C-t] . [?\C-t])
+             ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way
              ([?\M-w] . [?\C-c]) ; Copy that!
-             ([?\S-p] . [?\C-p]) ; TODO Print - not working 
+             ;; ([?\S-p] . [?\C-p]) ; TODO Print - not working 
              ([?\C-y] . [?\C-v]) ; yank/paste
              )))
      ;; Enable EXWM
@@ -1865,7 +1867,6 @@ Disable some that get in the way
                  (python . t)
                  (shell  . t)
                  (sql . t)
-                 (jupyter . t)
                  )))
       (setq org-confirm-babel-evaluate nil
             org-export-use-babel nil
@@ -2670,8 +2671,8 @@ Simply add the new block param =:keep-windows= to use this functionality
 	#+end_src
 ** Jupyter
 #+begin_src emacs-lisp
-(use-package jupyter
-  :ensure nil)
+  ;; (use-package jupyter
+  ;;   :ensure nil)
 
 #+end_src
 ** R
