@@ -34,3 +34,6 @@ url/
 .emacs.d/emacs-init.html
 .emacs.d/recentf
 .emacs.d/smex-items
+.emacs.d/var/
+# Emacs-lisp-native - compiled cache
+.emacs.d/eln-cache/
