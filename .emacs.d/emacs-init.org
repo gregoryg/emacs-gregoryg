@@ -111,10 +111,6 @@
 #+END_SRC
 * Greg's customizations!
 
-** Let emacs use more memory in these modern times
- #+BEGIN_SRC emacs-lisp
-(setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
- #+END_SRC
 ** Microsoft Windows things
 *** Printing
    #+begin_src emacs-lisp
@@ -473,7 +469,7 @@
         (if (< alpha-level 50) (setq alpha-level 85))
         (let ((myalpha (frame-parameter nil 'alpha)))
           (if (or (not myalpha)
-      t	    (= myalpha 100))
+                  (= myalpha 100))
           (set-frame-parameter nil 'alpha alpha-level)
             (set-frame-parameter nil 'alpha 100))
           )
@@ -2550,13 +2546,31 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+end_src
 ** Shall we try =lsp-mode= for the umpteenth time?
    + Maybe.  ref [[https://cestlaz.github.io/post/using-emacs-74-eglot/][Using Emacs 74 Eglot - C'est la Z (reddit)]]
-   + 
      #+begin_src emacs-lisp
-       (use-package eglot :ensure t)
-       ;; (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd-10"))
-       ;; (add-hook 'c-mode-hook 'eglot-ensure)
-       ;; (add-hook 'c++-mode-hook 'eglot-ensure)
-       (add-hook 'python-mode-hook 'eglot-ensure)
+       ;; (use-package eglot :ensure t)
+       ;; ;; (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd-10"))
+       ;; ;; (add-hook 'c-mode-hook 'eglot-ensure)
+       ;; ;; (add-hook 'c++-mode-hook 'eglot-ensure)
+       ;; (add-hook 'python-mode-hook 'eglot-ensure)
+     #+end_src
+   + ref 2
+     #+begin_src emacs-lisp
+       (use-package lsp-mode
+         :commands (lsp)
+         :config
+         (use-package company-lsp
+           :config
+           (add-to-list 'company-backends 'company-lsp)))
+       (use-package lsp-ui
+         :hook (lsp-mode . lsp-ui-mode)
+         :config
+         (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+         (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+         (setq lsp-ui-sideline-enable nil
+               lsp-ui-doc-enable t
+               lsp-ui-flycheck-enable nil
+               lsp-ui-imenu-enable t
+               lsp-ui-sideline-ignore-duplicate t))
      #+end_src
 ** Clojure
    #+begin_src emacs-lisp
@@ -2594,31 +2608,33 @@ Simply add the new block param =:keep-windows= to use this functionality
    [[http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch/][Configure Emacs as a Go Editor From Scratch]]
 
    #+begin_src emacs-lisp
-(use-package go
-  :ensure nil
-  :config)
-(setenv "GOPATH" "~/projects/coding/go/")
-(defun my-go-mode-hook ()
-  ; Use goimports instead of go-fmt
-  (setq gofmt-command "goimports")
-  ;; Call Gofmt before saving
-  (add-hook 'before-save-hook 'gofmt-before-save)
-  ;; jump into code with M-. and jump back with M-*
-  (local-set-key (kbd "M-.") 'godef-jump)
-  (local-set-key (kbd "M-*") 'pop-tag-mark)
-  ;; Customize compile command to run go build
-  ;; NOTE: may want to start with =go generate= for some projects
-  (if (not (string-match "go" compile-command))
-      (set (make-local-variable 'compile-command)
-           "go build -v && go test -v && go vet"))
-  ;; ; Go oracle/guru
-  ;; (load-file "$GOPATH/src/golang.org/x/tools/cmd/oracle/oracle.el")
-  ;; (load-file "$GOPATH/sr")
-  (auto-complete-mode 1)
-  )
-(add-hook 'go-mode-hook 'my-go-mode-hook)
-(with-eval-after-load 'go-mode
-  (require 'go-autocomplete))
+     (use-package go
+       :ensure nil
+       :config)
+     (setenv "GOPATH" "/home/gregj/projects/coding/go/")
+     (defun my-go-mode-hook ()
+       ; Use goimports instead of go-fmt
+       (setq gofmt-command "goimports")
+       ;; Call Gofmt before saving
+       (add-hook 'before-save-hook 'gofmt-before-save)
+       ;; jump into code with M-. and jump back with M-*
+       (local-set-key (kbd "M-.") 'godef-jump)
+       (local-set-key (kbd "M-*") 'pop-tag-mark)
+       ;; Customize compile command to run go build
+       ;; NOTE: may want to start with =go generate= for some projects
+       (if (not (string-match "go" compile-command))
+           (set (make-local-variable 'compile-command)
+                "go build -v && go test -v && go vet"))
+       ;; ; Go oracle/guru
+       ;; (load-file "$GOPATH/src/golang.org/x/tools/cmd/oracle/oracle.el")
+       ;; (load-file "$GOPATH/sr")
+       (auto-complete-mode 1)
+       )
+     (add-hook 'go-mode-hook 'my-go-mode-hook)
+     (with-eval-after-load 'go-mode
+       (require 'go-autocomplete))
+     (setq lsp-gopls-staticcheck t)
+     (setq lsp-eldoc-render-all t)
    #+end_src
 
 ** Rust
