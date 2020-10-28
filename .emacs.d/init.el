@@ -21,6 +21,10 @@
 (setq custom-file "~/.emacs.d/emacs-custom.el")
 (load custom-file)
 
+;; keep Emacs from garbage collection during init
+(setq gc-cons-threshold 100000000) ;; ref https://github.com/MatthewZMD/.emacs.d#defer-garbage-collection
+
+
 (require 'org)
 
 (org-babel-load-file
@@ -34,3 +38,5 @@
                                           emacs-start-time))))
   (message "Loading complete config...done (%.3fs)" elapsed))
 (put 'list-timers 'disabled nil)
+;; set memory usage for interactive use
+(setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
