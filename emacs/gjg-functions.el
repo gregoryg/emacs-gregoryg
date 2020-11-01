@@ -138,4 +138,8 @@ do-capitalize: t means run text through capitalize function, nil will respect Ca
   (load-theme 'brutalist t)
   (disable-theme 'brutalist-dark))
 
+(defun gjg/open-work-agenda ()
+  (interactive)
+  (org-agenda nil "R"))
+
 (provide 'gjg-functions)
