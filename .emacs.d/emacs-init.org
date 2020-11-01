@@ -329,7 +329,7 @@
 
      (global-set-key [f5] 'gjg/widen-ask-if-indirect)
      ;; (global-set-key [f6] 'read-only-mode)
-     (global-set-key [f6] (lambda () (interactive) (org-agenda nil "R")))
+     (global-set-key [f6] 'gjg/open-work-agenda)
      (global-set-key [f7] 'hl-line-mode) ;; toggle hl-line-mode for this window only
      ;; (global-set-key [f8] 'bury-buffer)
 
@@ -443,6 +443,7 @@
                  (winum-select-window-by-number jwin)))
                ))
       (bind-key "C-x o" 'gjg/other-window-with-winum)
+      (bind-key "s-a" 'gjg/open-work-agenda)
       (bind-key "s-o" 'gjg/other-window-with-winum)
       (bind-key "s-b" 'gjg/switch-to-other-buffer)
       (bind-key "s-<up>" 'windmove-up)
@@ -641,7 +642,8 @@
   (use-package zoom
     :config
     (setq
-     zoom-size '(0.618 . 0.618)
+     ;; zoom-size '(0.618 . 0.618)
+     zoom-size '(0.54 . 0.54)
      zoom-ignored-buffer-name-regexps '("^\\*magit +.*")
      zoom-ignored-major-modes '("dired-mode" "ediff-mode" "buffer-expose-mode"))
     (zoom-mode t))
@@ -1015,12 +1017,13 @@
                ([s-down] . windmove-down)
                ([s-backspace] . bury-buffer)
                ([?\s-\\] . switch-to-buffer )
+               ([?\s-a] . gjg/open-work-agenda)
                ([?\s-b] . gjg/switch-to-other-buffer)
                ([?\s-0] . delete-window)
                ([?\s-1] . delete-other-windows)
                ([?\s-2] . gjg/split-window-below)
                ([?\s-3] . gjg/split-window-right)
-               ;; GJG: I don't make use of workspaces, so don't need the insta-create capability
+               ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
                ;; 's-N': Switch to certain workspace.
                ;; ,@(mapcar (lambda (i)
                ;;             `(,(kbd (format "s-%d" i)) .
@@ -1229,8 +1232,8 @@
     =window-divider-mode= let's us resize vertically split windows - for some reason, EXWM
     makes it impossible to select the vertical margin
 
-    =zoom-mode= is also hugely useful to avoid having to manually resize horizontal and
-    vertical splits - so useful I have add it in as part of my normal Emacs config
+    =zoom-mode= is also quite useful to avoid having to manually resize horizontal and
+    vertical splits - so useful I have added it in as part of my normal Emacs config
         #+begin_src emacs-lisp
           (require 'buffer-expose)
           (buffer-expose-mode 1)
