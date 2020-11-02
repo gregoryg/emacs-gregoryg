@@ -417,11 +417,12 @@
       ;;         (define-key map (kbd "M-5") 'winum-select-window-5)
       ;;         )
       ;;       )
-      (require 'winum)
-      (setq winum-scope                       'frame-local
-            winum-auto-assign-0-to-minibuffer nil
-            winum-auto-setup-mode-line        t
-       )
+      (use-package winum
+        :ensure t
+        :config
+        (setq winum-scope                       'frame-local
+              winum-auto-assign-0-to-minibuffer nil
+              winum-auto-setup-mode-line        t))
       (winum-mode)
       (set-face-attribute 'winum-face nil :weight 'bold)
       (defun gjg/other-window-with-winum ()
@@ -596,8 +597,13 @@
        10% plugged in, and red for 90% on battery.  I prefer the way =battery.el= sets
        faces for level of charge with +/- optionally for charging/discharging.
      #+begin_src emacs-lisp
-       (require 'smart-mode-line-powerline-theme)
-       (sml/setup)
+       (use-package smart-mode-line-powerline-theme
+         :ensure t)
+       (use-package smart-mode-line
+         :ensure t
+         :config
+         (sml/setup))
+
        (advice-remove 'battery-update 'ad-Advice-battery-update)
      #+end_src
 **** Frame title and mode line tweaks
