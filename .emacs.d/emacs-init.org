@@ -1994,6 +1994,24 @@ Simply add the new block param =:keep-windows= to use this functionality
              (setq org-catch-invisible-edits 'show-and-error )
              ))
    #+end_src
+** Org tree to indirect
+   This useful feature is hampered by poor naming of the resulting buffer, making it very
+   difficult to know whether you are editing the original buffer or the created indirect
+   buffer.
+
+   There are no user variables that influence the indirect buffer naming, and no hooks
+   defined for any function related to =org-tree-to-indirect-buffer=
+
+   It therefore seems the only way to affect it is to advise a function.
+
+   #+begin_src emacs-lisp
+     (defun gjg/rename-org-indirect-buffer (orig-fun &rest arg)
+       (rename-buffer (concat "INDIRECT-" (buffer-name))))
+
+     (advice-add 'org-tree-to-indirect-buffer :after 'gjg/rename-org-indirect-buffer)
+
+
+   #+end_src
 ** Blogs - linking and image additions
    For blogging especially, we want to quickly add web links and images.  2 packages from
    m?elpa help here
