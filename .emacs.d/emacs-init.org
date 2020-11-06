@@ -2170,35 +2170,6 @@ Simply add the new block param =:keep-windows= to use this functionality
 
    #+end_src
 ** Agenda
-*** Clock table
-    #+begin_src emacs-lisp
-      (setq org-clocktable-defaults
-            '(:maxlevel 2 
-                 :lang "en" 
-                 :properties ("harvest")
-                 :scope file 
-                 :block nil 
-                 :wstart 1 
-                 :mstart 1 
-                 :tstart nil 
-                 :tend nil 
-                 :step nil 
-                 :stepskip0 nil 
-                 :fileskip0 t
-                 :tags nil 
-                 :match nil 
-                 :emphasize t
-                 :link t
-                 :narrow 75! 
-                 :indent t 
-                 :hidefiles nil 
-                 :formula nil 
-                 :timestamp nil 
-                 :level nil 
-                 :tcolumns nil 
-                 :formatter nil)
-            )
-    #+end_src
 *** Custom Agenda definitions
        TODO why does starting with clocktable and/or log-mode not work??
 
@@ -2354,6 +2325,35 @@ Simply add the new block param =:keep-windows= to use this functionality
                    (make-string (- (window-width) 15) (string-to-char "_"))))
 
    #+end_src
+*** Clock table
+    #+begin_src emacs-lisp
+      (setq org-clocktable-defaults
+            '(:maxlevel 2 
+                 :lang "en" 
+                 :properties ("harvest")
+                 :scope file 
+                 :block nil 
+                 :wstart 1 
+                 :mstart 1 
+                 :tstart nil 
+                 :tend nil 
+                 :step nil 
+                 :stepskip0 nil 
+                 :fileskip0 t
+                 :tags nil 
+                 :match nil 
+                 :emphasize t
+                 :link t
+                 :narrow 75! 
+                 :indent t 
+                 :hidefiles nil 
+                 :formula nil 
+                 :timestamp nil 
+                 :level nil 
+                 :tcolumns nil 
+                 :formatter nil)
+            )
+    #+end_src
 ** Tags/TODOs/Projects Oh My
    #+begin_src emacs-lisp
      (setq org-tag-alist '(("project" . ?p)
