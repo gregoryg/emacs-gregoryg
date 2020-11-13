@@ -2051,7 +2051,8 @@ Simply add the new block param =:keep-windows= to use this functionality
      (setq org-default-notes-file "~/projects/notes.org")
      (with-eval-after-load 'org-capture
        '(add-hook 'org-capture-mode-hook 'turn-on-auto-fill))
-     (define-key global-map "\C-cc" 'org-capture)
+     sh1
+(define-key global-map "\C-cc" 'org-capture)
      (setq org-capture-templates
            '(
              ("b" "Blog post" plain
@@ -2066,7 +2067,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 
              ("p" "Phone/Meeting" entry
               (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Calls and Meetings")
-              "* %t %^{type|Call|Meeting} with %^{with|Unknown|Recruiter}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
+              "* %t %^{type|Call|Meeting|Email|Task} with %^{with|PS Team|Acxiom|Maxar|THD}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
            :PROPERTIES:
            :NOBLOCKING: t
            :END:
@@ -2077,7 +2078,7 @@ Simply add the new block param =:keep-windows= to use this functionality
           + From Rancher: GG, 
           + From %\\2: 
           + %?
-            " :prepend t :clock-in t)
+            " :prepend t :clock-in t :clock-keep t :jump-to-captured t)
              ("r" "Regular todo" entry
               (file "~/projects/private-orgmode/inbox.org")
               "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
@@ -2087,7 +2088,9 @@ Simply add the new block param =:keep-windows= to use this functionality
            ,*Today*
              ,* %?
            ,*Tomorrow*
-             ,* another thing"
+             ,* another thing
+           ,*Blockers*
+             ,* none"
               :prepend t )
              ("w" "Web page" entry (file "~/projects/private-orgmode/inbox.org")
               "* TODO Read %(org-cliplink-capture)
@@ -2242,24 +2245,6 @@ Simply add the new block param =:keep-windows= to use this functionality
                )
               ((org-agenda-files gjg/work-agenda-files))
               )
-             ("A" "Awesome Work/Project Focus"
-              ((agenda ""
-                       ((org-agenda-span 'day)
-                        (org-deadline-warning-days 365)))
-               (todo "TODO"
-                     ((org-agenda-overriding-header "To Refile")
-                      ))
-               (todo "NEXT"
-                     ((org-agenda-overriding-header "In Progress")
-                      ))
-               (todo "TODO"
-                     ((org-agenda-overriding-header "Projects")
-                      ))
-               (todo "TODO"
-                     ((org-agenda-overriding-header "One-off Tasks")
-                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))))
-               ((org-agenda-tag-filter-preset '("-fitness"))
-                ))
              ;; TODO Filter on fitness tag
              ("f" "Fitness"
               ((agenda "" (
