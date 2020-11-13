@@ -702,9 +702,7 @@
             (split-window nil nil 'right))
           (let ((curwin (selected-window)))
             (pop-to-buffer buf)
-            (select-window curwin))
-          )
-          )
+            (select-window curwin))))
 
       (define-key ibuffer-mode-map (kbd "SPC") 'gjg/ibuffer-preview)
     #+end_src
@@ -851,6 +849,11 @@
  #+begin_src emacs-lisp
    (when gjg/exwm-needed-p
  #+end_src
+*** Start wallpaper with transparency first for aesthetics
+    #+begin_src emacs-lisp
+      (set-opacity 85)
+      (async-start-process "wallpaper-thang"  "nohup" nil "/home/gregj/bin/schedule-rotate-wallpapers.sh" "&")
+    #+end_src
 *** Shell scripts that become useful when no DE is available
 **** Script to run autostart apps including compositor
     I run a shell script which starts up key helper apps like albert, picom and
