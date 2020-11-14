@@ -1268,8 +1268,6 @@
 *** Start the OS processes
     #+begin_src emacs-lisp
       (call-process-shell-command "~/bin/emacswm.sh")
-      ;; The emacswm.sh script starts the compositor, so make sure we start out at full opacity to avoid screen brightness confusion
-      (set-opacity 100)
       (setenv "EDITOR" "emacsclient")
     #+end_src
 
@@ -1434,8 +1432,8 @@
                        (tramp-default-port         22)))
         (add-to-list 'tramp-methods
                      '("gcssh"
-                       (tramp-login-program        "gcloud compute ssh")
-                       (tramp-login-args           (("--ssh-flag='-o ServerAliveInterval=30'" "%h")))
+                       (tramp-login-program        "gcloud")
+                       (tramp-login-args           ( ("compute") ("ssh") ("%h") ("-v")))
                        (tramp-async-args           (("-q")))
                        (tramp-remote-shell         "/bin/bash")
                        (tramp-remote-shell-args    ("-c"))
@@ -2051,8 +2049,7 @@ Simply add the new block param =:keep-windows= to use this functionality
      (setq org-default-notes-file "~/projects/notes.org")
      (with-eval-after-load 'org-capture
        '(add-hook 'org-capture-mode-hook 'turn-on-auto-fill))
-     sh1
-(define-key global-map "\C-cc" 'org-capture)
+     (define-key global-map "\C-cc" 'org-capture)
      (setq org-capture-templates
            '(
              ("b" "Blog post" plain
@@ -2068,33 +2065,34 @@ Simply add the new block param =:keep-windows= to use this functionality
              ("p" "Phone/Meeting" entry
               (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Calls and Meetings")
               "* %t %^{type|Call|Meeting|Email|Task} with %^{with|PS Team|Acxiom|Maxar|THD}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
-           :PROPERTIES:
-           :NOBLOCKING: t
-           :END:
-           :LOGBOOK:
-           CREATED: %U
-           :END:
-           %i
-          + From Rancher: GG, 
-          + From %\\2: 
-          + %?
-            " :prepend t :clock-in t :clock-keep t :jump-to-captured t)
+                :PROPERTIES:
+                :NOBLOCKING: t
+                :END:
+                :LOGBOOK:
+                CREATED: %U
+                :END:
+                %i
+               + From Rancher:
+               + GG
+               + From %\\2:
+               + %?
+                 " :prepend t :clock-in t :clock-keep t :jump-to-captured t)
              ("r" "Regular todo" entry
               (file "~/projects/private-orgmode/inbox.org")
               "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
              ("s" "Status update for Slack" entry
               (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Write Daily Status to #consulting")
               "* Status update %u
-           ,*Today*
-             ,* %?
-           ,*Tomorrow*
-             ,* another thing
-           ,*Blockers*
-             ,* none"
+                ,*Today*
+                  ,* %?
+                ,*Tomorrow*
+                  ,* another thing
+                ,*Blockers*
+                  ,* none"
               :prepend t )
              ("w" "Web page" entry (file "~/projects/private-orgmode/inbox.org")
               "* TODO Read %(org-cliplink-capture)
-                 Captured %u")
+                      Captured %u")
              ))
    #+end_src
 ** Exporting
