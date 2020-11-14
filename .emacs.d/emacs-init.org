@@ -1461,6 +1461,20 @@
 *** Shell sugar
 **** Open remote shell in current remote directory
 #+begin_src emacs-lisp
+  (defun gjg/open-shell-prompted (newdir)
+    "Directly open shell local or TRAMP remote"
+    (interactive "D")
+    (cd newdir)
+    (if (file-remote-p newdir)
+        (shell (format "%s-sh" (file-remote-p newdir 'host)))
+      (shell
+       (format "%s-sh"
+        (file-name-nondirectory
+         (directory-file-name
+          (file-name-directory newdir)))))))
+
+
+
   (defun gjg/open-remote-shell ()
     "If current buffer is remote, open a new uniquely named shell based on host name"
     (interactive)
@@ -1469,13 +1483,12 @@
           ;; do stuff
           (message "Now I shall do stuff")
           (shell (concat (file-remote-p default-directory 'host) "-sh")))
-      (progn
-        (shell
-         (concat
-         (file-name-nondirectory
-          (directory-file-name
-           (file-name-directory
-            default-directory))) "-sh")))))
+      (shell
+       (concat
+        (file-name-nondirectory
+         (directory-file-name
+          (file-name-directory
+           default-directory))) "-sh"))))
 #+end_src
 **** Open SUDO at current remote directory
 #+begin_src emacs-lisp
@@ -2198,12 +2211,11 @@ Simply add the new block param =:keep-windows= to use this functionality
                               "~/projects/private-orgmode/fit.org"
                               "~/projects/private-orgmode/habits.org"))
      (defun gjg/get-work-agenda-files ()
-       "Return list of work agenda files.  Can be called in :scope param of clocktable"
+       "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
        (directory-files-recursively "~/projects/private-orgmode/rancher/"
                                     org-agenda-file-regexp
                                     nil
-                                    (lambda(dirname) (message (concat "Ohai: " dirname))(not (string= "~/projects/private-orgmode/rancher/archive" dirname)))
-                                    ))
+                                    (lambda(dirname) (not (string= "~/projects/private-orgmode/rancher/archive" dirname)))))
      (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
      ;; Set agenda files to personal, override in work-related templates
      (setq org-agenda-files gjg/personal-org-agenda-files)
