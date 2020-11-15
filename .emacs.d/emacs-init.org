@@ -159,7 +159,7 @@
 ** Chrome OS / Crostini things
    Assure that web links will open in Chrome OS rather than invoking a browser
    installed in the Linux container
-   
+
    As of [2020-07-31 Fri] I don't know how to determine I'm running in a Crostini
    container, so we set this only if =sensible-browser= is found on the path
    #+begin_src emacs-lisp
@@ -221,7 +221,7 @@
 ** Basic defaults that aren't default
    So many defaults in Emacs make no sense.  If starting out with Emacs, consider these
    settings to make your first experiences nicer.
-   
+
    If you have any questions about what these settings do, use Emacs to explore them:
    + If it's a variable being set (line starts with the =setq= function, set the point in
      the variable name and hit =C-h v= for help on that variable.
@@ -351,7 +351,7 @@
      (global-set-key (kbd "M-[") 'previous-buffer)
      (global-set-key (kbd "C-c C-v") 'browse-url-at-point)
      ;; EXPERIMENTAL: unbind SPACE and ? in minibuffer, to allow typing in completions with those chars
-     (add-hook 'minibuffer-setup-hook (lambda () 
+     (add-hook 'minibuffer-setup-hook (lambda ()
                         (define-key minibuffer-local-completion-map " " nil)
                         (define-key minibuffer-local-must-match-map " " nil)
                         (define-key minibuffer-local-completion-map "?" nil)
@@ -371,7 +371,7 @@
  delete-old-versions t
  kept-new-versions 5
  kept-old-versions 5
- version-control nil)   
+ version-control nil)
    #+end_src
 ** Window/buffer management
 *** GJG full screen, movement, transparency
@@ -796,16 +796,16 @@
 *** TODO Fix clipboard integration / behavior
     + The problem is consistent cut/paste copy/yank behavior between Emacs windows and
       managed X windows.
-      
+
       + Copy text in Emacs -> paste to Firefox works in =char= mode
-        
+
       + Copy text in Emacs -> paste to Firefox in =line= mode no worky - have to use right
         mouse click or =S-<insert>  *how to define simulation key??*
 
       + Copy text in Firefox =char= mode -> yank in Emacs works
 
       + Copy text in Firefox =line= mode using =M-w= -> yank in Emacs works
-        
+
 
 ** System tray widgets
    EXWM has a system tray that can be enabled, and some panel widgets work with it.  For
@@ -814,7 +814,7 @@
 
     I have found that both =xfce4-panel= and the LXDE panel work a treat!  For
     =xfce4-panel= do *not* check =Don't reserve space on borders= - that way the panel
-    will not obscure the echo area at the very bottom of the screen 
+    will not obscure the echo area at the very bottom of the screen
 
     One can either bring up Emacs with no DE and then run the panels as processes, or
     hijack the default window manager in one of the lightweight DEs.
@@ -933,7 +933,7 @@
        while true
              do
                  # DISPLAY=:0.0 /usr/bin/feh --bg-max --randomize ~/backgrounds/safe/1920x1200/
-                 /home/gregj/bin/rotate-wallpapers.sh 
+                 /home/gregj/bin/rotate-wallpapers.sh
                  sleep 1200
        done
      #+end_src
@@ -1061,7 +1061,7 @@
                ([?\C-t] . [?\C-t])
              ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way
              ([?\M-w] . [?\C-c]) ; Copy that!
-             ;; ([?\S-p] . [?\C-p]) ; TODO Print - not working 
+             ;; ([?\S-p] . [?\C-p]) ; TODO Print - not working
              ([?\C-y] . [?\C-v]) ; yank/paste
              )))
      ;; Enable EXWM
@@ -1147,7 +1147,7 @@
     Firefox window: Firefox<1>, Firefox<2>....
 
     Examining both =exwm-class-name= and =exwm-title= allows us to rename the buffers so
-    that navigation via regular Emacs commands is made easy.  
+    that navigation via regular Emacs commands is made easy.
 
         #+begin_src emacs-lisp
           ;; Make class name the buffer name
@@ -1240,7 +1240,7 @@
     Now that we will be running *everything* in Emacs, we will be doing a lot of window
     switching and frame splitting.  Here are some ways to bring sanity to that process and
     hopefully ease Emacs Pinky Syndrome.
-    
+
     =buffer-expose= is an alternative to alt-tab
 
     =window-divider-mode= let's us resize vertically split windows - for some reason, EXWM
@@ -1297,7 +1297,7 @@
    Okay, not yet "commonly used" (as of [2020-09-23 Wed]) ... but it appears to be
    awesome.
 
-   Ref Howard Abrams' [[https://www.youtube.com/watch?v=RhYNu6i_uY4&t=1548s][Introduction to EShell - YouTube]] 
+   Ref Howard Abrams' [[https://www.youtube.com/watch?v=RhYNu6i_uY4&t=1548s][Introduction to EShell - YouTube]]
 
    + Eshell uses =term= when a non-line-mode command is invoked.  Set it so that the
      =term= window goes away when the process ends.  Also make various =git= things work
@@ -1636,13 +1636,13 @@
    #+end_src
 ** Ivy / Smex / Counsel
    Just starting to make use of =use-package= here.  The =:ensure= param will
-   automagically install the package if it is not already installed. 
+   automagically install the package if it is not already installed.
 
 *** Set up Ivy basics
     This setup includes reliance on other packages such as Swiper for incremental search,
     and Counsel for symbol completion and selection.
 
-	Smex helps sort commands by most-used 
+	Smex helps sort commands by most-used
 
     #+begin_src emacs-lisp
       ;; (use-package counsel
@@ -1754,7 +1754,7 @@
 I want new shell buffers to open in the currently selected window, not replacing the text
 I'm referencing in a different window.  This is absurdly difficult to do because
 =shell-mode= does not offer a setting to control this behavior.  The solution I found was
-given in an answer [[https://stackoverflow.com/a/40351851/457574][here on stackoverflow]] 
+given in an answer [[https://stackoverflow.com/a/40351851/457574][here on stackoverflow]]
 
 #+begin_src emacs-lisp
 (defun shell-same-window-advice (orig-fn &optional buffer)
@@ -1819,7 +1819,7 @@ awesome.
 ;;     (sp-local-pair "{" nil :post-handlers '(:add ("||\n[i]" "RET")))))
 
 ;; (eval-after-load "smartparens-config"
-;;   '(progn 
+;;   '(progn
 ;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
 ;; (sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
 ;; (sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
@@ -1838,7 +1838,7 @@ awesome.
      (defalias 'spell-buffer 'ispell-buffer)
    #+end_src
 ** Man pages
-Open man page in current window, rather than other window with 
+Open man page in current window, rather than other window with
 #+begin_src emacs-lisp
 (custom-set-variables '(Man-notify-method 'pushy))
 #+end_src
@@ -1885,7 +1885,7 @@ Disable some that get in the way
        (append org-babel-load-languages
                '(
                  (clojure . t)
-                 (http . t) ;; curl 
+                 (http . t) ;; curl
                  (js . t)
                  (latex . t)
                  (python . t)
@@ -1898,7 +1898,7 @@ Disable some that get in the way
 
       ;; ;; The Dreadful Timeline has brought us indentation-sensitive languages
       ;; ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
-      ;; (setq org-src-preserve-indentation nil) 
+      ;; (setq org-src-preserve-indentation nil)
       (setq org-src-window-setup 'current-window)
       (setq org-structure-template-alist '(("C" . "comment")
                                            ("e" . "example")
@@ -1921,7 +1921,7 @@ Stolen from [[https://emacs.stackexchange.com/questions/42096/running-elisp-with
 Simply add the new block param =:keep-windows= to use this functionality
 
 #+begin_src emacs-lisp
-(when nil 
+(when nil
 (defun transform-tree (tree trafo)
   "Transform TREE by TRAFO."
   (let ((next tree))
@@ -2231,7 +2231,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Speed commands
    #+begin_src emacs-lisp
      (setq org-use-speed-commands t) ;; POWER USER BABY
-     ;; (setq org-speed-commands-user 
+     ;; (setq org-speed-commands-user
      ;;       '(
      ;;         ("," . org-columns)
      ;;         ("q" . bury-buffer)))
@@ -2265,11 +2265,11 @@ Simply add the new block param =:keep-windows= to use this functionality
 
      (add-to-list 'org-speed-commands-user
               '("]" ded/org-show-next-heading-tidily))
-     (add-to-list 'org-speed-commands-user 
+     (add-to-list 'org-speed-commands-user
               '("[" ded/org-show-previous-heading-tidily))
-     (add-to-list 'org-speed-commands-user 
+     (add-to-list 'org-speed-commands-user
                   '("s" save-buffer))
-     (add-to-list 'org-speed-commands-user 
+     (add-to-list 'org-speed-commands-user
                   '("d" org-toggle-narrow-to-subtree))
 
 
@@ -2424,29 +2424,29 @@ Simply add the new block param =:keep-windows= to use this functionality
 *** Clock table
     #+begin_src emacs-lisp
       (setq org-clocktable-defaults
-            '(:maxlevel 2 
-                 :lang "en" 
+            '(:maxlevel 2
+                 :lang "en"
                  :properties ("harvest")
-                 :scope file 
-                 :block nil 
-                 :wstart 1 
-                 :mstart 1 
-                 :tstart nil 
-                 :tend nil 
-                 :step nil 
-                 :stepskip0 nil 
+                 :scope file
+                 :block nil
+                 :wstart 1
+                 :mstart 1
+                 :tstart nil
+                 :tend nil
+                 :step nil
+                 :stepskip0 nil
                  :fileskip0 t
-                 :tags nil 
-                 :match nil 
+                 :tags nil
+                 :match nil
                  :emphasize t
                  :link t
-                 :narrow 75! 
-                 :indent t 
-                 :hidefiles nil 
-                 :formula nil 
-                 :timestamp nil 
-                 :level nil 
-                 :tcolumns nil 
+                 :narrow 75!
+                 :indent t
+                 :hidefiles nil
+                 :formula nil
+                 :timestamp nil
+                 :level nil
+                 :tcolumns nil
                  :formatter nil)
             )
     #+end_src
@@ -2500,7 +2500,7 @@ Simply add the new block param =:keep-windows= to use this functionality
      ;; Change task state to STARTED when clocking in
      (setq org-clock-in-switch-to-state "STARTED")
 
-     (setq org-tags-exclude-from-inheritance '("Project" "project" "interview2"))    
+     (setq org-tags-exclude-from-inheritance '("Project" "project" "interview2"))
                                              ;(setq org-tag-alist '(("project" . ?p)("car" . ?c)))
 
      (setq org-enforce-todo-dependencies t)
@@ -2535,7 +2535,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Org Roam - experimental
 #+begin_src emacs-lisp :tangle no
 (use-package org-roam
-  :hook 
+  :hook
   (after-init . org-roam-mode)
   :custom
   (org-roam-directory "~/projects/private-orgmode/")
@@ -2699,7 +2699,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 ** Clojure
    #+begin_src emacs-lisp
 ;; (add-hook 'cider-repl-mode-hook #'company-
-(add-hook 'cider-mode-hook #'company-mode) 
+(add-hook 'cider-mode-hook #'company-mode)
 ;; (use-package lsp-mode
 ;;   :ensure nil
 ;;   :commands lsp
@@ -2782,7 +2782,7 @@ Simply add the new block param =:keep-windows= to use this functionality
   :config
   (use-package prettify-greek
     :ensure nil)
-  (setq python-shell-interpreter "ipython3" 
+  (setq python-shell-interpreter "ipython3"
 	python-shell-interpreter-args "-i --simple-prompt")
   (setq org-babel-python-command "python3")
   (add-hook 'python-mode-hook
@@ -2833,12 +2833,12 @@ Simply add the new block param =:keep-windows= to use this functionality
    #+begin_src emacs-lisp
      (with-eval-after-load 'sql
        ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
-       (sql-set-product-feature 'mysql :prompt-regexp 
+       (sql-set-product-feature 'mysql :prompt-regexp
                                 "^\\(MariaDB\\|MySQL\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
        (setq sql-mysql-options '("-C" "-t" "-f" "-n")))
      ;; (require 'sql)
      ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
-     ;; (sql-set-product-feature 'mysql :prompt-regexp 
+     ;; (sql-set-product-feature 'mysql :prompt-regexp
      ;;                          "^\\(MariaDB\\|MySQL\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
      ;; (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
    #+end_src
@@ -2850,7 +2850,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 * Devops
 ** Working with containers
    This is largely a function of TRAMP.  I have added simple ways to
-   get Dired and =shell-mode= in 
+   get Dired and =shell-mode= in
    + Docker containers using =docker-tramp= package
    + DC/OS tasks with the =dcos= TRAMP method
    + Kubernetes pods with the =kube= TRAMP method.  This will grab a
@@ -2858,7 +2858,7 @@ Simply add the new block param =:keep-windows= to use this functionality
    + Google Cloud Shell with =gshell= TRAMP method
 
 ** Highlight Terraform and Ansible messages
-   This function highlights the typical lines for: 
+   This function highlights the typical lines for:
    + Terraform (Creation/Destruction complete)
    + Ansible (RUNNING/STAGE/TASK/PLAY)
    + Docker build (Step n/n)
