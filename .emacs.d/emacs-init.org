@@ -2038,76 +2038,163 @@ Simply add the new block param =:keep-windows= to use this functionality
 (use-package org-download)
    #+end_src
 ** Capture Templates
+*** Functions to support capture templates
+**** Bring in nicely formatted links to be used in the phone log capture template
+
+      These entries are in a table in each customer engagement Org file named =people=
+      #+begin_src emacs-lisp
+        (defun gjg/add-person-from-table ()
+          (let  ((myname (completing-read
+                          "Name to insert: "
+                          (mapcar (lambda (x) (nth 0  x)) table))))
+
+            (loop
+             for row in table
+             if (equal (nth 0 row) myname)
+             return (format "+ [[%s][%s]] - %s - %s"
+                            (nth 1 row) ; LinkedIn URL
+                            (nth 0 row) ; Name
+                            (nth 2 row) ; Title
+                            (nth 3 row) ; Location
+                            ))))
+      #+end_src
+**** Create new blog post file for blog capture
+    #+begin_src emacs-lisp
+      ;; *** Org capture
+      ;; taken from StackOverflow answer https://stackoverflow.com/questions/11902620/org-mode-how-do-i-create-a-new-file-with-org-capture
+      ;; (defun capture-blog-filename (path)
+      (defun safe-blog-filename ()
+        (let ((thedate (org-read-date nil nil nil "Date of post: "))
+              (name (read-string "Blog post title: ")))
+          (expand-file-name (format "%s-%s.org"
+                                    (format-time-string "%Y-%m-%d")
+                                    (downcase
+                                     (replace-regexp-in-string "-+$" ""
+                                                               (replace-regexp-in-string "[^[:alnum:]]+" "-"
+                                                                                         (replace-regexp-in-string "[[:punct:]]" "" name)))))
+                            "~/projects/blogs/hypecyclist/content/post/"
+                            )))
+    #+end_src
+*** Variables and hook setup
+    #+begin_src emacs-lisp
+      (setq org-default-notes-file "~/projects/notes.org")
+      (with-eval-after-load 'org-capture
+        '(add-hook 'org-capture-mode-hook 'turn-on-auto-fill))
+      (define-key global-map "\C-cc" 'org-capture)
+      (setq org-capture-templates nil) ; initialize to nil prior to grand setup below
+    #+end_src
+
+    #+RESULTS:
+
+*** Template definitions
    + N.B. First set up org-protocol (require the library) prior to using the related
      capture templates.  I'm not doing it at the moment because I can use the JS clip
      extension from ChromeOS (no =emacsclient= binary on Chrome OS, just in a Linux
-     container I cannot reach) 
+     container I cannot reach)
 
-   #+begin_src emacs-lisp
-     ;; *** Org capture
-     ;; taken from StackOverflow answer https://stackoverflow.com/questions/11902620/org-mode-how-do-i-create-a-new-file-with-org-capture
-     ;; (defun capture-blog-filename (path)
-     (defun safe-blog-filename ()
-       (let ((thedate (org-read-date nil nil nil "Date of post: "))
-             (name (read-string "Blog post title: ")))
-         (expand-file-name (format "%s-%s.org"
-                                   (format-time-string "%Y-%m-%d")
-                                   (downcase
-                                    (replace-regexp-in-string "-+$" ""
-                                                              (replace-regexp-in-string "[^[:alnum:]]+" "-"
-                                                                                        (replace-regexp-in-string "[[:punct:]]" "" name)))))
-                           "~/projects/blogs/hypecyclist/content/post/"
-                           )))
+**** Blog post
+     Start a new blog post for hypecyclist.org using my default Hugo template
+     #+begin_src emacs-lisp
+       (push
+        '("b" "Blog post" plain
+                     (file safe-blog-filename)
+                     (file "~/.emacs.d/hugo-default-blog.tmpl")
+                     :jump-to-captured t)
+        org-capture-templates)
+     #+end_src
 
-     (setq org-default-notes-file "~/projects/notes.org")
-     (with-eval-after-load 'org-capture
-       '(add-hook 'org-capture-mode-hook 'turn-on-auto-fill))
-     (define-key global-map "\C-cc" 'org-capture)
-     (setq org-capture-templates
-           '(
-             ("b" "Blog post" plain
-              (file safe-blog-filename)
-              (file "~/.emacs.d/hugo-default-blog.tmpl")
-              :jump-to-captured t)
-             ("c" "org-protocol-capture" entry "~/projects/private-orgmode/inbox.org"
-              "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish nil)
-             ("i" "inbox" entry
-              (file "~/projects/private-orgmode/inbox.org")
-              "* TODO %?\n  :LOGBOOK:\n  CREATED: %U\n  :END:")
+     #+RESULTS:
+     | b | Blog post | plain | (file safe-blog-filename) | (file ~/.emacs.d/hugo-default-blog.tmpl) | :jump-to-captured | t |
 
-             ("p" "Phone/Meeting" entry
-              (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Calls and Meetings")
-              "* %t %^{type|Call|Meeting|Email|Task} with %^{with|PS Team|Acxiom|Maxar|THD}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
-                :PROPERTIES:
-                :NOBLOCKING: t
-                :END:
-                :LOGBOOK:
-                CREATED: %U
-                :END:
-                %i
-               + From Rancher:
-               + GG
-               + From %\\2:
-               + %?
-                 " :prepend t :clock-in t :clock-keep t :jump-to-captured t)
-             ("r" "Regular todo" entry
-              (file "~/projects/private-orgmode/inbox.org")
-              "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
-             ("s" "Status update for Slack" entry
-              (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Write Daily Status to #consulting")
-              "* Status update %u
-                ,*Today*
-                  ,* %?
-                ,*Tomorrow*
-                  ,* another thing
-                ,*Blockers*
-                  ,* none"
-              :prepend t )
-             ("w" "Web page" entry (file "~/projects/private-orgmode/inbox.org")
-              "* TODO Read %(org-cliplink-capture)
-                      Captured %u")
-             ))
-   #+end_src
+**** org-protocol capture - will I ever ever ever use this again??
+     #+begin_src emacs-lisp
+       (push '("c" "org-protocol-capture" entry "~/projects/private-orgmode/inbox.org"
+               "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish nil)
+             org-capture-templates)
+     #+end_src
+
+     #+RESULTS:
+     | c | org-protocol-capture | entry | ~/projects/private-orgmode/inbox.org | * TODO [[%:link][%:description]] |
+
+
+
+
+
+**** Add items to a/the inbox - GTD style
+     #+begin_src emacs-lisp
+       (push
+        '("i" "inbox" entry
+          (file "~/projects/private-orgmode/inbox.org")
+          "* TODO %?\n  :LOGBOOK:\n  CREATED: %U\n  :END:")
+        org-capture-templates
+        )
+     #+end_src
+
+     #+RESULTS:
+     | i | inbox | entry | (file ~/projects/private-orgmode/inbox.org) | * TODO %? |
+
+**** Phone meeting - the heart of it all
+     #+begin_src emacs-lisp
+       (push
+        '("p" "Phone/Meeting" entry
+          (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Calls and Meetings")
+          "* %t %^{type|Call|Meeting|Email|Task} with %^{with|PS Team|Acxiom|Maxar|THD}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
+                       :PROPERTIES:
+                       :NOBLOCKING: t
+                       :END:
+                       :LOGBOOK:
+                       CREATED: %U
+                       :END:
+                       %i
+                      + From Rancher: GG
+                      + From %\\2:
+                        \#+begin_src emacs-lisp :var table=people :results append raw :exports results :eval never-export
+                       (gjg/add-person-from-table)
+                        \#+end_src
+                        %?
+                               " :prepend t :clock-in t :clock-keep t :jump-to-captured t)
+        org-capture-templates)
+     #+end_src
+
+     #+RESULTS:
+     | p | Phone/Meeting | entry | (file+headline ~/projects/private-orgmode/rancher/rancher.org.gpg Calls and Meetings) | * %t %^{type | Call | Meeting | Email | Task} with %^{with | PS Team | Acxiom | Maxar | THD}: %^{Subject | Sync-up | Follow-up | Team | Presentation | Introduction} |
+
+**** Regular TODO
+     #+begin_src emacs-lisp
+       (push
+        '             ("r" "Regular todo" entry
+                       (file "~/projects/private-orgmode/inbox.org")
+                       "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
+        org-capture-templates)
+     #+end_src
+
+     #+RESULTS:
+     | r | Regular todo | entry | (file ~/projects/private-orgmode/inbox.org) | * TODO %? |
+
+**** Status update for the Slack #consultants team
+     #+begin_src emacs-lisp
+       (push
+        '             ("s" "Status update for Slack" entry
+                       (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Write Daily Status to #consulting")
+                       "* Status update %u
+                       ,,*Today*
+                         ,,* %?
+                       ,,*Tomorrow*
+                         ,,* another thing
+                       ,,*Blockers*
+                         ,,* none"
+                       :prepend t )
+        org-capture-templates)
+     #+end_src
+
+**** Web page entry - what is this for exactly?
+     #+begin_src emacs-lisp
+       (push
+        '             ("w" "Web page" entry (file "~/projects/private-orgmode/inbox.org")
+                       "* TODO Read %(org-cliplink-capture)
+                             Captured %u")
+        org-capture-templates)
+     #+end_src
 ** Exporting
 *** General preferences
 #+begin_src emacs-lisp
