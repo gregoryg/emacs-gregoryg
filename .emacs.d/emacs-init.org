@@ -1464,6 +1464,7 @@
   (defun gjg/open-shell-prompted (newdir)
     "Directly open shell local or TRAMP remote"
     (interactive "D")
+    (message (format "Changing directory to %s" newdir))
     (cd newdir)
     (if (file-remote-p newdir)
         (shell (format "%s-sh" (file-remote-p newdir 'host)))
@@ -2615,7 +2616,8 @@ Simply add the new block param =:keep-windows= to use this functionality
 
 
    #+end_src
-** Clock
+** Clocking time
+*** Variables and keys
 #+begin_src emacs-lisp
   (setq org-clock-persist 'history)
   (org-clock-persistence-insinuate)
@@ -2625,6 +2627,42 @@ Simply add the new block param =:keep-windows= to use this functionality
   (define-key comint-mode-map (kbd "C-c C-x") nil)
   (global-set-key (kbd "C-c C-x j") 'org-clock-goto)
 #+end_src
+*** Clock in also to Harvest for work files
+    + Goal - when clocking in on work tasks (org file is somewhere in
+      ~/projects/private-orgmode/rancher), prompt for project/task to start timer for in
+      Harvest also.
+
+      TODO: Make =hcl= commands async
+      #+begin_src emacs-lisp
+        (defun gjg/start-harvest-timer ()
+          (interactive)
+          (let ((harvest-alias
+                 (completing-read
+                  "Harvest project: "
+                  (split-string
+                   (concat "non-harvest,"
+                           (string-trim (shell-command-to-string "hcl aliases"))) "[ ,]+")
+                  nil ; no predicate to limit choices
+                  nil ; do not require match
+                  "non-harvest")))
+            (if (string= "@" (substring harvest-alias 0 1))
+                (progn
+                      (message (format "Clocking in to %s" harvest-alias))
+                      (call-process-shell-command
+                       (format "hcl start %s %s " harvest-alias org-clock-heading)))
+              (message "Not clocking into Harvest"))))
+
+
+        (defun gjg/stop-harvest-timer ()
+          (interactive)
+          (call-process-shell-command "hcl stop")
+          (message "Stopped harvest timer (if any)"))
+
+        (add-hook 'org-clock-in-hook 'gjg/start-harvest-timer)
+        (add-hook 'org-clock-out-hook 'gjg/stop-harvest-timer)
+
+                  ;; (message (format "Selected task is %s" org-clock-heading) )))
+      #+end_src
 ** Behavior
 #+begin_src emacs-lisp
   ;; make c-y pay attention to current level
