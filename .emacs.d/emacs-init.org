@@ -1326,6 +1326,19 @@
      (setq projectile-ignored-project-function 'file-remote-p)
      (projectile-mode 1)
    #+end_src
+** EDE
+   I have no use for the built-in EDE.  The only thing EDE does for me is to steal the
+   =C-c .= keystroke away from Org Mode - thanks for nothin' EDE.
+
+   I'll just remap the keys to the currently-unsed =C-c e=
+
+   #+begin_src emacs-lisp
+     (with-eval-after-load 'ede
+       (define-key ede-minor-mode-map (kbd "C-c e")
+         (lookup-key ede-minor-mode-map (kbd "C-c .")))
+       (define-key ede-minor-mode-map (kbd "C-c .") nil))
+   #+end_src
+
 ** Company
  #+BEGIN_SRC emacs-lisp
 (use-package company
