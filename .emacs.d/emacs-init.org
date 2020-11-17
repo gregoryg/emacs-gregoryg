@@ -12,6 +12,8 @@
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
 #+setupfile: ~/projects/emacs/org-html-themes/setup/theme-readtheorg.setup
+#+PROPERTY: header-args:emacs-lisp :results none
+
 * Should I use =evil-mode=?
 
   No.
@@ -2098,8 +2100,6 @@ Simply add the new block param =:keep-windows= to use this functionality
       (setq org-capture-templates nil) ; initialize to nil prior to grand setup below
     #+end_src
 
-    #+RESULTS:
-
 *** Template definitions
    + N.B. First set up org-protocol (require the library) prior to using the related
      capture templates.  I'm not doing it at the moment because I can use the JS clip
@@ -2117,22 +2117,12 @@ Simply add the new block param =:keep-windows= to use this functionality
         org-capture-templates)
      #+end_src
 
-     #+RESULTS:
-     | b | Blog post | plain | (file safe-blog-filename) | (file ~/.emacs.d/hugo-default-blog.tmpl) | :jump-to-captured | t |
-
 **** org-protocol capture - will I ever ever ever use this again??
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :results none
        (push '("c" "org-protocol-capture" entry "~/projects/private-orgmode/inbox.org"
                "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish nil)
              org-capture-templates)
      #+end_src
-
-     #+RESULTS:
-     | c | org-protocol-capture | entry | ~/projects/private-orgmode/inbox.org | * TODO [[%:link][%:description]] |
-
-
-
-
 
 **** Add items to a/the inbox - GTD style
      #+begin_src emacs-lisp
@@ -2143,9 +2133,6 @@ Simply add the new block param =:keep-windows= to use this functionality
         org-capture-templates
         )
      #+end_src
-
-     #+RESULTS:
-     | i | inbox | entry | (file ~/projects/private-orgmode/inbox.org) | * TODO %? |
 
 **** Phone meeting - the heart of it all
      #+begin_src emacs-lisp
@@ -2170,9 +2157,6 @@ Simply add the new block param =:keep-windows= to use this functionality
         org-capture-templates)
      #+end_src
 
-     #+RESULTS:
-     | p | Phone/Meeting | entry | (file+headline ~/projects/private-orgmode/rancher/rancher.org.gpg Calls and Meetings) | * %t %^{type | Call | Meeting | Email | Task} with %^{with | PS Team | Acxiom | Maxar | THD}: %^{Subject | Sync-up | Follow-up | Team | Presentation | Introduction} |
-
 **** Regular TODO
      #+begin_src emacs-lisp
        (push
@@ -2181,9 +2165,6 @@ Simply add the new block param =:keep-windows= to use this functionality
                        "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
         org-capture-templates)
      #+end_src
-
-     #+RESULTS:
-     | r | Regular todo | entry | (file ~/projects/private-orgmode/inbox.org) | * TODO %? |
 
 **** Status update for the Slack #consultants team
      #+begin_src emacs-lisp
