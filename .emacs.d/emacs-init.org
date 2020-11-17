@@ -2661,11 +2661,8 @@ Simply add the new block param =:keep-windows= to use this functionality
             (if (string= "@" (substring harvest-alias 0 1))
                 (progn
                       (message (format "Clocking in to %s" harvest-alias))
-                      (async-start-process
-                       "*harvest-commands*"
-                       "hcl"
-                       nil
-                       (format "start %s %s " harvest-alias org-clock-heading)))
+                      (call-process-shell-command
+                       (format "hcl start %s %s " harvest-alias org-clock-heading)))
               (message "Not clocking into Harvest"))))
 
 
