@@ -454,12 +454,12 @@
       (bind-key "s-<right>" 'windmove-right)
       (bind-key "s-<left>" 'windmove-left)
 
-      ;; (bind-key "s-0" 'delete-window)
-      ;; (bind-key "s-1" 'delete-other-windows)
-      ;; (bind-key "s-2" 'gjg/split-window-below)
-      ;; (bind-key "s-3" 'gjg/split-window-right)
-
-      ;; (set-face-attribute 'winum-face nil :foreground "deep sky blue")
+      (bind-key "s-0" 'delete-window)
+      (bind-key "s-1" 'delete-other-windows)
+      (bind-key "s-2" 'gjg/split-window-below)
+      (bind-key "s-3" 'gjg/split-window-right)
+      (bind-key "s-q" 'bury-buffer)
+      ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
       (defun gjg/widen-ask-if-indirect ()
         "If buffer is indirect, ask before widening"
         (interactive)
@@ -1257,6 +1257,7 @@
           ;; https://github.com/ch11ng/exwm/wiki#unable-to-resize-an-x-window-by-dragging-its-right-edge
           (global-unset-key (kbd "M-<tab>"))
           (global-set-key (kbd "M-<tab>") 'buffer-expose); now we have alt-tab in EXWM!
+          (unbind-key (kbd "C-c C-d") buffer-expose-mode-map) ; unsteal key from Org Mode: org-deadline
           (setq window-divider-default-right-width 1)
           (window-divider-mode 1)
         #+end_src
@@ -2053,6 +2054,18 @@ Simply add the new block param =:keep-windows= to use this functionality
 (use-package org-cliplink)
 (use-package org-download)
    #+end_src
+
+   And here's a handy keyboard macro =gjg/url-grab-cliplink=
+
+   Assume point is in an Org file, and there are two windows in the current frame *and*
+   the other window is a Web browser (this only works in EXWM!).  Go to the browser
+   window, copy the URL, then use =org-cliplink= at the starting point in the original Org window.
+
+   #+begin_src emacs-lisp
+   (fset 'gjg/url-grab-cliplink
+   (kmacro-lambda-form [?\C-x ?o ?\C-l ?\M-w tab ?\C-x ?o ?\M-x ?o ?r ?g ?- ?c ?l ?i ?p ?l ?i ?n ?k return] 0 "%d"))
+   #+end_src
+
 ** Capture Templates
 *** Functions to support capture templates
 **** Bring in nicely formatted links to be used in the phone log capture template
@@ -2172,12 +2185,12 @@ Simply add the new block param =:keep-windows= to use this functionality
         '             ("s" "Status update for Slack" entry
                        (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Write Daily Status to #consulting")
                        "* Status update %u
-                       ,,*Today*
-                         ,,* %?
-                       ,,*Tomorrow*
-                         ,,* another thing
-                       ,,*Blockers*
-                         ,,* none"
+                       ,*Today*
+                         ,* %?
+                       ,*Tomorrow*
+                         ,* another thing
+                       ,*Blockers*
+                         ,* none"
                        :prepend t )
         org-capture-templates)
      #+end_src
@@ -2294,10 +2307,19 @@ Simply add the new block param =:keep-windows= to use this functionality
                               "~/projects/private-orgmode/habits.org"))
      (defun gjg/get-work-agenda-files ()
        "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
-       (directory-files-recursively "~/projects/private-orgmode/rancher/"
-                                    org-agenda-file-regexp
-                                    nil
-                                    (lambda(dirname) (not (string= "~/projects/private-orgmode/rancher/archive" dirname)))))
+       (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/rancher/engagements/"
+                                                            "\\`[^.].*\\.org\\.gpg\\'")))
+                                                            ;; nil
+                                                            ;; (lambda(dirname) (and
+                                                            ;;                   (not (string= "~/projects/private-orgmode/rancher/archive" dirname))
+                                                            ;;                   (not (string= "~/projects/private-orgmode/rancher/inactive" dirname)))))))
+         (add-to-list 'engagement-files "~/projects/private-orgmode/rancher/rancher.org.gpg" t)))
+             ;; (directory-files-recursively "~/projects/private-orgmode/rancher/engagements/"
+             ;;                              org-agenda-file-regexp
+             ;;                              nil
+             ;;                              (lambda(dirname) (and
+             ;;                                                (not (string= "~/projects/private-orgmode/rancher/archive" dirname))
+             ;;                                                (not (string= "~/projects/private-orgmode/rancher/inactive" dirname)))))))
      (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
      ;; Set agenda files to personal, override in work-related templates
      (setq org-agenda-files gjg/personal-org-agenda-files)
@@ -2473,17 +2495,17 @@ Simply add the new block param =:keep-windows= to use this functionality
                                 ""))
      (setq org-columns-default-format "%TODO %CATEGORY %60ITEM(Task)%5Effort(Estim){:} %5CLOCKSUM(Clock) %SCHEDULED(Time) %DEADLINE")
      (setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s!)" "PAUSED(p!)" "|" "DONE(d!)")      ;; ordinary sequence is Todo -> Started -> Done
-                                     (sequence "WAITING(w@/!)" "MAYBE(m!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
+                                     (sequence "WAITING(w@/!)" "MAYBE(m!)" "NEXT(n!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
                                      ;; (sequence "QUOTE(q!)" "QUOTED(Q!)" "|" "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")     ;; sequence for quotes
                                      )))
-     (setq org-todo-keyword-faces
-           '(("TODO"
-              (:foreground "#ff39a3" :weight bold))
-             ("STARTED" . "#E35DBF")
-             ("CANCELLED" :foreground "green" :weight bold :strike-through t)
-             ("PROPOSED" . "pink")
-             ("PAUSED"  . "yellow")
-             ("WAITING" . "yellow")))
+     ;; (setq org-todo-keyword-faces
+     ;;       '(("TODO"
+     ;;          (:foreground "#ff39a3" :weight bold))
+     ;;         ("STARTED" . "#E35DBF")
+     ;;         ("CANCELLED" :foreground "green" :weight bold :strike-through t)
+     ;;         ("PROPOSED" . "pink")
+     ;;         ("PAUSED"  . "yellow")
+     ;;         ("WAITING" . "yellow")))
 
      ;; (setq org-todo-state-tags-triggers
      ;;       (quote (("CANCELLED" ("CANCELLED" . t))
@@ -2649,7 +2671,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 
         (defun gjg/stop-harvest-timer ()
           (interactive)
-          (async-start-process "*harvest-commands*" "hcl" nil "stop")
+          (async-start-process "*hcl-commands*" "hcl" nil "stop")
           (message "Stopped harvest timer (if any)"))
 
         (add-hook 'org-clock-in-hook 'gjg/start-harvest-timer)
