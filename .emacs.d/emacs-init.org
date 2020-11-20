@@ -1812,13 +1812,39 @@ awesome.
       #+end_src
 
 ** Magit
-   Initiate =magit-todos= only on =magit= invocation, since it loads slowly
-   #+begin_export emacs-lisp
-   (add-hook 'magit-status-mode-hook
-             (lambda ()
-               (magit-todos-mode 1)
-               ))
-   #+end_export
+*** Initiate =magit-todos= only on =magit= invocation, since it loads slowly
+    #+begin_export emacs-lisp
+    (add-hook 'magit-status-mode-hook
+              (lambda ()
+                (magit-todos-mode 1)
+                ))
+    #+end_export
+*** Open Status in current window
+    Oh how I hate other-window for this!
+    Ref: https://github.com/magit/magit/issues/2541
+
+    Intent is to open only the Status buffer in the current window - other windows (diff,
+    push etc) will behave as they do by default.
+
+    #+begin_src emacs-lisp
+      (setq magit-display-buffer-function
+            (lambda (buffer)
+              (display-buffer
+               buffer
+               (cond ((and (derived-mode-p 'magit-mode)
+                           (eq (with-current-buffer buffer major-mode)
+                               'magit-status-mode))
+                      nil)
+                     ((memq (with-current-buffer buffer major-mode)
+                            '(magit-process-mode
+                              magit-revision-mode
+                              magit-diff-mode
+                              magit-stash-mode))
+                      nil)
+                     (t
+                      '(display-buffer-same-window))))))
+    #+end_src
+
 ** Smartparens
    #+begin_src emacs-lisp
 (autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
