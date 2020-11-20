@@ -197,15 +197,24 @@
    Big fan of Inconsolata, Source Code Pro, and Hack.  Inability to decide on one is
    encoded herein.
 
+   Make it a callable function so I can set new frames.  For now, do not tie it into a
+   frame hook - not certain I would want it for every frame.  This would make use of the
+   hook variable =after-make-frame-functions=
+
    #+begin_src emacs-lisp
-     (cond ((or (eq window-system 'mac) (eq window-system 'ns))
-            (set-frame-font "Source Code Pro-17"))
-           ((eq window-system 'w32)
-            (set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1"))
-           ((eq window-system 'x)
-            (set-frame-font "Hack-14")
-            ;; (set-frame-font "Inconsolata-16")
-            ))
+     (defun gjg/set-frame-font ()
+       "Set frame font based on window system"
+       (interactive)
+       (cond ((or (eq window-system 'mac) (eq window-system 'ns))
+              (set-frame-font "Source Code Pro-17"))
+             ((eq window-system 'w32)
+              (set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1"))
+             ((eq window-system 'x)
+              (set-frame-font "Hack-14")
+              ;; (set-frame-font "Inconsolata-16")
+              )))
+     (gjg/set-frame-font)
+     ;; (add-hook 'after-make-frame-functions 'gjg/set-frame-font)
      ;; (load-library "fontize")
      ;; (require 'fontize)
      (autoload 'inc-font-size "fontize" "Adjust buffer relative font size" t)
