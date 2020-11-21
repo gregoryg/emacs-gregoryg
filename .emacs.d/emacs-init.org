@@ -805,13 +805,38 @@
   #+end_src
 * EXWM : The Emacs X Window Manager
    This crazy idea is better than I thought it could be!
-** System things that change
-*** Browser should open new windows rather than tabs
+
+   This section is only useable on Linux - or Unix presumably - with X Window System
+   running but no window manager.  An entire window manager has been written in Emacs
+   Lisp - the fundamental package that exercises the X11 APIs is called =xelb= - its GitHub
+   repository is [[https://github.com/ch11ng/xelb][here]] - also available on GNU ELPA.
+
+   The package built atop that to provide a usable window manager is EXWM - Emacs X Window
+   Manager - GitHub repo [[https://github.com/ch11ng/exwm][here]]
+
+   EXWM is primarily a tiling window manager, but it supports floating windows as well -
+   very nice for transient dialogs.  You have control to take an application window and
+   change it to a floating window, along with the ability to move and resize it.
+
+   EXWM supports workspaces, which here is an abstraction based on Emacs frames.  The only
+   time I use workspaces in EXWM is when I have 2 or more monitors, where I place one
+   workspace per display.
+
+** Recommended changes to workflow when using a tiling window manager
+*** Web browser should open new windows rather than tabs
     Doing this allows Emacs to search window/tab titles.  It's a weird change at first,
     but it's a much better experience in a tiling window manager that has good search.
 
     In Firefox, you can go to =about:preferences=.  Under the *Tabs*, uncheck =Open links
     in tabs instead of new windows=
+*** Scripts will be required to handle operations normally managed by Desktop Environment
+    I have moved all the generated scripts and configs I use to support EXWM - and
+    theoretically any other tiling window manager - to [[file:exwm-scripts-and-configs.org][this Org file]].  I use that Org file
+    generate (tangle) everything I need in a Linux environment.
+
+*** Launching applications without a Desktop Environment
+    EXWM default config suggests a handy shell launch command from Emacs, but I prefer to
+    use exactly what I do on every other OS - a pop-up app launcher such as [[https://github.com/albertlauncher/albert][Albert]].
 
 ** Unresolved problems
 *** TODO Fix clipboard integration / behavior
@@ -871,134 +896,11 @@
    (when gjg/exwm-needed-p
  #+end_src
 *** Start wallpaper with transparency first for aesthetics
+    Script below is generated with the [[file:exwm-scripts-and-configs.org][Org file referenced above]]
     #+begin_src emacs-lisp
       (set-opacity 85)
       (async-start-process "wallpaper-thang"  "nohup" nil "/home/gregj/bin/schedule-rotate-wallpapers.sh" "&")
     #+end_src
-*** Shell scripts that become useful when no DE is available
-**** Script to run autostart apps including compositor
-    I run a shell script which starts up key helper apps like albert, picom and
-    xscreensaver.  Also some common mouse and keyboard settings that are ordinarily
-    handled in the DE.
-    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/capsctrl.sh
-      # Set CAPS LOCK as control
-      setxkbmap -verbose  -option "ctrl:nocaps"
-      # To re-enable caps lock
-      # setxkbmap -option
-    #+end_src
-    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/numlockon.sh
-      numlockx on
-    #+end_src
-    #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/emacswm.sh
-      echo "Running emacswm.sh script from `pwd`"
-      # Set CAPS LOCK key as CTRL
-      ~/bin/capsctrl.sh
-      ~/bin/numlockon.sh
-      # Network Manager using CLI
-      # ref https://core.docs.ubuntu.com/en/stacks/network/network-manager/docs/configure-wifi-connections
-      # If you get 'secrets were required' when trying to connect, delete the connection first
-      # sudo nmcli d wifi   # to scan wifi
-      # nmcli connection delete moodseer-5G
-      # nmcli d wifi connect moodseer-5G password blah
-
-      # Control scrolling direction - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
-      #         Option "NaturalScrolling" "on"
-
-      # Set scrolling direction to "natural"
-      xmodmap -e "pointer = 1 2 3 4 5"
-
-      # Make a left-handed mouse
-      # xmodmap -e "pointer = 3 2 1"
-
-      rm -vf nohup.out
-      echo Start compositor
-      nohup picom &
-
-      echo Starting notification daemon
-      nohup /usr/libexec/notification-daemon &
-
-      echo Start albert
-      nohup albert &
-      # nohup nm-applet&
-
-      echo Remember iflipb for changing buffers - and/or buffer-expose-mode
-      # xrandr --output eDP-1 --brightness .8
-
-      echo Start xscreensaver
-      xscreensaver &
-
-      ## Deal with LXDE if running as the WM
-      ## pcmanfm --desktop-off
-    #+end_src
-**** Scripts to rotate wallpaper on multiple screens
-     #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/rotate-wallpapers.sh
-       # # Get active monitors
-       # IFS=$'\n'
-       # for monitor in `xrandr --listactivemonitors| egrep '^ *[0-9]'`
-       # do
-       #     cleaned=`echo $monitor | sed -E 's/^ *([0-9]+): [\+\*]+([-0-9a-zA-Z]+) ([0-9]+)[^x]*x([0-9]+).+/\1 \2 \3x\4/'`
-       #     # echo $cleaned
-       #     IFS=' ' read mon name res <<< ${cleaned}
-       #     echo "Monitor #${mon} named ${name} has resolution ${res}"
-       #     # naiively assume correct dir exists
-       #     DISPLAY=:0 /usr/bin/feh --xinerama-index ${mon} --bg-max --randomize ~/backgrounds/safe/${res}/
-       # done
-
-       # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 1 --bg-max --randomize ~/backgrounds/safe/1920x1200/
-       # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 0 --bg-max --randomize ~/backgrounds/safe/3440x1440/
-
-       DISPLAY=:0 /usr/bin/feh --bg-fill --randomize --recursive  ~/backgrounds/safe/
-     #+end_src
-     #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/schedule-rotate-wallpapers.sh
-       #!/usr/bin/env bash
-       while true
-             do
-                 # DISPLAY=:0.0 /usr/bin/feh --bg-max --randomize ~/backgrounds/safe/1920x1200/
-                 /home/gregj/bin/rotate-wallpapers.sh
-                 sleep 1200
-       done
-     #+end_src
-**** Script to launch panel with good widgets
-     #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/xfce-panel-widgets.sh
-       nohup xfce4-panel &
-       # Clipboard manager
-       nohup parcellite &
-       # Network Manager applet
-       nohup nm-applet --indicator &
-       # Bluetooth setup + file transfer
-       nohup /usr/bin/python3 /usr/bin/blueman-applet &
-       # # Printer notifications - this applet was causing problems with EXWM - somehow added an unseen dedicated window
-       # nohup /usr/bin/python3 /usr/share/system-config-printer/applet.py &
-     #+end_src
-**** Script to toggle autohiding of xfce4-panel
-     #+begin_src bash :shebang #!/usr/bin/env bash :tangle ~/bin/toggle-xfce4-panel-hide.sh
-       #!/bin/bash
-
-       ##### EDIT these values to suit
-       # the panel to affect
-       PANEL=1
-
-       # the hide behaviour setting (1=intelligently, 2=always)
-       HIDE=2
-
-       ##### Don't edit anything below
-       # get the current setting
-       CURR=$(xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/autohide-behavior)
-
-       xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/disable-struts -s false
-       # show hidden or hide displayed
-       case $CURR in
-               #currently visible, so hide it
-           0) xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/autohide-behavior -s $HIDE ;;
-               # currently intelligent, set to visible
-           1) xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/autohide-behavior -s 0 ;;
-               # currently always hidden, set to visible
-           2) xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/autohide-behavior -s 0 ;;
-               # otherwise ignore
-           ,*) ;;
-       esac
-
-     #+end_src
 *** My specific config function
     I did not want =ido= integration and wanted to evolve my config.  So I copied the
     default config function and commenced modifying
@@ -1017,81 +919,82 @@
 
     TODO: Define simulation key for "Print"
  #+begin_src emacs-lisp
-   (defun gjg/exwm-config ()
-     "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
-     ;; Set the initial workspace number.
-     (unless (get 'exwm-workspace-number 'saved-value)
-       (setq exwm-workspace-number 2)) ; GJG changed from default
-     ;; Global keybindings.
-     ;; (unless (get 'exwm-input-global-keys 'saved-value)
-       (message "Setting exwm-input-global-keys")
-       (setq exwm-input-global-keys
-             `(
-               ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
-               ([?\s-l] .   ;; super/windows l
-                       (lambda ()
-                         (interactive)
-                         (call-process-shell-command "xscreensaver-command -lock")))
-               ;; 's-r': Reset (to line-mode).
-               ([?\s-r] . exwm-reset)
-               ;; 's-w': Switch workspace.
-               ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
-               ;; 's-&': Launch application. - poor man's albert/launchy
-               ([?\s-&] . (lambda (command)
-                            (interactive (list (read-shell-command "$ ")))
-                            (start-process-shell-command command nil command)))
-               ([?\s-o] .  gjg/other-window-with-winum)
-               ([s-left] . windmove-left)
-               ([s-right] . windmove-right)
-               ([s-up] . windmove-up)
-               ([s-down] . windmove-down)
-               ([s-backspace] . bury-buffer)
-               ([?\s-q] . bury-buffer)
-               ([?\s-\\] . switch-to-buffer )
-               ([?\s-a] . gjg/open-work-agenda)
-               ([?\s-b] . gjg/switch-to-other-buffer)
-               ([?\s-0] . delete-window)
-               ([?\s-1] . delete-other-windows)
-               ([?\s-2] . gjg/split-window-below)
-               ([?\s-3] . gjg/split-window-right)
-               ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
-               ;; 's-N': Switch to certain workspace.
-               ;; ,@(mapcar (lambda (i)
-               ;;             `(,(kbd (format "s-%d" i)) .
-               ;;               (lambda ()
-               ;;                 (interactive)
-               ;;                 (exwm-workspace-switch-create ,i))))
-               ;;           (number-sequence 4 9))
-               ))
-       ;; )
-     ;; Line-editing shortcuts
-     (unless (get 'exwm-input-simulation-keys 'saved-value)
-       (setq exwm-input-simulation-keys
-             '(([?\C-b] . left)
-               ([?\C-f] . [right])
-               ([?\C-p] . [up])
-               ;; ([?\C-P] . [?\C-p]) ; Print
-               ([?\C-n] . [down])
-               ([?\C-a] . [home])
-               ([?\C-e] . [end])
-               ([?\M-v] . [prior])
-               ([?\C-v] . [next])
-               ([?\C-d] . [delete])
-               ([?\C-k] . [S-end delete])
-               ([?\C-l] . [?\C-l])
-               ([?\C-t] . [?\C-t])
-             ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way
-             ([?\M-w] . [?\C-c]) ; Copy that!
-             ;; ([?\S-p] . [?\C-p]) ; TODO Print - not working
-             ([?\C-y] . [?\C-v]) ; yank/paste
-             )))
-     ;; Enable EXWM
-     (exwm-enable)
-     ;; ;; Configure Ido
-     ;; (exwm-config-ido)
-     ;; Other configurations
-     ;; (exwm-config-misc)
-     )
+      (defun gjg/exwm-config ()
+        "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
+        ;; Set the initial workspace number.
+        (unless (get 'exwm-workspace-number 'saved-value)
+          (setq exwm-workspace-number 2)) ; GJG changed from default
+        ;; Global keybindings.
+        ;; (unless (get 'exwm-input-global-keys 'saved-value)
+          (message "Setting exwm-input-global-keys")
+          (setq exwm-input-global-keys
+                `(
+                  ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
+                  ([?\s-l] .   ;; super/windows l
+                          (lambda ()
+                            (interactive)
+                            (call-process-shell-command "xscreensaver-command -lock")))
+                  ;; 's-r': Reset (to line-mode).
+                  ([?\s-r] . exwm-reset)
+                  ;; 's-w': Switch workspace.
+                  ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
+                  ;; 's-&': Launch application. - poor man's albert/launchy
+                  ([?\s-&] . (lambda (command)
+                               (interactive (list (read-shell-command "$ ")))
+                               (start-process-shell-command command nil command)))
+                  ([?\s-o] .  gjg/other-window-with-winum)
+                  ([s-left] . windmove-left)
+                  ([s-right] . windmove-right)
+                  ([s-up] . windmove-up)
+                  ([s-down] . windmove-down)
+                  ([s-backspace] . bury-buffer)
+                  ([?\s-q] . bury-buffer)
+                  ([?\s-\\] . switch-to-buffer )
+                  ([?\s-a] . gjg/open-work-agenda)
+                  ([?\s-b] . gjg/switch-to-other-buffer)
+                  ([?\s-0] . delete-window)
+                  ([?\s-1] . delete-other-windows)
+                  ([?\s-2] . gjg/split-window-below)
+                  ([?\s-3] . gjg/split-window-right)
+                  ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
+                  ;; 's-N': Switch to certain workspace.
+                  ;; ,@(mapcar (lambda (i)
+                  ;;             `(,(kbd (format "s-%d" i)) .
+                  ;;               (lambda ()
+                  ;;                 (interactive)
+                  ;;                 (exwm-workspace-switch-create ,i))))
+                  ;;           (number-sequence 4 9))
+                  ))
+          ;; )
+        ;; Line-editing shortcuts
+        (unless (get 'exwm-input-simulation-keys 'saved-value)
+          (setq exwm-input-simulation-keys
+                '(([?\C-b] . left)
+                  ([?\C-f] . [right])
+                  ([?\C-p] . [up])
+                  ;; ([?\C-P] . [?\C-p]) ; Print
+                  ([?\C-n] . [down])
+                  ([?\C-a] . [home])
+   b
+   ([?\C-e] . [end])
+                  ([?\M-v] . [prior])
+                  ([?\C-v] . [next])
+                  ([?\C-d] . [delete])
+                  ([?\C-k] . [S-end delete])
+                  ([?\C-l] . [?\C-l])
+                  ([?\C-t] . [?\C-t])
+                ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way
+                ([?\M-w] . [?\C-c]) ; Copy that!
+                ;; ([?\S-p] . [?\C-p]) ; TODO Print - not working
+                ([?\C-y] . [?\C-v]) ; yank/paste
+                )))
+        ;; Enable EXWM
+        (exwm-enable)
+        ;; ;; Configure Ido
+        ;; (exwm-config-ido)
+        ;; Other configurations
+        ;; (exwm-config-misc)
+        )
  #+end_src
 *** Define special logout if using LXDE
  #+begin_src emacs-lisp
@@ -1107,33 +1010,6 @@
     (require 'exwm)
     (require 'exwm-config)
     (gjg/exwm-config)
-    ;; delete the below at some point
-    ;; (exwm-input-set-key (kbd "s-0") 'delete-window)
-    ;; (require 'windmove)
-    ;; (unless (get 'exwm-input-global-keys 'saved-value)
-    ;;   (message "Setting exwm-input-global-keys") ;
-    ;;   (setq exwm-input-global-keys
-    ;;         `(
-    ;;           ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
-    ;;           ([?\s-l] .   ;; super/windows l
-    ;;            (lambda ()
-    ;;              (interactive)
-    ;;              (call-process-shell-command "xscreensaver-command -lock")))
-    ;;           ;; 's-r': Reset (to line-mode).
-    ;;           ([?\s-r] . exwm-reset)
-    ;;           ;; 's-w': Switch workspace.
-    ;;           ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
-    ;;           ;; 's-&': Launch application. - poor man's albert/launchy
-    ;;           ([?\s-&] . (lambda (command)
-    ;;                        (interactive (list (read-shell-command "$ ")))
-    ;;                        (start-process-shell-command command nil command)))
-    ;;           ([?\s-o] .  gjg/other-window-with-winum)
-    ;;           ([?\s-b] .  gjg/switch-to-other-buffer)
-    ;;           ([s-left] . windmove-left)
-    ;;           ([?\s-x] . windmove-left)
-    ;;           ;; ([s-<right>] . windmove-right)
-
-    ;;           )))
   #+end_src
 *** Deal with displays
     When an external monitor is connected or disconnected, =exwm-randr-screen-change-hook=
@@ -1189,6 +1065,8 @@
                              (exwm-workspace-rename-buffer "slack"))
                             ((string= "zoom" exwm-class-name)
                              (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
+                            ((string= "Dashboard - Mozilla Firefox" exwm-title)
+                             (exwm-workspace-rename-buffer "Rancher UI - Dashboard"))
                             ((string= "Rancher Labs - Agent - Mozilla Firefox" exwm-title)
                              (exwm-workspace-rename-buffer "Zendesk Tickets - Mozilla Firefox"))
                             (:else
@@ -1196,44 +1074,15 @@
         #+end_src
 
 *** Start up the window manager
-    There is a system tray, but I find it quite limited as to what widgets will work with
-    it.  So far I prefer running a lightweight panel instead (see above)
+    As noted above, I do not use the EXWM system tray.
         #+begin_src emacs-lisp
         (exwm-enable)
         (exwm-randr-enable)
         ;; (require 'exwm-systemtray)
         ;; (exwm-systemtray-enable)
         #+end_src
-*** Set SUPER window manager behavior toggles
-    Each window managed by EXWM is either in 'line' or 'char' mode.  For some X
-    applications, you may prefer to use 'char' mode, which directly sends all your
-    keyboard input directly to the application.  "Super-i" will let you toggle between
-    modes.
-
-    "Super-l" is a shortcut to lock the screen using =xscreensaver=
-    #+begin_src emacs-lisp
-      ;; lock screen
-      ;; (exwm-input-set-key (kbd "s-i")  ;; super/windows i
-      ;;                     'exwm-input-toggle-keyboard)
-      ;; Toggle EXWM input mode
-      ;; (exwm-input-set-key (kbd "s-l")  ;; super/windows l
-      ;;                     (lambda ()
-      ;;                       (interactive)
-      ;;                       (call-process-shell-command "xscreensaver-command -lock")))
-      ;; (exwm-input-set-key (kbd "s-o") 'gjg/other-window-with-winum)
-      ;; (exwm-input-set-key (kbd "s-b") 'gjg/switch-to-other-buffer)
-      ;; (exwm-input-set-key (kbd "s-0") 'delete-window)
-      ;; (exwm-input-set-key (kbd "s-1") 'delete-other-windows)
-      ;; (exwm-input-set-key (kbd "s-2") 'gjg/split-window-below)
-      ;; (exwm-input-set-key (kbd "s-3") 'gjg/split-window-right)
-      ;; (exwm-input-set-key "s-<up>" 'windmove-up)
-      ;; (exwm-input-set-key "s-<down>" 'windmove-down)
-      ;; (exwm-input-set-key "s-<right>" 'windmove-right)
-      ;; (exwm-input-set-key "s-<left>" 'windmove-left)
-
-    #+end_src
 *** Deal with brightness and volume, since we don't have a DE
-
+    There is a =desktop-environment= package on Melpa, but it's overkill for what I need.
         #+begin_src emacs-lisp
           (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")
                               (lambda ()

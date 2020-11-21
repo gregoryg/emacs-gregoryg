@@ -1,0 +1,497 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:2 todo:t |:t
+#+TITLE: Scripts and configs to support tiling window managers including EXWM
+#+DATE: <2020-11-21 Sat>
+#+AUTHOR: Greg Grubbs
+#+EMAIL: gregory@dynapse.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 28.0.50 with nativecomp
+#+setupfile: ~/projects/emacs/org-html-themes/setup/theme-readtheorg.setup
+#+PROPERTY: header-args:emacs-lisp :results none
+#+PROPERTY: header-args:bash :results none :shebang #!/usr/bin/env bash :tangle no
+  Tangle this file to generate shell scripts.
+
+* OS Applications
+  The shell scripts here expect certain applications to be installed, so let's take care
+  of those
+** OpenSUSE Tumbleweed
+   #+begin_src bash
+     sudo zypper install setxkbmap numlockx xmodmap picom feh xfce4-panel xfconf albert autorandr
+   #+end_src
+** Autorandr special case
+   This is probably best installed using =pip3= -- but I still need to test the version
+   available using Pip
+   TODO: test =pip3 install autorandr=
+*  Shell scripts that become useful when no DE is available
+** Script to run autostart apps including compositor
+  I run a shell script which starts up key helper apps like albert, picom and
+  xscreensaver.  Also some common mouse and keyboard settings that are ordinarily
+  handled in the DE.
+  #+begin_src bash :tangle ~/bin/capsctrl.sh
+    # Set CAPS LOCK as control
+    setxkbmap -verbose  -option "ctrl:nocaps"
+    # To re-enable caps lock
+    # setxkbmap -option
+  #+end_src
+  #+begin_src bash :tangle ~/bin/numlockon.sh
+    numlockx on
+  #+end_src
+  #+begin_src bash :tangle ~/bin/emacswm.sh
+    echo "Running emacswm.sh script from `pwd`"
+    # Set CAPS LOCK key as CTRL
+    ~/bin/capsctrl.sh
+    ~/bin/numlockon.sh
+    # Network Manager using CLI
+    # ref https://core.docs.ubuntu.com/en/stacks/network/network-manager/docs/configure-wifi-connections
+    # If you get 'secrets were required' when trying to connect, delete the connection first
+    # sudo nmcli d wifi   # to scan wifi
+    # nmcli connection delete moodseer-5G
+    # nmcli d wifi connect moodseer-5G password blah
+
+    # Control scrolling direction - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
+    #         Option "NaturalScrolling" "on"
+
+    # Set scrolling direction to "natural"
+    xmodmap -e "pointer = 1 2 3 4 5"
+
+    # Make a left-handed mouse
+    # xmodmap -e "pointer = 3 2 1"
+
+    rm -vf nohup.out
+    echo Start compositor
+    nohup picom &
+
+    echo Starting notification daemon
+    nohup /usr/libexec/notification-daemon &
+
+    echo Start albert
+    nohup albert &
+    # nohup nm-applet&
+
+    echo Remember iflipb for changing buffers - and/or buffer-expose-mode
+    # xrandr --output eDP-1 --brightness .8
+
+    echo Start xscreensaver
+    xscreensaver &
+
+    ## Deal with LXDE if running as the WM
+    ## pcmanfm --desktop-off
+  #+end_src
+** Scripts to rotate wallpaper on multiple screens
+   #+begin_src bash :tangle ~/bin/rotate-wallpapers.sh
+     # # Get active monitors
+     # IFS=$'\n'
+     # for monitor in `xrandr --listactivemonitors| egrep '^ *[0-9]'`
+     # do
+     #     cleaned=`echo $monitor | sed -E 's/^ *([0-9]+): [\+\*]+([-0-9a-zA-Z]+) ([0-9]+)[^x]*x([0-9]+).+/\1 \2 \3x\4/'`
+     #     # echo $cleaned
+     #     IFS=' ' read mon name res <<< ${cleaned}
+     #     echo "Monitor #${mon} named ${name} has resolution ${res}"
+     #     # naiively assume correct dir exists
+     #     DISPLAY=:0 /usr/bin/feh --xinerama-index ${mon} --bg-max --randomize ~/backgrounds/safe/${res}/
+     # done
+
+     # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 1 --bg-max --randomize ~/backgrounds/safe/1920x1200/
+     # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 0 --bg-max --randomize ~/backgrounds/safe/3440x1440/
+
+     DISPLAY=:0 /usr/bin/feh --bg-fill --randomize --recursive  ~/backgrounds/safe/
+   #+end_src
+   #+begin_src bash :tangle ~/bin/schedule-rotate-wallpapers.sh
+     #!/usr/bin/env bash
+     while true
+           do
+               # DISPLAY=:0.0 /usr/bin/feh --bg-max --randomize ~/backgrounds/safe/1920x1200/
+               /home/gregj/bin/rotate-wallpapers.sh
+               sleep 1200
+     done
+   #+end_src
+** Script to launch panel with good widgets
+   #+begin_src bash :tangle ~/bin/xfce-panel-widgets.sh
+     nohup xfce4-panel &
+     # Clipboard manager
+     nohup parcellite &
+     # Network Manager applet
+     nohup nm-applet --indicator &
+     # Bluetooth setup + file transfer
+     nohup /usr/bin/python3 /usr/bin/blueman-applet &
+     # # Printer notifications - this applet was causing problems with EXWM - somehow added an unseen dedicated window
+     # nohup /usr/bin/python3 /usr/share/system-config-printer/applet.py &
+   #+end_src
+** Script to toggle autohiding of xfce4-panel
+   #+begin_src bash :tangle ~/bin/toggle-xfce4-panel-hide.sh
+     #!/bin/bash
+
+     ##### EDIT these values to suit
+     # the panel to affect
+     PANEL=1
+
+     # the hide behaviour setting (1=intelligently, 2=always)
+     HIDE=2
+
+     ##### Don't edit anything below
+     # get the current setting
+     CURR=$(xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/autohide-behavior)
+
+     xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/disable-struts -s false
+     # show hidden or hide displayed
+     case $CURR in
+             #currently visible, so hide it
+         0) xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/autohide-behavior -s $HIDE ;;
+             # currently intelligent, set to visible
+         1) xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/autohide-behavior -s 0 ;;
+             # currently always hidden, set to visible
+         2) xfconf-query -c xfce4-panel -p /panels/panel-$PANEL/autohide-behavior -s 0 ;;
+             # otherwise ignore
+         ,*) ;;
+     esac
+
+   #+end_src
+
+
+
+** Script to adjust screen brightness
+   #+begin_src bash :tangle ~/bin/gjg-bright.sh
+     #!/usr/bin/env bash
+
+     # base dir for backlight class
+     basedir="/sys/class/backlight/"
+
+     # get the backlight handler
+     handler=$basedir$(ls $basedir)"/"
+
+     # get current brightness
+     old_brightness=$(cat $handler"brightness")
+
+     # get max brightness
+     max_brightness=$(cat $handler"max_brightness")
+
+     # get current brightness %
+     old_brightness_p=$(( 100 * $old_brightness / $max_brightness ))
+
+     # calculate new brightness % 
+     new_brightness_p=$(($old_brightness_p $1))
+
+     # calculate new brightness value
+     new_brightness=$(( $max_brightness * $new_brightness_p / 100 ))
+
+     # set the new brightness value
+     sudo chmod 666 $handler"brightness"
+     echo $new_brightness > $handler"brightness"
+
+   #+end_src
+* Autorandr setup
+  The config to start with is set up using =autorandr --save <profile>= with and without
+  monitors attached.  I create =laptop-only=, =dual-monitor= and =monitor-only= profiles
+
+  The resulting config files are stored in =~/.config/autorandr/=
+
+  In addition, there are =postswitch= scripts that run whenever a profile is activated
+** Laptop-only
+   #+begin_src bash :tangle ~/.config/autorandr/laptop-only/postswitch
+     #!/usr/bin/env bash
+     /home/gregj/bin/righty
+     /home/gregj/bin/capsctrl.sh
+     /home/gregj/bin/relaunch-albert.sh 
+   #+end_src
+** Dual-monitor
+  #+begin_src bash :tangle ~/.config/autorandr/dual-monitor/postswitch
+    #!/usr/bin/env bash
+    /home/gregj/bin/lefty
+    /home/gregj/bin/capsctrl.sh
+    /home/gregj/bin/rotate-wallpapers.sh 
+  #+end_src
+** Monitor-only
+  #+begin_src bash :tangle ~/.config/autorandr/monitor-only/postswitch
+    #!/usr/bin/env bash
+    /home/gregj/bin/lefty
+    /home/gregj/bin/capsctrl.sh
+    /home/gregj/bin/rotate-wallpapers.sh 
+  #+end_src
+* Desktop files to use with Albert
+** Images referred to in the files below
+   These images are to be placed in =~/.local/share/pixmaps/=
+
+   Copy all images in the [[file:~/projects/emacs/emacs-gregoryg/emacs/pixmaps/][~/emacs/pixmaps]] directory
+
+** Amazon.com
+   #+begin_src conf :tangle ~/.local/share/applications/amazon.desktop
+     [Desktop Entry]
+     Name=Amazon.com
+     Comment=That's right
+     Exec=firefox --new-window https://www.amazon.com/
+     Icon=/home/gregj/.local/share/pixmaps/amazon-logo-rgb.png
+     Terminal=false
+     Type=Application
+     Categories=Shopping;Retail;
+   #+end_src
+** Capsctrl
+   #+begin_src conf :tangle ~/.local/share/applications/capsctrl.desktop
+     [Desktop Entry]
+     Name=Capsctrl
+     Comment=Use CAPS LOCK as control
+     Exec=/home/gregj/bin/capsctrl.sh
+     Icon= /home/gregj/.local/share/pixmaps/CAPSoff.gif
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
+** Dired
+   #+begin_src conf :tangle ~/.local/share/applications/emacs-dired.desktop
+        # Stolen from https://emacs.stackexchange.com/a/16394/418
+  [Desktop Entry]
+     Encoding=UTF-8
+     Version=1.0
+     Type=Application
+     NoDisplay=true
+     Exec=emacsclient --no-wait --eval '(dired "%f")'
+     Name=Dired
+     Comment=Use Emacs Dired as file manager for OS
+     # Icon= /home/gregj/.local/share/pixmaps/rotate-wallpapers.jpg
+     # Terminal=false
+     Categories=Office;Productivity;Coolness
+   #+end_src
+** XFCE4 Panel
+   #+begin_src conf :tangle ~/.local/share/applications/exwm-xfce4-panel.desktop
+     [Desktop Entry]
+     Name=XFCE4 Panel
+     Comment=Panel with widgets for use with EXWM
+     # Exec=gnome-terminal -e "bash -c '/home/gregj/bin/xfce-panel-widgets.sh;/usr/bin/bash'" 
+     Exec=/home/gregj/bin/xfce-panel-widgets.sh
+     Icon= /home/gregj/.local/share/pixmaps/xfce.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
+** Calendar
+   #+begin_src conf :tangle ~/.local/share/applications/fcalendar.desktop
+     [Desktop Entry]
+     Name=Calendar
+     Comment=Outlook Calendar in Firefox
+     Exec=firefox --new-window https://outlook.office.com/calendar/view/day
+     Icon=/home/gregj/.local/share/pixmaps/Calendar.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Calendar;
+   #+end_src
+** Mail Email
+   #+begin_src conf :tangle ~/.local/share/applications/femail.desktop
+     [Desktop Entry]
+     Name=Mail Email
+     Comment=Outlook EMail in Firefox
+     Exec=firefox --new-window https://outlook.office.com/mail/inbox
+     Icon=/home/gregj/.local/share/pixmaps/outlook.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Calendar;
+   #+end_src
+** Hangouts
+   #+begin_src conf :tangle ~/.local/share/applications/fhangouts.desktop
+     [Desktop Entry]
+     Name=Hangouts
+     Comment=Google Hangouts in Firefox
+     Exec=firefox --new-window https://hangouts.google.com/
+     Icon=/home/gregj/.local/share/pixmaps/Hangouts_Icon.png
+     Terminal=false
+     Type=Application
+     Categories=InstantMessaging;
+   #+end_src
+** Slack
+   #+begin_src conf :tangle ~/.local/share/applications/flack.desktop
+     [Desktop Entry]
+     Name=Slack
+     Comment=Slack in Firefox
+     Exec=firefox --new-window https://rancher.slack.com/
+     Icon=/home/gregj/.local/share/pixmaps/slack.jpeg
+     Terminal=false
+     Type=Application
+     Categories=InstantMessaging;
+   #+end_src
+** Foxit Reader
+   #+begin_src conf :tangle ~/.local/share/applications/FoxitReader.desktop
+     [Desktop Entry]
+     Name=Foxit Reader
+     Comment=View pdf documents
+     Keywords=pdf;ppdf;
+     StartupNotify=true
+     Terminal=false
+     Type=Application
+     Categories=Application;Office;Viewer;X-Red-Hat-Base;
+     MimeType=application/pdf;application/ppdf;
+     Icon=FoxitReader
+     Exec=/home/gregj/opt/foxitsoftware/foxitreader/FoxitReader.sh %F
+     Exec=/home/gregj/opt/foxitsoftware/foxitreader/FoxitReader.sh %F
+   #+end_src
+** Reddit
+   #+begin_src conf :tangle ~/.local/share/applications/freddit.desktop
+     [Desktop Entry]
+     Name=Reddit
+     Comment=Reddit in Firefox
+     Exec=firefox --new-window https://reddit.com/
+     Icon=/home/gregj/.local/share/pixmaps/reddit-monster.png
+     Terminal=false
+     Type=Application
+     Categories=InstantMessaging;
+   #+end_src
+** Spotify
+   #+begin_src conf :tangle ~/.local/share/applications/fspotify.desktop
+     [Desktop Entry]
+     Name=Spotify
+     Comment=Spotify web player in Firefox
+     Exec=firefox --new-window https://open.spotify.com
+     Icon=/usr/share/icons/hicolor/512x512/apps/spotify-client.png
+     Terminal=false
+     Type=Application
+     Categories=Music;Media
+   #+end_src
+** Harvest Time Tracking
+   #+begin_src conf :tangle ~/.local/share/applications/harvest.desktop
+     [Desktop Entry]
+     Name=Harvest Time Tracking
+     Comment=Why, time tracking of course
+     Exec=firefox --new-window https://rancherlabs.harvestapp.com/time
+     Icon=/home/gregj/.local/share/pixmaps/harvest-logo-icon.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity
+   #+end_src
+** HBO Max
+   #+begin_src conf :tangle ~/.local/share/applications/hbomax.desktop
+     [Desktop Entry]
+     Name=HBO Max
+     Comment=HBO Max in Firefox
+     Exec=firefox --new-window https://play.hbomax.com/
+     Icon=/home/gregj/.local/share/pixmaps/hbomax.png
+     Terminal=false
+     Type=Application
+     Categories=Entertainment;
+   #+end_src
+** IntelliJ IDEA Community Edition
+   #+begin_src conf :tangle ~/.local/share/applications/jetbrains-idea-ce.desktop
+     [Desktop Entry]
+     Version=1.0
+     Type=Application
+     Name=IntelliJ IDEA Community Edition
+     Icon=/home/gregj/Downloads/idea-IC-202.6397.94/bin/idea.svg
+     Exec="/home/gregj/Downloads/idea-IC-202.6397.94/bin/idea.sh" %f
+     Comment=Capable and Ergonomic IDE for JVM
+     Categories=Development;IDE;
+     Terminal=false
+     StartupWMClass=jetbrains-idea-ce
+   #+end_src
+** Lefty Loosey
+   #+begin_src conf :tangle ~/.local/share/applications/lefty.desktop
+     [Desktop Entry]
+     Name=Lefty Loosey
+     Comment=Set attached mouse to left-handed use
+     Exec=/home/gregj/bin/lefty
+     Icon= /home/gregj/.local/share/pixmaps/lefthand_logo.gif
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
+** LinkedIn
+   #+begin_src conf :tangle ~/.local/share/applications/linkedin.desktop
+     [Desktop Entry]
+     Name=LinkedIn
+     Comment=Networking
+     Exec=firefox --new-window https://linkedin.com/
+     Icon=/home/gregj/.local/share/pixmaps/linkedin-glossy.jpg
+     Terminal=false
+     Type=Application
+     Categories=Office;Networking;Social
+   #+end_src
+** Relaunch Albert
+   #+begin_src conf :tangle ~/.local/share/applications/relaunch-albert.desktop
+     [Desktop Entry]
+     Name=Relaunch Albert
+     Comment=Use Albert to relaunch Albert
+     Exec= /home/gregj/bin/relaunch-albert.sh
+     Icon= /home/gregj/.local/share/pixmaps/albert-einstein.jpg
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
+** Righty Tighty
+   #+begin_src conf :tangle ~/.local/share/applications/righty.desktop
+     [Desktop Entry]
+     Name=Righty Tighty
+     Comment=Set attached mouse or trackpad to right-handed use
+     Exec=/home/gregj/bin/righty
+     Icon= /home/gregj/.local/share/pixmaps/righthandcoords.gif
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
+** Rotate Wallpaper
+   #+begin_src conf :tangle ~/.local/share/applications/rotate-wallpapers.desktop
+     [Desktop Entry]
+     Name=Rotate Wallpaper
+     Comment=Yep
+     Exec=/home/gregj/bin/rotate-wallpapers.sh
+     Icon= /home/gregj/.local/share/pixmaps/rotate-wallpapers.jpg
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
+** Solaar Logitech
+   #+begin_src conf :tangle ~/.local/share/applications/Solaar.desktop
+     [Desktop Entry]
+     Name=Solaar Logitech
+     Comment=Logitech Unifying software
+     Exec=solaar
+     Icon=/home/gregj/.local/share/pixmaps/solaar.svg
+     Terminal=false
+     Type=Application
+     Categories=Utility
+   #+end_src
+** Toggle XFCE4 Panel Show/Hide
+   #+begin_src conf :tangle
+        ~/.local/share/applications/toggle-xfce-panel-visibility.desktop
+     [Desktop Entry]
+     Name=Toggle XFCE4 Panel Show/Hide
+     Comment=Panel with widgets for use with EXWM
+     Exec=/home/gregj/bin/toggle-xfce4-panel-hide.sh
+     Icon= /home/gregj/.local/share/pixmaps/xfce4-panel-icon-png-icon.jpg
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
+** Trello
+   #+begin_src conf :tangle ~/.local/share/applications/trello.desktop
+     [Desktop Entry]
+     Name=Trello
+     Comment=Um ... Trello!
+     Exec=firefox --new-window https://trello.com/
+     Icon=/home/gregj/.local/share/pixmaps/trello.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
+** emacsclient
+   #+begin_src conf :tangle ~/.local/share/applications/userapp-emacsclient-6OAMT0.desktop
+     [Desktop Entry]
+     Encoding=UTF-8
+     Version=1.0
+     Type=Application
+     NoDisplay=true
+     Exec=/usr/local/bin/emacsclient --no-wait %f
+     Name=emacsclient
+     Comment=Custom definition for emacsclient
+   #+end_src
+** Zendesk
+   #+begin_src conf :tangle ~/.local/share/applications/zendesk.desktop
+     [Desktop Entry]
+     Name=Zendesk
+     Comment=Customer Issues
+     Exec=firefox --new-window https://rancher.zendesk.com/agent/dashboard
+     Icon=/home/gregj/.local/share/pixmaps/zendesk-new-256.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity
+   #+end_src
+
