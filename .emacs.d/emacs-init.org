@@ -18,6 +18,17 @@
 
   No.
 
+* Literate Programming Config file
+  This Org Mode file becomes "tangled" by the =org-babel-load-file= function in [[file:init.el][init.el]] to
+  produce the entire config for my Emacs sessions on Windows, MacOS, Linux and ChromeOS
+
+  Hip tip: to exclude entire code block sections from the resulting tangled config file,
+  just add a =:tangle no= header to the source block
+
+  If reading this file on GitHub, use the =raw= view to see all the code markings and
+  header parameters.
+
+
 * Set executable path
 #+begin_src emacs-lisp
   (when (file-exists-p "~/bin")
@@ -256,7 +267,6 @@
   (menu-bar-mode -1)
   ;; don't do that stoopid splash screen
   (setq inhibit-splash-screen t)
-
 
   ;; tab indents - if line is already indented, try to auto-complete
   (setq tab-always-indent 'complete)
