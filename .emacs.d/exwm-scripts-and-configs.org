@@ -21,7 +21,8 @@
   of those
 ** OpenSUSE Tumbleweed
    #+begin_src bash
-     sudo zypper install setxkbmap numlockx xmodmap picom feh xfce4-panel xfconf albert autorandr
+     sudo zypper install setxkbmap numlockx xmodmap picom feh xfce4-panel xfconf albert parcellite NetworkManager-applet blueman xfce4-whiskermenu-plugin xfce4-power-manager-plugin xfce4-mount-plugin xfce4-pulseaudio-plugin xfce4-screenshooter-plugin xfce4-statusnotifier-plugin
+
    #+end_src
 ** Autorandr special case
    This is probably best installed using =pip3= -- but I still need to test the version
