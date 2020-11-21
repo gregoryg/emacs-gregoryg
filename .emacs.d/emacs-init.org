@@ -65,9 +65,6 @@
     dumb-jump
     edit-indirect
     flx
-    go
-    go-autocomplete
-    go-guru
     highlight-indentation
     htmlize
     jupyter
@@ -235,6 +232,7 @@
      (global-set-key [C-kp-add] 'inc-font-size)
    #+end_src
 ** Desktop save
+   TODO: Deal with  '(desktop-files-not-to-save "\\(\\`/[^/:]*:\\|(ftp)\\'\\|org.gpg\\'\\)")
    #+begin_src emacs-lisp
 (desktop-save-mode 1)
 (setq desktop-restore-eager 0)
@@ -975,7 +973,6 @@
                   ;; ([?\C-P] . [?\C-p]) ; Print
                   ([?\C-n] . [down])
                   ([?\C-a] . [home])
-   b
    ([?\C-e] . [end])
                   ([?\M-v] . [prior])
                   ([?\C-v] . [next])
@@ -2679,7 +2676,7 @@ Simply add the new block param =:keep-windows= to use this functionality
    Initial configuration was nabbed from a 2-parter by @tleydn
    [[http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch/][Configure Emacs as a Go Editor From Scratch]]
 
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package go
        :ensure nil
        :config)
