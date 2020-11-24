@@ -396,6 +396,11 @@
 *** GJG full screen, movement, transparency
     TODO: figure out global Super key chords in exwm map vs global key map
     #+begin_src emacs-lisp
+      ;; unbind some keys in favor of my functions bound to SUPER- combinations
+      ;; the existing keys will work in Emacs buffers, but not in EXWM X buffers; the SUPER combos work everywhere
+      (global-unset-key (kbd "M-]")) ; next-buffer
+      (global-unset-key (kbd "M-[")) ; previous-buffer
+
       (defun revert-dammit () ; revert buffer without prompting
         (interactive)
         ;; revert buffer, don't use auto-save, preserve modes
