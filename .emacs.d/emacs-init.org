@@ -1071,6 +1071,8 @@
                              (exwm-workspace-rename-buffer "Rancher UI - Dashboard"))
                             ((string= "Rancher Labs - Agent - Mozilla Firefox" exwm-title)
                              (exwm-workspace-rename-buffer "Zendesk Tickets - Mozilla Firefox"))
+                            ((string= "Spotify" exwm-class-name)
+                             (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
                             (:else
                              (exwm-workspace-rename-buffer exwm-title)))))
         #+end_src
