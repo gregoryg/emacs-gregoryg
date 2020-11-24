@@ -1182,6 +1182,15 @@
      (setq eshell-destroy-buffer-when-process-dies t)
    #+end_src
 ** Projectile
+   Projectile will slow TRAMP shell buffers to an unbearable crawl without some change to
+   default settings.
+
+   The culprit is the =projectile-project-root= function, called to update the modeline by
+   default.  It -- for me at least -- is irrelevant for remote buffers, and can take > 10
+   seconds every time focus is switched to a remote buffer.  This [[https://www.reddit.com/r/emacs/comments/320cvb/projectile_slows_tramp_mode_to_a_crawl_is_there_a/][reddit thread]] has a
+   couple of solutions - I decided to advise the function so that it will not be called
+   for any reason in a TRAMP buffer.
+   
    #+begin_src emacs-lisp
      (defun gjg/projectile-minimal-mode-line ()
        "Report project name and type in the modeline - uh, no.  Just report that it's a project."
