@@ -1201,13 +1201,17 @@
      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
      (setq-default projectile--mode-line " Prj")
-     ;; (setq projectile-completion-system 'ivy)
      (setq projectile-completion-system 'selectrum-completing-read)
      (setq projectile-mode-line-prefix "Prj")
      (setq projectile-switch-project-action #'projectile-dired)
      (setq projectile-switch-project-action #'projectile-dired)
      (setq projectile-sort-order 'access-time)
      (setq projectile-ignored-project-function 'file-remote-p)
+
+     ;; avoid slowdowns when using Tramp. ref https://www.reddit.com/r/emacs/comments/320cvb/projectile_slows_tramp_mode_to_a_crawl_is_there_a/
+     (defadvice projectile-project-root (around ignore-remote first activate)
+       (unless (file-remote-p default-directory) ad-do-it))
+
      (projectile-mode 1)
    #+end_src
 ** EDE
