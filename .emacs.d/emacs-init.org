@@ -12,7 +12,8 @@
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
 #+setupfile: ~/projects/emacs/org-html-themes/setup/theme-readtheorg.setup
-#+PROPERTY: header-args:emacs-lisp :results none
+#+property: header-args:emacs-lisp :results none
+#+property: header-args:bash :shebang #!/usr/bin/env bash :results none
 
 * Should I use =evil-mode=?
 
