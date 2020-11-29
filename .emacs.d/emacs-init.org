@@ -1277,8 +1277,25 @@
 (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
    #+end_src
 *** Add methods for Docker, DC/OS, Google Cloud Shell
+**** First a helper script for =gcloud=
+     This script simply provides the convenience of not having to know and set the
+     instance's zone beforehand.  Comes from [[https://gist.github.com/scjody/29ad8c003a1bd5ff15e10b54926eb110][this gist]]
+     #+begin_src bash :tangle ~/bin/gssh
+       HOST="$1"
+
+       if [[ $HOST = *"@"* ]] ; then
+           USER=$(echo $HOST | cut -d'@' -f1)
+           HOST=$(echo $HOST | cut -d'@' -f2)
+       fi
+
+       gcloud config list | grep 'Your active'
+       ZONE=$(gcloud compute instances list |grep -E "^$HOST[[:space:]]" | awk '{print $2}')
+       echo zone: $ZONE
+       gcloud compute ssh --zone=$ZONE "$@"
+     #+end_src
+**** Define TRAMP methods
     #+begin_src emacs-lisp
-      ;; Add method to connect to Mesosphere DC/OS tasks
+      ;; add method to connect to Mesosphere DC/OS tasks
       ;; we need to execute a command like the following
       ;;  dcos task exec --tty --interactive <taskname> -- bash
       ;; example TRAMP URI:   //dcos:jupyter:
@@ -1317,7 +1334,6 @@
                        (tramp-remote-shell "/bin/sh")
                        (tramp-remote-shell-args ("-i" "-c"))))
 
-        ;; TRAMP gcloud ssh
         ;; Google Cloud Shell
         (add-to-list 'tramp-methods
                      '("gshell"
