@@ -1348,18 +1348,18 @@
                        ;;                              ("-o" "UserKnownHostsFile=/dev/null")
                        ;;                              ("-o" "StrictHostKeyChecking=no")))
                        (tramp-default-port         22)))
+        ;; TRAMP gcloud ssh
         (add-to-list 'tramp-methods
-                     '("gcssh"
-                       (tramp-login-program        "gcloud")
-                       (tramp-login-args           ( ("compute") ("ssh") ("%h") ("-v")))
+                     '("gssh"
+                       (tramp-login-program        "gssh")
+                       (tramp-login-args           (("%h")))
                        (tramp-async-args           (("-q")))
-                       (tramp-remote-shell         "/bin/bash")
+                       (tramp-remote-shell         "/bin/sh")
                        (tramp-remote-shell-args    ("-c"))
                        (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
                                                     ("-o" "UserKnownHostsFile=/dev/null")
                                                     ("-o" "StrictHostKeyChecking=no")))
-                       (tramp-default-port         22)))
-        )
+                       (tramp-default-port         22))))
 
 
     #+end_src
@@ -2397,14 +2397,14 @@ Simply add the new block param =:keep-windows= to use this functionality
     #+end_src
 ** Tags/TODOs/Projects Oh My
    #+begin_src emacs-lisp
+     (setq org-tag-persistent-alist
+           '(("habit")
+             ("billable")))
      (setq org-tag-alist '(("project" . ?p)
-                           ("dan" . ?d)
-                           ("greg" . ?g)
-                           ("onboarding" . ?b)
                            ("NEXT" . ?n)
                            ("noexport" . ?x)
                            ("cloud" . ?c)
-                           (:startgroup . nil)
+     sl                      (:startgroup . nil)
                            ("@customer")
                            ("@office" . ?o)
                            ("@home" . ?h)
