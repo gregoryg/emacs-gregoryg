@@ -2404,7 +2404,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                            ("NEXT" . ?n)
                            ("noexport" . ?x)
                            ("cloud" . ?c)
-     sl                      (:startgroup . nil)
+                           (:startgroup . nil)
                            ("@customer")
                            ("@office" . ?o)
                            ("@home" . ?h)
@@ -2810,6 +2810,25 @@ Simply add the new block param =:keep-windows= to use this functionality
 
    #+end_src
 ** SQL
+*** Format SQL
+    Emacs doesn't come out of the box with a useful SQL formatter, so go ahead and use an
+    external process
+
+    Ref https://emacs.stackexchange.com/a/35683/418
+
+    #+begin_src bash 
+      pip3 install sqlparse
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (defun gjg/sqlparse-region (beg end)
+        (interactive "r")
+        (shell-command-on-region
+         beg end
+         "python -c 'import sys, sqlparse; print(sqlparse.format(sys.stdin.read(), reindent=True))'"
+         t t))
+    #+end_src
+    
 *** MySQL / MariaDB
     + Assure that client prompt is recognized for both products
    #+begin_src emacs-lisp
