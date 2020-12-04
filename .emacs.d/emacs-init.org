@@ -1118,8 +1118,8 @@
 
     =buffer-expose= is an alternative to alt-tab
 
-    =window-divider-mode= let's us resize vertically split windows - for some reason, EXWM
-    makes it impossible to select the vertical margin
+    =window-divider-mode= makes it easy to  resize vertically split windows with the mouse - EXWM
+    makes it nearly impossible to select the vertical margin without this!
 
     =zoom-mode= is also quite useful to avoid having to manually resize horizontal and
     vertical splits - so useful I have added it in as part of my normal Emacs config
