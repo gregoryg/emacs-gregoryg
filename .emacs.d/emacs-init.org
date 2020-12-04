@@ -1058,11 +1058,11 @@
                         (exwm-workspace-rename-buffer exwm-class-name)))))
           (add-hook 'exwm-update-title-hook
                     (lambda ()
-                      (cond ((string= "Mail - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
+                      (cond ((string= "Mail - Greg Grubbs - Outlook — Mozilla Firefox" exwm-title)
                              (exwm-workspace-rename-buffer "email"))
-                            ((string= "Calendar - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
+                            ((string= "Calendar - Greg Grubbs - Outlook — Mozilla Firefox" exwm-title)
                              (exwm-workspace-rename-buffer "calendar"))
-                            ((string= "Google Hangouts - Mozilla Firefox" exwm-title)
+                            ((string= "Google Hangouts — Mozilla Firefox" exwm-title)
                              (exwm-workspace-rename-buffer "hangouts"))
                             ((and (> (length exwm-title) 4)  (string= "Slack" (substring exwm-title 0 5)))
                              (exwm-workspace-rename-buffer "slack"))
@@ -1071,7 +1071,7 @@
                             ((string= "Dashboard - Mozilla Firefox" exwm-title)
                              (exwm-workspace-rename-buffer "Rancher UI - Dashboard"))
                             ((string= "Rancher Labs - Agent - Mozilla Firefox" exwm-title)
-                             (exwm-workspace-rename-buffer "Zendesk Tickets - Mozilla Firefox"))
+                             (exwm-workspace-rename-buffer "Zendesk Tickets — Mozilla Firefox"))
                             ((string= "Spotify" exwm-class-name)
                              (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
                             (:else
