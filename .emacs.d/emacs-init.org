@@ -2036,7 +2036,8 @@ Simply add the new block param =:keep-windows= to use this functionality
     #+begin_src emacs-lisp
       (setq org-default-notes-file "~/projects/notes.org")
       (with-eval-after-load 'org-capture
-        '(add-hook 'org-capture-mode-hook 'turn-on-auto-fill))
+        (add-hook 'org-capture-mode-hook 'turn-on-auto-fill)
+        (define-key org-capture-mode-map (kbd "C-c C-c") 'org-capture-refile))
       (define-key global-map "\C-cc" 'org-capture)
       (setq org-capture-templates nil) ; initialize to nil prior to grand setup below
     #+end_src
