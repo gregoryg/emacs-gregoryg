@@ -11,7 +11,7 @@
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 28.0.50 with nativecomp
-#+setupfile: ~/projects/emacs/org-html-themes/setup/theme-readtheorg.setup
+#+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg.setup
 #+PROPERTY: header-args:emacs-lisp :results none
 #+PROPERTY: header-args:bash :results none :shebang #!/usr/bin/env bash :tangle no
   Tangle this file to generate shell scripts.
@@ -174,7 +174,7 @@
      # get current brightness %
      old_brightness_p=$(( 100 * $old_brightness / $max_brightness ))
 
-     # calculate new brightness % 
+     # calculate new brightness %
      new_brightness_p=$(($old_brightness_p $1))
 
      # calculate new brightness value
@@ -197,21 +197,23 @@
      #!/usr/bin/env bash
      /home/gregj/bin/righty
      /home/gregj/bin/capsctrl.sh
-     /home/gregj/bin/relaunch-albert.sh 
+     /home/gregj/bin/relaunch-albert.sh
    #+end_src
 ** Dual-monitor
   #+begin_src bash :tangle ~/.config/autorandr/dual-monitor/postswitch
     #!/usr/bin/env bash
     /home/gregj/bin/lefty
     /home/gregj/bin/capsctrl.sh
-    /home/gregj/bin/rotate-wallpapers.sh 
+    /home/gregj/bin/rotate-wallpapers.sh
+    /home/gregj/bin/relaunch-albert.sh
   #+end_src
 ** Monitor-only
   #+begin_src bash :tangle ~/.config/autorandr/monitor-only/postswitch
     #!/usr/bin/env bash
     /home/gregj/bin/lefty
     /home/gregj/bin/capsctrl.sh
-    /home/gregj/bin/rotate-wallpapers.sh 
+    /home/gregj/bin/rotate-wallpapers.sh
+     /home/gregj/bin/relaunch-albert.sh
   #+end_src
 * Desktop files to use with Albert
 ** Images referred to in the files below
@@ -229,6 +231,17 @@
      Terminal=false
      Type=Application
      Categories=Shopping;Retail;
+   #+end_src
+** Calendar
+   #+begin_src conf :tangle ~/.local/share/applications/fcalendar.desktop
+     [Desktop Entry]
+     Name=Calendar
+     Comment=Outlook Calendar in Firefox
+     Exec=firefox --new-window https://outlook.office.com/calendar/view/day
+     Icon=/home/gregj/.local/share/pixmaps/Calendar.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Calendar;
    #+end_src
 ** Capsctrl
    #+begin_src conf :tangle ~/.local/share/applications/capsctrl.desktop
@@ -256,61 +269,16 @@
      # Terminal=false
      Categories=Office;Productivity;Coolness
    #+end_src
-** XFCE4 Panel
-   #+begin_src conf :tangle ~/.local/share/applications/exwm-xfce4-panel.desktop
+** emacsclient
+   #+begin_src conf :tangle ~/.local/share/applications/userapp-emacsclient-6OAMT0.desktop
      [Desktop Entry]
-     Name=XFCE4 Panel
-     Comment=Panel with widgets for use with EXWM
-     # Exec=gnome-terminal -e "bash -c '/home/gregj/bin/xfce-panel-widgets.sh;/usr/bin/bash'" 
-     Exec=/home/gregj/bin/xfce-panel-widgets.sh
-     Icon= /home/gregj/.local/share/pixmaps/xfce.png
-     Terminal=false
+     Encoding=UTF-8
+     Version=1.0
      Type=Application
-     Categories=Office;Productivity;
-   #+end_src
-** Calendar
-   #+begin_src conf :tangle ~/.local/share/applications/fcalendar.desktop
-     [Desktop Entry]
-     Name=Calendar
-     Comment=Outlook Calendar in Firefox
-     Exec=firefox --new-window https://outlook.office.com/calendar/view/day
-     Icon=/home/gregj/.local/share/pixmaps/Calendar.png
-     Terminal=false
-     Type=Application
-     Categories=Office;Calendar;
-   #+end_src
-** Mail Email
-   #+begin_src conf :tangle ~/.local/share/applications/femail.desktop
-     [Desktop Entry]
-     Name=Mail Email
-     Comment=Outlook EMail in Firefox
-     Exec=firefox --new-window https://outlook.office.com/mail/inbox
-     Icon=/home/gregj/.local/share/pixmaps/outlook.png
-     Terminal=false
-     Type=Application
-     Categories=Office;Calendar;
-   #+end_src
-** Hangouts
-   #+begin_src conf :tangle ~/.local/share/applications/fhangouts.desktop
-     [Desktop Entry]
-     Name=Hangouts
-     Comment=Google Hangouts in Firefox
-     Exec=firefox --new-window https://hangouts.google.com/
-     Icon=/home/gregj/.local/share/pixmaps/Hangouts_Icon.png
-     Terminal=false
-     Type=Application
-     Categories=InstantMessaging;
-   #+end_src
-** Slack
-   #+begin_src conf :tangle ~/.local/share/applications/flack.desktop
-     [Desktop Entry]
-     Name=Slack
-     Comment=Slack in Firefox
-     Exec=firefox --new-window https://rancher.slack.com/
-     Icon=/home/gregj/.local/share/pixmaps/slack.jpeg
-     Terminal=false
-     Type=Application
-     Categories=InstantMessaging;
+     NoDisplay=true
+     Exec=/usr/local/bin/emacsclient --no-wait %f
+     Name=emacsclient
+     Comment=Custom definition for emacsclient
    #+end_src
 ** Foxit Reader
    #+begin_src conf :tangle ~/.local/share/applications/FoxitReader.desktop
@@ -327,27 +295,16 @@
      Exec=/home/gregj/opt/foxitsoftware/foxitreader/FoxitReader.sh %F
      Exec=/home/gregj/opt/foxitsoftware/foxitreader/FoxitReader.sh %F
    #+end_src
-** Reddit
-   #+begin_src conf :tangle ~/.local/share/applications/freddit.desktop
+** Hangouts
+   #+begin_src conf :tangle ~/.local/share/applications/fhangouts.desktop
      [Desktop Entry]
-     Name=Reddit
-     Comment=Reddit in Firefox
-     Exec=firefox --new-window https://reddit.com/
-     Icon=/home/gregj/.local/share/pixmaps/reddit-monster.png
+     Name=Hangouts
+     Comment=Google Hangouts in Firefox
+     Exec=firefox --new-window https://hangouts.google.com/
+     Icon=/home/gregj/.local/share/pixmaps/Hangouts_Icon.png
      Terminal=false
      Type=Application
      Categories=InstantMessaging;
-   #+end_src
-** Spotify
-   #+begin_src conf :tangle ~/.local/share/applications/fspotify.desktop
-     [Desktop Entry]
-     Name=Spotify
-     Comment=Spotify web player in Firefox
-     Exec=firefox --new-window https://open.spotify.com
-     Icon=/usr/share/icons/hicolor/512x512/apps/spotify-client.png
-     Terminal=false
-     Type=Application
-     Categories=Music;Media
    #+end_src
 ** Harvest Time Tracking
    #+begin_src conf :tangle ~/.local/share/applications/harvest.desktop
@@ -406,6 +363,28 @@
      Type=Application
      Categories=Office;Networking;Social
    #+end_src
+** Mail Email
+   #+begin_src conf :tangle ~/.local/share/applications/femail.desktop
+     [Desktop Entry]
+     Name=Mail Email
+     Comment=Outlook EMail in Firefox
+     Exec=firefox --new-window https://outlook.office.com/mail/inbox
+     Icon=/home/gregj/.local/share/pixmaps/outlook.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Calendar;
+   #+end_src
+** Reddit
+   #+begin_src conf :tangle ~/.local/share/applications/freddit.desktop
+     [Desktop Entry]
+     Name=Reddit
+     Comment=Reddit in Firefox
+     Exec=firefox --new-window https://reddit.com/
+     Icon=/home/gregj/.local/share/pixmaps/reddit-monster.png
+     Terminal=false
+     Type=Application
+     Categories=InstantMessaging;
+   #+end_src
 ** Relaunch Albert
    #+begin_src conf :tangle ~/.local/share/applications/relaunch-albert.desktop
      [Desktop Entry]
@@ -428,6 +407,17 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
+** Rocket Chat
+   #+begin_src conf :tangle ~/.local/share/applications/rocketchat.desktop
+     [Desktop Entry]
+     Name=Rocket.Chat
+     Comment=
+     Exec=firefox --new-window https://chat.suse.de/
+     Icon= /home/gregj/.local/share/pixmaps/rocketchat.jpg
+     Terminal=false
+     Type=Application
+     Categories=Chat;Community
+   #+end_src
 ** Rotate Wallpaper
    #+begin_src conf :tangle ~/.local/share/applications/rotate-wallpapers.desktop
      [Desktop Entry]
@@ -438,6 +428,17 @@
      Terminal=false
      Type=Application
      Categories=Office;Productivity;
+   #+end_src
+** Slack
+   #+begin_src conf :tangle ~/.local/share/applications/flack.desktop
+     [Desktop Entry]
+     Name=Slack
+     Comment=Slack in Firefox
+     Exec=firefox --new-window https://rancher.slack.com/
+     Icon=/home/gregj/.local/share/pixmaps/slack.jpeg
+     Terminal=false
+     Type=Application
+     Categories=InstantMessaging;
    #+end_src
 ** Solaar Logitech
    #+begin_src conf :tangle ~/.local/share/applications/Solaar.desktop
@@ -450,9 +451,19 @@
      Type=Application
      Categories=Utility
    #+end_src
+** Spotify
+   #+begin_src conf :tangle ~/.local/share/applications/fspotify.desktop
+     [Desktop Entry]
+     Name=Spotify
+     Comment=Spotify web player in Firefox
+     Exec=firefox --new-window https://open.spotify.com
+     Icon=/usr/share/icons/hicolor/512x512/apps/spotify-client.png
+     Terminal=false
+     Type=Application
+     Categories=Music;Media
+   #+end_src
 ** Toggle XFCE4 Panel Show/Hide
-   #+begin_src conf :tangle
-        ~/.local/share/applications/toggle-xfce-panel-visibility.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/toggle-xfce-panel-visibility.desktop
      [Desktop Entry]
      Name=Toggle XFCE4 Panel Show/Hide
      Comment=Panel with widgets for use with EXWM
@@ -473,16 +484,17 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
-** emacsclient
-   #+begin_src conf :tangle ~/.local/share/applications/userapp-emacsclient-6OAMT0.desktop
+** XFCE4 Panel
+   #+begin_src conf :tangle ~/.local/share/applications/exwm-xfce4-panel.desktop
      [Desktop Entry]
-     Encoding=UTF-8
-     Version=1.0
+     Name=XFCE4 Panel
+     Comment=Panel with widgets for use with EXWM
+     # Exec=gnome-terminal -e "bash -c '/home/gregj/bin/xfce-panel-widgets.sh;/usr/bin/bash'"
+     Exec=/home/gregj/bin/xfce-panel-widgets.sh
+     Icon= /home/gregj/.local/share/pixmaps/xfce.png
+     Terminal=false
      Type=Application
-     NoDisplay=true
-     Exec=/usr/local/bin/emacsclient --no-wait %f
-     Name=emacsclient
-     Comment=Custom definition for emacsclient
+     Categories=Office;Productivity;
    #+end_src
 ** Zendesk
    #+begin_src conf :tangle ~/.local/share/applications/zendesk.desktop
