@@ -191,30 +191,34 @@
 
   The resulting config files are stored in =~/.config/autorandr/=
 
-  In addition, there are =postswitch= scripts that run whenever a profile is activated
+  In addition, there are =postswitch= scripts that run whenever a profile is activated.
+  Set to right-handed mouse in laptop-only for the trackpad, left-handed for external
+  mouse when using external monitor.
+
 ** Laptop-only
    #+begin_src bash :tangle ~/.config/autorandr/laptop-only/postswitch
      #!/usr/bin/env bash
      /home/gregj/bin/righty
      /home/gregj/bin/capsctrl.sh
+     /home/gregj/bin/rotate-wallpapers.sh
      /home/gregj/bin/relaunch-albert.sh
    #+end_src
 ** Dual-monitor
-  #+begin_src bash :tangle ~/.config/autorandr/dual-monitor/postswitch
-    #!/usr/bin/env bash
-    /home/gregj/bin/lefty
-    /home/gregj/bin/capsctrl.sh
-    /home/gregj/bin/rotate-wallpapers.sh
-    /home/gregj/bin/relaunch-albert.sh
-  #+end_src
-** Monitor-only
-  #+begin_src bash :tangle ~/.config/autorandr/monitor-only/postswitch
-    #!/usr/bin/env bash
-    /home/gregj/bin/lefty
-    /home/gregj/bin/capsctrl.sh
-    /home/gregj/bin/rotate-wallpapers.sh
+   #+begin_src bash :tangle ~/.config/autorandr/dual-monitor/postswitch
+     #!/usr/bin/env bash
+     /home/gregj/bin/lefty
+     /home/gregj/bin/capsctrl.sh
+     /home/gregj/bin/rotate-wallpapers.sh
      /home/gregj/bin/relaunch-albert.sh
-  #+end_src
+   #+end_src
+** Monitor-only
+   #+begin_src bash :tangle ~/.config/autorandr/monitor-only/postswitch
+     #!/usr/bin/env bash
+     /home/gregj/bin/lefty
+     /home/gregj/bin/capsctrl.sh
+     /home/gregj/bin/rotate-wallpapers.sh
+     /home/gregj/bin/relaunch-albert.sh
+   #+end_src
 * Desktop files to use with Albert
 ** Images referred to in the files below
    These images are to be placed in =~/.local/share/pixmaps/=
