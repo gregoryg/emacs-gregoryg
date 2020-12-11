@@ -908,7 +908,7 @@
     Script below is generated with the [[file:exwm-scripts-and-configs.org][Org file referenced above]]
     #+begin_src emacs-lisp
       (set-opacity 85)
-      (async-start-process "wallpaper-thang"  "nohup" nil "/home/gregj/bin/schedule-rotate-wallpapers.sh" "&")
+      ;; (async-start-process "wallpaper-thang"  "nohup" nil "/home/gregj/bin/schedule-rotate-wallpapers.sh" "&")
     #+end_src
 *** My specific config function
     I did not want =ido= integration and wanted to evolve my config.  So I copied the
@@ -1253,33 +1253,6 @@
 ** TRAMP
    #+begin_src emacs-lisp
 ;;(require 'tramp)
-   #+end_src
-*** Do not restore TRAMP buffers in next emacs session
-   #+begin_src emacs-lisp
-(defun tv-list-tramp-buffer-file-name ()
-  "Return a list of buffers that I do not want automatically restored by desktop.el in the next emacs session: TRAMP dirs and files, Info buffer, and Dired buffers"
-  (let* ((desktop-info-list (mapcar #'desktop-buffer-info (buffer-list)))
-	 (tramp-buf-list (loop for i in desktop-info-list
-			       if (and (listp i)
-				       (stringp (car (nth 8 i)))
-				       (or
-					(string= "dired-mode" (nth 3 i))
-					(string= "Info-mode" (nth 3 i))
-					(string-match "^/su:.*\\|^/sudo:.*\\|^/ssh:.*\\|^/scp[^:]*:.*\\|^/smb:.*\\|^/docker:.*" (car (nth 8 i)))))
-			       collect (nth 2 i))))
-    tramp-buf-list))
-
-;; (add-hook 'desktop-save-hook #'(lambda ()
-;;                                  (let ((del-buf-list
-;;                                         (tv-list-tramp-buffer-file-name)))
-;;                                    (dolist (i del-buf-list)
-;;                                      (if (get-buffer i) (kill-buffer i))))))
-;;(setq desktop-buffers-not-to-save
-;;      (concat "\\` "
-;;	      (tv-list-tramp-buffer-file-name)))
-(add-to-list 'desktop-modes-not-to-save 'dired-mode)
-(add-to-list 'desktop-modes-not-to-save 'Info-mode)
-(add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
    #+end_src
 *** Add methods for Docker, DC/OS, Google Cloud Shell
 **** First a helper script for =gcloud=
@@ -2038,11 +2011,18 @@ Simply add the new block param =:keep-windows= to use this functionality
                             )))
     #+end_src
 *** Variables and hook setup
+    I want to always be prompted to refile my corporate phone log - so I remap =C-c C-c=
+    for only that capture template.
     #+begin_src emacs-lisp
       (setq org-default-notes-file "~/projects/notes.org")
       (with-eval-after-load 'org-capture
-        (add-hook 'org-capture-mode-hook 'turn-on-auto-fill)
-        (define-key org-capture-mode-map (kbd "C-c C-c") 'org-capture-refile))
+        ;; (add-hook 'org-capture-mode-hook 'turn-on-auto-fill)
+        (add-hook 'org-capture-mode-hook
+                  (lambda ()
+                    (let ((mykey (plist-get org-capture-plist :key)))
+                      (if (string= "p" mykey )
+                          (define-key org-capture-mode-map (kbd "C-c C-c") 'org-capture-refile)
+                        (define-key org-capture-mode-map (kbd "C-c C-c") 'org-capture-finalize))))))
       (define-key global-map "\C-cc" 'org-capture)
       (setq org-capture-templates nil) ; initialize to nil prior to grand setup below
     #+end_src
