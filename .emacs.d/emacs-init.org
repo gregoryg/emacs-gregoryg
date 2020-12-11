@@ -672,7 +672,7 @@
 
    #+end_src
 *** Window balancing
-    Use the Golden Ratio
+    Auto-zoom selected window (disabled to start)
 #+begin_src emacs-lisp
   ;; Resize active frame according to golden ratio
   (use-package zoom
@@ -682,7 +682,7 @@
      zoom-size '(0.54 . 0.54)
      zoom-ignored-buffer-name-regexps '("^\\*magit +.*")
      zoom-ignored-major-modes '("dired-mode" "ediff-mode" "buffer-expose-mode"))
-    (zoom-mode t))
+    (zoom-mode -1))
 #+end_src
 *** Ibuffer FTW
 **** Filter groups
