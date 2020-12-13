@@ -2200,138 +2200,150 @@ Simply add the new block param =:keep-windows= to use this functionality
 
    #+end_src
 ** Agenda
-*** Custom Agenda definitions
-       TODO why does starting with clocktable and/or log-mode not work??
+*** Set up agenda files lists
+    I keep one set of agenda files for personal / everyday use and another for work use.
+  #+begin_src emacs-lisp
+    ;; Make sure we match encrypted files for Agenda
+    ;; ref https://emacs.stackexchange.com/a/36543/418
+    (unless (string-match-p "\\.gpg" org-agenda-file-regexp)
+      (setq org-agenda-file-regexp
+            (replace-regexp-in-string "\\\\\\.org" "\\\\.org\\\\(\\\\.gpg\\\\)?"
+                                      org-agenda-file-regexp)))
+    (global-set-key (kbd "C-c a") 'org-agenda)
+    (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
+    (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
+                             "~/projects/private-orgmode/inbox.org"
+                             "~/projects/private-orgmode/someday.org"
+                             "~/projects/private-orgmode/projects.org"
+                             "~/projects/private-orgmode/next.org"
+                             "~/projects/private-orgmode/fit.org"
+                             "~/projects/private-orgmode/habits.org"))
+    (defun gjg/get-work-agenda-files ()
+      "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
+      (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/rancher/engagements/"
+                                                           "\\`[^.].*\\.org\\.gpg\\'")))
+                                                           ;; nil
+                                                           ;; (lambda(dirname) (and
+                                                           ;;                   (not (string= "~/projects/private-orgmode/rancher/archive" dirname))
+                                                           ;;                   (not (string= "~/projects/private-orgmode/rancher/inactive" dirname)))))))
+        (add-to-list 'engagement-files "~/projects/private-orgmode/rancher/rancher.org.gpg" t)))
+            ;; (directory-files-recursively "~/projects/private-orgmode/rancher/engagements/"
+            ;;                              org-agenda-file-regexp
+            ;;                              nil
+            ;;                              (lambda(dirname) (and
+            ;;                                                (not (string= "~/projects/private-orgmode/rancher/archive" dirname))
+            ;;                                                (not (string= "~/projects/private-orgmode/rancher/inactive" dirname)))))))
+    (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
+    ;; Set agenda files to personal, override in work-related templates
+    (setq org-agenda-files gjg/personal-org-agenda-files)
+  #+end_src
+*** Settings for all agenda types
+  #+begin_src emacs-lisp
+    ;;(setq org-agenda-span 'day)
+    ;;(setq org-agenda-skip-scheduled-if-done t)
+    (setq org-agenda-hide-tags-regexp "noagenda")
+    (setq org-agenda-restore-windows-after-quit t)
+    ;; (setq org-agenda-start-with-log-mode t)
+    (setq org-agenda-entry-text-maxlines 10)
+    (setq org-agenda-diary-file "~/projects/private-orgmode/diary.org")
+    (setq org-agenda-include-diary t)
 
-**** Set up agenda files lists
-     I keep one set of agenda files for personal / everyday use and another for work use.
-   #+begin_src emacs-lisp
-     ;; Make sure we match encrypted files for Agenda
-     ;; ref https://emacs.stackexchange.com/a/36543/418
-     (unless (string-match-p "\\.gpg" org-agenda-file-regexp)
-       (setq org-agenda-file-regexp
-             (replace-regexp-in-string "\\\\\\.org" "\\\\.org\\\\(\\\\.gpg\\\\)?"
-                                       org-agenda-file-regexp)))
-     (global-set-key (kbd "C-c a") 'org-agenda)
-     (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
-     (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
-                              "~/projects/private-orgmode/inbox.org"
-                              "~/projects/private-orgmode/someday.org"
-                              "~/projects/private-orgmode/projects.org"
-                              "~/projects/private-orgmode/next.org"
-                              "~/projects/private-orgmode/fit.org"
-                              "~/projects/private-orgmode/habits.org"))
-     (defun gjg/get-work-agenda-files ()
-       "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
-       (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/rancher/engagements/"
-                                                            "\\`[^.].*\\.org\\.gpg\\'")))
-                                                            ;; nil
-                                                            ;; (lambda(dirname) (and
-                                                            ;;                   (not (string= "~/projects/private-orgmode/rancher/archive" dirname))
-                                                            ;;                   (not (string= "~/projects/private-orgmode/rancher/inactive" dirname)))))))
-         (add-to-list 'engagement-files "~/projects/private-orgmode/rancher/rancher.org.gpg" t)))
-             ;; (directory-files-recursively "~/projects/private-orgmode/rancher/engagements/"
-             ;;                              org-agenda-file-regexp
-             ;;                              nil
-             ;;                              (lambda(dirname) (and
-             ;;                                                (not (string= "~/projects/private-orgmode/rancher/archive" dirname))
-             ;;                                                (not (string= "~/projects/private-orgmode/rancher/inactive" dirname)))))))
-     (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
-     ;; Set agenda files to personal, override in work-related templates
-     (setq org-agenda-files gjg/personal-org-agenda-files)
+    (setq org-agenda-exporter-settings
+          '((ps-number-of-columns 1)
+            (ps-landscape-mode t)
+            (org-agenda-add-entry-text-maxlines 10)
+            (htmlize-output-type 'css)))
+
+    ;; (setq org-agenda-start-with-clockreport-mode nil)
+    (setq org-special-ctrl-a/e t)
+    (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
+    (setq org-cycle-separator-lines 1) ;
+    (setq org-clock-history-length 12)
    #+end_src
-**** Settings for all agenda types
+*** Initialize for all agendas
    #+begin_src emacs-lisp
-     ;; Set basic org-mode keys
-     ;;(setq org-agenda-span 'day)
-     ;;(setq org-agenda-skip-scheduled-if-done t)
-     (setq org-agenda-hide-tags-regexp "noagenda")
-     (setq org-agenda-window-setup 'other-window)
-     (setq org-agenda-restore-windows-after-quit t)
-     ;; (setq org-agenda-start-with-log-mode t)
-     (setq org-agenda-entry-text-maxlines 10)
-     (setq org-agenda-diary-file "~/projects/private-orgmode/diary.org")
-     (setq org-agenda-include-diary t)
+     (setq org-agenda-custom-commands nil)
+   #+end_src
+*** Custom Agenda definitions
+**** Rancher agendas
+     These views use the work files
 
-     (setq org-agenda-exporter-settings
-           '((ps-number-of-columns 1)
-             (ps-landscape-mode t)
-             (org-agenda-add-entry-text-maxlines 10)
-             (htmlize-output-type 'css)))
+     TODO  why does starting with clocktable and/or log-mode not work??
 
-     ;; (setq org-agenda-start-with-clockreport-mode nil)
-     (setq org-special-ctrl-a/e t)
-     (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
-     (setq org-cycle-separator-lines 1) ;
-     (setq org-clock-history-length 12)
-    #+end_src
-**** Custom templates
     #+begin_src emacs-lisp
-      (setq org-agenda-custom-commands
-            `(
-              ("R" "Rancher"
-               ((agenda ""
-                        ((org-agenda-span 'day)
-                         (org-agenda-start-with-log-mode '(clock))
-                         (org-deadline-warning-days 2)
-                         (org-agenda-start-with-clockreport-mode t)
-                         )
-                        )
-                ;; (todo "TODO"
-                ;;         ((org-agenda-span 'day)
-                ;;          (org-deadline-warning-days 21)
-                ;;          ))
-                )
-               ((org-agenda-files gjg/work-agenda-files))
-               )
-              ;; TODO Filter on fitness tag
-              ("f" "Fitness"
-               ((agenda "" (
-                            (org-agenda-span 'day)))))
-              ("h" "thing TODO at Home"
-               ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
-                (agenda "" ((org-agenda-ndays 1)
-                            (org-agenda-span 'day)
-                            (org-agenda-sorting-strategy
-                             (quote ((agenda time-up priority-down tag-up))))
-                            (org-deadline-warning-days 0)))
-                (tags "reading")
-                (tags "writing")
-                (tags-todo "refile"))
-               ((org-agenda-tag-filter-preset '("-project" "-@office"))
-                ))
-              ("c" "Aaron's simple view"
-               ((tags "PRIORITY=\"A\""
-                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                       (org-agenda-overriding-header "High priority unfinished tasks")))
-                (agenda "" )
-                (alltodo ""
-                         ((org-agenda-skip-function '(or (air-org-skip-subtree-if-priority ?A)
-                                                         (org-agenda-skip-if nil '(scheduled deadline))
-                                                         )))
-                         (org-agenda-compact-blocks t)
-                         )
+      (add-to-list 'org-agenda-custom-commands
+                   '(
+                     ("R" "Rancher"
+                      ((agenda ""
+                               ((org-agenda-span 'day)
+                                (org-agenda-start-with-log-mode '(clock))
+                                (org-deadline-warning-days 2)
+                                (org-agenda-start-with-clockreport-mode t)
+                                )
+                               )
+                       ;; (todo "TODO"
+                       ;;         ((org-agenda-span 'day)
+                       ;;          (org-deadline-warning-days 21)
+                       ;;          ))
+                       )
+                      ((org-agenda-files gjg/work-agenda-files)))) t)
 
-                ))
-              ("i" "Inbox review"
-               ((todo "TODO"
-                      ((org-agenda-overriding-header "Review and Refile")
-                       (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org")))))))
-              ("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil)))
-              ("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil)))
-              ("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil)))
-              ("rc" "Clock report" agenda ""
-               ((org-agenda-files gjg/work-agenda-files)
-                (org-agenda-ndays 1)
-                (org-agenda-start-with-clockreport-mode t)
-                (org-agenda-time-grid nil)
-                (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled))))
-              ("rt" "Rancher TODOs" alltodo ""
-               ((org-agenda-files gjg/work-agenda-files)
-                (org-agenda-ndays 1)
-               ))
-              ))
+      (add-to-list 'org-agenda-custom-commands 
+                   '("rc" "Clock report" agenda ""
+                     ((org-agenda-files gjg/work-agenda-files)
+                      (org-agenda-ndays 1)
+                      (org-agenda-start-with-clockreport-mode t)
+                      (org-agenda-time-grid nil)
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled)))) t)
+
+      (add-to-list 'org-agenda-custom-commands 
+                   '("rt" "Rancher TODOs" alltodo ""
+                     ((org-agenda-files gjg/work-agenda-files)
+                      (org-agenda-ndays 1)
+                      )) t)
+
     #+end_src
+**** Home based agendas
+     Fitness and @home
+    #+begin_src emacs-lisp
+      ;; TODO Filter on fitness tag
+      (add-to-list 'org-agenda-custom-commands 
+                   '("f" "Fitness"
+                     ((agenda "" (
+                                  (org-agenda-span 'day))))) t)
+      (add-to-list 'org-agenda-custom-commands 
+                   '("h" "thing TODO at Home"
+                     ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
+                      (agenda "" ((org-agenda-ndays 1)
+                                  (org-agenda-span 'day)
+                                  (org-agenda-sorting-strategy
+                                   (quote ((agenda time-up priority-down tag-up))))
+                                  (org-deadline-warning-days 0)))
+                      (tags "reading")
+                      (tags "writing")
+                      (tags-todo "refile"))
+                     ((org-agenda-tag-filter-preset '("-project" "-@office"))
+                      )) t)
+
+      (add-to-list 'org-agenda-custom-commands 
+                   '("i" "Inbox review"
+                     ((todo "TODO"
+                            ((org-agenda-overriding-header "Review and Refile")
+                             (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org"))))))) t)
+    #+end_src
+
+    #+begin_src emacs-lisp
+      ;; (add-to-list 'org-agenda-custom-commands 
+      ;; '("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil))))
+
+      (add-to-list 'org-agenda-custom-commands 
+                   '("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil))))
+
+      (add-to-list 'org-agenda-custom-commands 
+                   '("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil))))
+
+    #+end_src
+*** Agenda hooks setup
     #+begin_src emacs-lisp
       ;; org-agenda: some handy keys
       ;; you might also want to set:
