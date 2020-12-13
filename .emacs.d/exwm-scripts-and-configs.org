@@ -84,6 +84,7 @@
     ## pcmanfm --desktop-off
   #+end_src
 ** Scripts to rotate wallpaper on multiple screens
+   The schedule script runs only if it is not already running
    #+begin_src bash :tangle ~/bin/rotate-wallpapers.sh
      # # Get active monitors
      # IFS=$'\n'
@@ -104,11 +105,20 @@
    #+end_src
    #+begin_src bash :tangle ~/bin/schedule-rotate-wallpapers.sh
      #!/usr/bin/env bash
+     # check for running process
+     pids=$(/bin/pgrep -f schedule-rotate-wallpapers )
+     for pid in $pids ; do
+         if [ $pid != $$ ] ; then
+             echo "already running"
+             exit 0
+         fi
+     done
+
      while true
-           do
-               # DISPLAY=:0.0 /usr/bin/feh --bg-max --randomize ~/backgrounds/safe/1920x1200/
-               /home/gregj/bin/rotate-wallpapers.sh
-               sleep 1200
+     do
+         # DISPLAY=:0.0 /usr/bin/feh --bg-max --randomize ~/backgrounds/safe/1920x1200/
+         /home/gregj/bin/rotate-wallpapers.sh
+         sleep 1200
      done
    #+end_src
 ** Script to launch panel with good widgets

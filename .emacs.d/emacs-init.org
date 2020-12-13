@@ -908,7 +908,7 @@
     Script below is generated with the [[file:exwm-scripts-and-configs.org][Org file referenced above]]
     #+begin_src emacs-lisp
       (set-opacity 85)
-      ;; (async-start-process "wallpaper-thang"  "nohup" nil "/home/gregj/bin/schedule-rotate-wallpapers.sh" "&")
+      (async-start-process "wallpaper-thang"  "nohup" nil "/home/gregj/bin/schedule-rotate-wallpapers.sh" "&")
     #+end_src
 *** My specific config function
     I did not want =ido= integration and wanted to evolve my config.  So I copied the
