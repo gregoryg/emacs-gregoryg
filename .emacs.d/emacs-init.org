@@ -49,78 +49,91 @@
   that you would have to [[https://emacs.stackexchange.com/questions/32744/dynamic-package-name-with-use-package][write your own macro]]
 
 #+BEGIN_SRC emacs-lisp
-(defvar gjg/check-packages-on-startup nil) ; should be nil in repo
+  (defvar gjg/check-packages-on-startup t) ; should be nil in repo
 
-(add-to-list 'load-path "~/emacs")
-(require 'cl)
-(require 'package)
+  (add-to-list 'load-path "~/emacs")
+  (require 'cl)
+  (require 'package)
 
-;; get control of required packages across different emacs environments
-(defvar gjg/required-packages
-  '(ag
-    bash-completion
-    cider
-    company
-    counsel
-    counsel-projectile
-    dumb-jump
-    edit-indirect
-    flx
-    highlight-indentation
-    htmlize
-    jupyter
-    keychain-environment
-    magit
-    magit-todos
-    material-theme
-    org
-    org-superstar
-    org-plus-contrib
-    org-tree-slide
-    ob-async
-    ob-http
-    pyvenv
-    prettify-greek
-    projectile
-    company-pr
-    rainbow-delimiters
-    smartparens
-    use-package
-    uuid
-    xterm-color
-    ;; language modes
-    ;; csv-mode
-    js2-mode
-    json-mode
-    markdown-mode
-    ;; scala-mode
-    ssh-config-mode
-    smex
-    terraform-mode
-    ;; web-mode
-    yafolding
-    yaml-mode
-    ))
+  ;; get control of required packages across different emacs environments
+  (defvar gjg/required-packages
+    '(ag
+      bash-completion
+      cider
+      company
+      counsel
+      counsel-projectile
+      dumb-jump
+      edit-indirect
+      flx
+      highlight-indentation
+      htmlize
+      jupyter
+      keychain-environment
+      magit
+      magit-todos
+      material-theme
+      org
+      org-superstar
+      org-plus-contrib
+      org-tree-slide
+      ob-async
+      ob-http
+      pyvenv
+      prettify-greek
+      projectile
+  ;;    company-pr
+      rainbow-delimiters
+      smartparens
+      use-package
+      uuid
+      xterm-color
+      ;; language modes
+      ;; csv-mode
+      js2-mode
+      json-mode
+      markdown-mode
+      ;; scala-mode
+      ssh-config-mode
+      smex
+      terraform-mode
+      ;; web-mode
+      yafolding
+      yaml-mode
+      ))
 
-(defun gjg/packages-installed-p ()
-  (loop for p in gjg/required-packages
-	when (not (package-installed-p p)) do (return nil)
-	finally (return t)))
+  (defun gjg/packages-installed-p ()
+    (loop for p in gjg/required-packages
+	  when (not (package-installed-p p)) do (return nil)
+	  finally (return t)))
 
-;; if not all packages are installed, install 'em
-(when gjg/check-packages-on-startup
-  (unless (gjg/packages-installed-p)
-    ;; check for new package versions
-    (message "%s" "This copy of Emacs is now refreshing its package database...")
-    (package-refresh-contents)
-    (message "%s" "  done.")
-    ;; install the missing packages
-    (dolist (p gjg/required-packages)
-      (when (not (package-installed-p p))
-	(package-install p)))))
+  ;; if not all packages are installed, install 'em
+  (when gjg/check-packages-on-startup
+    (unless (gjg/packages-installed-p)
+      ;; check for new package versions
+      (message "%s" "This copy of Emacs is now refreshing its package database...")
+      (package-refresh-contents)
+      (message "%s" "  done.")
+      ;; install the missing packages
+      (dolist (p gjg/required-packages)
+	(when (not (package-installed-p p))
+	  (package-install p)))))
 
 #+END_SRC
 * Greg's customizations!
+
+** Cleanup on file save
+   Tip o' the hat to [[https://github.com/mitchty][@mitchty]]
+   Remove trailing whitespace when saving files
+    #+BEGIN_SRC emacs-lisp
+     (add-hook 'before-save-hook 'delete-trailing-whitespace)
+   #+end_src
+
+   Make it executable if it should be executable!
+
+   #+begin_src emacs-lisp
+   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+   #+end_src
 
 ** Microsoft Windows things
 *** Printing
@@ -144,17 +157,17 @@
    #+end_src
 *** Info on Windows
     #+begin_src emacs-lisp
-(when  (eq window-system 'w32)
-  (progn
-    (setq Info-directory-list Info-default-directory-list)
-    (setq Info-additional-directory-list '("c:/emacs/share/info"))))
+      (when  (eq window-system 'w32)
+        (progn
+          (setq Info-directory-list Info-default-directory-list)
+          (setq Info-additional-directory-list '("c:/emacs/share/info"))))
     #+end_src
 
 *** File opens
     #+begin_src emacs-lisp
-(when (eq window-system 'w32)
-  (setq w32-get-true-file-attributes nil)
-  (remove-hook 'find-file-hook 'vc-find-file-hook))
+      (when (eq window-system 'w32)
+        (setq w32-get-true-file-attributes nil)
+        (remove-hook 'find-file-hook 'vc-find-file-hook))
     #+end_src
 ** Linux things
    Fix to make Org export to HTML and open do the right thing: open in the preferred
@@ -294,7 +307,7 @@
 
   (global-hl-line-mode t) ;; highlight current line - turn off when figuring out faces
 
-  (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows - nice for UX
+  (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows
 
   (setq fill-column 90); good default for wider screens - BUT this is buffer-local so should be set in mode hooks only
 
@@ -2285,7 +2298,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                        ;;          (org-deadline-warning-days 21)
                        ;;          ))
                        )
-                      ((org-agenda-files gjg/work-agenda-files)))) t)
+                      ((org-agenda-files gjg/work-agenda-files))) t)
 
       (add-to-list 'org-agenda-custom-commands 
                    '("rc" "Clock report" agenda ""
@@ -2883,6 +2896,9 @@ Simply add the new block param =:keep-windows= to use this functionality
 
     (defun gjg/highlight-squid ()
       (interactive)
+                                            ; Registry pull-through cache
+      (highlight-regexp "^HIT" 'hi-green)
+      (highlight-regexp "^MISS" 'hi-pink)
       ; Squid caching patterns
       (highlight-regexp "[A-Z_]*_HIT[A-Z_]*" 'hi-green)
       (highlight-regexp "[A-Z_]*_MISS[A-Z_]*" 'hi-pink)
