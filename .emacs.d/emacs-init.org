@@ -2272,8 +2272,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 
     #+begin_src emacs-lisp
       (add-to-list 'org-agenda-custom-commands
-                   '(
-                     ("R" "Rancher"
+                   '("R" "Rancher"
                       ((agenda ""
                                ((org-agenda-span 'day)
                                 (org-agenda-start-with-log-mode '(clock))
