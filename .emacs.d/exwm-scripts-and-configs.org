@@ -65,7 +65,12 @@
 
     rm -vf nohup.out
     echo Start compositor
-    nohup picom &
+    if /usr/bin/which picom ; then
+        nohup picom &
+    elif /usr/bin/which compton ; then
+        nohup compton &
+    fi
+
 
     echo Starting notification daemon
     nohup /usr/libexec/notification-daemon &
@@ -521,4 +526,3 @@
      Type=Application
      Categories=Office;Productivity
    #+end_src
-
