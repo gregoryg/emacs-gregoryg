@@ -1109,6 +1109,12 @@
                             (:else
                              (exwm-workspace-rename-buffer exwm-title)))))
         #+end_src
+**** Clean up on exit
+     #+begin_src emacs-lisp
+       (add-hook 'exwm-exit-hook
+                 (lambda ()
+                 (async-start-process "exwm-exit" "/usr/bin/pkill -f schedule-rotate-wallpapers")))
+     #+end_src
 
 *** Start up the window manager
     As noted above, I do not use the EXWM system tray.
