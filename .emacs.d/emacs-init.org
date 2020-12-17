@@ -935,7 +935,7 @@
     Script below is generated with the [[file:exwm-scripts-and-configs.org][Org file referenced above]]
     #+begin_src emacs-lisp
       (set-opacity 85)
-      (async-start-process "wallpaper-thang"  "nohup" nil "/home/gregj/bin/schedule-rotate-wallpapers.sh" "&")
+      ;; (async-start-process "wallpaper-thang"  "nohup" nil "/home/gregj/bin/schedule-rotate-wallpapers.sh" "&")
     #+end_src
 *** My specific config function
     I did not want =ido= integration and wanted to evolve my config.  So I copied the
@@ -1046,7 +1046,8 @@
     (require 'exwm-config)
     (gjg/exwm-config)
   #+end_src
-*** Deal with displays
+*** Configure hooks
+**** Deal with displays
     When an external monitor is connected or disconnected, =exwm-randr-screen-change-hook=
     is called.
 
@@ -1065,6 +1066,7 @@
 
           (add-hook 'exwm-randr-screen-change-hook
                     (lambda()
+                      (message "Starting exwm-randr-screen-change-hook")
                       (start-process-shell-command
                        "autorandr" nil "autorandr --change"
                        ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
@@ -1073,7 +1075,7 @@
                        ;; xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --mode 1920x1080 --same-as eDP-1
                        )))
         #+end_src
-*** Intelligently rename new buffers
+**** Intelligently rename new buffers
     By default, each new window's buffer is named by the 'class name': So Firefox, Slack,
     Alacritty and so on.  This means that I will get similar buffer names for each new
     Firefox window: Firefox<1>, Firefox<2>....
@@ -1229,7 +1231,7 @@
    seconds every time focus is switched to a remote buffer.  This [[https://www.reddit.com/r/emacs/comments/320cvb/projectile_slows_tramp_mode_to_a_crawl_is_there_a/][reddit thread]] has a
    couple of solutions - I decided to advise the function so that it will not be called
    for any reason in a TRAMP buffer.
-   
+
    #+begin_src emacs-lisp
      (defun gjg/projectile-minimal-mode-line ()
        "Report project name and type in the modeline - uh, no.  Just report that it's a project."
@@ -2320,7 +2322,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                        )
                       ((org-agenda-files gjg/work-agenda-files))) t)
 
-      (add-to-list 'org-agenda-custom-commands 
+      (add-to-list 'org-agenda-custom-commands
                    '("rc" "Clock report" agenda ""
                      ((org-agenda-files gjg/work-agenda-files)
                       (org-agenda-ndays 1)
@@ -2328,7 +2330,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                       (org-agenda-time-grid nil)
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled)))) t)
 
-      (add-to-list 'org-agenda-custom-commands 
+      (add-to-list 'org-agenda-custom-commands
                    '("rt" "Rancher TODOs" alltodo ""
                      ((org-agenda-files gjg/work-agenda-files)
                       (org-agenda-ndays 1)
@@ -2339,11 +2341,11 @@ Simply add the new block param =:keep-windows= to use this functionality
      Fitness and @home
     #+begin_src emacs-lisp
       ;; TODO Filter on fitness tag
-      (add-to-list 'org-agenda-custom-commands 
+      (add-to-list 'org-agenda-custom-commands
                    '("f" "Fitness"
                      ((agenda "" (
                                   (org-agenda-span 'day))))) t)
-      (add-to-list 'org-agenda-custom-commands 
+      (add-to-list 'org-agenda-custom-commands
                    '("h" "thing TODO at Home"
                      ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
                       (agenda "" ((org-agenda-ndays 1)
@@ -2357,7 +2359,7 @@ Simply add the new block param =:keep-windows= to use this functionality
                      ((org-agenda-tag-filter-preset '("-project" "-@office"))
                       )) t)
 
-      (add-to-list 'org-agenda-custom-commands 
+      (add-to-list 'org-agenda-custom-commands
                    '("i" "Inbox review"
                      ((todo "TODO"
                             ((org-agenda-overriding-header "Review and Refile")
@@ -2365,13 +2367,13 @@ Simply add the new block param =:keep-windows= to use this functionality
     #+end_src
 
     #+begin_src emacs-lisp
-      ;; (add-to-list 'org-agenda-custom-commands 
+      ;; (add-to-list 'org-agenda-custom-commands
       ;; '("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil))))
 
-      (add-to-list 'org-agenda-custom-commands 
+      (add-to-list 'org-agenda-custom-commands
                    '("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil))))
 
-      (add-to-list 'org-agenda-custom-commands 
+      (add-to-list 'org-agenda-custom-commands
                    '("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil))))
 
     #+end_src
@@ -2855,7 +2857,7 @@ Simply add the new block param =:keep-windows= to use this functionality
 
     Ref https://emacs.stackexchange.com/a/35683/418
 
-    #+begin_src bash 
+    #+begin_src bash
       pip3 install sqlparse
     #+end_src
 
@@ -2867,7 +2869,7 @@ Simply add the new block param =:keep-windows= to use this functionality
          "python -c 'import sys, sqlparse; print(sqlparse.format(sys.stdin.read(), reindent=True))'"
          t t))
     #+end_src
-    
+
 *** MySQL / MariaDB
     + Assure that client prompt is recognized for both products
    #+begin_src emacs-lisp
