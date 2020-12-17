@@ -24,15 +24,20 @@
      sudo zypper install setxkbmap numlockx xmodmap picom feh xfce4-panel xfconf albert parcellite NetworkManager-applet blueman xfce4-whiskermenu-plugin xfce4-power-manager-plugin xfce4-mount-plugin xfce4-pulseaudio-plugin xfce4-screenshooter-plugin xfce4-statusnotifier-plugin
 
    #+end_src
+** Ubuntu
+   #+begin_src bash
+     sudo apt update && sudo apt -y install albert silversearcher-ag mlocate libgccjit gcc libgccjit-9-dev vlc gwenview fonts-hack wmctrl feh compton autorandr fortune-mod cowsay ruby xscreensaver pdsh discount
+     sudo gem install hcl  # Harvest time tracking CLI
+   #+end_src
 ** Autorandr special case
    This is probably best installed using =pip3= -- but I still need to test the version
    available using Pip
    TODO: test =pip3 install autorandr=
 *  Shell scripts that become useful when no DE is available
 ** Script to run autostart apps including compositor
-  I run a shell script which starts up key helper apps like albert, picom and
-  xscreensaver.  Also some common mouse and keyboard settings that are ordinarily
-  handled in the DE.
+  I run a shell script which starts up key helper apps like albert, picom/compton and
+  xscreensaver.  Also some common mouse and keyboard settings that are ordinarily handled
+  in the DE.
   #+begin_src bash :tangle ~/bin/capsctrl.sh
     # Set CAPS LOCK as control
     setxkbmap -verbose  -option "ctrl:nocaps"
@@ -215,7 +220,7 @@
      #!/usr/bin/env bash
      /home/gregj/bin/righty
      /home/gregj/bin/capsctrl.sh
-     /home/gregj/bin/rotate-wallpapers.sh
+     /home/gregj/bin/schedule-rotate-wallpapers.sh
      /home/gregj/bin/relaunch-albert.sh
    #+end_src
 ** Dual-monitor
@@ -223,7 +228,7 @@
      #!/usr/bin/env bash
      /home/gregj/bin/lefty
      /home/gregj/bin/capsctrl.sh
-     /home/gregj/bin/rotate-wallpapers.sh
+     /home/gregj/bin/schedule-rotate-wallpapers.sh
      /home/gregj/bin/relaunch-albert.sh
    #+end_src
 ** Monitor-only
@@ -231,14 +236,14 @@
      #!/usr/bin/env bash
      /home/gregj/bin/lefty
      /home/gregj/bin/capsctrl.sh
-     /home/gregj/bin/rotate-wallpapers.sh
+     /home/gregj/bin/schedule-rotate-wallpapers.sh
      /home/gregj/bin/relaunch-albert.sh
    #+end_src
 * Desktop files to use with Albert
 ** Images referred to in the files below
    These images are to be placed in =~/.local/share/pixmaps/=
 
-   Copy all images in the [[file:~/projects/emacs/emacs-gregoryg/emacs/pixmaps/][~/emacs/pixmaps]] directory
+   Copy all images from the [[file:~/projects/emacs/emacs-gregoryg/emacs/pixmaps/][~/emacs/pixmaps]] directory
 
 ** Amazon.com
    #+begin_src conf :tangle ~/.local/share/applications/amazon.desktop
@@ -313,6 +318,19 @@
      Icon=FoxitReader
      Exec=/home/gregj/opt/foxitsoftware/foxitreader/FoxitReader.sh %F
      Exec=/home/gregj/opt/foxitsoftware/foxitreader/FoxitReader.sh %F
+   #+end_src
+** GoToWebinar
+   GoToWebinar does not support Firefox in 2020
+   Therefore this shortcut uses Chrome
+   #+begin_src bash
+     [Desktop Entry]
+     Name=GoToWebinar
+     Comment=Launched in Chrome
+     Exec=google-chrome --new-window https://app.gotowebinar.com/unified/index.html#/
+     Icon=/home/gregj/.local/share/pixmaps/Hangouts_Icon.png
+     Terminal=false
+     Type=Application
+     Categories=InstantMessaging;
    #+end_src
 ** Hangouts
    #+begin_src conf :tangle ~/.local/share/applications/fhangouts.desktop
@@ -392,6 +410,18 @@
      Terminal=false
      Type=Application
      Categories=Office;Calendar;
+   #+end_src
+** Monitor change
+   Run when external monitor is connected/disconnected
+   #+begin_src conf :tangle ~/.local/share/applications/autorandr-monitor.desktop
+     [Desktop Entry]
+     Name=Autorandr Monitor Change
+     Comment=run when monitor setup changes
+     Exec=/bin/autorandr --detect
+     Icon= /home/gregj/.local/share/pixmaps/laptop-monitor.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
    #+end_src
 ** Reddit
    #+begin_src conf :tangle ~/.local/share/applications/freddit.desktop
