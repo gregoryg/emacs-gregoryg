@@ -126,7 +126,21 @@
    Tip o' the hat to [[https://github.com/mitchty][@mitchty]]
    Remove trailing whitespace when saving files
     #+BEGIN_SRC emacs-lisp
-     (add-hook 'before-save-hook 'delete-trailing-whitespace)
+      ;; from https://stackoverflow.com/a/3533933/457574
+      (defun delete-trailing-whitespace-except-current-line ()
+        "do delete-trailing-whitespace, except preserve whitespace of current line"
+        (interactive)
+        (let ((current-line (buffer-substring (line-beginning-position) (line-end-position)))
+              (backward (- (line-end-position) (point))))
+          (delete-trailing-whitespace)
+          (when (not (string-equal (buffer-substring (line-beginning-position) (line-end-position))
+                                   current-line))
+            (delete-region (line-beginning-position) (line-end-position))
+            (insert current-line)
+            (backward-char backward))))
+
+
+      (add-hook 'before-save-hook 'delete-trailing-whitespace-except-current-line)
    #+end_src
 
    Make it executable if it should be executable!
