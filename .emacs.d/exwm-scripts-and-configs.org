@@ -21,18 +21,51 @@
   of those
 ** OpenSUSE Tumbleweed
    #+begin_src bash
-     sudo zypper install setxkbmap numlockx xmodmap picom feh xfce4-panel xfconf albert parcellite NetworkManager-applet blueman xfce4-whiskermenu-plugin xfce4-power-manager-plugin xfce4-mount-plugin xfce4-pulseaudio-plugin xfce4-screenshooter-plugin xfce4-statusnotifier-plugin
+     sudo zypper install setxkbmap numlockx xmodmap picom feh xfce4-panel xfconf albert parcellite NetworkManager-applet blueman xfce4-whiskermenu-plugin xfce4-power-manager-plugin xfce4-mount-plugin xfce4-pulseaudio-plugin xfce4-screenshooter-plugin xfce4-statusnotifier-plugin git mlocate the_silver_searcher kubernetes-client
 
    #+end_src
 ** Ubuntu
    #+begin_src bash
-     sudo apt update && sudo apt -y install albert silversearcher-ag mlocate libgccjit gcc libgccjit-9-dev vlc gwenview fonts-hack wmctrl feh compton autorandr fortune-mod cowsay ruby xscreensaver pdsh discount
+     sudo apt update && sudo apt -y install albert silversearcher-ag mlocate libgccjit gcc libgccjit-9-dev vlc gwenview fonts-hack wmctrl feh compton autorandr fortune-mod cowsay ruby xscreensaver pdsh discount git
      sudo gem install hcl  # Harvest time tracking CLI
    #+end_src
 ** Autorandr special case
    This is probably best installed using =pip3= -- but I still need to test the version
    available using Pip
    TODO: test =pip3 install autorandr=
+** X Session Desktop file
+   Having this allows EXWM to be chosen from the Display Manager
+
+   Place in =/usr/share/xsessions/emacs.desktop=
+   #+begin_src conf :tangle /sudo::/usr/share/xsessions/emacs.desktop
+     [Desktop Entry]
+     Encoding=UTF-8
+     Type=XSession
+     Name=Emacs EXWM Session
+     GenericName=Window Manager
+     Icon=icewm
+     Exec=/usr/local/bin/emacs
+     NoDisplay=false
+     Hidden=false
+     Categories=Application;System;
+     StartupNotify=false
+     X-GNOME-Autostart-Notify=false
+     X-GNOME-Autostart-Phase=WindowManager
+     X-GNOME-Provides=windowmanager
+     X-GNOME-WMName=EXWM
+     DesktopNames=EXWM
+     X-LightDM-DesktopName=exwm
+
+     [Window Manager]
+     Name=exwm
+     SessionManaged=true
+     StartupNotification=false
+   #+end_src
+
+   Install as X Session alternative
+   #+begin_src bash
+     sudo update-alternatives --install /usr/share/xsessions/default.desktop default-xsession.desktop /usr/share/xsessions/emacs.desktop 20
+   #+end_src
 *  Shell scripts that become useful when no DE is available
 ** Script to run autostart apps including compositor
   I run a shell script which starts up key helper apps like albert, picom/compton and
@@ -240,11 +273,17 @@
      /home/gregj/bin/relaunch-albert.sh
    #+end_src
 * Desktop files to use with Albert
+** Assure directories are created before tangling
+   #+begin_src bash
+     mkdir -p ~/.local/share/applications ~/.local/share/pixmaps/
+   #+end_src
 ** Images referred to in the files below
    These images are to be placed in =~/.local/share/pixmaps/=
 
    Copy all images from the [[file:~/projects/emacs/emacs-gregoryg/emacs/pixmaps/][~/emacs/pixmaps]] directory
-
+   #+begin_src bash
+     rsync -av ~/emacs/pixmaps/ ~/.local/share/pixmaps/
+   #+end_src
 ** Amazon.com
    #+begin_src conf :tangle ~/.local/share/applications/amazon.desktop
      [Desktop Entry]
@@ -262,7 +301,7 @@
      Name=Calendar
      Comment=Outlook Calendar in Firefox
      Exec=firefox --new-window https://outlook.office.com/calendar/view/day
-     Icon=/home/gregj/.local/share/pixmaps/Calendar.png
+     Icon= /home/gregj/.local/share/pixmaps/outlook-calendar.png
      Terminal=false
      Type=Application
      Categories=Office;Calendar;
