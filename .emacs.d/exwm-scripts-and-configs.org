@@ -407,6 +407,17 @@
      Exec=/home/gregj/opt/foxitsoftware/foxitreader/FoxitReader.sh %F
      Exec=/home/gregj/opt/foxitsoftware/foxitreader/FoxitReader.sh %F
    #+end_src
+** GitHub
+   #+begin_src bash
+     [Desktop Entry]
+     Name=GitHub
+     Comment=GitHub
+     Exec=firefox --new-window https://github.com/gregoryg/
+     Icon= /home/gregj/.local/share/pixmaps/github4.jpg
+     Terminal=false
+     Type=Application
+     Categories=Office;Calendar;
+   #+end_src
 ** GoToWebinar
    GoToWebinar does not support Firefox in 2020
    Therefore this shortcut uses Chrome
@@ -599,6 +610,17 @@
      Type=Application
      Categories=Music;Media
    #+end_src
+** Suspend laptop
+   #+begin_src conf :tangle ~/.local/share/applications/suspend-laptop.desktop
+     [Desktop Entry]
+     Name=Suspend / Sleep
+     Comment=Sleepytime
+     Exec=/usr/bin/systemctl suspend
+     Icon= /home/gregj/.local/share/pixmaps/sleepy-stars.png
+     Terminal=false
+     Type=Application
+     Categories=System
+   #+end_src
 ** Toggle XFCE4 Panel Show/Hide
    #+begin_src conf :tangle ~/.local/share/applications/toggle-xfce-panel-visibility.desktop
      [Desktop Entry]
@@ -632,6 +654,17 @@
      Terminal=false
      Type=Application
      Categories=Office;Productivity;
+   #+end_src
+** YouTube
+   #+begin_src conf :tangle ~/.local/share/applications/youtube.desktop
+     [Desktop Entry]
+     Name=YouTube
+     Comment=
+     Exec=firefox --new-window https://youtube.com
+     Icon= /home/gregj/.local/share/pixmaps/youtube-kids-new-logo.png
+     Terminal=false
+     Type=Application
+     Categories=Chat;Community
    #+end_src
 ** Zendesk
    #+begin_src conf :tangle ~/.local/share/applications/zendesk.desktop
