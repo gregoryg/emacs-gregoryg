@@ -95,6 +95,10 @@
     # Control scrolling direction - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
     #         Option "NaturalScrolling" "on"
 
+    # run an authentication agent for graphical programs that need SUDO
+    (cd /tmp && nohup /usr/lib/polkit-gnome-authentication-agent-1&)
+
+
     # Set scrolling direction to "natural"
     xmodmap -e "pointer = 1 2 3 4 5"
 
