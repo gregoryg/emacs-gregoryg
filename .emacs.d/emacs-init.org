@@ -2634,13 +2634,18 @@ Simply add the new block param =:keep-windows= to use this functionality
                 (progn
                       (message (format "Clocking in to %s" harvest-alias))
                       (call-process-shell-command
-                       (format "hcl start %s %s " harvest-alias org-clock-heading)))
+                       (format "hcl start %s '%s'" harvest-alias org-clock-heading)
+                       nil
+                       "harvest-commands"))
               (message "Not clocking into Harvest"))))
 
 
         (defun gjg/stop-harvest-timer ()
           (interactive)
-          (async-start-process "*hcl-commands*" "hcl" nil "stop")
+          (call-process-shell-command
+           "hcl stop"
+           nil
+           "harvest-commands")
           (message "Stopped harvest timer (if any)"))
 
         (add-hook 'org-clock-in-hook 'gjg/start-harvest-timer)

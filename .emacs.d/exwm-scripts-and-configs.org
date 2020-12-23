@@ -25,6 +25,7 @@
           albert \
           blueman \
           feh \
+          fontawesome-fonts \
           git \
           kubernetes-client \
           mlocate \
@@ -408,7 +409,7 @@
      Exec=/home/gregj/opt/foxitsoftware/foxitreader/FoxitReader.sh %F
    #+end_src
 ** GitHub
-   #+begin_src bash
+   #+begin_src bash  :tangle ~/.local/share/applications/github.desktop
      [Desktop Entry]
      Name=GitHub
      Comment=GitHub
@@ -421,7 +422,7 @@
 ** GoToWebinar
    GoToWebinar does not support Firefox in 2020
    Therefore this shortcut uses Chrome
-   #+begin_src bash
+   #+begin_src bash :tangle ~/.local/share/applications/gotowebinar.desktop
      [Desktop Entry]
      Name=GoToWebinar
      Comment=Launched in Chrome
