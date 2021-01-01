@@ -2115,7 +2115,7 @@ Open man page in current window, rather than other window with
        (push
         '("p" "Phone/Meeting" entry
           (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Calls and Meetings")
-          "* %t %^{type|Call|Meeting|Email|Task} with %^{with|PS Team|Acxiom|Maxar|THD}: %^{Subject|Sync-up|Follow-up|Team|Presentation|Introduction}
+          "* %t %^{type|Call|Meeting|Email|Task} with %^{with|PS Team|lululemon|BMC|Acxiom|Maxar|The Home Depot}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro}
                        :PROPERTIES:
                        :NOBLOCKING: t
                        :END:
