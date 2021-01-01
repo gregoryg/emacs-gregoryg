@@ -2339,7 +2339,7 @@ Open man page in current window, rather than other window with
       (add-to-list 'org-agenda-custom-commands
                    '("rc" "Clock report" agenda ""
                      ((org-agenda-files gjg/work-agenda-files)
-                      (org-agenda-ndays 1)
+                      (org-agenda-span 'day)
                       (org-agenda-start-with-clockreport-mode t)
                       (org-agenda-time-grid nil)
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled)))) t)
@@ -2347,7 +2347,7 @@ Open man page in current window, rather than other window with
       (add-to-list 'org-agenda-custom-commands
                    '("rt" "Rancher TODOs" alltodo ""
                      ((org-agenda-files gjg/work-agenda-files)
-                      (org-agenda-ndays 1)
+                      (org-agenda-span 'day)
                       )) t)
 
     #+end_src
@@ -2362,8 +2362,7 @@ Open man page in current window, rather than other window with
       (add-to-list 'org-agenda-custom-commands
                    '("h" "thing TODO at Home"
                      ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
-                      (agenda "" ((org-agenda-ndays 1)
-                                  (org-agenda-span 'day)
+                      (agenda "" ((org-agenda-span 'day)
                                   (org-agenda-sorting-strategy
                                    (quote ((agenda time-up priority-down tag-up))))
                                   (org-deadline-warning-days 0)))
