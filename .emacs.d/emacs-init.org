@@ -1817,133 +1817,137 @@ Open man page in current window, rather than other window with
      (add-to-list 'org-modules 'org-habit t)
      (require 'org-habit)
      (setq org-habit-show-all-today t
+           org-habit-show-done-always-green t
            org-habit-show-habits nil
            org-habit-graph-column 60
+           org-habit-completed-glyph 9989
+           org-habit-preceding-days 7
+           org-habit-show-done-always-green t
            org-habit-show-habits-only-for-today nil)
    #+end_src
 ** Org key mappings
-Disable some that get in the way
-#+begin_src emacs-lisp
-  (with-eval-after-load 'org
-    ;; little use for header COMMENT keyword
-    (define-key org-mode-map (kbd "C-c ;") nil)       ; org-toggle-comment
-    ;; don't accidentally archive things
-    (define-key org-mode-map (kbd "C-c C-x C-a") nil) ; org-archive-subtree-default
-    (define-key org-mode-map (kbd "C-c C-x C-s") nil) ; org-archive-to-subtree
-    (define-key org-mode-map (kbd "C-c C-x A") nil)   ; org-archive-to-archive-sibling
-    (define-key org-mode-map (kbd "C-c C-x a") nil)   ; org-toggle-archive-tag
-    ;; keys that conflict with buffer movement
-    (define-key org-mode-map (kbd "<M-right>") nil)     ; org-metaright
-    (define-key org-mode-map (kbd "<M-left>") nil)     ; org-metaleft
-    ;; keys that conflict with windmove package
-    ;; (define-key org-mode-map (kbd "<S-up>") nil)       ; org-shiftup
-    ;; (define-key org-mode-map (kbd "<S-down>") nil)       ; org-shiftdown
-    (define-key org-mode-map (kbd "<S-left>") nil)       ; org-shiftleft
-    (define-key org-mode-map (kbd "<S-right>") nil))       ; org-shiftright
-#+end_src
+   Disable some that get in the way
+   #+begin_src emacs-lisp
+     (with-eval-after-load 'org
+       ;; little use for header COMMENT keyword
+       (define-key org-mode-map (kbd "C-c ;") nil)       ; org-toggle-comment
+       ;; don't accidentally archive things
+       (define-key org-mode-map (kbd "C-c C-x C-a") nil) ; org-archive-subtree-default
+       (define-key org-mode-map (kbd "C-c C-x C-s") nil) ; org-archive-to-subtree
+       (define-key org-mode-map (kbd "C-c C-x A") nil)   ; org-archive-to-archive-sibling
+       (define-key org-mode-map (kbd "C-c C-x a") nil)   ; org-toggle-archive-tag
+       ;; keys that conflict with buffer movement
+       (define-key org-mode-map (kbd "<M-right>") nil)     ; org-metaright
+       (define-key org-mode-map (kbd "<M-left>") nil)     ; org-metaleft
+       ;; keys that conflict with windmove package
+       ;; (define-key org-mode-map (kbd "<S-up>") nil)       ; org-shiftup
+       ;; (define-key org-mode-map (kbd "<S-down>") nil)       ; org-shiftdown
+       (define-key org-mode-map (kbd "<S-left>") nil)       ; org-shiftleft
+       (define-key org-mode-map (kbd "<S-right>") nil))       ; org-shiftright
+   #+end_src
 ** Org Babel and Source Code Blocks
-  TODO: install ob-jupyter package on systems with Jupyter
-  #+begin_src emacs-lisp
-    ;; (unless (version< org-version "9.2")
-    ;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
-    ;;   )
-    (with-eval-after-load 'org
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       (append org-babel-load-languages
-               '(
-                 (clojure . t)
-                 (http . t) ;; curl
-                 (js . t)
-                 (latex . t)
-                 (python . t)
-                 (shell  . t)
-                 (sql . t)
-                 )))
-      (setq org-confirm-babel-evaluate nil
-            org-export-use-babel nil
-            org-export-with-sub-superscripts nil)
+    TODO: install ob-jupyter package on systems with Jupyter
+     #+begin_src emacs-lisp
+       ;; (unless (version< org-version "9.2")
+       ;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
+       ;;   )
+       (with-eval-after-load 'org
+         (org-babel-do-load-languages
+          'org-babel-load-languages
+          (append org-babel-load-languages
+                  '(
+                    (clojure . t)
+                    (http . t) ;; curl
+                    (js . t)
+                    (latex . t)
+                    (python . t)
+                    (shell  . t)
+                    (sql . t)
+                    )))
+         (setq org-confirm-babel-evaluate nil
+               org-export-use-babel nil
+               org-export-with-sub-superscripts nil)
 
-      ;; ;; The Dreadful Timeline has brought us indentation-sensitive languages
-      ;; ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
-      ;; (setq org-src-preserve-indentation nil)
-      (setq org-src-window-setup 'current-window)
-      (setq org-structure-template-alist '(("C" . "comment")
-                                           ("e" . "example")
-                                           ("E" . "export")
-                                           ("h" . "export html")
-                                           ("l" . "export latex")
-                                           ("q" . "quote")
-                                           ("S" . "src")
-                                           ("sj" . "src json")
-                                           ("sl" . "src emacs-lisp")
-                                           ("sp" . "src python")
-                                           ("ss" . "src bash")
-                                           ("sy" . "src yaml"))))
+         ;; ;; The Dreadful Timeline has brought us indentation-sensitive languages
+         ;; ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
+         ;; (setq org-src-preserve-indentation nil)
+         (setq org-src-window-setup 'current-window)
+         (setq org-structure-template-alist '(("C" . "comment")
+                                              ("e" . "example")
+                                              ("E" . "export")
+                                              ("h" . "export html")
+                                              ("l" . "export latex")
+                                              ("q" . "quote")
+                                              ("S" . "src")
+                                              ("sj" . "src json")
+                                              ("sl" . "src emacs-lisp")
+                                              ("sp" . "src python")
+                                              ("ss" . "src bash")
+                                              ("sy" . "src yaml"))))
 
-  #+end_src
+     #+end_src
 *** Crazy way to allow babel elisp to modify window configuration  :noexport:
-This disables Org's use of =save-window-excursion= for execution of source blocks
-Stolen from [[https://emacs.stackexchange.com/questions/42096/running-elisp-within-an-orgmode-code-block][Running elisp within an orgmode code block]] (github)
+    This disables Org's use of =save-window-excursion= for execution of source blocks
+    Stolen from [[https://emacs.stackexchange.com/questions/42096/running-elisp-within-an-orgmode-code-block][Running elisp within an orgmode code block]] (github)
 
-Simply add the new block param =:keep-windows= to use this functionality
+    Simply add the new block param =:keep-windows= to use this functionality
 
-#+begin_src emacs-lisp
-(when nil
-(defun transform-tree (tree trafo)
-  "Transform TREE by TRAFO."
-  (let ((next tree))
-    (while next
-      (let ((this next))
-	(setq next (cdr next))
-	(if (consp (car this))
-	    (transform-tree (car this) trafo)
-	  (funcall trafo this)))))
-  tree)
+    #+begin_src emacs-lisp
+      (when nil
+      (defun transform-tree (tree trafo)
+        "Transform TREE by TRAFO."
+        (let ((next tree))
+          (while next
+            (let ((this next))
+          (setq next (cdr next))
+          (if (consp (car this))
+              (transform-tree (car this) trafo)
+            (funcall trafo this)))))
+        tree)
 
-(defun replace-in-fundef (fun sym &rest replacement)
-  "In function FUN perform REPLACEMENT."
-  (setq fun (or
-	     (condition-case err
-		 (let* ((pos (find-function-noselect fun t))
-			(buf (car pos))
-			(pt (cdr pos)))
-		   (with-current-buffer buf
-		     (save-excursion
-		       (goto-char pt)
-		       (read buf))))
-	       (error nil))
-	     (and (symbolp fun) (symbol-function fun))
-	     fun))
-  (transform-tree fun
-		  (lambda (this)
-		    (when (eq (car this) sym)
-		      (let ((copy-repl (cl-copy-list replacement)))
-			(setcdr (last copy-repl) (cdr this))
-			(setcdr this (cdr copy-repl))
-			(setcar this (car copy-repl)))))))
+      (defun replace-in-fundef (fun sym &rest replacement)
+        "In function FUN perform REPLACEMENT."
+        (setq fun (or
+               (condition-case err
+               (let* ((pos (find-function-noselect fun t))
+                  (buf (car pos))
+                  (pt (cdr pos)))
+                 (with-current-buffer buf
+                   (save-excursion
+                     (goto-char pt)
+                     (read buf))))
+                 (error nil))
+               (and (symbolp fun) (symbol-function fun))
+               fun))
+        (transform-tree fun
+                (lambda (this)
+                  (when (eq (car this) sym)
+                    (let ((copy-repl (cl-copy-list replacement)))
+                  (setcdr (last copy-repl) (cdr this))
+                  (setcdr this (cdr copy-repl))
+                  (setcar this (car copy-repl)))))))
 
-(defmacro save-window-excursion-if (pred &rest body)
-  "Act like `save-window-excursion' if PRED is non-nil."
-  (declare (indent 1) (debug t))
-  (let ((c (make-symbol "wconfig")))
-    `(let ((,c (and ,pred (current-window-configuration))))
-       (unwind-protect (progn ,@body)
-         (when ,c (set-window-configuration ,c))))))
+      (defmacro save-window-excursion-if (pred &rest body)
+        "Act like `save-window-excursion' if PRED is non-nil."
+        (declare (indent 1) (debug t))
+        (let ((c (make-symbol "wconfig")))
+          `(let ((,c (and ,pred (current-window-configuration))))
+             (unwind-protect (progn ,@body)
+               (when ,c (set-window-configuration ,c))))))
 
-(advice-remove 'org-babel-execute:emacs-lisp #'ad-org-babel-execute:emacs-lisp)
-;; make sure we have access to the source code of `org-babel-execute:emacs-lisp'
-(find-function-noselect 'org-babel-execute:emacs-lisp t)
-;; (defun ad-org-babel-execute:emacs-lisp ...):
-(eval (replace-in-fundef 'org-babel-execute:emacs-lisp 'org-babel-execute:emacs-lisp 'ad-org-babel-execute:emacs-lisp))
-;; Use `save-window-excursion-if' in `ad-org-babel-execute:emacs-lisp':
-(declare-function 'ad-org-babel-execute:emacs-lisp " ")
-(eval (replace-in-fundef 'ad-org-babel-execute:emacs-lisp
-			 'save-window-excursion 'save-window-excursion-if '(null (member (cdr (assoc :keep-windows params)) '("yes" "t")))))
-;; Replace `org-babel-execute:emacs-lisp':
-(advice-add 'org-babel-execute:emacs-lisp :override #'ad-org-babel-execute:emacs-lisp)
-)
-#+end_src
+      (advice-remove 'org-babel-execute:emacs-lisp #'ad-org-babel-execute:emacs-lisp)
+      ;; make sure we have access to the source code of `org-babel-execute:emacs-lisp'
+      (find-function-noselect 'org-babel-execute:emacs-lisp t)
+      ;; (defun ad-org-babel-execute:emacs-lisp ...):
+      (eval (replace-in-fundef 'org-babel-execute:emacs-lisp 'org-babel-execute:emacs-lisp 'ad-org-babel-execute:emacs-lisp))
+      ;; Use `save-window-excursion-if' in `ad-org-babel-execute:emacs-lisp':
+      (declare-function 'ad-org-babel-execute:emacs-lisp " ")
+      (eval (replace-in-fundef 'ad-org-babel-execute:emacs-lisp
+                   'save-window-excursion 'save-window-excursion-if '(null (member (cdr (assoc :keep-windows params)) '("yes" "t")))))
+      ;; Replace `org-babel-execute:emacs-lisp':
+      (advice-add 'org-babel-execute:emacs-lisp :override #'ad-org-babel-execute:emacs-lisp)
+      )
+    #+end_src
 
 ** Org num mode
    #+begin_src emacs-lisp
