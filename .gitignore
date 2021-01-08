@@ -37,3 +37,4 @@ url/
 .emacs.d/var/
 # Emacs-lisp-native - compiled cache
 .emacs.d/eln-cache/
+.emacs.d/.trello/
