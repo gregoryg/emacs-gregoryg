@@ -1739,12 +1739,12 @@ awesome.
 
 ** Magit
 *** Initiate =magit-todos= only on =magit= invocation, since it loads slowly
-    #+begin_export emacs-lisp
-    (add-hook 'magit-status-mode-hook
-              (lambda ()
-                (magit-todos-mode 1)
-                ))
-    #+end_export
+    #+begin_src emacs-lisp
+      (add-hook 'magit-status-mode-hook
+                (lambda ()
+                  (magit-todos-mode 1)
+                  ))
+    #+end_src
 *** Open Status in current window
     Oh how I hate other-window for this!
     Ref: https://github.com/magit/magit/issues/2541
