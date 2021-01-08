@@ -172,7 +172,7 @@
 
     echo Start xscreensaver
     xscreensaver &
-
+    nohup xfce4-power-manager&
     ## Deal with LXDE if running as the WM
     ## pcmanfm --desktop-off
   #+end_src
