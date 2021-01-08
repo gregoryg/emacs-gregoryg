@@ -2,6 +2,7 @@
 (defconst emacs-start-time (current-time))
 ;;   On MacOS, define the meta key up front for usability when init does not load fully
 (setq ns-command-modifier (quote meta))
+(setq garbage-collection-messages t)
 (setq gc-cons-threshold 64000000)
 ;; initalize all ELPA packages
 (require 'package)
