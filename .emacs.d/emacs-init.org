@@ -2452,7 +2452,9 @@ Open man page in current window, rather than other window with
    #+begin_src emacs-lisp
      (setq org-tag-persistent-alist
            '(("habit")
-             ("billable")))
+             ("billable")
+             ("noexport" . ?x)
+             ))
      (setq org-tag-alist '(("project" . ?p)
                            ("NEXT" . ?n)
                            ("noexport" . ?x)
