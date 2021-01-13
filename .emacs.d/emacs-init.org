@@ -11,7 +11,7 @@
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
-#+setupfile: ~/projects/emacs/org-html-themes/setup/theme-readtheorg.setup
+#+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg.setup
 #+property: header-args:emacs-lisp :results none
 #+property: header-args:bash :shebang #!/usr/bin/env bash :results none
 
@@ -2116,7 +2116,7 @@ Open man page in current window, rather than other window with
        (push
         '("p" "Phone/Meeting" entry
           (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Calls and Meetings")
-          "* %t %^{type|Call|Meeting|Email|Task} with %^{with|PS Team|lululemon|BMC|Acxiom|Maxar|The Home Depot}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro}
+          "* %t %^{type|Call|Meeting|Email|Task} with %^{with|PS Team|lululemon|BMC|Acxiom|Maxar|The Home Depot|BAE Systems|Viasat}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro|Weekly working session}
          :PROPERTIES:
          :NOBLOCKING: t
          :END:
@@ -2147,12 +2147,12 @@ Open man page in current window, rather than other window with
         '             ("s" "Status update for Slack" entry
                        (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Write Daily Status to #consulting")
                        "* Status update %u
-                       ,*Today*
-                         ,* %?
-                       ,*Tomorrow*
-                         ,* another thing
-                       ,*Blockers*
-                         ,* none"
+            ,*Today*
+              ,* %?
+            ,*Tomorrow*
+              ,* another thing
+            ,*Blockers*
+              ,* none"
                        :prepend t )
         org-capture-templates)
      #+end_src
