@@ -2326,6 +2326,7 @@ Open man page in current window, rather than other window with
                    '("rt" "Rancher TODOs" alltodo ""
                      ((org-agenda-files gjg/work-agenda-files)
                       (org-agenda-span 'day)
+                      (org-agenda-tag-filter-preset '("-habit"))
                       )) t)
 
     #+end_src
