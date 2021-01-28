@@ -331,7 +331,7 @@
    These images are to be placed in =~/.local/share/pixmaps/=
 
    Copy all images from the [[file:~/projects/emacs/emacs-gregoryg/emacs/pixmaps/][~/emacs/pixmaps]] directory
-   #+begin_src bash
+   #+begin_src bash :results none
      rsync -av ~/emacs/pixmaps/ ~/.local/share/pixmaps/
    #+end_src
 ** Amazon.com
@@ -525,6 +525,20 @@
      Type=Application
      Categories=Office;Calendar;
    #+end_src
+** Microsoft Teams
+   As of [2021-01-26 Tue] I am having microphone problems using the Linux client for
+   Teams.  Things seem to run fine in Chrome, however.
+   #+begin_src conf :tangle ~/.local/share/applications/teams-chrome.desktop
+     [Desktop Entry]
+     Name=Microsoft Teams in Chrome
+     Comment=Teams in Google Chrome
+     Exec=google-chrome --new-window https://teams.microsoft.com
+     Icon=/home/gregj/.local/share/pixmaps/teams-logo.png
+     Terminal=false
+     Type=Application
+     Categories=InstantMessaging;
+   #+end_src
+
 ** Monitor change
    Run when external monitor is connected/disconnected
    #+begin_src conf :tangle ~/.local/share/applications/autorandr-monitor.desktop
@@ -729,6 +743,18 @@
      Terminal=false
      Type=Application
      Categories=Office;Productivity;
+   #+end_src
+** Vterm
+   Emacs vterm!
+   #+begin_src conf :tangle ~/.local/share/applications/vterm.desktop
+     [Desktop Entry]
+     Name=Emacs Vterm
+     Comment=Terminal
+     Exec=/usr/local/bin/emacsclient -e '(vterm)'
+     Icon= /home/gregj/.local/share/pixmaps/cool-terminal.jpeg
+     Terminal=true
+     Type=Application
+     Categories=System;TerminalEmulator
    #+end_src
 ** XFCE4 Panel
    #+begin_src conf :tangle ~/.local/share/applications/exwm-xfce4-panel.desktop
