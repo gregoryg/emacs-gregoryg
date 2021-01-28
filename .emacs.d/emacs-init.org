@@ -2161,21 +2161,20 @@ Open man page in current window, rather than other window with
 	:END:
 	Wrap advice around any means of exporting HTML, including export-and-open
 #+begin_src emacs-lisp
-;; export to html - use light theme for export
-;; tip o' the hat to legoscia https://github.com/legoscia/dotemacs/blob/master/dotemacs.org#theme-for-org-html-export
-(defvar my-org-html-export-theme 'material-light)
+  ;; export to html - use light theme for export
+  ;; tip o' the hat to legoscia https://github.com/legoscia/dotemacs/blob/master/dotemacs.org#theme-for-org-html-export
+  (defvar my-org-html-export-theme 'material-light)
 
-(defun my-with-theme (orig-fun &rest args)
-  (load-theme my-org-html-export-theme)
-  (unwind-protect
-	  (apply orig-fun args)
-	(disable-theme my-org-html-export-theme)))
+  (defun my-with-theme (orig-fun &rest args)
+    (load-theme my-org-html-export-theme)
+    (unwind-protect
+        (apply orig-fun args)
+      (disable-theme my-org-html-export-theme)))
 
-(with-eval-after-load "ox-html"
-  (advice-add 'org-export-to-buffer :around 'my-with-theme)
-  (advice-add 'org-export-to-file :around 'my-with-theme)
-  )
-
+  (use-package ox-gfm)
+  (with-eval-after-load "ox-html"
+    (advice-add 'org-export-to-buffer :around 'my-with-theme)
+    (advice-add 'org-export-to-file :around 'my-with-theme))
 #+end_src
 ** Speed commands
    #+begin_src emacs-lisp
