@@ -1079,7 +1079,7 @@
                     (lambda()
                       (message "Starting exwm-randr-screen-change-hook")
                       (start-process-shell-command
-                       "autorandr" nil "autorandr --change"
+                       "autorandr" nil "autorandr --change ; autorandr"
                        ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
                        ;; WORKS WHEN ADDING MONITOR, NOT WHEN DISCONNECTING "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
                        ;; and here's how I might get a mirrored setup
