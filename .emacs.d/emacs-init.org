@@ -2916,10 +2916,13 @@ Open man page in current window, rather than other window with
 
     (defun gjg/highlight-squid ()
       (interactive)
-                                            ; Registry pull-through cache
+      ;; Registry pull-through cache
       (highlight-regexp "^HIT" 'hi-green)
       (highlight-regexp "^MISS" 'hi-pink)
-      ; Squid caching patterns
+      ;; Docker pull-through registry patterns
+      (highlight-regexp "\"HIT\"" 'hi-green)
+      (highlight-regexp "\"MISS\"" 'hi-pink)
+      ;; Squid caching patterns
       (highlight-regexp "[A-Z_]*_HIT[A-Z_]*" 'hi-green)
       (highlight-regexp "[A-Z_]*_MISS[A-Z_]*" 'hi-pink)
       (highlight-regexp "[A-Z_]*_UNMODIFIED[A-Z_]*" 'hi-green)
