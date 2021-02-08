@@ -1777,7 +1777,7 @@ awesome.
    #+end_src
 ** Spelling
    #+begin_src emacs-lisp
-     ;; don't try to spell shit in Org property drawers and code blocks
+     ;; don't try to spell things in Org property drawers and code blocks
      (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
      (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
      ;; redefine the obsolete spell-word
