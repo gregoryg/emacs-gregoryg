@@ -1859,6 +1859,7 @@ Open man page in current window, rather than other window with
                                               ("l" . "export latex")
                                               ("q" . "quote")
                                               ("S" . "src")
+                                              ("sc" . "src conf")
                                               ("sj" . "src json")
                                               ("sl" . "src emacs-lisp")
                                               ("sp" . "src python")
