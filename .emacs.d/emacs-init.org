@@ -2597,9 +2597,28 @@ Open man page in current window, rather than other window with
    #+end_src
 ** Clocking time
 *** Variables and keys
+    Keep =org-clock-persist= unset (its default) to avoid opening files that may have had
+    clock activity - the problem in my case is that many of those files are encrypted so I
+    have to enter a pass phrase just to open nearly any Org mode file!  The problematic
+    code is in the =org-clock= library:
+    #+begin_src emacs-lisp :tangle no
+      (defun org-clock-load ()
+        "Load clock-related data from disk, maybe resuming a stored clock."
+        (when (and org-clock-persist (not org-clock-loaded))
+          (if (not (file-readable-p org-clock-persist-file))
+          (message "Not restoring clock data; %S not found" org-clock-persist-file)
+            (message "Restoring clock data")
+            ;; Load history.
+            (load-file org-clock-persist-file)
+            (setq org-clock-loaded t)
+            (pcase-dolist (`(,(and file (pred file-exists-p)) . ,position)
+                   org-clock-stored-history)
+          (org-clock-history-push position (find-file-noselect file)))
+      ...
+    #+end_src
 #+begin_src emacs-lisp
-  (setq org-clock-persist 'history)
-  (org-clock-persistence-insinuate)
+  (setq org-clock-persist nil)
+  ;; (org-clock-persistence-insinuate)
   (setq org-clock-report-include-clocking-task t)
   (setq org-read-date-prefer-future 'time)
   ;; make the clock jump key global!
