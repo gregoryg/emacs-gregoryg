@@ -218,7 +218,7 @@
    #+begin_src bash :tangle ~/bin/xfce-panel-widgets.sh
      nohup xfce4-panel &
      # Clipboard manager
-     nohup parcellite &
+     # nohup parcellite &
      # Network Manager applet
      nohup nm-applet --indicator &
      # Bluetooth setup + file transfer
