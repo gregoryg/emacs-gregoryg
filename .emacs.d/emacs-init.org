@@ -24,7 +24,8 @@
   produce the entire config for my Emacs sessions on Windows, MacOS, Linux and ChromeOS
 
   Hip tip: to exclude entire code block sections from the resulting tangled config file,
-  just add a =:tangle no= header to the source block
+  just add a =:tangle no= header to the source block - but do *not* use =:tangle yes= for
+  that will lead to tears by interfering with =org-babel-load-file=
 
   If reading this file on GitHub, use the =raw= view to see all the code markings and
   header parameters.
@@ -52,7 +53,7 @@
   TODO: convert to =use-package=, a more modern alternative to this method.
 
 #+BEGIN_SRC emacs-lisp
-  (defvar gjg/check-packages-on-startup t) ; should be nil in repo
+  (defvar gjg/check-packages-on-startup nil) ; should be nil in repo
 
   (add-to-list 'load-path "~/emacs")
   (require 'cl)
@@ -60,22 +61,9 @@
 
   ;; get control of required packages across different emacs environments
   (defvar gjg/required-packages
-    '(ag
-      bash-completion
-      cider
-      company
-      counsel
-      counsel-projectile
-      dumb-jump
-      edit-indirect
-      flx
-      highlight-indentation
-      htmlize
-      jupyter
-      keychain-environment
+    '(cider
       magit
       magit-todos
-      material-theme
       org
       org-superstar
       org-plus-contrib
@@ -84,12 +72,10 @@
       ob-http
       pyvenv
       prettify-greek
-      projectile
   ;;    company-pr
       rainbow-delimiters
       smartparens
       use-package
-      uuid
       xterm-color
       ;; language modes
       ;; csv-mode
@@ -98,17 +84,13 @@
       markdown-mode
       ;; scala-mode
       ssh-config-mode
-      smex
-      terraform-mode
       ;; web-mode
-      yafolding
-      yaml-mode
       ))
 
   (defun gjg/packages-installed-p ()
     (loop for p in gjg/required-packages
-	  when (not (package-installed-p p)) do (return nil)
-	  finally (return t)))
+      when (not (package-installed-p p)) do (return nil)
+      finally (return t)))
 
   ;; if not all packages are installed, install 'em
   (when gjg/check-packages-on-startup
@@ -119,15 +101,37 @@
       (message "%s" "  done.")
       ;; install the missing packages
       (dolist (p gjg/required-packages)
-	(when (not (package-installed-p p))
-	  (package-install p)))))
+    (when (not (package-installed-p p))
+      (package-install p)))))
 
 #+END_SRC
 ** Packages with no configuration
-   Fastest searcher in the West
+   Fastest searcher in the West - need to install it on the OS as package
+   =the_silver_searcher= or =silversearcher-ag=
    #+begin_src emacs-lisp
-     (use-package ag
-       :ensure t)
+     (when gjg/check-packages-on-startup
+       (use-package ag
+         :ensure t)
+       (use-package dumb-jump
+         :ensure t)
+       (use-package edit-indirect
+         :ensure t)
+       (use-package highlight-indentation
+         :ensure t)
+       ;; (use-package counsel-projectile
+       ;;   :ensure nil)
+       (use-package htmlize
+         :ensure nil)
+       (use-package keychain-environment
+         :ensure t)
+       (use-package material-theme
+         :ensure t)
+       (use-package uuid
+         :ensure nil)
+       (use-package terraform-mode
+         :ensure t)
+       (use-package yafolding
+         :ensure t))
    #+end_src
 
 * Greg's customizations!
@@ -882,7 +886,7 @@
 
 *** Launching applications without a Desktop Environment
     EXWM default config suggests a handy shell launch command from Emacs, but I prefer to
-    use exactly what I do on every other OS - a pop-up app launcher such as [[https://github.com/albertlauncher/albert][Albert]].
+    use exactly what I do on every other OS - a pop-up app launcher such as [[https://github.com/albertlauncher/albert][Albert]] or ulauncher.
 
 ** Unresolved problems
 *** TODO Fix clipboard integration / behavior
@@ -924,6 +928,8 @@
    My configuration tests for the existence of a window manager.  If one is already
    running, just skip all the EXWM setup and bring up a "normal" Emacs instance.
 
+   I shared this solution in an Emacs Stackexchange question: [[https://emacs.stackexchange.com/a/60455/418][Launch EXWM only when no another WM or DE are being used]]
+
 #+begin_src emacs-lisp
   (when (get-buffer "*window-manager*")
     (kill-buffer "*window-manager*"))
@@ -964,7 +970,7 @@
     keymap: windmove etc.
 
     TODO: Define simulation key for "Print"
- #+begin_src emacs-lisp
+     #+begin_src emacs-lisp
       (defun gjg/exwm-config ()
         "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
         ;; Set the initial workspace number.
@@ -987,6 +993,10 @@
                   ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
                   ;; 's-&': Launch application. - poor man's albert/launchy
                   ([?\s-&] . (lambda (command)
+                               (interactive (list (read-shell-command "$ ")))
+                               (start-process-shell-command command nil command)))
+                  ;; 's-&': Launch application. - poor man's albert/launchy
+                  ([?\s-7] . (lambda (command)
                                (interactive (list (read-shell-command "$ ")))
                                (start-process-shell-command command nil command)))
                   ([?\s-o] .  gjg/other-window-with-winum)
@@ -1041,16 +1051,19 @@
         ;; Other configurations
         ;; (exwm-config-misc)
         )
- #+end_src
+     #+end_src
 *** Define special logout if using LXDE
- #+begin_src emacs-lisp
+    I do not use this - but beware if using a lightweight desktop environment in
+    conjunction with EXWM, you may have to use this code or something similar to get a
+    clean user session logout
+ #+begin_src emacs-lisp :tangle no
    (defun exwm-logout ()
      (interactive)
      ;; (recentf-save-list)
      (save-some-buffers)
      (start-process-shell-command "logout" nil "lxsession-logout"))
  #+end_src
-*** Require libs and run my custom conifg
+*** Require packages and run my custom conifg
   #+begin_src emacs-lisp
     ;; (< 0 (length (with-current-buffer "*window-manager-error*" (buffer-string)))))
     (require 'exwm)
@@ -1248,22 +1261,23 @@
        "Report project name and type in the modeline - uh, no.  Just report that it's a project."
        (format "%s" projectile-mode-line-prefix))
 
-     (require 'projectile)
-     (setq projectile-mode-line-function 'gjg/projectile-minimal-mode-line)
-     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-
-     (setq-default projectile--mode-line " Prj")
-     (setq projectile-completion-system 'selectrum-completing-read)
-     (setq projectile-mode-line-prefix "Prj")
-     (setq projectile-switch-project-action #'projectile-dired)
-     (setq projectile-switch-project-action #'projectile-dired)
-     (setq projectile-sort-order 'access-time)
-     (setq projectile-ignored-project-function 'file-remote-p)
-
-     ;; avoid slowdowns when using Tramp. ref https://www.reddit.com/r/emacs/comments/320cvb/projectile_slows_tramp_mode_to_a_crawl_is_there_a/
-     (defadvice projectile-project-root (around ignore-remote first activate)
-       (unless (file-remote-p default-directory) ad-do-it))
-
+     (use-package projectile
+       :ensure t
+       :custom
+       (projectile-mode-line-function 'gjg/projectile-minimal-mode-line)
+       (projectile-completion-system 'selectrum-completing-read)
+       (projectile-mode-line-prefix "Prj")
+       (projectile-switch-project-action #'projectile-dired)
+       (projectile-switch-project-action #'projectile-dired)
+       (projectile-sort-order 'access-time)
+       (projectile-ignored-project-function 'file-remote-p)
+       :bind (:map projectile-mode-map
+                   ("C-c p" . projectile-command-map))
+       :config
+       (setq-default projectile--mode-line " Prj")
+       ;; avoid slowdowns when using Tramp. ref https://www.reddit.com/r/emacs/comments/320cvb/projectile_slows_tramp_mode_to_a_crawl_is_there_a/
+       (defadvice projectile-project-root (around ignore-remote first activate)
+         (unless (file-remote-p default-directory) ad-do-it)))
      (projectile-mode 1)
    #+end_src
 ** EDE
@@ -1568,53 +1582,7 @@
 
     #+begin_src emacs-lisp
       ;; (use-package counsel
-      ;;   :after ivy
       ;;   :config (counsel-mode))
-
-      ;; (use-package smex
-      ;;   :ensure nil)
-
-      ;; (use-package swiper
-      ;;   :ensure nil)
-
-      ;; (use-package flx
-      ;;   :ensure nil)
-      ;; (use-package ivy
-      ;;   :defer 0.1
-      ;;   :bind (("C-c C-r" . ivy-resume)
-      ;;          ("C-x B" . ivy-switch-buffer-other-window))
-      ;;   :custom
-      ;;   (ivy-count-format "(%d/%d) ")
-      ;;   (ivy-use-virtual-buffers t)
-      ;;   :config (ivy-mode))
-
-
-      ;; ;; (setq ivy-use-virtual-buffers t)
-      ;; ;; intentional space before end of string
-      ;; ;; (setq ivy-re-builders-alist
-      ;; ;;       '((t . ivy--regex-fuzzy)))
-      ;; ;; (setq ivy-re-builders-alist
-      ;; ;; 	    '((swiper . ivy--regex-plus)
-      ;; ;; 		  (counsel-find-file . ivy--regex-plus)
-      ;; ;; 		  (ivy-switch-buffer . ivy--regex-plus)
-      ;; ;; 		  (t . ivy--regex-fuzzy))))
-      ;; ;; (setq ivy-re-builders-alist '((t . ivy--regex-plus))))
-
-      ;; ;; (use-package ivy-rich
-      ;; ;;   :after ivy
-      ;; ;;     :custom
-      ;; ;;     (ivy-virtual-abbreviate 'full
-      ;; ;;                             ivy-rich-switch-buffer-align-virtual-buffer t
-      ;; ;;                             ivy-rich-path-style 'abbrev)
-      ;; ;;     ;; :config
-      ;; ;;     ;; (ivy-set-display-transformer 'ivy-switch-buffer
-      ;; ;;     ;;                              'ivy-rich-switch-buffer-transformer))
-      ;; ;;     :config (ivy-rich-mode))
-
-      ;; ;; (use-package swiper
-      ;; ;;   :after ivy
-      ;; ;;   :bind (("C-s" . swiper)
-      ;; ;;          ("C-r" . swiper)))
    #+end_src
 
 **** Make some keybindings for these crazy packages
@@ -1670,7 +1638,10 @@
 ** Shell mode
 *** Bash completions
 #+begin_src emacs-lisp
-  (bash-completion-setup)
+  (use-package bash-completion
+    :ensure t
+    :config
+    (bash-completion-setup))
 #+end_src
 *** Placement of new shell windows
 I want new shell buffers to open in the currently selected window, not replacing the text
@@ -1752,27 +1723,27 @@ awesome.
 
 ** Smartparens
    #+begin_src emacs-lisp
-(autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
-(defun my-create-newline-and-enter-sexp (&rest _ignored)
-  "Open a new brace or bracket expression, with relevant newlines and indent. "
-  (newline)
-  (indent-according-to-mode)
-  (forward-line -1)
-  (indent-according-to-mode))
+     (autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
+     (defun my-create-newline-and-enter-sexp (&rest _ignored)
+       "Open a new brace or bracket expression, with relevant newlines and indent. "
+       (newline)
+       (indent-according-to-mode)
+       (forward-line -1)
+       (indent-according-to-mode))
 
 
-;; (with-eval-after-load 'smartparens
-;;   (sp-with-modes
-;;       '(c++-mode objc-mode c-mode js2-mode clojure-mode clojurescript-mode)
-;;     (sp-local-pair "{" nil :post-handlers '(:add ("||\n[i]" "RET")))))
+     ;; (with-eval-after-load 'smartparens
+     ;;   (sp-with-modes
+     ;;       '(c++-mode objc-mode c-mode js2-mode clojure-mode clojurescript-mode)
+     ;;     (sp-local-pair "{" nil :post-handlers '(:add ("||\n[i]" "RET")))))
 
-;; (eval-after-load "smartparens-config"
-;;   '(progn
-;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-;; (sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-;; (sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-;; ))
+     ;; (eval-after-load "smartparens-config"
+     ;;   '(progn
+     ;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+     ;; (sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+     ;; (sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+     ;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+     ;; ))
 
    #+end_src
 ** Spelling
@@ -1785,11 +1756,30 @@ awesome.
 
      (defalias 'spell-buffer 'ispell-buffer)
    #+end_src
+** YAML - You A Moth Licker
+   #+begin_src emacs-lisp
+     (use-package yaml-mode
+       :ensure t
+       :hook (yaml-mode . (lambda () (yafolding-mode 1))))
+   #+end_src
 ** Man pages
 Open man page in current window, rather than other window with
 #+begin_src emacs-lisp
 (custom-set-variables '(Man-notify-method 'pushy))
 #+end_src
+** OpenVPN
+   Mode to help using OpenVPN
+   #+begin_src emacs-lisp
+     (use-package ovpn-mode
+       :custom
+       (ovpn-mode-authinfo-path "~/.local/.authinfo.gpg")
+       (ovpn-mode-base-directory "~/.config/openvpn/")
+       (ovpn-mode-preferred-terminal "alacritty")
+       :bind (:map ovpn-mode-map
+                   (("n" . next-line)
+                   ("p" . previous-line)
+                   ("m" . ovpn-mode-start-vpn-with-namespace))))
+   #+end_src
 * Org mode stuff
 
 ** Habits
@@ -2721,6 +2711,7 @@ Open man page in current window, rather than other window with
    + ref 2
      #+begin_src emacs-lisp
        (use-package lsp-mode
+         :ensure t
          :commands (lsp)
          :config
          (use-package company-lsp
@@ -2860,9 +2851,8 @@ Open man page in current window, rather than other window with
 	#+end_src
 ** Jupyter
 #+begin_src emacs-lisp
-  ;; (use-package jupyter
-  ;;   :ensure nil)
-
+  (use-package jupyter
+    :ensure nil)
 #+end_src
 ** R
    #+begin_src emacs-lisp
