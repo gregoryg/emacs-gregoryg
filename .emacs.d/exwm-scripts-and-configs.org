@@ -22,7 +22,7 @@
 ** openSUSE Tumbleweed or Leap
    #+begin_src bash
      sudo zypper install \
-          albert \
+          ulauncher \
           blueman \
           feh \
           fontawesome-fonts \
@@ -52,7 +52,7 @@
    #+begin_src bash
      sudo apt update
      sudo apt -y install \
-          albert \
+          ulauncher \
           autorandr \
           compton \
           cowsay \
@@ -113,8 +113,31 @@
      sudo update-alternatives --install /usr/share/xsessions/default.desktop default-xsession.desktop /usr/share/xsessions/emacs.desktop 20
    #+end_src
 *  Shell scripts that become useful when no DE is available
+** Assure our app launcher is running at login
+   This is for =ulauncher=, installed previously
+   #+begin_src bash
+     mkdir -p ~/.config/systemd/user
+   #+end_src
+   #+begin_src conf :tangle ~/.config/systemd/user/ulauncher.service
+     [Unit]
+     Description=Linux Application Launcher
+     Documentation=https://ulauncher.io/
+     After=display-manager.service
+
+     [Service]
+     Type=simple
+     Restart=always
+     RestartSec=1
+     ExecStart=/usr/bin/ulauncher --hide-window
+
+     [Install]
+     WantedBy=graphical.target
+   #+end_src
+   #+begin_src bash
+     systemctl --user enable ulauncher
+   #+end_src
 ** Script to run autostart apps including compositor
-  I run a shell script which starts up key helper apps like albert, picom/compton and
+  I run a shell script which starts up key helper apps like albert/ulauncher, picom/compton and
   xscreensaver.  Also some common mouse and keyboard settings that are ordinarily handled
   in the DE.
   #+begin_src bash :tangle ~/bin/capsctrl.sh
@@ -163,8 +186,8 @@
     echo Starting notification daemon
     nohup /usr/libexec/notification-daemon &
 
-    echo Start albert
-    nohup albert &
+    # echo Start albert
+    # nohup albert &
     # nohup nm-applet&
 
     echo Remember iflipb for changing buffers - and/or buffer-expose-mode
@@ -304,7 +327,6 @@
      /home/gregj/bin/righty
      /home/gregj/bin/capsctrl.sh
      /home/gregj/bin/schedule-rotate-wallpapers.sh
-     /home/gregj/bin/relaunch-albert.sh
    #+end_src
 ** Dual-monitor
    #+begin_src bash :tangle ~/.config/autorandr/dual-monitor/postswitch
@@ -320,9 +342,8 @@
      /home/gregj/bin/lefty
      /home/gregj/bin/capsctrl.sh
      /home/gregj/bin/schedule-rotate-wallpapers.sh
-     /home/gregj/bin/relaunch-albert.sh
    #+end_src
-* Desktop files to use with Albert
+* Desktop files to use with Albert / ulauncher
 ** Assure directories are created before tangling
    #+begin_src bash
      mkdir -p ~/.local/share/applications ~/.local/share/pixmaps/
@@ -563,6 +584,9 @@
      Categories=InstantMessaging;
    #+end_src
 ** Relaunch Albert
+   Note: I only created this script because Albert was crashing frequently.
+   TODO: delete this by [2021-03-15 Mon] if =ulauncher= keeps behaving better
+
    #+begin_src conf :tangle ~/.local/share/applications/relaunch-albert.desktop
      [Desktop Entry]
      Name=Relaunch Albert
