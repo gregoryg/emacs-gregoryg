@@ -28,6 +28,8 @@
           fontawesome-fonts \
           git \
           kubernetes-client \
+          lightdm \
+          lightdm-slick-greeter \
           mlocate \
           NetworkManager-applet \
           numlockx \
@@ -111,6 +113,12 @@
    Install as X Session alternative
    #+begin_src bash
      sudo update-alternatives --install /usr/share/xsessions/default.desktop default-xsession.desktop /usr/share/xsessions/emacs.desktop 20
+   #+end_src
+** Lightdm fancy icon for Emacs window manager
+   This is for use with LightDM Slick Greeter - look for a =badges= directory for
+   whichever DM you use
+   #+begin_src bash
+     sudo cp -v ~/emacs/pixmaps/emacs-icon-22x22.png /usr/share/slick-greeter/badges/emacs.png
    #+end_src
 *  Shell scripts that become useful when no DE is available
 ** Assure our app launcher is running at login
@@ -334,7 +342,6 @@
      /home/gregj/bin/lefty
      /home/gregj/bin/capsctrl.sh
      /home/gregj/bin/schedule-rotate-wallpapers.sh
-     /home/gregj/bin/relaunch-albert.sh
    #+end_src
 ** Monitor-only
    #+begin_src bash :tangle ~/.config/autorandr/monitor-only/postswitch
