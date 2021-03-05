@@ -2098,7 +2098,7 @@ Open man page in current window, rather than other window with
          CREATED: %U
          :END:
          %i
-         + From Rancher: GG
+         + From SUSE: GG
          + From %\\2:
            \#+begin_src emacs-lisp :var table=people :results append raw :exports results :eval never-export
             (gjg/add-person-from-table)
@@ -2109,7 +2109,7 @@ Open man page in current window, rather than other window with
 **** Regular TODO
      #+begin_src emacs-lisp
        (push
-        '             ("r" "Regular todo" entry
+        '             ("t" "Regular todo" entry
                        (file "~/projects/private-orgmode/inbox.org")
                        "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
         org-capture-templates)
