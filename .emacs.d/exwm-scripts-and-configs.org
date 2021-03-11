@@ -454,7 +454,6 @@
      MimeType=application/pdf;application/ppdf;
      Icon=FoxitReader
      Exec=/home/gregj/opt/foxitsoftware/foxitreader/FoxitReader.sh %F
-     Exec=/home/gregj/opt/foxitsoftware/foxitreader/FoxitReader.sh %F
    #+end_src
 ** GitHub
    #+begin_src bash  :tangle ~/.local/share/applications/github.desktop
@@ -603,8 +602,8 @@
    #+begin_src conf :tangle ~/.local/share/applications/freddit.desktop
      [Desktop Entry]
      Name=Reddit
-     Comment=Reddit in Google Chrome
-     Exec=google-chrome --new-window https://reddit.com/
+     Comment=Reddit
+     Exec=firefox --new-window https://reddit.com/
      Icon=/home/gregj/.local/share/pixmaps/reddit-monster.png
      Terminal=false
      Type=Application
