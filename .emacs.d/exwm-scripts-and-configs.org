@@ -679,7 +679,8 @@
      Categories=Utility
    #+end_src
 ** Spotify
-   #+begin_src conf :tangle ~/.local/share/applications/fspotify.desktop
+   #+begin_src conf :tangle no
+     # ~/.local/share/applications/fspotify.desktop
      [Desktop Entry]
      Name=Spotify
      Comment=Spotify web player in Firefox
