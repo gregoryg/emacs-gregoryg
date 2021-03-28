@@ -598,6 +598,18 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
+** Protomolecule Virtualization - Proxmox or Harvester
+   #+begin_src conf :tangle ~/.local/share/applications/protomolecule.desktop
+     [Desktop Entry]
+     Name=Protomolecule
+     Comment=Protomolecule HCI
+     Exec=firefox --new-window https://protomolecule.magichome:8006
+     Icon= /home/gregj/.local/share/pixmaps/protomolecule.png
+     Terminal=false
+     Type=Application
+     Categories=Virtualization;HCI
+   #+end_src
+
 ** Reddit
    #+begin_src conf :tangle ~/.local/share/applications/freddit.desktop
      [Desktop Entry]
