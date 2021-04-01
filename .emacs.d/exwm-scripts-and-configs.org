@@ -195,12 +195,12 @@
     echo Starting notification daemon
     nohup /usr/libexec/notification-daemon &
 
-    # echo Start albert
-    # nohup albert &
+    echo Start albert
+    nohup albert &
     # nohup nm-applet&
     # or ulauncher!
-    systemctl --user start ulauncher
-    echo Remember iflipb for changing buffers - and/or buffer-expose-mode
+    # systemctl --user start ulauncher
+    # echo Remember iflipb for changing buffers - and/or buffer-expose-mode
     # xrandr --output eDP-1 --brightness .8
 
     echo Start xscreensaver
