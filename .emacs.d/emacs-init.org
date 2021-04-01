@@ -1636,6 +1636,10 @@
 (ad-activate 'occur-prev)
    #+end_src
 ** Shell mode
+*** Config for comint mode
+    #+begin_src emacs-lisp
+      (setq comint-input-ring-size 5000)
+    #+end_src
 *** Bash completions
 #+begin_src emacs-lisp
   (use-package bash-completion
