@@ -193,7 +193,7 @@
 
 
     echo Starting notification daemon
-    nohup /usr/libexec/notification-daemon &
+    nohup /usr/lib/xfce4/notifyd/xfce4-notifyd &
 
     echo Start albert
     nohup albert &
