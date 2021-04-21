@@ -486,18 +486,18 @@
      Name=GoToWebinar
      Comment=Launched in Chrome
      Exec=google-chrome --new-window https://app.gotowebinar.com/unified/index.html#/
-     Icon=/home/gregj/.local/share/pixmaps/Hangouts_Icon.png
+     Icon= /home/gregj/.local/share/pixmaps/gotowebinar.png
      Terminal=false
      Type=Application
      Categories=InstantMessaging;
    #+end_src
-** Hangouts
+** Hangouts / Google Chat
    #+begin_src conf :tangle ~/.local/share/applications/fhangouts.desktop
      [Desktop Entry]
-     Name=Hangouts
-     Comment=Google Hangouts in Firefox
-     Exec=firefox --new-window https://hangouts.google.com/
-     Icon=/home/gregj/.local/share/pixmaps/Hangouts_Icon.png
+     Name=Chat (nee Hangouts)
+     Comment=Google Chat in Firefox
+     Exec=firefox --new-window https://chat.google.com/
+     Icon=/home/gregj/.local/share/pixmaps/google-chat.png
      Terminal=false
      Type=Application
      Categories=InstantMessaging;
