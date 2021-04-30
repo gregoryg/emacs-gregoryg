@@ -495,8 +495,8 @@
    #+begin_src conf :tangle ~/.local/share/applications/fhangouts.desktop
      [Desktop Entry]
      Name=Chat (nee Hangouts)
-     Comment=Google Chat in Firefox
-     Exec=firefox --new-window https://chat.google.com/
+     Comment=Google Chat in Chrome
+     Exec=google-chrome --new-window https://chat.google.com/
      Icon=/home/gregj/.local/share/pixmaps/google-chat.png
      Terminal=false
      Type=Application
