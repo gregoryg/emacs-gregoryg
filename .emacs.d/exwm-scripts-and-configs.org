@@ -611,11 +611,12 @@
      Categories=Office;Productivity;
    #+end_src
 ** Protomolecule Virtualization - Proxmox or Harvester
+   + Port 8006 for Proxmox, 30443 for Harvester
    #+begin_src conf :tangle ~/.local/share/applications/protomolecule.desktop
      [Desktop Entry]
      Name=Protomolecule
      Comment=Protomolecule HCI
-     Exec=firefox --new-window https://protomolecule.magichome:8006
+     Exec=firefox --new-window https://protomolecule.magichome:30443
      Icon= /home/gregj/.local/share/pixmaps/protomolecule.png
      Terminal=false
      Type=Application
