@@ -2266,12 +2266,18 @@ Open man page in current window, rather than other window with
   #+begin_src emacs-lisp
     ;;(setq org-agenda-span 'day)
     ;;(setq org-agenda-skip-scheduled-if-done t)
-    (setq org-agenda-hide-tags-regexp "noagenda")
-    (setq org-agenda-restore-windows-after-quit t)
     ;; (setq org-agenda-start-with-log-mode t)
-    (setq org-agenda-entry-text-maxlines 10)
-    (setq org-agenda-diary-file "~/projects/private-orgmode/diary.org")
-    (setq org-agenda-include-diary t)
+    ;; (setq org-agenda-start-with-clockreport-mode nil)
+    (setq org-agenda-sticky t
+          org-agenda-hide-tags-regexp "noagenda"
+          org-agenda-restore-windows-after-quit t
+          -agenda-entry-text-maxlines 10
+          org-agenda-diary-file "~/projects/private-orgmode/diary.org"
+          org-agenda-include-diary t
+          org-special-ctrl-a/e t
+          org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99)
+          org-cycle-separator-lines 1
+          org-clock-history-length 12)
 
     (setq org-agenda-exporter-settings
           '((ps-number-of-columns 1)
