@@ -2285,11 +2285,6 @@ Open man page in current window, rather than other window with
             (org-agenda-add-entry-text-maxlines 10)
             (htmlize-output-type 'css)))
 
-    ;; (setq org-agenda-start-with-clockreport-mode nil)
-    (setq org-special-ctrl-a/e t)
-    (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99))
-    (setq org-cycle-separator-lines 1) ;
-    (setq org-clock-history-length 12)
    #+end_src
 *** Initialize for all agendas
    #+begin_src emacs-lisp
