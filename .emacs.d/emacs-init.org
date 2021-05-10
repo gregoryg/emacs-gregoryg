@@ -1676,13 +1676,14 @@ lawd's work in translating ANSI color codes to font properties so that things ca
 awesome.
 
    #+begin_src emacs-lisp
-(ansi-color-for-comint-mode-on)
-;; try some xterm coloring in shell buffers
-(setq comint-output-filter-functions
-      (remove 'ansi-color-process-output comint-output-filter-functions))
-(add-hook 'shell-mode-hook
-	  (lambda ()
-	    (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))
+     (ansi-color-for-comint-mode-on)
+     ;; try some xterm coloring in shell buffers
+     (setq comint-output-filter-functions
+           (remove 'ansi-color-process-output comint-output-filter-functions))
+     (add-hook 'shell-mode-hook
+           (lambda ()
+             (abbrev-mode 1)
+             (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))
    #+end_src
 *** SSH Agent in subprocesses
     + Not really related to shell-mode, this assures our keychain is activated for things
@@ -1838,6 +1839,7 @@ Open man page in current window, rather than other window with
                     (http . t) ;; curl
                     (js . t)
                     (latex . t)
+                    (jupyter . t)
                     (python . t)
                     (shell  . t)
                     (sql . t)
@@ -2859,9 +2861,18 @@ Open man page in current window, rather than other window with
 	  (add-to-list 'auto-mode-alist '("\\.starlark$" . python-mode))
 	#+end_src
 ** Jupyter
+   + Interesting blog post: [[https://sqrtminusone.xyz/posts/2021-05-01-org-python/][Replacing Jupyter Notebook with Org Mode]]
+     + consider setting =(org-babel-jupyter-override-src-block "python")=
+     + consider =(setq ob-async-no-async-languages-alist '("python" "jupyter-python"))=
+   +
+
 #+begin_src emacs-lisp
   (use-package jupyter
     :ensure nil)
+  (use-package ob-ipython
+    :ensure t)
+  ;; (when (memq window-system '(mac ns x))
+  ;;   (exec-path-from-shell-initialize))
 #+end_src
 ** R
    #+begin_src emacs-lisp
