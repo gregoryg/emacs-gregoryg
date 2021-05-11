@@ -524,6 +524,17 @@
      Type=Application
      Categories=Entertainment;
    #+end_src
+** Home Assistant
+   #+begin_src conf :tangle ~/.local/share/applications/fhangouts.desktop
+     [Desktop Entry]
+     Name=Home Assistant
+     Comment=Home Assistant of 2 Moonz
+     Exec=google-chrome --new-window http://erebor.magichome:8123/
+     Icon= /home/gregj/.local/share/pixmaps/homeassistant.png
+     Terminal=false
+     Type=Application
+     Categories=Automation;
+   #+end_src
 ** IntelliJ IDEA Community Edition
    #+begin_src conf :tangle ~/.local/share/applications/jetbrains-idea-ce.desktop
      [Desktop Entry]
