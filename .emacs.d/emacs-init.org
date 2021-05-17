@@ -2666,8 +2666,8 @@ Open man page in current window, rather than other window with
            "harvest-commands")
           (message "Stopped harvest timer (if any)"))
 
-        (add-hook 'org-clock-in-hook 'gjg/start-harvest-timer)
-        (add-hook 'org-clock-out-hook 'gjg/stop-harvest-timer)
+        ;; (add-hook 'org-clock-in-hook 'gjg/start-harvest-timer)
+        ;; (add-hook 'org-clock-out-hook 'gjg/stop-harvest-timer)
 
                   ;; (message (format "Selected task is %s" org-clock-heading) )))
       #+end_src
