@@ -397,12 +397,12 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
-** Clarizen Time Thing
+** Clarizen Timesheets
    #+begin_src conf :tangle ~/.local/share/applications/clarizen.desktop
      [Desktop Entry]
      Name=Clarizen
      Comment=Clarizen Time Tracking
-     Exec=firefox --new-window https://eu1.clarizen.com/Clarizen/MyWork?orgId=29892613
+     Exec=firefox --new-window https://eu1.clarizen.com/Clarizen/TeamSpace/Timesheet
      Icon= /home/gregj/.local/share/pixmaps/clarizen-logo.jpg
      Terminal=false
      Type=Application
