@@ -7,7 +7,7 @@
 ;; initalize all ELPA packages
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 (setq use-package-always-ensure t)
 
 ;; (package-initialize)
