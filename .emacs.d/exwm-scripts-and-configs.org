@@ -489,6 +489,17 @@
      Type=Application
      Categories=Office;Calendar;
    #+end_src
+ ** Google Cloud Platform
+   #+begin_src bash  :tangle ~/.local/share/applications/gcp.desktop
+     [Desktop Entry]
+     Name=GCP Google Cloud
+     Comment=GCP
+     Exec=firefox --new-window https://console.cloud.google.com/compute/instances?project=rancher-dev
+     Icon= /home/gregj/.local/share/pixmaps/google-cloud-logo.png
+     Terminal=false
+     Type=Application
+     Categories=Cloud;Virtualization
+   #+end_src
 ** GoToWebinar
    GoToWebinar does not support Firefox in 2020
    Therefore this shortcut uses Chrome
