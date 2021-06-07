@@ -1829,6 +1829,7 @@ Open man page in current window, rather than other window with
        (define-key org-mode-map (kbd "<S-right>") nil))       ; org-shiftright
    #+end_src
 ** Org Babel and Source Code Blocks
+*** Config including template shortcuts
     TODO: install ob-jupyter package on systems with Jupyter
      #+begin_src emacs-lisp
        ;; (unless (version< org-version "9.2")
@@ -1871,6 +1872,17 @@ Open man page in current window, rather than other window with
                                               ("sy" . "src yaml"))))
 
      #+end_src
+*** Company Org Block
+    + first seen in this reddit post: [[https://www.reddit.com/r/emacs/comments/ntj8gj/company_org_block_completion_now_on_melpa/][Company org block completion now on melpa : emacs]]
+    #+begin_src emacs-lisp
+      (use-package company-org-block
+        :ensure t
+        :custom
+        (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
+        :hook ((org-mode . (lambda ()
+                             (setq-local company-backends '(company-org-block))
+                             (company-mode +1)))))
+    #+end_src
 *** Crazy way to allow babel elisp to modify window configuration  :noexport:
     This disables Org's use of =save-window-excursion= for execution of source blocks
     Stolen from [[https://emacs.stackexchange.com/questions/42096/running-elisp-within-an-orgmode-code-block][Running elisp within an orgmode code block]] (github)
