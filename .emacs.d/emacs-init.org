@@ -1117,9 +1117,9 @@
           (add-hook 'exwm-update-title-hook
                     (lambda ()
                       (cond ((string= "Mail - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
-                             (exwm-workspace-rename-buffer "email"))
+                             (exwm-workspace-rename-buffer "email - outlook"))
                             ((string= "Calendar - Greg Grubbs - Outlook - Mozilla Firefox" exwm-title)
-                             (exwm-workspace-rename-buffer "calendar"))
+                             (exwm-workspace-rename-buffer "calendar - outlook"))
                             ((string= "Google Hangouts - Mozilla Firefox" exwm-title)
                              (exwm-workspace-rename-buffer "hangouts"))
                             ((and (> (length exwm-title) 4)  (string= "Slack" (substring exwm-title 0 5)))
