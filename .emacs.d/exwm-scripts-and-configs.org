@@ -535,6 +535,17 @@
      Type=Application
      Categories=Office;Productivity
    #+end_src
+** Harvester VIRTUALIZATION BABAY
+   #+begin_src conf :tangle ~/.local/share/applications/harvest.desktop
+     [Desktop Entry]
+     Name=Harvester Awesomeness
+     Comment=Why, k8s virtualization of course
+     Exec=firefox --new-window https://protomolecule.magichome:30443
+     Icon= /home/gregj/.local/share/pixmaps/harvester-icon-text.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity
+   #+end_src
 ** HBO Max
    #+begin_src conf :tangle ~/.local/share/applications/hbomax.desktop
      [Desktop Entry]
