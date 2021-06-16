@@ -853,6 +853,17 @@
      Type=Application
      Categories=System
    #+end_src
+** Switchy McSwitchface
+   #+begin_src conf :tangle ~/.local/share/applications/trello.desktop
+     [Desktop Entry]
+     Name=Switchy
+     Comment=Netgear ProSafe 10Ge switch
+     Exec=microsoft-edge-dev --new-window http://switchy.magichome/
+     Icon= /home/gregj/.local/share/pixmaps/netgear.jpeg
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
 ** Toggle XFCE4 Panel Show/Hide
    #+begin_src conf :tangle ~/.local/share/applications/toggle-xfce-panel-visibility.desktop
      [Desktop Entry]
