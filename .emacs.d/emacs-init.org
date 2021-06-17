@@ -528,6 +528,7 @@
       (bind-key "s-2" 'gjg/split-window-below)
       (bind-key "s-3" 'gjg/split-window-right)
       (bind-key "s-q" 'bury-buffer)
+      (bind-key "s-\\" 'switch-to-buffer)
       ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
       (defun gjg/widen-ask-if-indirect ()
         "If buffer is indirect, ask before widening"
