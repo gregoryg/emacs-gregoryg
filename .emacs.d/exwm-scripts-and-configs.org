@@ -208,6 +208,9 @@
     nohup xfce4-power-manager&
     ## Deal with LXDE if running as the WM
     ## pcmanfm --desktop-off
+
+    echo Start XFCE4 panel
+    /home/gregj/bin/xfce-panel-widgets.sh &
   #+end_src
 ** Scripts to rotate wallpaper on multiple screens
    The schedule script runs only if it is not already running
