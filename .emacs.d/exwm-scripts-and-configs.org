@@ -539,7 +539,7 @@
      Categories=Office;Productivity
    #+end_src
 ** Harvester VIRTUALIZATION BABAY
-   #+begin_src conf :tangle ~/.local/share/applications/harvest.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/harvester.desktop
      [Desktop Entry]
      Name=Harvester Awesomeness
      Comment=Why, k8s virtualization of course
