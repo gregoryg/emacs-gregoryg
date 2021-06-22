@@ -657,6 +657,17 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
+** Okta
+   #+begin_src conf :tangle ~/.local/share/applications/okta.desktop
+     [Desktop Entry]
+     Name=SUSE Okta
+     Comment=SUSE Okta SSO
+     Exec=firefox --new-window https://suse.okta.com
+     Icon= /home/gregj/.local/share/pixmaps/okta-dev.png
+     Terminal=false
+     Type=Application
+     Categories=Office;SSO;
+   #+end_src
 ** Protomolecule Virtualization - Proxmox or Harvester
    + Port 8006 for Proxmox, 30443 for Harvester
    #+begin_src conf :tangle ~/.local/share/applications/protomolecule.desktop
