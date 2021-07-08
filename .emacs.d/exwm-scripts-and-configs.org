@@ -52,9 +52,14 @@
    #+end_src
 ** Ubuntu
    #+begin_src bash
+     # Add repo for Albert - Ubuntu 20.04
+     curl https://build.opensuse.org/projects/home:manuelschneid3r/public_key | sudo apt-key add -
+     echo 'deb http://download.opensuse.org/repositories/home:/manuelschneid3r/xUbuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/home:manuelschneid3r.list
+     sudo wget -nv https://download.opensuse.org/repositories/home:manuelschneid3r/xUbuntu_20.04/Release.key -O "/etc/apt/trusted.gpg.d/home:manuelschneid3r.asc"
+
      sudo apt update
      sudo apt -y install \
-          ulauncher \
+          albert \
           autorandr \
           compton \
           cowsay \
@@ -65,12 +70,12 @@
           gcc \
           git \
           gwenview \
-          libgccjit \
           libgccjit-9-dev \
           mlocate \
           pdsh \
           ruby \
           silversearcher-ag \
+          slick-greeter \
           vlc \
           wmctrl \
           xscreensaver
@@ -704,9 +709,6 @@
      Categories=InstantMessaging;
    #+end_src
 ** Relaunch Albert
-   Note: I only created this script because Albert was crashing frequently.
-   TODO: delete this by [2021-03-15 Mon] if =ulauncher= keeps behaving better
-
    #+begin_src conf :tangle ~/.local/share/applications/relaunch-albert.desktop
      [Desktop Entry]
      Name=Relaunch Albert
