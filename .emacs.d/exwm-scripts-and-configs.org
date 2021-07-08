@@ -442,7 +442,6 @@
      Name=emacsclient
      Comment=Custom definition for emacsclient
    #+end_src
-
 ** Erebor Synology
    #+begin_src conf :tangle ~/.local/share/applications/erebor.desktop
      [Desktop Entry]
@@ -613,7 +612,6 @@
       Categories=Kubernetes;
     #+end_src
 
-
 ** LinkedIn
    #+begin_src conf :tangle ~/.local/share/applications/linkedin.desktop
      [Desktop Entry]
@@ -649,7 +647,6 @@
      Type=Application
      Categories=InstantMessaging;
    #+end_src
-
 ** Monitor change
    Run when external monitor is connected/disconnected
    #+begin_src conf :tangle ~/.local/share/applications/autorandr-monitor.desktop
@@ -661,6 +658,17 @@
      Terminal=false
      Type=Application
      Categories=Office;Productivity;
+   #+end_src
+** Neo4j Desktop
+   #+begin_src conf :tangle ~/.local/share/applications/neo4j-desktop.desktop
+     [Desktop Entry]
+     Name=Neo4j Desktop
+     Comment=
+     Exec=/usr/local/bin/neo4j-desktop
+     Icon= /home/gregj/.local/share/pixmaps/neo4j-desktop.png
+     Terminal=false
+     Type=Application
+     Categories=Database;
    #+end_src
 ** Okta
    #+begin_src conf :tangle ~/.local/share/applications/okta.desktop
