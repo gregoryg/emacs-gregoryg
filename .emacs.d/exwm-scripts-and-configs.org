@@ -364,6 +364,7 @@
 ** Assure directories are created before tangling
    #+begin_src bash
      mkdir -p ~/.local/share/applications ~/.local/share/pixmaps/
+     sudo update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/firefox 50
    #+end_src
 ** Images referred to in the files below
    These images are to be placed in =~/.local/share/pixmaps/=
@@ -377,7 +378,7 @@
      [Desktop Entry]
      Name=Amazon.com
      Comment=That's right
-     Exec=firefox --new-window https://www.amazon.com/
+     Exec=x-www-browser --new-window https://www.amazon.com/
      Icon=/home/gregj/.local/share/pixmaps/amazon-logo-rgb.png
      Terminal=false
      Type=Application
@@ -387,8 +388,8 @@
    #+begin_src conf :tangle ~/.local/share/applications/fcalendar.desktop
      [Desktop Entry]
      Name=Calendar
-     Comment=Outlook Calendar in Firefox
-     Exec=firefox --new-window https://outlook.office.com/calendar/view/day
+     Comment=Outlook Calendar in Browser
+     Exec=x-www-browser --new-window https://outlook.office.com/calendar/view/day
      Icon= /home/gregj/.local/share/pixmaps/outlook-calendar.png
      Terminal=false
      Type=Application
@@ -410,7 +411,7 @@
      [Desktop Entry]
      Name=Clarizen
      Comment=Clarizen Time Tracking
-     Exec=firefox --new-window https://eu1.clarizen.com/Clarizen/TeamSpace/Timesheet
+     Exec=x-www-browser --new-window https://eu1.clarizen.com/Clarizen/TeamSpace/Timesheet
      Icon= /home/gregj/.local/share/pixmaps/clarizen-logo.jpg
      Terminal=false
      Type=Application
@@ -447,7 +448,7 @@
      [Desktop Entry]
      Name=Erebor Synology DSM
      Comment=Erebor
-     Exec=firefox --new-window https://erebor.magichome:5001
+     Exec=x-www-browser --new-window https://erebor.magichome:5001
      Icon= /home/gregj/.local/share/pixmaps/synology.png
      Terminal=false
      Type=Application
@@ -490,7 +491,7 @@
      [Desktop Entry]
      Name=GitHub
      Comment=GitHub
-     Exec=firefox --new-window https://github.com/gregoryg/
+     Exec=x-www-browser --new-window https://github.com/gregoryg/
      Icon= /home/gregj/.local/share/pixmaps/github4.jpg
      Terminal=false
      Type=Application
@@ -501,7 +502,7 @@
      [Desktop Entry]
      Name=GCP Google Cloud
      Comment=GCP
-     Exec=firefox --new-window https://console.cloud.google.com/compute/instances?project=rancher-dev
+     Exec=x-www-browser --new-window https://console.cloud.google.com/compute/instances?project=rancher-dev
      Icon= /home/gregj/.local/share/pixmaps/google-cloud-logo.png
      Terminal=false
      Type=Application
@@ -525,7 +526,7 @@
      [Desktop Entry]
      Name=Chat (nee Hangouts)
      Comment=Google Chat in Chrome
-     Exec=google-chrome --new-window https://chat.google.com/
+     Exec=x-www-browser --new-window https://chat.google.com/
      Icon=/home/gregj/.local/share/pixmaps/google-chat.png
      Terminal=false
      Type=Application
@@ -536,7 +537,7 @@
      [Desktop Entry]
      Name=Harvest Time Tracking
      Comment=Why, time tracking of course
-     Exec=firefox --new-window https://rancherlabs.harvestapp.com/time
+     Exec=x-www-browser --new-window https://rancherlabs.harvestapp.com/time
      Icon=/home/gregj/.local/share/pixmaps/harvest-logo-icon.png
      Terminal=false
      Type=Application
@@ -547,7 +548,7 @@
      [Desktop Entry]
      Name=Harvester Awesomeness
      Comment=Why, k8s virtualization of course
-     Exec=firefox --new-window https://protomolecule.magichome:30443
+     Exec=x-www-browser --new-window https://protomolecule.magichome:30443
      Icon= /home/gregj/.local/share/pixmaps/harvester-icon-text.png
      Terminal=false
      Type=Application
@@ -557,19 +558,19 @@
    #+begin_src conf :tangle ~/.local/share/applications/hbomax.desktop
      [Desktop Entry]
      Name=HBO Max
-     Comment=HBO Max in Firefox
-     Exec=firefox --new-window https://play.hbomax.com/
+     Comment=HBO Max in Browser
+     Exec=x-www-browser --new-window https://play.hbomax.com/
      Icon=/home/gregj/.local/share/pixmaps/hbomax.png
      Terminal=false
      Type=Application
      Categories=Entertainment;
    #+end_src
 ** Home Assistant
-   #+begin_src conf :tangle ~/.local/share/applications/fhangouts.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/home-assistant.desktop
      [Desktop Entry]
      Name=Home Assistant
      Comment=Home Assistant of 2 Moonz
-     Exec=google-chrome --new-window http://erebor.magichome:8123/
+     Exec=x-www-browser --new-window http://erebor.magichome:8123/
      Icon= /home/gregj/.local/share/pixmaps/homeassistant.png
      Terminal=false
      Type=Application
@@ -601,7 +602,7 @@
    #+end_src
 ** Lens for Kubernetes
    Download AppImage binary from the [[https://github.com/lensapp/lens/releases][releases site]]
-    #+begin_src conf :tangle ~/.local/share/applications/steam-cuphead.desktop
+    #+begin_src conf :tangle ~/.local/share/applications/lens.desktop
       [Desktop Entry]
       Name=Lens
       Comment=UI for Kubernetes
@@ -617,7 +618,7 @@
      [Desktop Entry]
      Name=LinkedIn
      Comment=Networking
-     Exec=firefox --new-window https://linkedin.com/
+     Exec=x-www-browser --new-window https://linkedin.com/
      Icon=/home/gregj/.local/share/pixmaps/linkedin-glossy.jpg
      Terminal=false
      Type=Application
@@ -627,8 +628,8 @@
    #+begin_src conf :tangle ~/.local/share/applications/femail.desktop
      [Desktop Entry]
      Name=Mail Email
-     Comment=Outlook EMail in Firefox
-     Exec=firefox --new-window https://outlook.office.com/mail/inbox
+     Comment=Outlook EMail in Browser
+     Exec=x-www-browser --new-window https://outlook.office.com/mail/inbox
      Icon=/home/gregj/.local/share/pixmaps/outlook.png
      Terminal=false
      Type=Application
@@ -675,7 +676,7 @@
      [Desktop Entry]
      Name=SUSE Okta
      Comment=SUSE Okta SSO
-     Exec=firefox --new-window https://suse.okta.com
+     Exec=x-www-browser --new-window https://suse.okta.com
      Icon= /home/gregj/.local/share/pixmaps/okta-dev.png
      Terminal=false
      Type=Application
@@ -687,7 +688,7 @@
      [Desktop Entry]
      Name=Protomolecule
      Comment=Protomolecule HCI
-     Exec=firefox --new-window https://protomolecule.magichome:30443
+     Exec=x-www-browser --new-window https://protomolecule.magichome:30443
      Icon= /home/gregj/.local/share/pixmaps/protomolecule.png
      Terminal=false
      Type=Application
@@ -699,7 +700,7 @@
      [Desktop Entry]
      Name=Rancher
      Comment=Rancher
-     Exec=firefox --new-window https://rancher.hypecyclist.org/
+     Exec=x-www-browser --new-window https://rancher.hypecyclist.org/
      Icon=/home/gregj/.local/share/pixmaps/rancher-labs-icon.png
      Terminal=false
      Type=Application
@@ -710,7 +711,7 @@
      [Desktop Entry]
      Name=Reddit
      Comment=Reddit
-     Exec=firefox --new-window https://reddit.com/
+     Exec=x-www-browser --new-window https://reddit.com/
      Icon=/home/gregj/.local/share/pixmaps/reddit-monster.png
      Terminal=false
      Type=Application
@@ -743,7 +744,7 @@
      [Desktop Entry]
      Name=Rocket.Chat
      Comment=
-     Exec=firefox --new-window https://chat.suse.de/
+     Exec=x-www-browser --new-window https://chat.suse.de/
      Icon= /home/gregj/.local/share/pixmaps/rocketchat.jpg
      Terminal=false
      Type=Application
@@ -764,8 +765,8 @@
    #+begin_src conf :tangle ~/.local/share/applications/flack.desktop
      [Desktop Entry]
      Name=Slack
-     Comment=Slack in Firefox
-     Exec=firefox --new-window https://rancher.slack.com/
+     Comment=Slack in Browser
+     Exec=x-www-browser --new-window https://rancher.slack.com/
      Icon=/home/gregj/.local/share/pixmaps/slack.jpeg
      Terminal=false
      Type=Application
@@ -787,8 +788,8 @@
      # ~/.local/share/applications/fspotify.desktop
      [Desktop Entry]
      Name=Spotify
-     Comment=Spotify web player in Firefox
-     Exec=firefox --new-window https://open.spotify.com
+     Comment=Spotify web player in Browser
+     Exec=x-www-browser --new-window https://open.spotify.com
      Icon=/home/gregj/.local/share/pixmaps/spotify-client.png
      Terminal=false
      Type=Application
@@ -878,11 +879,11 @@
      Categories=System
    #+end_src
 ** Switchy McSwitchface
-   #+begin_src conf :tangle ~/.local/share/applications/trello.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/switchy.desktop
      [Desktop Entry]
      Name=Switchy
      Comment=Netgear ProSafe 10Ge switch
-     Exec=microsoft-edge-dev --new-window http://switchy.magichome/
+     Exec=x-www-browser --new-window http://switchy.magichome/
      Icon= /home/gregj/.local/share/pixmaps/netgear.jpeg
      Terminal=false
      Type=Application
@@ -904,7 +905,7 @@
      [Desktop Entry]
      Name=Trello
      Comment=Um ... Trello!
-     Exec=firefox --new-window https://trello.com/
+     Exec=x-www-browser --new-window https://trello.com/
      Icon=/home/gregj/.local/share/pixmaps/trello.png
      Terminal=false
      Type=Application
@@ -939,7 +940,7 @@
      [Desktop Entry]
      Name=YouTube
      Comment=
-     Exec=firefox --new-window https://youtube.com
+     Exec=x-www-browser --new-window https://youtube.com
      Icon= /home/gregj/.local/share/pixmaps/youtube-kids-new-logo.png
      Terminal=false
      Type=Application
@@ -950,7 +951,7 @@
      [Desktop Entry]
      Name=Zendesk
      Comment=Customer Issues
-     Exec=firefox --new-window https://rancher.zendesk.com/agent/dashboard
+     Exec=x-www-browser --new-window https://rancher.zendesk.com/agent/dashboard
      Icon=/home/gregj/.local/share/pixmaps/zendesk-new-256.png
      Terminal=false
      Type=Application
