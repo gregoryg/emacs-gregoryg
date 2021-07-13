@@ -205,7 +205,7 @@
        (setq org-file-apps
              '((auto-mode . emacs)
                ("\\.mm\\'" . default)
-               ("\\.x?html?\\'" . "/usr/bin/firefox %s")
+               ("\\.x?html?\\'" . "/usr/bin/x-www-browser %s")
                ("\\.pdf\\'" . default))))
    #+end_src
 ** Chrome OS / Crostini things
@@ -2271,7 +2271,8 @@ Open man page in current window, rather than other window with
                                                            ;; (lambda(dirname) (and
                                                            ;;                   (not (string= "~/projects/private-orgmode/rancher/archive" dirname))
                                                            ;;                   (not (string= "~/projects/private-orgmode/rancher/inactive" dirname)))))))
-        (add-to-list 'engagement-files "~/projects/private-orgmode/rancher/rancher.org.gpg" t)))
+        (add-to-list 'engagement-files "~/projects/private-orgmode/rancher/rancher.org.gpg" t)
+        (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
             ;; (directory-files-recursively "~/projects/private-orgmode/rancher/engagements/"
             ;;                              org-agenda-file-regexp
             ;;                              nil

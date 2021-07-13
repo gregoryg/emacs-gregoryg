@@ -525,7 +525,7 @@
    #+begin_src conf :tangle ~/.local/share/applications/fhangouts.desktop
      [Desktop Entry]
      Name=Chat (nee Hangouts)
-     Comment=Google Chat in Chrome
+     Comment=Google Chat
      Exec=x-www-browser --new-window https://chat.google.com/
      Icon=/home/gregj/.local/share/pixmaps/google-chat.png
      Terminal=false
@@ -637,12 +637,12 @@
    #+end_src
 ** Microsoft Teams
    As of [2021-01-26 Tue] I am having microphone problems using the Linux client for
-   Teams.  Things seem to run fine in Chrome, however.
-   #+begin_src conf :tangle ~/.local/share/applications/teams-chrome.desktop
+   Teams.  Things seem to run fine in the browser, however.
+   #+begin_src conf :tangle ~/.local/share/applications/teams-browser.desktop
      [Desktop Entry]
-     Name=Microsoft Teams in Chrome
-     Comment=Teams in Google Chrome
-     Exec=google-chrome --new-window https://teams.microsoft.com
+     Name=Microsoft Teams in browser
+     Comment=
+     Exec=x-www-browser --new-window https://teams.microsoft.com
      Icon=/home/gregj/.local/share/pixmaps/teams-logo.png
      Terminal=false
      Type=Application
