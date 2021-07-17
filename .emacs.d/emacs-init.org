@@ -61,12 +61,15 @@
 
   ;; get control of required packages across different emacs environments
   (defvar gjg/required-packages
-    '(cider
+    '(bind-key
+      buffer-expose
+      cider
+      exwm
       magit
       magit-todos
       org
       org-superstar
-      org-plus-contrib
+      ;; org-plus-contrib
       org-tree-slide
       ob-async
       ob-http
@@ -74,6 +77,8 @@
       prettify-greek
   ;;    company-pr
       rainbow-delimiters
+      selectrum
+      selectrum-prescient
       smartparens
       use-package
       xterm-color
@@ -1191,6 +1196,7 @@
         #+begin_src emacs-lisp
           (require 'buffer-expose)
           (buffer-expose-mode 1)
+          (require 'magit) ; to make magit-mode-map available
 
           ;; https://github.com/ch11ng/exwm/wiki#unable-to-resize-an-x-window-by-dragging-its-right-edge
           (global-unset-key (kbd "M-<tab>"))
@@ -1845,7 +1851,7 @@ Open man page in current window, rather than other window with
                     (http . t) ;; curl
                     (js . t)
                     (latex . t)
-                    (jupyter . t)
+                    ;; (jupyter . t)
                     (python . t)
                     (shell  . t)
                     (sql . t)
