@@ -497,7 +497,7 @@
      Type=Application
      Categories=Office;Calendar;
    #+end_src
- ** Google Cloud Platform
+** Google Cloud Platform
    #+begin_src bash  :tangle ~/.local/share/applications/gcp.desktop
      [Desktop Entry]
      Name=GCP Google Cloud
