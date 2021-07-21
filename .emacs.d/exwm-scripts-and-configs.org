@@ -61,6 +61,7 @@
      sudo apt -y install \
           albert \
           autorandr \
+          blueman \
           compton \
           cowsay \
           discount \
