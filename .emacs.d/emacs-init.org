@@ -732,6 +732,21 @@
     (zoom-mode -1))
 #+end_src
 *** Ibuffer FTW
+**** View customizations
+     #+begin_src emacs-lisp
+       (setq ibuffer-formats
+             '((mark modified read-only locked " "
+                    (name 50 50 :left :elide)  ; much wider buffer name column
+                    " "
+                    (size 9 -1 :right)
+                    " "
+                    (mode 16 16 :left :elide)
+                    " " filename-and-process)
+              (mark " "
+                    (name 16 -1)
+                    " " filename))
+             )
+     #+end_src
 **** Filter groups
     Saved filter groups provide a nice organization.
 
