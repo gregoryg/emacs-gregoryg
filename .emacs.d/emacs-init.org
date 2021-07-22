@@ -115,6 +115,8 @@
    =the_silver_searcher= or =silversearcher-ag=
    #+begin_src emacs-lisp
      (when gjg/check-packages-on-startup
+       (use-package s
+         :ensure t)
        (use-package ag
          :ensure t)
        (use-package dumb-jump
