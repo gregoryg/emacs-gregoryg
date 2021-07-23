@@ -74,6 +74,7 @@
           libgccjit-9-dev \
           mlocate \
           pdsh \
+          policykit-1-gnome \
           ruby \
           silversearcher-ag \
           slick-greeter \
@@ -179,8 +180,12 @@
     # Control scrolling direction - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
     #         Option "NaturalScrolling" "on"
 
-    # run an authentication agent for graphical programs that need SUDO
-    (cd /tmp && nohup /usr/lib/polkit-gnome-authentication-agent-1&)
+    # run an authentication agent for graphical programs that need SUDO - like GParted
+    if [ -x "/usr/lib/polkit-gnome-authentication-agent-1" ] ; then
+        (cd /tmp && nohup /usr/lib/polkit-gnome-authentication-agent-1&)
+    elif [ -x "/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1" ] ; then
+        (cd /tmp && nohup /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1&)
+    fi
 
 
     # Set scrolling direction to "natural"
