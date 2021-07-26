@@ -738,15 +738,15 @@
      #+begin_src emacs-lisp
        (setq ibuffer-formats
              '((mark modified read-only locked " "
-                    (name 50 50 :left :elide)  ; much wider buffer name column
-                    " "
-                    (size 9 -1 :right)
-                    " "
-                    (mode 16 16 :left :elide)
-                    " " filename-and-process)
-              (mark " "
-                    (name 16 -1)
-                    " " filename))
+                     (name 50 50 :left :elide)  ; much wider buffer name column
+                     " "
+                     (size 9 -1 :right)
+                     " "
+                     (mode 16 16 :left :elide)
+                     " " filename-and-process)
+               (mark " "
+                     (name 16 -1)
+                     " " filename))
              )
      #+end_src
 **** Filter groups
@@ -756,6 +756,7 @@
       (require 'ibuffer)
       (global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
       (setq ibuffer-expert t)
+      (setq ibuffer-default-sorting-mode 'alphabetic)
       (setq ibuffer-saved-filter-groups
             '(("home"
                ("Org and Markdown" (or (mode . org-mode)
@@ -788,7 +789,7 @@
      This function should work just like =occur-mode-display-occurence= in [[file:/usr/local/share/emacs/28.0.50/lisp/replace.el.gz][replace.el]]
     #+begin_src emacs-lisp
       (defun gjg/ibuffer-preview ()
-          "View the current file in other window but to do select"
+        "View the current file in other window but to do select"
         (interactive)
         (delete-other-windows)
         (let ((buf (ibuffer-current-buffer t)))
