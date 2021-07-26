@@ -630,7 +630,18 @@
      Type=Application
      Categories=Office;Networking;Social
    #+end_src
-** Mail Email
+** Google Email Gmail
+   #+begin_src conf :tangle ~/.local/share/applications/gmail.desktop
+     [Desktop Entry]
+     Name=Gmail Google Email
+     Comment=Google EMail in Browser
+     Exec=x-www-browser --new-window https://gmail.com/
+     Icon=/home/gregj/.local/share/pixmaps/gmail-logo.jpg
+     Terminal=false
+     Type=Application
+     Categories=Office;Calendar;
+   #+end_src
+** Outlook Email
    #+begin_src conf :tangle ~/.local/share/applications/femail.desktop
      [Desktop Entry]
      Name=Mail Email
