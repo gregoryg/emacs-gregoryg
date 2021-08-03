@@ -2564,17 +2564,30 @@ Open man page in current window, rather than other window with
    #+end_src
 ** Org Roam - experimental
 #+begin_src emacs-lisp :tangle no
-(use-package org-roam
-  :hook
-  (after-init . org-roam-mode)
-  :custom
-  (org-roam-directory "~/projects/private-orgmode/")
-  :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-show-graph))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))))
+  (use-package org-roam
+    :ensure t
+    :hook
+    (after-init . org-roam-mode)
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory "~/projects/private-orgmode/roam-notes")
+    (org-roam-completion-everywhere t)
+    ;; :bind (:map org-roam-mode-map
+    ;;             (("C-c n l" . org-roam)
+    ;;              ("C-c n f" . org-roam-find-file)
+    ;;              ("C-c n g" . org-roam-show-graph))
+    ;;             :map org-mode-map
+    ;;             (("C-c n i" . org-roam-insert)))
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           :map org-mode-map
+           ("C-M-i" . completion-at-point)
+           )
+    :config
+    (org-roam-setup)
+    )
 #+end_src
 ** Publishing
    This is for publishing to a website
