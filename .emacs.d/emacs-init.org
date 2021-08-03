@@ -128,13 +128,13 @@
        ;; (use-package counsel-projectile
        ;;   :ensure nil)
        (use-package htmlize
-         :ensure nil)
+         :ensure t)
        (use-package keychain-environment
          :ensure t)
        (use-package material-theme
          :ensure t)
        (use-package uuid
-         :ensure nil)
+         :ensure t)
        (use-package terraform-mode
          :ensure t)
        (use-package yafolding
@@ -2960,7 +2960,7 @@ Open man page in current window, rather than other window with
 
 #+begin_src emacs-lisp
   (use-package jupyter
-    :ensure nil)
+    :ensure t)
   (use-package ob-ipython
     :ensure t)
   ;; (when (memq window-system '(mac ns x))
