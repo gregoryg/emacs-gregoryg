@@ -80,8 +80,16 @@
           slick-greeter \
           vlc \
           wmctrl \
+          xfce4-mount-plugin \
+          xfce4-panel \
+          xfce4-power-manager-plugins \
+          xfce4-pulseaudio-plugin \
+          xfce4-screenshooter \
+          xfce4-statusnotifier-plugin \
+          xfce4-whiskermenu-plugin \
+          xfconf \
           xscreensaver
-
+     
    #+end_src
 ** Autorandr special case
    This is probably best installed using =pip3= -- but I still need to test the version
