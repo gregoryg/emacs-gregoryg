@@ -71,6 +71,8 @@
           gcc \
           git \
           gwenview \
+          ipython3 \
+          jupyter \
           libgccjit-9-dev \
           mlocate \
           pdsh \
@@ -89,7 +91,7 @@
           xfce4-whiskermenu-plugin \
           xfconf \
           xscreensaver
-     
+
    #+end_src
 ** Autorandr special case
    This is probably best installed using =pip3= -- but I still need to test the version
@@ -138,9 +140,10 @@
 ** Assure our app launcher is running at login
    This is for =ulauncher=, installed previously
    #+begin_src bash
-     mkdir -p ~/.config/systemd/user
+     # mkdir -p ~/.config/systemd/user
    #+end_src
-   #+begin_src conf :tangle ~/.config/systemd/user/ulauncher.service
+   If using ulauncher, tangle following block to ~/.config/systemd/user/ulauncher.service
+   #+begin_src conf :tangle no
      [Unit]
      Description=Linux Application Launcher
      Documentation=https://ulauncher.io/
@@ -184,8 +187,12 @@
     # nmcli connection delete moodseer-5G
     # nmcli d wifi connect moodseer-5G password blah
 
-    # Control scrolling direction - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
-    #         Option "NaturalScrolling" "on"
+    # Control scrolling direction and tap to click - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
+    # 
+    #        Option "NaturalScrolling" "on"
+    #        Option "Tapping" "on"
+    #        Option "ClickMethod" "clickfinger"
+
 
     # run an authentication agent for graphical programs that need SUDO - like GParted
     if [ -x "/usr/lib/polkit-gnome-authentication-agent-1" ] ; then
@@ -351,6 +358,10 @@
   In addition, there are =postswitch= scripts that run whenever a profile is activated.
   Set to right-handed mouse in laptop-only for the trackpad, left-handed for external
   mouse when using external monitor.
+
+  #+begin_src bash
+    mkdir -p ~/.config/autorandr/laptop-only ~/.config/autorandr/dual-monitor ~/.config/autorandr/monitor-only
+  #+end_src
 
 ** Laptop-only
    #+begin_src bash :tangle ~/.config/autorandr/laptop-only/postswitch
