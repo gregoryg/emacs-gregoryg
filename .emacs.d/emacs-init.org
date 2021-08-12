@@ -2563,7 +2563,7 @@ Open man page in current window, rather than other window with
 
    #+end_src
 ** Org Roam - experimental
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (use-package org-roam
     :ensure t
     :hook
