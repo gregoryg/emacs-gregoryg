@@ -14,7 +14,7 @@
                             )
                           nil beg end))
 
-;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph    
+;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
 (defun gjg/unfill-paragraph ()
   "Takes a multi-line paragraph and makes it into a single line of text."
   (interactive)
@@ -26,7 +26,7 @@
   :type 'string
   :group 'gjg)
 
-(defun gjg/nag-timer () "Nag me when there isn't a clock running"  
+(defun gjg/nag-timer () "Nag me when there isn't a clock running"
   (unless (marker-buffer org-clock-marker)
     (call-process-shell-command gjg/visual-notify-command nil 0 nil "Org-Mode\\ Nudge" "What\\'s\\ \\going\\ on?")
     (if (fboundp 'async-start-process)
@@ -43,7 +43,7 @@
   (cancel-function-timers 'gjg/nag-timer))
 
 (defun gjg/acronyminize (text &optional do-capitalize)
-  "Make an acronym from the text 
+  "Make an acronym from the text
 do-capitalize: t means run text through capitalize function, nil will respect CamelCase
 "
   (save-excursion
@@ -140,6 +140,6 @@ do-capitalize: t means run text through capitalize function, nil will respect Ca
 
 (defun gjg/open-work-agenda ()
   (interactive)
-  (org-agenda nil "R"))
+  (org-agenda nil "G"))
 
 (provide 'gjg-functions)

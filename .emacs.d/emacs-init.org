@@ -2143,8 +2143,8 @@ Open man page in current window, rather than other window with
      #+begin_src emacs-lisp
        (push
         '("p" "Phone/Meeting" entry
-          (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Calls and Meetings")
-          "* %t %^{type|Call|Meeting|Email|Task} with %^{with|PS Team|Ryan|Acxiom|BAE Systems|lululemon|Maxar|Seagate|The Home Depot|Verisign|Verizon|Viasat}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro|Weekly cadence|Learning Update|Working session|Status update}
+          (file+headline "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" "Calls and Meetings")
+          "* %t %^{type|Call|Meeting|Email|Task} with %^{with|SE Team|Steven}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro|Weekly cadence|Learning Update|Working session|Status update}
          :PROPERTIES:
          :NOBLOCKING: t
          :END:
@@ -2152,7 +2152,7 @@ Open man page in current window, rather than other window with
          CREATED: %U
          :END:
          %i
-         + From SUSE: GG
+         + From Tigergraph: GG
          + From %\\2:
            \#+begin_src emacs-lisp :var table=people :results append raw :exports results :eval never-export
             (gjg/add-person-from-table)
@@ -2173,7 +2173,7 @@ Open man page in current window, rather than other window with
      #+begin_src emacs-lisp
        (push
         '             ("s" "Status update for Slack" entry
-                       (file+headline "~/projects/private-orgmode/rancher/rancher.org.gpg" "Write Daily Status to #consulting")
+                       (file+headline "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" "Write Daily Status to #consulting")
                        "* Status update %u
             ,*Today*
               ,* %?
@@ -2287,28 +2287,18 @@ Open man page in current window, rather than other window with
     (global-set-key (kbd "C-c a") 'org-agenda)
     (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
     (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
-                             "~/projects/private-orgmode/inbox.org"
-                             "~/projects/private-orgmode/someday.org"
-                             "~/projects/private-orgmode/projects.org"
-                             "~/projects/private-orgmode/next.org"
-                             "~/projects/private-orgmode/fit.org"
-                             "~/projects/private-orgmode/habits.org"))
+                                          "~/projects/private-orgmode/inbox.org"
+                                          "~/projects/private-orgmode/someday.org"
+                                          "~/projects/private-orgmode/projects.org"
+                                          "~/projects/private-orgmode/next.org"
+                                          "~/projects/private-orgmode/fit.org"
+                                          "~/projects/private-orgmode/habits.org"))
     (defun gjg/get-work-agenda-files ()
       "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
-      (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/rancher/engagements/"
+      (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/tigergraph/prospects/"
                                                            "\\`[^.].*\\.org\\.gpg\\'")))
-                                                           ;; nil
-                                                           ;; (lambda(dirname) (and
-                                                           ;;                   (not (string= "~/projects/private-orgmode/rancher/archive" dirname))
-                                                           ;;                   (not (string= "~/projects/private-orgmode/rancher/inactive" dirname)))))))
-        (add-to-list 'engagement-files "~/projects/private-orgmode/rancher/rancher.org.gpg" t)
+        (add-to-list 'engagement-files "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" t)
         (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
-            ;; (directory-files-recursively "~/projects/private-orgmode/rancher/engagements/"
-            ;;                              org-agenda-file-regexp
-            ;;                              nil
-            ;;                              (lambda(dirname) (and
-            ;;                                                (not (string= "~/projects/private-orgmode/rancher/archive" dirname))
-            ;;                                                (not (string= "~/projects/private-orgmode/rancher/inactive" dirname)))))))
     (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
     ;; Set agenda files to personal, override in work-related templates
     (setq org-agenda-files gjg/personal-org-agenda-files)
@@ -2342,14 +2332,14 @@ Open man page in current window, rather than other window with
      (setq org-agenda-custom-commands nil)
    #+end_src
 *** Custom Agenda definitions
-**** Rancher agendas
+**** Tiger(G)raph agendas
      These views use the work files
 
      TODO  why does starting with clocktable and/or log-mode not work??
 
     #+begin_src emacs-lisp
       (add-to-list 'org-agenda-custom-commands
-                   '("R" "Rancher"
+                   '("G" "Tigergraph"
                       ((agenda ""
                                ((org-agenda-span 'day)
                                 (org-agenda-start-with-log-mode '(clock))
@@ -2365,7 +2355,7 @@ Open man page in current window, rather than other window with
                       ((org-agenda-files gjg/work-agenda-files))) t)
 
       (add-to-list 'org-agenda-custom-commands
-                   '("rc" "Clock report" agenda ""
+                   '("gc" "Clock report" agenda ""
                      ((org-agenda-files gjg/work-agenda-files)
                       (org-agenda-span 'day)
                       (org-agenda-start-with-clockreport-mode t)
@@ -2373,7 +2363,7 @@ Open man page in current window, rather than other window with
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled)))) t)
 
       (add-to-list 'org-agenda-custom-commands
-                   '("rt" "Rancher TODOs" alltodo ""
+                   '("gt" "Tigergraph TODOs" alltodo ""
                      ((org-agenda-files gjg/work-agenda-files)
                       (org-agenda-span 'day)
                       (org-agenda-tag-filter-preset '("-habit"))
