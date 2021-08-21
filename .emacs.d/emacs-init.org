@@ -704,15 +704,16 @@
 
     #+end_src
 *** Winner-mode and Windmove
+    TODO: Verify that =org-timestamp-{up,down}= work as =S-up= and =S-down=
    #+begin_src emacs-lisp
      ;; winner
      (winner-mode 1)
      ;; windmove
-     (windmove-default-keybindings)
-     (with-eval-after-load 'windmove
-       (windmove-default-keybindings)
-       ;; Make windmove work in org-mode:
-       (setq org-replace-disputed-keys t))
+     ;; (windmove-default-keybindings)
+     ;; (with-eval-after-load 'windmove
+     ;;   (windmove-default-keybindings)
+     ;;   ;; Make windmove work in org-mode:
+     ;;   (setq org-replace-disputed-keys t))
      ;; (add-hook 'org-shiftup-final-hook 'windmove-up)
      ;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
      ;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
