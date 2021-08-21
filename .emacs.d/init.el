@@ -25,7 +25,7 @@
 ;; keep Emacs from garbage collection during init
 (setq gc-cons-threshold 100000000) ;; ref https://github.com/MatthewZMD/.emacs.d#defer-garbage-collection
 
-
+(setq org-replace-disputed-keys t)
 (require 'org)
 
 (org-babel-load-file
