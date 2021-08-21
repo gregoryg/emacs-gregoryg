@@ -67,6 +67,7 @@
           discount \
           feh \
           fonts-hack \
+          fonts-opensymbol \
           fortune-mod \
           gcc \
           git \
