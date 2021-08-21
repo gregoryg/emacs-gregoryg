@@ -1855,8 +1855,8 @@ Open man page in current window, rather than other window with
        (define-key org-mode-map (kbd "<M-right>") nil)     ; org-metaright
        (define-key org-mode-map (kbd "<M-left>") nil)     ; org-metaleft
        ;; keys that conflict with windmove package
-       ;; (define-key org-mode-map (kbd "<S-up>") nil)       ; org-shiftup
-       ;; (define-key org-mode-map (kbd "<S-down>") nil)       ; org-shiftdown
+       (define-key org-mode-map (kbd "<S-up>") nil)       ; org-shiftup
+       (define-key org-mode-map (kbd "<S-down>") nil)       ; org-shiftdown
        (define-key org-mode-map (kbd "<S-left>") nil)       ; org-shiftleft
        (define-key org-mode-map (kbd "<S-right>") nil))       ; org-shiftright
    #+end_src
