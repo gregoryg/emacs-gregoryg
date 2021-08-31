@@ -189,6 +189,11 @@
   I run a shell script which starts up key helper apps like albert/ulauncher, picom/compton and
   xscreensaver.  Also some common mouse and keyboard settings that are ordinarily handled
   in the DE.
+
+  NOTE: If both =xscreensaver= and =xfce4-screensaver= are running, they can "fight" for
+  control in the Lightdm screen and prevent any user input!  So for now I will just not
+  start =xscreensaver=
+
   #+begin_src bash :tangle ~/bin/capsctrl.sh
     # Set CAPS LOCK as control
     setxkbmap -verbose  -option "ctrl:nocaps"
@@ -251,8 +256,8 @@
     # echo Remember iflipb for changing buffers - and/or buffer-expose-mode
     # xrandr --output eDP-1 --brightness .8
 
-    echo Start xscreensaver
-    xscreensaver &
+    # echo Start xscreensaver
+    # xscreensaver &
     nohup xfce4-power-manager&
     ## Deal with LXDE if running as the WM
     ## pcmanfm --desktop-off
