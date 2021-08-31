@@ -75,12 +75,14 @@
           ipython3 \
           jupyter \
           libgccjit-9-dev \
+          libreoffice-gtk3 \
           mlocate \
           pdsh \
           policykit-1-gnome \
           ruby \
           silversearcher-ag \
           slick-greeter \
+          tree \
           vlc \
           wmctrl \
           xfce4-mount-plugin \
