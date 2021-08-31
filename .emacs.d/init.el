@@ -26,6 +26,19 @@
 (setq gc-cons-threshold 100000000) ;; ref https://github.com/MatthewZMD/.emacs.d#defer-garbage-collection
 
 (setq org-replace-disputed-keys t)
+(setq org-disputed-keys
+   '(([(shift left)]
+      .
+      [(meta -)])
+     ([(shift right)]
+      .
+      [(meta +)])
+     ([(control shift right)]
+      .
+      [(meta shift +)])
+     ([(control shift left)]
+      .
+      [(meta shift -)])))
 (require 'org)
 
 (org-babel-load-file
