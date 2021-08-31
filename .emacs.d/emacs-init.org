@@ -133,6 +133,8 @@
          :ensure t)
        (use-package material-theme
          :ensure t)
+       (use-package selectrum :ensure t)
+       (use-package selectrum-prescient :ensure t)
        (use-package uuid
          :ensure t)
        (use-package terraform-mode
