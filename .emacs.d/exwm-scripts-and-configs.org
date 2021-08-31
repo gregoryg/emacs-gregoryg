@@ -144,9 +144,18 @@
      # Control scrolling direction and tap to click - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
      Section "InputClass"
              Identifier "libinput touchpad gorto"
+             MatchIsTouchpad "on"
+             MatchDevicePath "/dev/input/event*"
              Option "NaturalScrolling" "on"
              Option "Tapping" "on"
              Option "ClickMethod" "clickfinger"
+     EndSection
+     Section "InputClass"
+             Identifier "libinput pointer gorto"
+             MatchIsPointer "on"
+             MatchDevicePath "/dev/input/event*"
+             Driver "libinput"
+             Option "NaturalScrolling" "off"
      EndSection
    #+end_src
 
