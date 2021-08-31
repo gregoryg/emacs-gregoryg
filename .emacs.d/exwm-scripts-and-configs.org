@@ -570,7 +570,7 @@
 ** GoToWebinar
    GoToWebinar does not support Firefox in 2020
    Therefore this shortcut uses Chrome
-   #+begin_src bash :tangle ~/.local/share/applications/gotowebinar.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/gotowebinar.desktop
      [Desktop Entry]
      Name=GoToWebinar
      Comment=Launched in Chrome
