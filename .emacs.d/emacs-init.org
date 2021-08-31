@@ -93,9 +93,9 @@
       ))
 
   (defun gjg/packages-installed-p ()
-    (loop for p in gjg/required-packages
-      when (not (package-installed-p p)) do (return nil)
-      finally (return t)))
+    (cl-loop for p in gjg/required-packages
+      when (not (package-installed-p p)) do (cl-return nil)
+      finally (cl-return t)))
 
   ;; if not all packages are installed, install 'em
   (when gjg/check-packages-on-startup
@@ -2062,7 +2062,7 @@ Open man page in current window, rather than other window with
                           "Name to insert: "
                           (mapcar (lambda (x) (nth 0  x)) table))))
 
-            (loop
+            (cl-loop
              for row in table
              if (equal (nth 0 row) myname)
              return (format "+ [[%s][%s]] - %s - %s"
