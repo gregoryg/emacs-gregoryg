@@ -2985,8 +2985,12 @@ Open man page in current window, rather than other window with
     #+end_src
 
 *** MySQL / MariaDB
+
     + Assure that client prompt is recognized for both products
    #+begin_src emacs-lisp
+     (add-hook 'sql-interactive-mode-hook (lambda ()
+                                            (setq sql-prompt-regexp "\\(Maria[BD]*\\|MySQL\\) [^\\>]+\\>")
+                                            ))
      (with-eval-after-load 'sql
        ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
        (sql-set-product-feature 'mysql :prompt-regexp
