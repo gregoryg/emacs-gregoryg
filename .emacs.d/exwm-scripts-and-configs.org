@@ -156,6 +156,7 @@
              MatchDevicePath "/dev/input/event*"
              Driver "libinput"
              Option "NaturalScrolling" "off"
+             Option "AccelSpeed" "0.3"
      EndSection
    #+end_src
 
@@ -572,6 +573,18 @@
      Type=Application
      Categories=Cloud;Virtualization
    #+end_src
+
+** Google Maps
+   #+begin_src bash  :tangle ~/.local/share/applications/google-maps.desktop
+     [Desktop Entry]
+     Name=Google Maps
+     Comment=
+     Exec=x-www-browser --new-window https://maps.google.com
+     Icon= /home/gregj/.local/share/pixmaps/Maps_Pin_FullColor.max-1000x1000.png
+     Terminal=false
+     Type=Application
+     Categories=Maps;Navigation
+   #+end_src
 ** GoToWebinar
    GoToWebinar does not support Firefox in 2020
    Therefore this shortcut uses Chrome
@@ -759,17 +772,30 @@
      Categories=Virtualization;HCI
    #+end_src
 
-** Rancher Gregor
-   #+begin_src conf :tangle ~/.local/share/applications/rancher.desktop
+** Rancher Homelab
+   #+begin_src conf :tangle ~/.local/share/applications/rancher-homelab.desktop
      [Desktop Entry]
-     Name=Rancher
+     Name=Rancher Homelab
      Comment=Rancher
-     Exec=x-www-browser --new-window https://rancher.hypecyclist.org/
+     Exec=x-www-browser --new-window https://rancher.172.16.17.116.nip.io/
      Icon=/home/gregj/.local/share/pixmaps/rancher-labs-icon.png
      Terminal=false
      Type=Application
      Categories=Kubernetes;Administration;Awesomeness
    #+end_src
+
+** Rancher Public
+   #+begin_src conf :tangle ~/.local/share/applications/rancher.desktop
+     [Desktop Entry]
+     Name=Rancher Public
+     Comment=Rancher in TG AWS
+     Exec=x-www-browser --new-window https://rancher.54.191.164.229.nip.io/
+     Icon=/home/gregj/.local/share/pixmaps/rancher-labs-icon.png
+     Terminal=false
+     Type=Application
+     Categories=Kubernetes;Administration;Awesomeness
+   #+end_src
+
 ** Reddit
    #+begin_src conf :tangle ~/.local/share/applications/freddit.desktop
      [Desktop Entry]
@@ -1021,6 +1047,18 @@
      Terminal=false
      Type=Application
      Categories=Chat;Community
+   #+end_src
+
+** Yummy Sauce - mealie
+   #+begin_src conf :tangle ~/.local/share/applications/youtube.desktop
+     [Desktop Entry]
+     Name=Yummy Sauce Recipes
+     Comment=
+     Exec=x-www-browser --new-window http://172.16.17.5:9925/
+     Icon= /home/gregj/.local/share/pixmaps/mealie-favicon.png
+     Terminal=false
+     Type=Application
+     Categories=Cooking;Recipes
    #+end_src
 ** Zendesk
    #+begin_src conf :tangle ~/.local/share/applications/zendesk.desktop
