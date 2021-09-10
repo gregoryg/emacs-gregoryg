@@ -139,7 +139,7 @@
    #+begin_src bash
      sudo cp -v ~/emacs/pixmaps/emacs-icon-22x22.png /usr/share/slick-greeter/badges/emacs.png
    #+end_src
-** Touchpad settings
+** Touchpad and external mouse settings
    #+begin_src conf :tangle /sudo::/usr/share/X11/xorg.conf.d/41-gregor-libinput.conf
      # Control scrolling direction and tap to click - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
      Section "InputClass"
