@@ -567,7 +567,7 @@
      [Desktop Entry]
      Name=GCP Google Cloud
      Comment=GCP
-     Exec=x-www-browser --new-window https://console.cloud.google.com/compute/instances?project=rancher-dev
+     Exec=x-www-browser --new-window https://console.cloud.google.com/compute/instances?authuser=1&project=tigergraph-sales
      Icon= /home/gregj/.local/share/pixmaps/google-cloud-logo.png
      Terminal=false
      Type=Application
@@ -789,7 +789,7 @@
      [Desktop Entry]
      Name=Rancher Public
      Comment=Rancher in TG AWS
-     Exec=x-www-browser --new-window https://rancher.54.191.164.229.nip.io/
+     Exec=x-www-browser --new-window https://rancher.hypecyclist.org/
      Icon=/home/gregj/.local/share/pixmaps/rancher-labs-icon.png
      Terminal=false
      Type=Application
@@ -852,7 +852,8 @@
      Categories=Office;Productivity;
    #+end_src
 ** Slack
-   #+begin_src conf :tangle ~/.local/share/applications/flack.desktop
+##   #+begin_src conf :tangle ~/.local/share/applications/flack.desktop
+   #+begin_src conf :tangle no
      [Desktop Entry]
      Name=Slack
      Comment=Slack in Browser
@@ -984,7 +985,7 @@
      [Desktop Entry]
      Name=Tigergraph GraphStudio
      Comment=
-     Exec=x-www-browser --new-window http://localhost:14240/
+     Exec=x-www-browser --new-window http://protomolecule.magichome:30240/
      Icon= /home/gregj/.local/share/pixmaps/tigergraph-graphstudio-logo.png
      Terminal=false
      Type=Application
