@@ -567,7 +567,7 @@
      [Desktop Entry]
      Name=GCP Google Cloud
      Comment=GCP
-     Exec=x-www-browser --new-window https://console.cloud.google.com/compute/instances?authuser=1&project=tigergraph-sales
+     Exec=x-www-browser --new-window https://console.cloud.google.com/compute/instances
      Icon= /home/gregj/.local/share/pixmaps/google-cloud-logo.png
      Terminal=false
      Type=Application
