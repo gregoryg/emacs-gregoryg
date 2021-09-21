@@ -2445,6 +2445,10 @@ Open man page in current window, rather than other window with
    #+end_src
 *** Clock table
     #+begin_src emacs-lisp
+      ;; First set clock summary to *not* show hours as days
+      ;; ref: https://stackoverflow.com/a/54376827/457574
+      (setq org-duration-format (quote h:mm))
+
       (setq org-clocktable-defaults
             '(:maxlevel 2
                  :lang "en"
