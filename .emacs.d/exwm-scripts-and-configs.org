@@ -449,17 +449,6 @@
      Type=Application
      Categories=Fun;Web
    #+end_src
-** Calendar
-   #+begin_src conf :tangle ~/.local/share/applications/fcalendar.desktop
-     [Desktop Entry]
-     Name=Calendar
-     Comment=Outlook Calendar in Browser
-     Exec=x-www-browser --new-window https://outlook.office.com/calendar/view/day
-     Icon= /home/gregj/.local/share/pixmaps/outlook-calendar.png
-     Terminal=false
-     Type=Application
-     Categories=Office;Calendar;
-   #+end_src
 ** Capsctrl
    #+begin_src conf :tangle ~/.local/share/applications/capsctrl.desktop
      [Desktop Entry]
@@ -471,31 +460,20 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
-** Clarizen Timesheets
-   #+begin_src conf :tangle ~/.local/share/applications/clarizen.desktop
-     [Desktop Entry]
-     Name=Clarizen
-     Comment=Clarizen Time Tracking
-     Exec=x-www-browser --new-window https://eu1.clarizen.com/Clarizen/TeamSpace/Timesheet
-     Icon= /home/gregj/.local/share/pixmaps/clarizen-logo.jpg
-     Terminal=false
-     Type=Application
-     Categories=Office;Calendar;
-   #+end_src
 ** Dired
    #+begin_src conf :tangle ~/.local/share/applications/emacs-dired.desktop
-        # Stolen from https://emacs.stackexchange.com/a/16394/418
-  [Desktop Entry]
-     Encoding=UTF-8
-     Version=1.0
-     Type=Application
-     NoDisplay=true
-     Exec=emacsclient --no-wait --eval '(dired "%f")'
-     Name=Dired
-     Comment=Use Emacs Dired as file manager for OS
-     # Icon= /home/gregj/.local/share/pixmaps/rotate-wallpapers.jpg
-     # Terminal=false
-     Categories=Office;Productivity;Coolness
+     # Stolen from https://emacs.stackexchange.com/a/16394/418
+     [Desktop Entry]
+        Encoding=UTF-8
+        Version=1.0
+        Type=Application
+        NoDisplay=true
+        Exec=emacsclient --no-wait --eval '(dired "%f")'
+        Name=Dired
+        Comment=Use Emacs Dired as file manager for OS
+        Icon= /home/gregj/.local/share/pixmaps/rotate-wallpapers.jpg
+        # Terminal=false
+        Categories=Office;Productivity;Coolness
    #+end_src
 ** emacsclient
    #+begin_src conf :tangle ~/.local/share/applications/userapp-emacsclient-6OAMT0.desktop
@@ -536,20 +514,6 @@
      Categories=Application;Network;WebBrowser;
      MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;
      StartupNotify=True
-   #+end_src
-** Foxit Reader
-   #+begin_src conf :tangle ~/.local/share/applications/FoxitReader.desktop
-     [Desktop Entry]
-     Name=Foxit Reader
-     Comment=View pdf documents
-     Keywords=pdf;ppdf;
-     StartupNotify=true
-     Terminal=false
-     Type=Application
-     Categories=Application;Office;Viewer;X-Red-Hat-Base;
-     MimeType=application/pdf;application/ppdf;
-     Icon=FoxitReader
-     Exec=/home/gregj/opt/foxitsoftware/foxitreader/FoxitReader.sh %F
    #+end_src
 ** GitHub
    #+begin_src bash  :tangle ~/.local/share/applications/github.desktop
@@ -666,18 +630,6 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
-** Lens for Kubernetes
-   Download AppImage binary from the [[https://github.com/lensapp/lens/releases][releases site]]
-    #+begin_src conf :tangle ~/.local/share/applications/lens.desktop
-      [Desktop Entry]
-      Name=Lens
-      Comment=UI for Kubernetes
-      Exec=/usr/local/bin/lens
-      Icon= /home/gregj/.local/share/pixmaps/lens-logo-icon.svg
-      Terminal=false
-      Type=Application
-      Categories=Kubernetes;
-    #+end_src
 
 ** LinkedIn
    #+begin_src conf :tangle ~/.local/share/applications/linkedin.desktop
@@ -697,17 +649,6 @@
      Comment=Google EMail in Browser
      Exec=x-www-browser --new-window https://gmail.com/
      Icon=/home/gregj/.local/share/pixmaps/gmail-logo.jpg
-     Terminal=false
-     Type=Application
-     Categories=Office;Calendar;
-   #+end_src
-** Outlook Email
-   #+begin_src conf :tangle ~/.local/share/applications/femail.desktop
-     [Desktop Entry]
-     Name=Mail Email
-     Comment=Outlook EMail in Browser
-     Exec=x-www-browser --new-window https://outlook.office.com/mail/inbox
-     Icon=/home/gregj/.local/share/pixmaps/outlook.png
      Terminal=false
      Type=Application
      Categories=Office;Calendar;
@@ -747,17 +688,6 @@
      Terminal=false
      Type=Application
      Categories=Database;
-   #+end_src
-** Okta
-   #+begin_src conf :tangle ~/.local/share/applications/okta.desktop
-     [Desktop Entry]
-     Name=SUSE Okta
-     Comment=SUSE Okta SSO
-     Exec=x-www-browser --new-window https://suse.okta.com
-     Icon= /home/gregj/.local/share/pixmaps/okta-dev.png
-     Terminal=false
-     Type=Application
-     Categories=Office;SSO;
    #+end_src
 ** Protomolecule Virtualization - Proxmox or Harvester
    + Port 8006 for Proxmox, 30443 for Harvester
@@ -828,17 +758,6 @@
      Terminal=false
      Type=Application
      Categories=Office;Productivity;
-   #+end_src
-** Rocket Chat
-   #+begin_src conf :tangle ~/.local/share/applications/rocketchat.desktop
-     [Desktop Entry]
-     Name=Rocket.Chat
-     Comment=
-     Exec=x-www-browser --new-window https://chat.suse.de/
-     Icon= /home/gregj/.local/share/pixmaps/rocketchat.jpg
-     Terminal=false
-     Type=Application
-     Categories=Chat;Community
    #+end_src
 ** Rotate Wallpaper
    #+begin_src conf :tangle ~/.local/share/applications/rotate-wallpapers.desktop
@@ -973,7 +892,7 @@
    #+begin_src conf :tangle ~/.local/share/applications/switchy.desktop
      [Desktop Entry]
      Name=Switchy
-     Comment=Netgear ProSafe 10Ge switch
+     Comment=Netgear ProSafe Gigabit switch
      Exec=x-www-browser --new-window http://switchy.magichome/
      Icon= /home/gregj/.local/share/pixmaps/netgear.jpeg
      Terminal=false
@@ -1060,15 +979,4 @@
      Terminal=false
      Type=Application
      Categories=Cooking;Recipes
-   #+end_src
-** Zendesk
-   #+begin_src conf :tangle ~/.local/share/applications/zendesk.desktop
-     [Desktop Entry]
-     Name=Zendesk
-     Comment=Customer Issues
-     Exec=x-www-browser --new-window https://rancher.zendesk.com/agent/dashboard
-     Icon=/home/gregj/.local/share/pixmaps/zendesk-new-256.png
-     Terminal=false
-     Type=Application
-     Categories=Office;Productivity
    #+end_src
