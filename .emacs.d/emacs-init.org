@@ -2301,8 +2301,8 @@ Open man page in current window, rather than other window with
       "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
       (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/tigergraph/prospects/"
                                                            "\\`[^.].*\\.org\\.gpg\\'")))
-        (add-to-list 'engagement-files "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" t)
-        (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
+        (add-to-list 'engagement-files "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" t)))
+        ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
     (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
     ;; Set agenda files to personal, override in work-related templates
     (setq org-agenda-files gjg/personal-org-agenda-files)
@@ -2452,7 +2452,6 @@ Open man page in current window, rather than other window with
       (setq org-clocktable-defaults
             '(:maxlevel 2
                  :lang "en"
-                 :properties ("harvest")
                  :scope file
                  :block nil
                  :wstart 1
