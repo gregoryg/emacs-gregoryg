@@ -970,7 +970,7 @@
    #+end_src
 
 ** Yummy Sauce - mealie
-   #+begin_src conf :tangle ~/.local/share/applications/youtube.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/yummysauce.desktop
      [Desktop Entry]
      Name=Yummy Sauce Recipes
      Comment=
