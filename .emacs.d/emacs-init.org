@@ -2148,7 +2148,7 @@ Open man page in current window, rather than other window with
        (push
         '("p" "Phone/Meeting" entry
           (file+headline "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" "Calls and Meetings")
-          "* %t %^{type|Call|Meeting|Task} with %^{with|SE Team|Steven|Marketing|Sales|Engineering}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro|Weekly cadence|Learning Update|Working session|Status update}
+          "* %t %^{type|Call|Meeting|Task} with %^{with|SE Team|Steven|Marketing|Sales|Engineering|South Central Sales Team|North Central Sales Team}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro|Weekly cadence|Learning Update|Working session|Status update}
          :PROPERTIES:
          :NOBLOCKING: t
          :END:
