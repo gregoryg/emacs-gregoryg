@@ -2299,7 +2299,7 @@ Open man page in current window, rather than other window with
                                           "~/projects/private-orgmode/habits.org"))
     (defun gjg/get-work-agenda-files ()
       "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
-      (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/tigergraph/prospects/"
+      (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/tigergraph/projects/"
                                                            "\\`[^.].*\\.org\\.gpg\\'")))
         (add-to-list 'engagement-files "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" t)))
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
