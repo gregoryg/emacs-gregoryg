@@ -2337,7 +2337,7 @@ Open man page in current window, rather than other window with
                                           "~/projects/private-orgmode/habits.org"))
     (defun gjg/get-work-agenda-files ()
       "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
-      (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/tigergraph/projects/"
+      (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/tigergraph/engagements/"
                                                            "\\`[^.].*\\.org\\.gpg\\'")))
         (add-to-list 'engagement-files "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" t)))
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
@@ -3035,7 +3035,7 @@ Open man page in current window, rather than other window with
      (with-eval-after-load 'sql
        ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
        (sql-set-product-feature 'mysql :prompt-regexp
-                                "^\\(MariaDB\\|MySQL\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
+                                "^\\(MariaDB\\|MySQL\\|mysql\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
        (setq sql-mysql-options '("-C" "-t" "-f" "-n")))
      ;; (require 'sql)
      ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
