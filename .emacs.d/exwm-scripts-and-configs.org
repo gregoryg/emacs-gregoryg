@@ -160,7 +160,7 @@
      EndSection
    #+end_src
 
-*  Shell scripts that become useful when no DE is available
+* Shell scripts that become useful when no DE is available
 ** Assure our app launcher is running at login
    This is for =ulauncher=, installed previously
    #+begin_src bash
@@ -899,7 +899,19 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
-** Tigergraph GraphStudio
+** TigerGraph Documentation
+   #+begin_src conf :tangle ~/.local/share/applications/tigergraph-documentation.desktop
+     [Desktop Entry]
+     Name=TigerGraph DOCUMENTATION
+     Comment=Ohai
+     Exec=x-www-browser --new-window https://docs.tigergraph.com/v/3.2/admin/admin-guide/kubernetes
+     Icon= /home/gregj/.local/share/pixmaps/tiger-freaky.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
+
+** TigerGraph GraphStudio
    #+begin_src conf :tangle ~/.local/share/applications/tigergraph-graphstudio.desktop
      [Desktop Entry]
      Name=Tigergraph GraphStudio
