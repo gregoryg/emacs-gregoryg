@@ -1283,7 +1283,7 @@
      (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
      (setq eshell-destroy-buffer-when-process-dies t)
    #+end_src
-** Projectile
+** Projectile: DEPRECATED in favor of project.el?
    Projectile will slow TRAMP shell buffers to an unbearable crawl without some change to
    default settings.
 
@@ -1293,7 +1293,7 @@
    couple of solutions - I decided to advise the function so that it will not be called
    for any reason in a TRAMP buffer.
 
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (defun gjg/projectile-minimal-mode-line ()
        "Report project name and type in the modeline - uh, no.  Just report that it's a project."
        (format "%s" projectile-mode-line-prefix))
@@ -1358,6 +1358,8 @@
        #+begin_src bash :tangle ~/bin/load-kubeconfigs.sh
          # Stolen from https://medium.com/@alexgued3s/multiple-kubeconfigs-no-problem-f6be646fc07d
 
+         # Start by "resetting" KUBECONFIG
+         unset KUBECONFIG
          # If there's already a kubeconfig file in ~/.kube/config it will import that too and all the contexts
          DEFAULT_KUBECONFIG_FILE="$HOME/.kube/config"
          if test -f "${DEFAULT_KUBECONFIG_FILE}"
