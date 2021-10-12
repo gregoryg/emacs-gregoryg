@@ -794,7 +794,6 @@
       (defun gjg/ibuffer-preview ()
         "View the current file in other window but to do select"
         (interactive)
-        (delete-other-windows)
         (let ((buf (ibuffer-current-buffer t)))
           (when (not (window-parent)) ;; only one window, so split
             (split-window nil nil 'right))
