@@ -144,7 +144,18 @@
    #+end_src
 
 * Greg's customizations!
-
+** Embark
+   + from [[https://www.youtube.com/watch?v=qk2Is_sC8Lk&t=29][System Crafters Live! - The Many Uses of Embark - YouTube]]
+     #+begin_src emacs-lisp
+       (use-package embark
+         ;; :straight t
+         :bind
+         (("C-." . embark-act)
+          ("M-." . embark-dwim)
+          ("C-h B" . embark-bindings))
+         :init
+         (setq prefix-help-command #'embark-prefix-help-command))
+     #+end_src
 ** Cleanup on file save
    Tip o' the hat to [[https://github.com/mitchty][@mitchty]]
    Remove trailing whitespace when saving files
