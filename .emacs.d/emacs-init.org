@@ -110,37 +110,56 @@
       (package-install p)))))
 
 #+END_SRC
+** straight.el: use-package without package.el
+   + [[https://github.com/raxod502/straight.el][Next-generation, purely functional package manager using Git]]
+   + [[https://shivjm.blog/switching-to-straight-el/][Switching to straight.el]]
+   #+begin_src emacs-lisp
+     (defvar bootstrap-version)
+     (load "~/projects/emacs/straight.el/bootstrap.el")
+     ;; (let ((bootstrap-file "~/projects/emacs/straight.el/bootstrap.el")
+
+     ;;       (bootstrap-version 5))
+     ;;   (unless (file-exists-p bootstrap-file)
+     ;;     (with-current-buffer
+     ;;         (url-retrieve-synchronously
+     ;;          "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+     ;;          'silent 'inhibit-cookies)
+     ;;       (goto-char (point-max))
+     ;;       (eval-print-last-sexp)))
+     ;;   (load bootstrap-file nil 'nomessage))
+   #+end_src
+
 ** Packages with no configuration
    Fastest searcher in the West - need to install it on the OS as package
    =the_silver_searcher= or =silversearcher-ag=
    #+begin_src emacs-lisp
      (when gjg/check-packages-on-startup
        (use-package s
-         :ensure t)
+         :straight t)
        (use-package ag
-         :ensure t)
+         :straight t)
        (use-package dumb-jump
-         :ensure t)
+         :straight t)
        (use-package edit-indirect
-         :ensure t)
+         :straight t)
        (use-package highlight-indentation
-         :ensure t)
+         :straight t)
        ;; (use-package counsel-projectile
-       ;;   :ensure nil)
+       ;;   :straight nil)
        (use-package htmlize
-         :ensure t)
+         :straight t)
        (use-package keychain-environment
-         :ensure t)
+         :straight t)
        (use-package material-theme
-         :ensure t)
-       (use-package selectrum :ensure t)
-       (use-package selectrum-prescient :ensure t)
+         :straight t)
+       (use-package selectrum :straight t)
+       (use-package selectrum-prescient :straight t)
        (use-package uuid
-         :ensure t)
+         :straight t)
        (use-package terraform-mode
-         :ensure t)
+         :straight t)
        (use-package yafolding
-         :ensure t))
+         :straight t))
    #+end_src
 
 * Greg's customizations!
@@ -509,7 +528,7 @@
       ;;         )
       ;;       )
       (use-package winum
-        :ensure t
+        :straight t
         :config
         (setq winum-scope                       'frame-local
               winum-auto-assign-0-to-minibuffer nil
@@ -690,9 +709,9 @@
        faces for level of charge with +/- optionally for charging/discharging.
      #+begin_src emacs-lisp
        (use-package smart-mode-line-powerline-theme
-         :ensure t)
+         :straight t)
        (use-package smart-mode-line
-         :ensure t
+         :straight t
          :config
          (sml/setup))
 
@@ -1309,7 +1328,7 @@
        (format "%s" projectile-mode-line-prefix))
 
      (use-package projectile
-       :ensure t
+       :straight t
        :custom
        (projectile-mode-line-function 'gjg/projectile-minimal-mode-line)
        (projectile-completion-system 'selectrum-completing-read)
@@ -1343,7 +1362,7 @@
 ** Company
  #+BEGIN_SRC emacs-lisp
 (use-package company
-  :ensure t
+  :straight t
   :config
   (setq company-idle-delay 0)
   (setq company-minimum-prefix-length 3)
@@ -1352,7 +1371,7 @@
   )
 
 ;; (use-package company-lsp
-;;   :ensure t
+;;   :straight t
 ;;   :config
 ;;  (push 'company-lsp company-backends)
 ;; )
@@ -1658,7 +1677,7 @@
      (prescient-persist-mode +1)
    #+end_src
 ** Ivy / Smex / Counsel
-   Just starting to make use of =use-package= here.  The =:ensure= param will
+   Just starting to make use of =use-package= here.  The =:ensure= or =:straight= param will
    automagically install the package if it is not already installed.
 
 *** Set up Ivy basics
@@ -1730,7 +1749,7 @@
 *** Bash completions
 #+begin_src emacs-lisp
   (use-package bash-completion
-    :ensure t
+    :straight t
     :config
     (bash-completion-setup))
 #+end_src
@@ -1851,7 +1870,7 @@ awesome.
 ** YAML - You A Moth Licker
    #+begin_src emacs-lisp
      (use-package yaml-mode
-       :ensure t
+       :straight t
        :hook (yaml-mode . (lambda () (yafolding-mode 1)
                             (toggle-truncate-lines 1))))
      (add-hook 'conf-mode-hook
@@ -1962,7 +1981,7 @@ Open man page in current window, rather than other window with
     + first seen in this reddit post: [[https://www.reddit.com/r/emacs/comments/ntj8gj/company_org_block_completion_now_on_melpa/][Company org block completion now on melpa : emacs]]
     #+begin_src emacs-lisp
       (use-package company-org-block
-        :ensure t
+        :straight t
         :custom
         (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
         :hook ((org-mode . (lambda ()
@@ -2612,7 +2631,7 @@ Open man page in current window, rather than other window with
 ** Org Roam - experimental
 #+begin_src emacs-lisp
   (use-package org-roam
-    :ensure t
+    :straight t
     :hook
     (after-init . org-roam-mode)
     :init
@@ -2824,7 +2843,7 @@ Open man page in current window, rather than other window with
 
      #+begin_src emacs-lisp :tangle no
        (use-package lsp-mode
-         :ensure t
+         :straight t
          :commands (lsp lsp-deferred)
          :init
          (setq lsp-keymap-prefix "C-c l") ;; Or C-l or s-l as alternatives
@@ -2845,7 +2864,7 @@ Open man page in current window, rather than other window with
 ;; (add-hook 'cider-repl-mode-hook #'company-
 (add-hook 'cider-mode-hook #'company-mode)
 ;; (use-package lsp-mode
-;;   :ensure nil
+;;   :straight nil
 ;;   :commands lsp
 ;;   :config
 ;;   (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure-mode"))
@@ -2877,13 +2896,13 @@ Open man page in current window, rather than other window with
 
    #+begin_src emacs-lisp :tangle no
      (use-package go-mode
-       :ensure t
+       :straight t
        :custom
        (lsp-gopls-staticcheck t)
        (lsp-eldoc-render-all t)
        (lsp-gopls-complete-unimported t)
        :config
-       (use-package go-autocomplete :ensure t)
+       (use-package go-autocomplete :straight t)
        (auto-complete-mode 1)
        (setenv "GOPATH" "/home/gregj/projects/coding/go/")
        )
@@ -2919,7 +2938,7 @@ Open man page in current window, rather than other window with
 
    #+begin_src emacs-lisp
      (use-package rustic
-       :ensure
+       :straight
        :bind (:map rustic-mode-map
                    ("M-j" . lsp-ui-imenu)
                    ("M-?" . lsp-find-references)
@@ -2960,10 +2979,10 @@ Open man page in current window, rather than other window with
 ;; Python
 
 (use-package python
-  :ensure nil
+  :straight nil
   :config
   (use-package prettify-greek
-    :ensure nil)
+    :straight nil)
   (setq python-shell-interpreter "ipython3"
 	python-shell-interpreter-args "-i --simple-prompt")
   (setq org-babel-python-command "python3")
@@ -2999,9 +3018,9 @@ Open man page in current window, rather than other window with
 
 #+begin_src emacs-lisp
   (use-package jupyter
-    :ensure t)
+    :straight t)
   (use-package ob-ipython
-    :ensure t)
+    :straight t)
   ;; (when (memq window-system '(mac ns x))
   ;;   (exec-path-from-shell-initialize))
 #+end_src
@@ -3117,7 +3136,7 @@ Open man page in current window, rather than other window with
    Well, of course I must use Org Mode, so let's try an integration
    #+begin_src emacs-lisp
      (use-package reaper
-       :ensure t ; If using package.el, alternatively :straight t.
+       :straight t ; If using package.el, alternatively :straight t.
        :bind ("C-c h" . reaper))
    #+end_src
 * Final steps

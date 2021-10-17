@@ -4,18 +4,11 @@
 (setq ns-command-modifier (quote meta))
 (setq garbage-collection-messages t)
 (setq gc-cons-threshold 64000000)
-;; initalize all ELPA packages
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-(setq use-package-always-ensure t)
+(setq package-enable-at-startup nil)
 
-;; (package-initialize)
-
-;; (setq package-enable-at-startup nil)
 (let ((elapsed (float-time (time-subtract (current-time)
 										  emacs-start-time))))
-  (message "Loaded packages in %.3fs" elapsed))
+  (message "Loaded absolutely zero packages in %.3fs" elapsed))
 
 
 ;; keep customized variables in a separate file
