@@ -116,6 +116,8 @@
    #+begin_src emacs-lisp
      (defvar bootstrap-version)
      (load "~/projects/emacs/straight.el/bootstrap.el")
+     (straight-use-package 'use-package)
+     (straight-use-package 'org)
      ;; (let ((bootstrap-file "~/projects/emacs/straight.el/bootstrap.el")
 
      ;;       (bootstrap-version 5))
@@ -133,33 +135,38 @@
    Fastest searcher in the West - need to install it on the OS as package
    =the_silver_searcher= or =silversearcher-ag=
    #+begin_src emacs-lisp
-     (when gjg/check-packages-on-startup
-       (use-package s
-         :straight t)
-       (use-package ag
-         :straight t)
-       (use-package dumb-jump
-         :straight t)
-       (use-package edit-indirect
-         :straight t)
-       (use-package highlight-indentation
-         :straight t)
-       ;; (use-package counsel-projectile
-       ;;   :straight nil)
-       (use-package htmlize
-         :straight t)
-       (use-package keychain-environment
-         :straight t)
-       (use-package material-theme
-         :straight t)
-       (use-package selectrum :straight t)
-       (use-package selectrum-prescient :straight t)
-       (use-package uuid
-         :straight t)
-       (use-package terraform-mode
-         :straight t)
-       (use-package yafolding
-         :straight t))
+     (use-package exwm :straight t)
+     (use-package buffer-expose :straight t)
+     (use-package magit :straight t)
+     (use-package magit-todos :straight t)
+     (use-package s
+       :straight t)
+     (use-package ag
+       :straight t)
+     (use-package ob-async :straight t)
+     (use-package dumb-jump
+       :straight t)
+     (use-package edit-indirect
+       :straight t)
+     (use-package highlight-indentation
+       :straight t)
+     ;; (use-package counsel-projectile
+     ;;   :straight nil)
+     (use-package htmlize
+       :straight t)
+     (use-package keychain-environment
+       :straight t)
+     (use-package material-theme
+       :straight t)
+     (use-package ob-http :straight t)
+     (use-package selectrum :straight t)
+     (use-package selectrum-prescient :straight t)
+     (use-package uuid
+       :straight t)
+     (use-package terraform-mode
+       :straight t)
+     (use-package yafolding
+       :straight t)
    #+end_src
 
 * Greg's customizations!
@@ -753,19 +760,6 @@
 
 
    #+end_src
-*** Window balancing
-    Auto-zoom selected window (disabled to start)
-#+begin_src emacs-lisp
-  ;; Resize active frame according to golden ratio
-  (use-package zoom
-    :config
-    (setq
-     ;; zoom-size '(0.618 . 0.618)
-     zoom-size '(0.54 . 0.54)
-     zoom-ignored-buffer-name-regexps '("^\\*magit +.*")
-     zoom-ignored-major-modes '("dired-mode" "ediff-mode" "buffer-expose-mode"))
-    (zoom-mode -1))
-#+end_src
 *** Ibuffer FTW
 **** View customizations
      #+begin_src emacs-lisp
@@ -1676,6 +1670,21 @@
      (selectrum-prescient-mode +1)
      (prescient-persist-mode +1)
    #+end_src
+** Window balancing
+    Auto-zoom selected window (disabled to start)
+#+begin_src emacs-lisp
+  ;; Resize active frame according to golden ratio
+  (use-package zoom
+    :straight t
+    :config
+    (setq
+     ;; zoom-size '(0.618 . 0.618)
+     zoom-size '(0.54 . 0.54)
+     zoom-ignored-buffer-name-regexps '("^\\*magit +.*")
+     zoom-ignored-major-modes '("dired-mode" "ediff-mode" "buffer-expose-mode"))
+    (zoom-mode -1))
+#+end_src
+
 ** Ivy / Smex / Counsel
    Just starting to make use of =use-package= here.  The =:ensure= or =:straight= param will
    automagically install the package if it is not already installed.
@@ -1782,6 +1791,7 @@ lawd's work in translating ANSI color codes to font properties so that things ca
 awesome.
 
    #+begin_src emacs-lisp
+     (use-package xterm-color :straight t)
      (ansi-color-for-comint-mode-on)
      ;; try some xterm coloring in shell buffers
      (setq comint-output-filter-functions
@@ -2108,8 +2118,8 @@ Open man page in current window, rather than other window with
    For blogging especially, we want to quickly add web links and images.  2 packages from
    m?elpa help here
    #+begin_src emacs-lisp
-(use-package org-cliplink)
-(use-package org-download)
+(use-package org-cliplink :straight t)
+(use-package org-download :straight t)
    #+end_src
 
    And here's a handy keyboard macro =gjg/url-grab-cliplink=
@@ -2293,7 +2303,7 @@ Open man page in current window, rather than other window with
         (apply orig-fun args)
       (disable-theme my-org-html-export-theme)))
 
-  (use-package ox-gfm)
+  (use-package ox-gfm :straight t)
   (with-eval-after-load "ox-html"
     (advice-add 'org-export-to-buffer :around 'my-with-theme)
     (advice-add 'org-export-to-file :around 'my-with-theme))
@@ -2982,7 +2992,7 @@ Open man page in current window, rather than other window with
   :straight nil
   :config
   (use-package prettify-greek
-    :straight nil)
+    :straight t)
   (setq python-shell-interpreter "ipython3"
 	python-shell-interpreter-args "-i --simple-prompt")
   (setq org-babel-python-command "python3")
