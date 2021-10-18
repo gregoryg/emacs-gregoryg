@@ -2343,13 +2343,13 @@ Open man page in current window, rather than other window with
          (org-show-entry)
          (outline-show-children)))
 
-     (add-to-list 'org-speed-commands-user
+     (add-to-list 'org-speed-commands
               '("]" ded/org-show-next-heading-tidily))
-     (add-to-list 'org-speed-commands-user
+     (add-to-list 'org-speed-commands
               '("[" ded/org-show-previous-heading-tidily))
-     (add-to-list 'org-speed-commands-user
+     (add-to-list 'org-speed-commands
                   '("s" save-buffer))
-     (add-to-list 'org-speed-commands-user
+     (add-to-list 'org-speed-commands
                   '("d" org-toggle-narrow-to-subtree))
 
 
