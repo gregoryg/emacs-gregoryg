@@ -823,12 +823,14 @@
       (defun gjg/ibuffer-preview ()
         "View the current file in other window but to do select"
         (interactive)
+        (delete-other-windows)
+        (when (not (window-parent)) ;; only one window, so split
+          (split-window nil nil 'right))
         (let ((buf (ibuffer-current-buffer t)))
-          (when (not (window-parent)) ;; only one window, so split
-            (split-window nil nil 'right))
-          (let ((curwin (selected-window)))
-            (pop-to-buffer buf)
-            (select-window curwin))))
+          (display-buffer buf '((display-buffer-use-some-window
+                                 display-buffer-pop-up-window)
+                                (inhibit-same-window . t))))
+        :refresh-p nil)
 
       (define-key ibuffer-mode-map (kbd "SPC") 'gjg/ibuffer-preview)
     #+end_src
