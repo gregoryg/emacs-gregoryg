@@ -32,11 +32,12 @@
      ([(control shift left)]
       .
       [(meta shift -)])))
-(require 'org)
-
+(load "~/projects/emacs/straight.el/bootstrap.el")
+(straight-use-package 'use-package)
+(straight-use-package 'org)
 (org-babel-load-file
  (expand-file-name "emacs-init.org" user-emacs-directory)
- nil ; compile the result
+ nil ; byte-compile the result?
  )
 
 

@@ -1,19 +1,19 @@
-#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t
-#+OPTIONS: author:t broken-links:nil c:nil creator:nil
-#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
-#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
-#+OPTIONS: timestamp:t title:t toc:2 todo:t |:t
-#+TITLE: Gregory's Emacs Initialization in Org-Mode
-#+DATE: <2019-09-08 Sun>
-#+AUTHOR: Greg Grubbs
-#+EMAIL: gregory@dynapse.com
-#+LANGUAGE: en
-#+SELECT_TAGS: export
-#+EXCLUDE_TAGS: noexport
-#+CREATOR: Emacs 26.2 (Org mode 9.1.9)
-#+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg-local.setup
-#+property: header-args:emacs-lisp :results none
-#+property: header-args:bash :shebang #!/usr/bin/env bash :results none
+# #+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t
+# #+OPTIONS: author:t broken-links:nil c:nil creator:nil
+# #+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
+# #+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+# #+OPTIONS: timestamp:t title:t toc:2 todo:t |:t
+# #+TITLE: Gregory's Emacs Initialization in Org-Mode
+# #+DATE: <2019-09-08 Sun>
+# #+AUTHOR: Greg Grubbs
+# #+EMAIL: gregory@dynapse.com
+# #+LANGUAGE: en
+# #+SELECT_TAGS: export
+# #+EXCLUDE_TAGS: noexport
+# #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
+# #+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg-local.setup
+# #+property: header-args:emacs-lisp :results none
+# #+property: header-args:bash :shebang #!/usr/bin/env bash :results none
 
 * Should I use =evil-mode=?
 
@@ -29,8 +29,6 @@
 
   If reading this file on GitHub, use the =raw= view to see all the code markings and
   header parameters.
-
-
 * Set executable path
 #+begin_src emacs-lisp
   (when (file-exists-p "~/bin")
@@ -39,6 +37,9 @@
   (when (file-exists-p "/usr/local/bin")
     (add-to-list 'exec-path "/usr/local/bin"))
 #+end_src
+
+
+
 * Deal with required packages
 
   This first section installs most required packages automatically when
@@ -113,11 +114,13 @@
 ** straight.el: use-package without package.el
    + [[https://github.com/raxod502/straight.el][Next-generation, purely functional package manager using Git]]
    + [[https://shivjm.blog/switching-to-straight-el/][Switching to straight.el]]
+
+   I had to move this into =init.el= due to a compatibility package required for Org
    #+begin_src emacs-lisp
-     (defvar bootstrap-version)
-     (load "~/projects/emacs/straight.el/bootstrap.el")
-     (straight-use-package 'use-package)
-     (straight-use-package 'org)
+     ;; (defvar bootstrap-version)
+     ;; (load "~/projects/emacs/straight.el/bootstrap.el")
+     ;; (straight-use-package 'use-package)
+     ;;  (straight-use-package 'org)
      ;; (let ((bootstrap-file "~/projects/emacs/straight.el/bootstrap.el")
 
      ;;       (bootstrap-version 5))
@@ -139,6 +142,7 @@
      (use-package buffer-expose :straight t)
      (use-package magit :straight t)
      (use-package magit-todos :straight t)
+     (use-package csv-mode :straight t)
      (use-package s
        :straight t)
      (use-package ag
@@ -159,6 +163,7 @@
      (use-package material-theme
        :straight t)
      (use-package ob-http :straight t)
+     (use-package org-superstar :straight t)
      (use-package selectrum :straight t)
      (use-package selectrum-prescient :straight t)
      (use-package uuid
@@ -889,6 +894,7 @@
 
 
    #+end_src
+
 * Encryption
   Set value of =epg-gpg-program= to location on local system
   #+begin_src emacs-lisp
@@ -1237,24 +1243,42 @@
 
     =buffer-expose= is an alternative to alt-tab
 
+    TODO: look for alternative to buffer-expose, as it does not play
+    well with EXWM - many times the EXWM windows such as the browsers
+    become unusable, with click and normal keyboard events throwing
+    warnings/errors
+    Oneto consider:
+    + [[https://github.com/casouri/emacs-mission-control][GitHub - casouri/emacs-mission-control: Mac mission-control-like buffer switch]]
+      #+begin_src emacs-lisp
+        (straight-use-package
+         '(mission-control
+           :type git
+           :host github
+           :repo "casouri/emacs-mission-control"))
+        (use-package mission-control
+          :straight t
+          :config
+          (mcon-c-tab-setup-binding))
+      #+end_src
+
     =window-divider-mode= makes it easy to  resize vertically split windows with the mouse - EXWM
     makes it nearly impossible to select the vertical margin without this!
 
     =zoom-mode= is also quite useful to avoid having to manually resize horizontal and
     vertical splits - so useful I have added it in as part of my normal Emacs config
         #+begin_src emacs-lisp
-          (require 'buffer-expose)
-          (buffer-expose-mode 1)
+          ;; (require 'buffer-expose)
+          ;; (buffer-expose-mode 1)
           (require 'magit) ; to make magit-mode-map available
 
           ;; https://github.com/ch11ng/exwm/wiki#unable-to-resize-an-x-window-by-dragging-its-right-edge
           (global-unset-key (kbd "M-<tab>"))
           (unbind-key (kbd "M-<tab>") magit-mode-map)
           (global-set-key (kbd "M-<tab>") (lambda () (buffer-expose-major-mode nil 'exwm-mode))); now we have alt-tab in EXWM!
-          (unbind-key (kbd "C-c C-<tab>") org-mode-map)
-          (global-set-key (kbd "C-c C-<tab>") (lambda () (interactive) (buffer-expose-major-mode nil 'exwm-mode)))
-          (unbind-key (kbd "C-c C-d") buffer-expose-mode-map) ; unsteal key from Org Mode: org-deadline
-          (unbind-key (kbd "C-c C-<tab>") buffer-expose-mode-map)
+          ;; (unbind-key (kbd "C-c C-<tab>") org-mode-map)
+          ;; (global-set-key (kbd "C-c C-<tab>") (lambda () (interactive) (buffer-expose-major-mode nil 'exwm-mode)))
+          ;; (unbind-key (kbd "C-c C-d") buffer-expose-mode-map) ; unsteal key from Org Mode: org-deadline
+          ;; (unbind-key (kbd "C-c C-<tab>") buffer-expose-mode-map)
           (setq window-divider-default-right-width 1)
           (window-divider-mode 1)
         #+end_src
@@ -1905,6 +1929,7 @@ Open man page in current window, rather than other window with
                    ("p" . previous-line)
                    ("m" . ovpn-mode-start-vpn-with-namespace))))
    #+end_src
+
 * Org mode stuff
 
 ** Habits
