@@ -2857,7 +2857,7 @@ Open man page in current window, rather than other window with
 
   ;; show only current/today's/all time in the clock task modeline
   ;; this SHOULD be settable on a file basis by using property CLOCK_MODELINE_TOTAL
-  (setq org-clock-modeline-total 'current)
+  (setq org-clock-mode-line-total 'current)
   (setq org-loop-over-headlines-in-active-region t)
 #+end_src
 ** Org Drill flashcards
