@@ -647,7 +647,7 @@
      [Desktop Entry]
      Name=Gmail Google Email
      Comment=Google EMail in Browser
-     Exec=x-www-browser --new-window https://gmail.com/
+     Exec=x-www-browser --new-window https://mail.google.com/mail/u/1/#search/in:inbox+is:unread
      Icon=/home/gregj/.local/share/pixmaps/gmail-logo.jpg
      Terminal=false
      Type=Application
