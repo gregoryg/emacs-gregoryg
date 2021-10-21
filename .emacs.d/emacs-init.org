@@ -139,7 +139,7 @@
    =the_silver_searcher= or =silversearcher-ag=
    #+begin_src emacs-lisp
      (use-package exwm :straight t)
-     (use-package buffer-expose :straight t)
+     ;; (use-package buffer-expose :straight t)
      (use-package magit :straight t)
      (use-package magit-todos :straight t)
      (use-package csv-mode :straight t)
@@ -166,10 +166,13 @@
      (use-package org-superstar :straight t)
      (use-package selectrum :straight t)
      (use-package selectrum-prescient :straight t)
+     (use-package rainbow-delimiters :straight t)
+     (use-package smartparens :straight t)
      (use-package uuid
        :straight t)
      (use-package terraform-mode
        :straight t)
+     (use-package vterm :straight t)
      (use-package yafolding
        :straight t)
    #+end_src
@@ -3058,6 +3061,7 @@ Open man page in current window, rather than other window with
     :straight t)
   (use-package ob-ipython
     :straight t)
+  (use-package ein :straight t)
   ;; (when (memq window-system '(mac ns x))
   ;;   (exec-path-from-shell-initialize))
 #+end_src
