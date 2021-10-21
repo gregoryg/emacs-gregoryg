@@ -1283,7 +1283,7 @@
           ;; https://github.com/ch11ng/exwm/wiki#unable-to-resize-an-x-window-by-dragging-its-right-edge
           (global-unset-key (kbd "M-<tab>"))
           (unbind-key (kbd "M-<tab>") magit-mode-map)
-          (global-set-key (kbd "M-<tab>") (lambda () (buffer-expose-major-mode nil 'exwm-mode))); now we have alt-tab in EXWM!
+          ;; (global-set-key (kbd "M-<tab>") (lambda () (buffer-expose-major-mode nil 'exwm-mode))); now we have alt-tab in EXWM!
           ;; (unbind-key (kbd "C-c C-<tab>") org-mode-map)
           ;; (global-set-key (kbd "C-c C-<tab>") (lambda () (interactive) (buffer-expose-major-mode nil 'exwm-mode)))
           ;; (unbind-key (kbd "C-c C-d") buffer-expose-mode-map) ; unsteal key from Org Mode: org-deadline
