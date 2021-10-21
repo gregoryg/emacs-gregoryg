@@ -823,6 +823,10 @@
 
      This function should work just like =occur-mode-display-occurence= in [[file:/usr/local/share/emacs/28.0.50/lisp/replace.el.gz][replace.el]]
     #+begin_src emacs-lisp
+      (defun gjg/ibuffer-only-exwm ()
+        (interactive)
+        (ibuffer nil "*EXWM Thang*" '((used-mode . exwm-mode))))
+      (global-set-key (kbd "C-x e") 'gjg/ibuffer-only-exwm)
       (defun gjg/ibuffer-preview ()
         "View the current file in other window but to do select"
         (interactive)
