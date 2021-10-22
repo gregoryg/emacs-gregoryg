@@ -927,7 +927,7 @@
 ** TigerGraph Documentation
    #+begin_src conf :tangle ~/.local/share/applications/tigergraph-testdrives.desktop
      [Desktop Entry]
-     Name=TigerGraph Test Drives
+     Name=TigerGraph Test Drive Demo
      Comment=Test Drives for TigerGraph!
      Exec=x-www-browser --new-window https://testdrive.tigergraph.com/
      Icon= /home/gregj/.local/share/pixmaps/tiger-freaky.png
