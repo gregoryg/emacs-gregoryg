@@ -642,6 +642,17 @@
      Type=Application
      Categories=Office;Networking;Social
    #+end_src
+** Google Calendar
+   #+begin_src conf :tangle ~/.local/share/applications/gcalendar.desktop
+     [Desktop Entry]
+     Name=Google Calendar
+     Comment=Google Calendar in Browser
+     Exec=x-www-browser --new-window https://calendar.google.com/calendar/u/1/
+     Icon=/home/gregj/.local/share/pixmaps/gmail-logo.jpg
+     Terminal=false
+     Type=Application
+     Categories=Office;Calendar;
+   #+end_src
 ** Google Email Gmail
    #+begin_src conf :tangle ~/.local/share/applications/gmail.desktop
      [Desktop Entry]
