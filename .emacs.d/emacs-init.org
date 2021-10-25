@@ -99,16 +99,16 @@
       finally (cl-return t)))
 
   ;; if not all packages are installed, install 'em
-  (when gjg/check-packages-on-startup
-    (unless (gjg/packages-installed-p)
-      ;; check for new package versions
-      (message "%s" "This copy of Emacs is now refreshing its package database...")
-      (package-refresh-contents)
-      (message "%s" "  done.")
-      ;; install the missing packages
-      (dolist (p gjg/required-packages)
-    (when (not (package-installed-p p))
-      (package-install p)))))
+  ;; (when gjg/check-packages-on-startup
+  ;;   (unless (gjg/packages-installed-p)
+  ;;     ;; check for new package versions
+  ;;     (message "%s" "This copy of Emacs is now refreshing its package database...")
+  ;;     (package-refresh-contents)
+  ;;     (message "%s" "  done.")
+  ;;     ;; install the missing packages
+  ;;     (dolist (p gjg/required-packages)
+  ;;   (when (not (package-installed-p p))
+  ;;     (package-install p)))))
 
 #+END_SRC
 ** straight.el: use-package without package.el
