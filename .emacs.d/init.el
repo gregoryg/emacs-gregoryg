@@ -16,7 +16,7 @@
 (load custom-file)
 
 ;; keep Emacs from garbage collection during init
-(setq gc-cons-threshold 100000000) ;; ref https://github.com/MatthewZMD/.emacs.d#defer-garbage-collection
+(setq gc-cons-threshold 1000000000) ;; ref https://github.com/MatthewZMD/.emacs.d#defer-garbage-collection
 
 (setq org-replace-disputed-keys t)
 (setq org-disputed-keys
