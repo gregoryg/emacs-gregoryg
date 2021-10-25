@@ -825,7 +825,8 @@
     #+begin_src emacs-lisp
       (defun gjg/ibuffer-only-exwm ()
         (interactive)
-        (ibuffer nil "*EXWM Thang*" '((used-mode . exwm-mode))))
+        (ibuffer nil "*EXWM Thang*" '((used-mode . exwm-mode)))
+        (gjg/ibuffer-preview))
       (global-set-key (kbd "C-x e") 'gjg/ibuffer-only-exwm)
       (defun gjg/ibuffer-preview ()
         "View the current file in other window but to do select"
