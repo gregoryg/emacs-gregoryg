@@ -47,12 +47,6 @@
 
   Very useful when bringing up a virgin Emacs on a new system
 
-  =use-package= is a macro, so it makes it challenging
-  to do something like mapping over a list of package names - to do
-  that you would have to [[https://emacs.stackexchange.com/questions/32744/dynamic-package-name-with-use-package][write your own macro]]
-
-  TODO: convert to =use-package=, a more modern alternative to this method.
-
 #+BEGIN_SRC emacs-lisp
   (defvar gjg/check-packages-on-startup nil) ; should be nil in repo
 
@@ -170,6 +164,7 @@
      (use-package smartparens :straight t)
      (use-package uuid
        :straight t)
+     (use-package counsel-spotify :straight t)
      (use-package terraform-mode
        :straight t)
      (use-package vterm :straight t)
@@ -3177,14 +3172,6 @@ Open man page in current window, rather than other window with
 
 
   #+end_src
-* Employer-specific things
-** Harvest time tracking
-   Well, of course I must use Org Mode, so let's try an integration
-   #+begin_src emacs-lisp
-     (use-package reaper
-       :straight t ; If using package.el, alternatively :straight t.
-       :bind ("C-c h" . reaper))
-   #+end_src
 * Final steps
 #+begin_src emacs-lisp
 (shell (get-buffer-create "sh1"))
