@@ -3067,15 +3067,17 @@ Open man page in current window, rather than other window with
 #+end_src
 ** R
    #+begin_src emacs-lisp
-;; (setq ess-sas-edit-keys-toggle nil)     ;;; turn on automatic indentation
-;; (require 'ess-site)
-;; (when (require 'polymode nil t)
-;;   (progn
-;;     ;;; R modes
-;;     (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
-;;     (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
-;;     (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))))
-
+     (use-package polymode :straight t
+       :config
+       (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
+       (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
+       (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode)))
+     (use-package ess :straight t
+       :config
+       (setq ess-sas-edit-keys-toggle nil)
+       (add-to-list 'display-buffer-alist
+                    '("^\\*R" display-buffer-reuse-window display-buffer-same-window))
+       :init (require 'ess-site))
    #+end_src
 ** SQL
 *** Format SQL
@@ -3108,7 +3110,10 @@ Open man page in current window, rather than other window with
        ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
        (sql-set-product-feature 'mysql :prompt-regexp
                                 "^\\(MariaDB\\|MySQL\\|mysql\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
-       (setq sql-mysql-options '("-C" "-t" "-f" "-n")))
+       (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
+       (sql-set-product-feature 'sqlite :prompt-regexp
+                                "^\\(sqlite\\|\\|mysql\\) *\\[[\\(\\)_a-zA-Z]*\\]> ")
+       )
      ;; (require 'sql)
      ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
      ;; (sql-set-product-feature 'mysql :prompt-regexp
