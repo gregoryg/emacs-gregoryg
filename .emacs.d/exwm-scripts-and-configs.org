@@ -648,15 +648,15 @@
      Name=Google Calendar
      Comment=Google Calendar in Browser
      Exec=x-www-browser --new-window https://calendar.google.com/calendar/u/1/
-     Icon=/home/gregj/.local/share/pixmaps/gmail-logo.jpg
+     Icon=/home/gregj/.local/share/pixmaps/google-calendar-icon.png
      Terminal=false
      Type=Application
      Categories=Office;Calendar;
    #+end_src
-** Google Email Gmail
+** Google Gmail
    #+begin_src conf :tangle ~/.local/share/applications/gmail.desktop
      [Desktop Entry]
-     Name=Gmail Google Email
+     Name=Gmail Google Mail
      Comment=Google EMail in Browser
      Exec=x-www-browser --new-window https://mail.google.com/mail/u/1/#search/in:inbox+is:unread
      Icon=/home/gregj/.local/share/pixmaps/gmail-logo.jpg
