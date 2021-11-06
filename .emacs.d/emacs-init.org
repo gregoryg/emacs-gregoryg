@@ -710,41 +710,6 @@
            (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
 
     #+end_src
-*** Modeline and Title
-   Fancy icons may require fonts (like =texlive-fonts-extra=)
-
-**** Smart Mode line
-     + Smart mode line defines a face for battery charging/discharging - thus green for
-       10% plugged in, and red for 90% on battery.  I prefer the way =battery.el= sets
-       faces for level of charge with +/- optionally for charging/discharging.
-     #+begin_src emacs-lisp
-       (use-package smart-mode-line-powerline-theme
-         :straight t)
-       (use-package smart-mode-line
-         :straight t
-         :config
-         (sml/setup))
-
-       (advice-remove 'battery-update 'ad-Advice-battery-update)
-     #+end_src
-**** Frame title and mode line tweaks
-    #+begin_src emacs-lisp
-      ;; (require 'spaceline-config)
-      ;; (setq spaceline-always-show-segments t)
-      ;; (spaceline-spacemacs-theme)
-      ;; show column number in modeline - in addition to line number
-      (column-number-mode t)
-      ;; do not show load average
-      (setq display-time-default-load-average nil)
-
-      (setq frame-title-format (concat "emacs@" (system-name) " - %f; %b"))
-      ;; fancy git icon
-      (defadvice vc-mode-line (after strip-backend () activate)
-        (when (stringp vc-mode)
-          (let ((gitlogo (replace-regexp-in-string "^ Git." "  " vc-mode))) ;; symbol from awesome fonts
-            (setq vc-mode gitlogo))))
-
-    #+end_src
 *** Winner-mode and Windmove
     TODO: Verify that =org-timestamp-{up,down}= work as =S-up= and =S-down=
    #+begin_src emacs-lisp
@@ -1334,6 +1299,29 @@
    #+begin_src emacs-lisp
      (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
      (setq eshell-destroy-buffer-when-process-dies t)
+   #+end_src
+** Project.el
+   Project.el is built in
+
+   #+begin_src emacs-lisp
+     (setq project-switch-commands
+        '((project-find-file "Find file")
+          (project-find-regexp "Find regexp")
+          (project-dired "Dired")
+          (project-shell "Shell" "s")
+          (magit-project-status "Magit" "m")))
+     (defun gjg/project-dired-choose ()
+       "Visit a directory (with completion) in the current project."
+       (interactive)
+       (let* ((pr (project-current t))
+              (dir "/home/gregj/projects/homelab")
+              (localdir (file-name-unquote (file-local-name (expand-file-name dir))))
+              (dirs (process-file-shell-command (format "%s -H %s -type d " find-program (shell-quote-argument (directory-file-name localdir))))))
+
+         (completing-read "Ohai: " dirs)))
+         ;; (message dirs)))
+
+         ;; (project-find-file-in (thing-at-point 'filename) dirs pr)))
    #+end_src
 ** Projectile: DEPRECATED in favor of project.el?
    Projectile will slow TRAMP shell buffers to an unbearable crawl without some change to
@@ -3175,6 +3163,53 @@ Open man page in current window, rather than other window with
 
 
 
+
+  #+end_src
+
+* Modeline and Title
+ Fancy icons may require fonts (like =texlive-fonts-extra=)
+
+** Awesome Tray
+   #+begin_src emacs-lisp :tangle no
+     (use-package awesome-tray
+       :straight (awesome-tray :type git :host github :repo "manateelazycat/awesome-tray")
+       :config
+       (setq awesome-tray-active-modules
+             '("location" "git" "buffer-read-only" "buffer-name" "mode-name" "input-method" "battery" "date")
+             awesome-tray-buffer-name-buffer-changed t
+             awesome-tray-buffer-read-only-style "%")
+       (awesome-tray-mode 0))
+   #+end_src
+** Smart Mode line
+   + Smart mode line defines a face for battery charging/discharging - thus green for
+     10% plugged in, and red for 90% on battery.  I prefer the way =battery.el= sets
+     faces for level of charge with +/- optionally for charging/discharging.
+   #+begin_src emacs-lisp :tangle no
+     (use-package smart-mode-line-powerline-theme
+       :straight t)
+     (use-package smart-mode-line
+       :straight t
+       :config
+       (sml/setup))
+
+     (advice-remove 'battery-update 'ad-Advice-battery-update)
+   #+end_src
+** Frame title and mode line tweaks
+  #+begin_src emacs-lisp :tangle no
+    ;; (require 'spaceline-config)
+    ;; (setq spaceline-always-show-segments t)
+    ;; (spaceline-spacemacs-theme)
+    ;; show column number in modeline - in addition to line number
+    (column-number-mode t)
+    ;; do not show load average
+    (setq display-time-default-load-average nil)
+
+    (setq frame-title-format (concat "emacs@" (system-name) " - %f; %b"))
+    ;; fancy git icon
+    (defadvice vc-mode-line (after strip-backend () activate)
+      (when (stringp vc-mode)
+        (let ((gitlogo (replace-regexp-in-string "^ Git." "  " vc-mode))) ;; symbol from fonts-font-awesome
+          (setq vc-mode gitlogo))))
 
   #+end_src
 * Final steps

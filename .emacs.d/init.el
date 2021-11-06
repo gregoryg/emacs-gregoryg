@@ -16,8 +16,7 @@
 (load custom-file)
 
 ;; keep Emacs from garbage collection during init
-(setq gc-cons-threshold 1000000000) ;; ref https://github.com/MatthewZMD/.emacs.d#defer-garbage-collection
-
+(setq gc-cons-threshold 1000000000) ;; ref https://github.com/MatthewZMD/.emacs.d#defer-garbage-collection (x 10)
 (setq org-replace-disputed-keys t)
 (setq org-disputed-keys
    '(([(shift left)]
@@ -34,6 +33,8 @@
       [(meta shift -)])))
 (load "~/projects/emacs/straight.el/bootstrap.el")
 (straight-use-package 'use-package)
+(straight-use-package 'gcmh) ;; garbage collection magic hack
+(gcmh-mode 1)
 (straight-use-package 'org)
 (org-babel-load-file
  (expand-file-name "emacs-init.org" user-emacs-directory)
@@ -47,4 +48,4 @@
   (message "Loading complete config...done (%.3fs)" elapsed))
 (put 'list-timers 'disabled nil)
 ;; set memory usage for interactive use
-(setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
+(setq gc-cons-threshold 200000000) ; ref https://github.com/lewang/flx#gc-optimization (x 10)
