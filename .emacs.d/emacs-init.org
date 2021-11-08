@@ -3200,6 +3200,13 @@ Open man page in current window, rather than other window with
              awesome-tray-buffer-read-only-style "%")
        (awesome-tray-mode 0))
    #+end_src
+** Simple mode line
+   #+begin_src emacs-lisp
+     (use-package simple-modeline
+       :straight t
+       :config
+       (simple-modeline-mode 1))
+   #+end_src
 ** Smart Mode line
    + Smart mode line defines a face for battery charging/discharging - thus green for
      10% plugged in, and red for 90% on battery.  I prefer the way =battery.el= sets
