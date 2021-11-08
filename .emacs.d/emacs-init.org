@@ -1270,18 +1270,6 @@
         ) ;; when gjg/exwm-needed-p
         #+end_src
 
-* xwwp Browser Experiment
-  + GitHub source (fork): [[https://github.com/gregoryg/xwwp][GitHub - gregoryg/xwwp: Enhance the Emacs xwidget-webkit browser]]
-  + My local clone [[file:~/projects/emacs/xwwp/]]
-    #+begin_src emacs-lisp
-      ;; (use-package xwwp-full
-      ;;   :load-path "~/projects/emacs/xwwp/"
-      ;;   :custom
-      ;;   (xwwp-follow-link-completion-system 'ivy)
-      ;;   :bind (:map xwidget-webkit-mode-map
-      ;;               ("v" . xwwp-follow-link)
-      ;;               ("t" . xwwp-ace-toggle)))
-    #+end_src
 * Commonly used modes
 ** Start emacs server
    #+begin_src emacs-lisp
