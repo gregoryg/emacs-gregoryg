@@ -2369,6 +2369,16 @@ Open man page in current window, rather than other window with
 ** Agenda
 *** Set up agenda files lists
     I keep one set of agenda files for personal / everyday use and another for work use.
+
+    For work files, the rules are:
+    + include the primary working file (e.g. mycompany.org.gpg)
+    + include all all task files under the active engagements directory
+      (e.g. ./mycompany/engagements/customer1/customer1.org.gpg)
+    + Active task files are either any encrypted org file under engagements/ or the single
+      unencrypted org file named for its containing directory
+      (e.g. ./mycompany/engagements/customer2/customer2.org)
+    + include the special case =inbox.org=
+
   #+begin_src emacs-lisp
     ;; Make sure we match encrypted files for Agenda
     ;; ref https://emacs.stackexchange.com/a/36543/418
@@ -2388,8 +2398,9 @@ Open man page in current window, rather than other window with
     (defun gjg/get-work-agenda-files ()
       "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
       (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/tigergraph/engagements/"
-                                                           "\\`[^.].*\\.org\\.gpg\\'")))
-        (add-to-list 'engagement-files "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" t)))
+                                                           "\\`[^.].*\\.org\\(\\.gpg\\)?\\'")))
+        (add-to-list 'engagement-files "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" t)
+        (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)))
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
     (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
     ;; Set agenda files to personal, override in work-related templates
