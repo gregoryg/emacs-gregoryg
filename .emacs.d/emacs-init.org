@@ -3221,6 +3221,15 @@ Open man page in current window, rather than other window with
 
      (advice-remove 'battery-update 'ad-Advice-battery-update)
    #+end_src
+** Hide the little bleeder altogether
+   Set to hide globally, then bind a Super key to toggle only the current buffer
+   #+begin_src emacs-lisp
+     (use-package hide-mode-line
+       :straight t
+       :config
+       (global-hide-mode-line-mode 1)
+       (bind-key "s-m" 'simple-modeline-mode))
+   #+end_src
 ** Frame title and mode line tweaks
   #+begin_src emacs-lisp :tangle no
     ;; (require 'spaceline-config)
