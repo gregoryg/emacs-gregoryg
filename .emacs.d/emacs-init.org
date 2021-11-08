@@ -1360,20 +1360,21 @@
 
 ** Company
  #+BEGIN_SRC emacs-lisp
-(use-package company
-  :straight t
-  :config
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 3)
+   (use-package company-mode
+     :straight t
+     :after lsp-mode
+     :hook (lsp-mode . company-mode)
+     :bind (:map company-active-map ("<tab>" . company-complete-selection))
+           (:map lsp-mode-map ("<tab>" . company-indent-or-complete-common))
+    :config
+     (company-idle-delay 0.0)
+     (setq company-minimum-prefix-length 1))
 
-  ;; (global-company-mode t)
-  )
-
-;; (use-package company-lsp
-;;   :straight t
-;;   :config
-;;  (push 'company-lsp company-backends)
-;; )
+   ;; (use-package company-lsp
+   ;;   :straight t
+   ;;   :config
+   ;;  (push 'company-lsp company-backends)
+   ;; )
  #+END_SRC
 ** TRAMP
    #+begin_src emacs-lisp
@@ -2857,21 +2858,31 @@ Open man page in current window, rather than other window with
 ** Shall we try =lsp-mode= for the umpteenth time?
    + [[https://www.youtube.com/watch?v=EmLCTPwhC4I][System Crafters Live! - Emacs Package Potluck (Trying Your Suggestions!) - Yo...]]
 
-     #+begin_src emacs-lisp :tangle no
+     #+begin_src emacs-lisp
        (use-package lsp-mode
          :straight t
          :commands (lsp lsp-deferred)
          :init
          (setq lsp-keymap-prefix "C-c l") ;; Or C-l or s-l as alternatives
          :config
-         (lsp-enable-which-key-integration nil))
+         (lsp-enable-which-key-integration t))
+       (use-package lsp-ui
+         :straight t
+         :hook (lsp-mode . lsp-ui-mode))
      #+end_src
 ** Typescript
+   I don't actually use Typescript - but this was the example given by SystemCrafters for LSP
+
    + [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/][JavaScript/TypeScript (theia-ide) - LSP Mode - LSP support for Emacs]]
-   #+begin_src emacs-lisp :tangle no
+   + Install a TypeScript language server for each language
+   #+begin_src bash
+     npm i -g typescript-language-server ; npm i -g typescript
+   #+end_src
+   #+begin_src emacs-lisp
      (use-package typescript-mode
+       :straight t
        :mode "\\.ts\\'"
-       :hook (typescript-mode . lsp--buffer-deferred)
+       :hook (typescript-mode . lsp-deferred )
        :config
        (setq typescript-indent-level 2))
    #+end_src
@@ -2990,36 +3001,42 @@ Open man page in current window, rather than other window with
 
 	#+end_src
 ** Python
+*** LSP Language Server
+    Just make sure the language server is installed before using LSP with Python
+    #+begin_src bash
+      pip install -U setuptools
+      pip install python-lsp-server[all]
+    #+end_src
 *** Python mode setup
    #+begin_src emacs-lisp
-;; Python
+     ;; Python
 
-(use-package python
-  :straight nil
-  :config
-  (use-package prettify-greek
-    :straight t)
-  (setq python-shell-interpreter "ipython3"
-	python-shell-interpreter-args "-i --simple-prompt")
-  (setq org-babel-python-command "python3")
-  (add-hook 'python-mode-hook
-	    (lambda ()
-	      (setq indent-tabs-mode nil)
-	      (setq python-indent-offset 4)
-	      (setq tab-width 4)
-	      (setq prettify-symbols-alist prettify-greek-lower)
-          (pyvenv-mode t)
-	      (prettify-symbols-mode t)))
-  )
+     (use-package python
+       :straight t
+       :custom
+       (org-babel-python-command "python3")
+       :config
+       (setq python-shell-interpreter "ipython3"
+             python-shell-interpreter-args "-i --simple-prompt")
+       (setq org-babel-python-command "python3")
+       (add-hook 'python-mode-hook
+             (lambda ()
+               (setq indent-tabs-mode nil)
+               (setq python-indent-offset 4)
+               (setq tab-width 4)
+               (setq prettify-symbols-alist prettify-greek-lower)
+               (pyvenv-mode t)
+               (prettify-symbols-mode t)))
+       )
 
-(custom-set-variables '(org-babel-python-command "python3"))
+     (custom-set-variables '(org-babel-python-command "python3"))
 
-;; (setq ansi-color-drop-regexp
-;;       "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
+     ;; (setq ansi-color-drop-regexp
+     ;;       "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
 
-;; (require 'elpy)
+     ;; (require 'elpy)
 
-;; (require 'prettify-greek)
+     ;; (require 'prettify-greek)
 
    #+end_src
 *** Treat Bazel/Starlark files as Python
@@ -3034,7 +3051,9 @@ Open man page in current window, rather than other window with
 
 #+begin_src emacs-lisp
   (use-package jupyter
-    :straight t)
+    :straight t
+     :hook (ein:notebook-mode . lsp-deferred)
+    )
   (use-package ob-ipython
     :straight t)
   (use-package ein :straight t)
