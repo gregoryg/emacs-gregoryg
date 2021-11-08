@@ -38,8 +38,6 @@
     (add-to-list 'exec-path "/usr/local/bin"))
 #+end_src
 
-
-
 * Deal with required packages
 
   This first section installs most required packages automatically when
@@ -139,8 +137,10 @@
      (use-package csv-mode :straight t)
      (use-package s
        :straight t)
+     (use-package ssh-config-mode :straight t)
      (use-package ag
        :straight t)
+     (use-package prettify-greek :straight t)
      (use-package ob-async :straight t)
      (use-package dumb-jump
        :straight t)
@@ -157,6 +157,7 @@
      (use-package material-theme
        :straight t)
      (use-package ob-http :straight t)
+     (use-package org-present :straight t)
      (use-package org-superstar :straight t)
      (use-package selectrum :straight t)
      (use-package selectrum-prescient :straight t)
@@ -165,6 +166,7 @@
      (use-package uuid
        :straight t)
      (use-package counsel-spotify :straight t)
+     (use-package which-key :straight t)
      (use-package terraform-mode
        :straight t)
      (use-package vterm :straight t)
