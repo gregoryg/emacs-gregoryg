@@ -1297,7 +1297,8 @@
      (setq project-switch-commands
         '((project-find-file "Find file")
           (project-find-regexp "Find regexp")
-          (project-dired "Dired")
+          (project-find-dir "Dired somewhere")
+          (project-dired "Root dired" "r")
           (project-shell "Shell" "s")
           (magit-project-status "Magit" "m")))
      (defun gjg/project-dired-choose ()
@@ -2936,12 +2937,15 @@ Open man page in current window, rather than other window with
 
    #+begin_src emacs-lisp :tangle no
      (use-package go-mode
+       :defer t
        :straight t
        :custom
        (lsp-gopls-staticcheck t)
        (lsp-eldoc-render-all t)
        (lsp-gopls-complete-unimported t)
        :config
+       (add-hook 'go-mode-hook 'lsp-deferred)
+       (add-hook 'go-mode-hook (lambda () (add-hook 'before-save-hook 'ime-go-before-save)))
        (use-package go-autocomplete :straight t)
        (auto-complete-mode 1)
        (setenv "GOPATH" "/home/gregj/projects/coding/go/")
@@ -3222,12 +3226,13 @@ Open man page in current window, rather than other window with
      (advice-remove 'battery-update 'ad-Advice-battery-update)
    #+end_src
 ** Hide the little bleeder altogether
-   Set to hide globally, then bind a Super key to toggle only the current buffer
+   Set to hide globally, then bind a Super key to toggle only the current buffer. Super
+   nice to use when screen sharing
    #+begin_src emacs-lisp
      (use-package hide-mode-line
        :straight t
        :config
-       (global-hide-mode-line-mode 1)
+       (global-hide-mode-line-mode 0)
        (bind-key "s-m" 'simple-modeline-mode))
    #+end_src
 ** Frame title and mode line tweaks
