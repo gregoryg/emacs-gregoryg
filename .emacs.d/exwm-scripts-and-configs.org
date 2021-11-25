@@ -647,7 +647,7 @@
      [Desktop Entry]
      Name=Google Calendar
      Comment=Google Calendar in Browser
-     Exec=x-www-browser --new-window https://calendar.google.com/calendar/u/1/
+     Exec=x-www-browser --new-window https://calendar.google.com/calendar/u/0/
      Icon=/home/gregj/.local/share/pixmaps/google-calendar-icon.png
      Terminal=false
      Type=Application
@@ -658,7 +658,7 @@
      [Desktop Entry]
      Name=Gmail Google Mail
      Comment=Google EMail in Browser
-     Exec=x-www-browser --new-window https://mail.google.com/mail/u/1/#search/in:inbox+is:unread
+     Exec=x-www-browser --new-window https://mail.google.com/mail/u/0/#search/in:inbox+is:unread
      Icon=/home/gregj/.local/share/pixmaps/gmail-logo.jpg
      Terminal=false
      Type=Application
