@@ -146,6 +146,7 @@
        :straight t)
      (use-package edit-indirect
        :straight t)
+     (use-package help-fns+ :straight t)
      (use-package highlight-indentation
        :straight t)
      ;; (use-package counsel-projectile
@@ -1298,9 +1299,10 @@
         '((project-find-file "Find file")
           (project-find-regexp "Find regexp")
           (project-find-dir "Dired somewhere")
-          (project-dired "Root dired" "r")
-          (project-shell "Shell" "s")
-          (magit-project-status "Magit" "m")))
+          (project-dired "Root dired" 114)
+          (project-shell "Shell" 115)
+          (magit-project-status "Magit" 109)
+          ))
      (defun gjg/project-dired-choose ()
        "Visit a directory (with completion) in the current project."
        (interactive)
