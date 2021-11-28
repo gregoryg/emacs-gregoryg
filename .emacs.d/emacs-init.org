@@ -2871,7 +2871,42 @@ Open man page in current window, rather than other window with
                  (yafolding-mode 1)
                  (smartparens-mode 1)))
    #+end_src
-** Shall we try =lsp-mode= for the umpteenth time?
+** Language Servers and setup for LSP
+*** Language Servers
+**** Bash
+     #+begin_src bash
+       sudo npm install --save-dev bash-language-server
+     #+end_src
+**** Go
+     #+begin_src bash
+       sudo apt -y install gopls
+     #+end_src
+**** Go
+     #+begin_src bash
+       go install golang.org/x/tools/gopls@latest
+     #+end_src
+
+**** JavaScript / TypeScript / Node.js
+     #+begin_src bash
+       sudo npm install --save-dev typescript-language-server
+     #+end_src
+**** Python
+     #+begin_src bash
+       sudo apt -y install python3-pyls
+     #+end_src
+**** R
+     #+begin_src R
+       install.packages("languageserver")
+     #+end_src
+**** SQL
+     #+begin_src bash
+       sudo npm i -g sql-language-server
+     #+end_src
+**** YAML
+     #+begin_src bash
+       sudo npm install --save-dev yaml-language-server
+     #+end_src
+*** LSP Package configuration
    + [[https://www.youtube.com/watch?v=EmLCTPwhC4I][System Crafters Live! - Emacs Package Potluck (Trying Your Suggestions!) - Yo...]]
 
      #+begin_src emacs-lisp
