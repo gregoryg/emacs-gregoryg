@@ -48,4 +48,4 @@
   (message "Loading complete config...done (%.3fs)" elapsed))
 (put 'list-timers 'disabled nil)
 ;; set memory usage for interactive use
-(setq gc-cons-threshold 200000000) ; ref https://github.com/lewang/flx#gc-optimization (x 10)
+(setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
