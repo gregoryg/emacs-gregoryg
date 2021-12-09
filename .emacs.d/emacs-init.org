@@ -2403,6 +2403,7 @@ Open man page in current window, rather than other window with
       (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/tigergraph/engagements/"
                                                            "\\`[^.].*\\.org\\(\\.gpg\\)?\\'")))
         (add-to-list 'engagement-files "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" t)
+        (add-to-list 'engagement-files "~/projects/private-orgmode/habits.org" t)
         (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)))
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
     (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
