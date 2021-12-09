@@ -619,6 +619,26 @@
      Terminal=false
      StartupWMClass=jetbrains-idea-ce
    #+end_src
+** Jupyter Lab - local server
+   + tangle startup script
+     #+begin_src bash :tangle ~/bin/start_jupyterlab.sh
+       # Requires c.ServerApp.allow_remote_access = True in ~/.jupyter/jupyter_lab_config.py
+       # Set password with `jupyter-lab password` ; stored in ~/.jupyter/jupyter_server_config.json
+       jupyter-lab --no-browser --ip=jupyter.127.0.0.1.nip.io --port=8442
+       # jupyter-lab --ip=jupyter.127.0.0.1.nip.io --port=8442
+     #+end_src
+   + Tangle the desktop file
+   #+begin_src conf :tangle ~/.local/share/applications/jupyter-lab.desktop
+     [Desktop Entry]
+     Name=Jupyter Lab
+     Comment=Browse local Jupyter Lab server
+     Exec=x-www-browser --new-window http://jupyter.127.0.0.1.nip.io:8442
+     Icon= /home/gregj/.local/share/pixmaps/1200px-Jupyter_logo.svg.png
+     Terminal=false
+     Type=Application
+     Categories=Automation;
+   #+end_src
+
 ** Lefty Loosey
    #+begin_src conf :tangle ~/.local/share/applications/lefty.desktop
      [Desktop Entry]
