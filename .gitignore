@@ -39,3 +39,9 @@ url/
 # Emacs-lisp-native - compiled cache
 .emacs.d/eln-cache/
 .emacs.d/.trello/
+straight/
+projects
+request/
+org-roam.db
+network-security.data
+.cache/
