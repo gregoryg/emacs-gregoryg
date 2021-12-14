@@ -962,7 +962,7 @@
      [Desktop Entry]
      Name=Tigergraph GraphStudio
      Comment=
-     Exec=x-www-browser --new-window http://homelab-k3s.172.16.17.201.nip.io:14240
+     Exec=x-www-browser --new-window https://gs.hypecyclist.org:14240
      Icon= /home/gregj/.local/share/pixmaps/tigergraph-graphstudio-logo.png
      Terminal=false
      Type=Application
