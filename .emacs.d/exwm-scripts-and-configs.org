@@ -195,6 +195,9 @@
   control in the Lightdm screen and prevent any user input!  So for now I will just not
   start =xscreensaver=
 
+  #+begin_src bash :tangle ~/bin/dns-restarter.sh
+    sudo systemctl restart systemd-resolved.service
+  #+end_src
   #+begin_src bash :tangle ~/bin/capsctrl.sh
     # Set CAPS LOCK as control
     setxkbmap -verbose  -option "ctrl:nocaps"
@@ -474,6 +477,17 @@
         Icon= /home/gregj/.local/share/pixmaps/rotate-wallpapers.jpg
         # Terminal=false
         Categories=Office;Productivity;Coolness
+   #+end_src
+** DNS Restarter
+   #+begin_src conf :tangle ~/.local/share/applications/dns-restarter.desktop
+     [Desktop Entry]
+     Name=DNS Restarter
+     Comment=Restart resolver service on stupid Ubuntu
+     Exec=/home/gregj/bin/dns-restarter.sh
+     Icon= /home/gregj/.local/share/pixmaps/ignition-sources-matches-icon.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
    #+end_src
 ** emacsclient
    #+begin_src conf :tangle ~/.local/share/applications/userapp-emacsclient-6OAMT0.desktop
