@@ -3129,7 +3129,7 @@ Open man page in current window, rather than other window with
                     '("^\\*R" display-buffer-reuse-window display-buffer-same-window))
        :init (require 'ess-site))
    #+end_src
-** SQL
+** SQL and even GSQL
 *** Format SQL
     Emacs doesn't come out of the box with a useful SQL formatter, so go ahead and use an
     external process
@@ -3175,6 +3175,12 @@ Open man page in current window, rather than other window with
        (setq sql-mysql-login-params '(user password server database port))
        (setq sql-port 3306)
      #+end_src
+
+*** GSQL (TigerGraph)
+    For now, use =sql-mode=
+    #+begin_src emacs-lisp
+      (add-to-list 'auto-mode-alist '("\\.gsql" . sql-mode))
+    #+end_src
 * Devops
 ** Working with containers
    This is largely a function of TRAMP.  I have added simple ways to
