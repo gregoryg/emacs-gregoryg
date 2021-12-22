@@ -45,3 +45,4 @@ request/
 org-roam.db
 network-security.data
 .cache/
+**/*org.html
