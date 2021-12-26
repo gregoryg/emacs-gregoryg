@@ -562,7 +562,7 @@
      [Desktop Entry]
      Name=GCP Google Cloud
      Comment=GCP
-     Exec=x-www-browser --new-window https://console.cloud.google.com/compute/instances
+     Exec=x-www-browser --new-window https://console.cloud.google.com/compute/instances?authuser=0
      Icon= /home/gregj/.local/share/pixmaps/google-cloud-logo.png
      Terminal=false
      Type=Application
@@ -574,7 +574,7 @@
      [Desktop Entry]
      Name=Google Maps
      Comment=
-     Exec=x-www-browser --new-window https://maps.google.com
+     Exec=x-www-browser --new-window https://maps.google.com?authuser=1
      Icon= /home/gregj/.local/share/pixmaps/Maps_Pin_FullColor.max-1000x1000.png
      Terminal=false
      Type=Application
