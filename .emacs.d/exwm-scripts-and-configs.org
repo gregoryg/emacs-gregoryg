@@ -68,6 +68,9 @@
           feh \
           fonts-hack \
           fonts-opensymbol \
+          fonts-cantarell \
+          fonts-material-design-icons-iconfont \
+          fonts-firacode \
           fortune-mod \
           gcc \
           git \
@@ -85,6 +88,7 @@
           tree \
           vlc \
           wmctrl \
+          xdotool \
           xfce4-mount-plugin \
           xfce4-panel \
           xfce4-power-manager-plugins \
@@ -266,8 +270,9 @@
     ## Deal with LXDE if running as the WM
     ## pcmanfm --desktop-off
 
-    echo Start XFCE4 panel
-    /home/gregj/bin/xfce-panel-widgets.sh &
+    # XFCE4 panel or polybar or whatever
+    echo Start panel
+    # /home/gregj/bin/xfce-panel-widgets.sh &
   #+end_src
 ** Scripts to rotate wallpaper on multiple screens
    The schedule script runs only if it is not already running
@@ -746,6 +751,18 @@
      Type=Application
      Categories=Database;
    #+end_src
+** Polybar panel
+   We can choose between simple and fancy
+   #+begin_src conf :tangle ~/.local/share/applications/polybar-starter.desktop
+     [Desktop Entry]
+     Name=Polybar panel
+     Comment=
+     Exec=(killall polybar ; polybar --config=/home/gregj/.config/polybar/config-fancy floating -r -l info)
+     Icon= /home/gregj/.local/share/pixmaps/ignition-sources-matches-icon.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
 ** Protomolecule Virtualization - Proxmox or Harvester
    + Port 8006 for Proxmox, 30443 for Harvester
    #+begin_src conf :tangle ~/.local/share/applications/protomolecule.desktop
@@ -988,6 +1005,17 @@
      Comment=Test Drives for TigerGraph!
      Exec=x-www-browser --new-window https://testdrive.tigergraph.com/
      Icon= /home/gregj/.local/share/pixmaps/tiger-freaky.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
+** Toggle Polybar Panel Show/Hide
+   #+begin_src conf :tangle ~/.local/share/applications/toggle-xfce-panel-visibility.desktop
+     [Desktop Entry]
+     Name=Toggle Polybar Panel Show/Hide
+     Comment=Polybar panel with system tray
+     Exec=/home/gregj/bin/toggle-auto-hide-polybar.sh
+     Icon= /home/gregj/.local/share/pixmaps/show-hide.png
      Terminal=false
      Type=Application
      Categories=Office;Productivity;
