@@ -1042,6 +1042,7 @@
                       ([s-right] . windmove-right)
                       ([s-up] . windmove-up)
                       ([s-down] . windmove-down)
+                      ([?\s-e] . gjg/ibuffer-only-exwm)
                       ([s-backspace] . bury-buffer)
                       ([?\s-q] . bury-buffer)
                       ([?\s-\\] . switch-to-buffer )
