@@ -1,19 +1,19 @@
-# #+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t
-# #+OPTIONS: author:t broken-links:nil c:nil creator:nil
-# #+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
-# #+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
-# #+OPTIONS: timestamp:t title:t toc:2 todo:t |:t
-# #+TITLE: Gregory's Emacs Initialization in Org-Mode
-# #+DATE: <2019-09-08 Sun>
-# #+AUTHOR: Greg Grubbs
-# #+EMAIL: gregory@dynapse.com
-# #+LANGUAGE: en
-# #+SELECT_TAGS: export
-# #+EXCLUDE_TAGS: noexport
-# #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
-# #+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg-local.setup
-# #+property: header-args:emacs-lisp :results none
-# #+property: header-args:bash :shebang #!/usr/bin/env bash :results none
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:2 todo:t |:t
+#+TITLE: Gregory's Emacs Initialization in Org-Mode
+#+DATE: <2019-09-08 Sun>
+#+AUTHOR: Greg Grubbs
+#+EMAIL: gregory@dynapse.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.2 (Org mode 9.1.9)
+#+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg-local.setup
+#+property: header-args:emacs-lisp :results none
+#+property: header-args:bash :shebang #!/usr/bin/env bash :results none
 
 * Should I use =evil-mode=?
 
@@ -961,6 +961,86 @@
       + /usr/lib/blueberry/blueberry-tray.py - a Blueberry setup app triggered from the panel
       + /usr/bin/python3 /usr/bin/blueman-applet - a *nicer* bluetooth applet with setup
         and file transfer
+
+** Panel with Polybar
+
+   This is a potential alternative to the XFCE Panel - let's try it out using @daviwil's config
+
+   Check out the Polybar wiki for more details on how to configure it: https://github.com/polybar/polybar/wiki
+
+   + [[https://awesomeopensource.com/projects/polybar][The Top 422 Polybar Open Source Projects on Github]]
+
+
+*** Integration with =emacsclient=
+
+   Polybar provides a great, minimalistic panel for your EXWM desktop configuration.  The
+   following config integrates =emacsclient= and Polybar with =polybar-msg= to enable you
+   to gather *any* information from Emacs and display it in the panel!
+
+   #+begin_src emacs-lisp
+     ;; Make sure the server is started
+     (unless (server-running-p)
+       (server-start))
+
+     (defvar gjg/polybar-process nil
+       "Holds the process of the running Polybar instance, if any")
+
+     (defun gjg/kill-panel ()
+       (interactive)
+       (when gjg/polybar-process
+         (ignore-errors
+           (kill-process gjg/polybar-process)))
+       (setq gjg/polybar-process nil))
+
+     (defun gjg/start-panel ()
+       (interactive)
+       (gjg/kill-panel)
+       ;; (setq gjg/polybar-process (start-process-shell-command "polybar" "*polybar-process*" (concat "polybar" (shell-quote-argument " --config /home/gregj/.config/polybar/config-simple-panel panel")))))
+       (setq gjg/polybar-process (start-process-shell-command "polybar" "*polybar-process*" (concat "polybar --config=~/.config/polybar/config-fancy floating -r -l warning" ))))
+
+     (defun gjg/send-polybar-hook (module-name hook-index)
+       (start-process-shell-command "polybar-msg" nil (format "polybar-msg hook %s %s" module-name hook-index)))
+
+     (defun gjg/send-polybar-exwm-workspace ()
+       (gjg/send-polybar-hook "exwm-workspace" 1))
+
+     ;; Update panel indicator when workspace changes
+     (add-hook 'exwm-workspace-switch-hook #'gjg/send-polybar-exwm-workspace)
+
+   #+end_src
+
+*** Panel configuration
+    The configuration for our ingeniously named panel, "panel".  Invoke it with =polybar
+    panel= on the command line!
+
+    + A variation of @daviwil's config [[file:~/projects/homelab/dotfiles/.config/polybar/config-simple-panel][here]]
+    +
+
+*** Helpful Polybar scripts
+**** hideIt.sh - hide *any* X window - we will use it just for polybar
+     Polybar - remarkably and shockingly - does not have an autohide feature (I believe).
+
+     So there is a clever script called [[https://raw.githubusercontent.com/Tadly/hideIt.sh/master/hideIt.sh][hideIt.sh]] - which will actually work for any X window
+
+     My current variation is based on [[https://github.com/Tadly/hideIt.sh][Tadly's hideIt.sh]]
+
+**** toggle hideIt - authohide or pin
+     We will 'pin' the polybar panel simply by killing the hideIt process
+     #+begin_src bash :tangle ~/bin/toggle-auto-hide-polybar.sh
+       pid=$(ps fax | grep hideIt | grep -v grep|head -1 | awk '{print $1}')
+       echo "Debug: pid is |${pid}|"
+       if [ -n "${pid}" ] ; then
+           # it's active, so kill it, thus "pinning" our panel
+           echo "killing ${pid}"
+           ps fax | grep hideIt | grep -v grep | awk '{print $1}' | xargs kill
+       else
+           # it's not running so, start 'er up and autohide the panel
+           # We first have to grab monitor 0 resolution to properly set regiob
+           hregion=$(xrandr --listactivemonitors | egrep '^ *0:'  |cut -d':' -f2|cut -d' ' -f3 | sed 's,\([0-9]\+\)\/[0-9]\+x\([0-9]\+\).\+,0x\2+\1+-10,')
+           setsid ~/.config/polybar/scripts/hideIt.sh --wait --region ${hregion} --name '^polybar-floating' > /dev/null 2>&1 &
+
+       fi
+     #+end_src
 
 ** To launch or not to launch
    My configuration tests for the existence of a window manager.  If one is already
@@ -1952,7 +2032,6 @@ Open man page in current window, rather than other window with
                     (sql . t)
                     )))
          (setq org-confirm-babel-evaluate nil
-               org-export-use-babel nil
                org-export-with-sub-superscripts nil)
 
          ;; ;; The Dreadful Timeline has brought us indentation-sensitive languages
