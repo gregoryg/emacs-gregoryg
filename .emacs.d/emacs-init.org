@@ -524,6 +524,15 @@
       (bind-key "C-x 2" 'gjg/split-window-below)
       (bind-key "C-x 3" 'gjg/split-window-right)
 
+      (use-package ace-window
+        :straight t
+        :config
+        (custom-set-faces
+         '(aw-leading-char-face
+           ((t (:foreground "deep sky blue" :height 5.0)))
+           ))
+        :bind
+         (("C-x o" . ace-window)))
       ;; (require 'ace-window)
       ;; (custom-set-faces
       ;;  '(aw-leading-char-face
