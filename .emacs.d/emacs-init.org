@@ -166,7 +166,7 @@
      (use-package smartparens :straight t)
      (use-package uuid
        :straight t)
-     (use-package counsel-spotify :straight t)
+     (use-package playerctl :straight t)
      (use-package which-key :straight t)
      (use-package terraform-mode
        :straight t)
