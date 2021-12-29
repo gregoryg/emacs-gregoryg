@@ -14,6 +14,17 @@
 #+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg.setup
 #+PROPERTY: header-args:emacs-lisp :results none
 #+PROPERTY: header-args:bash :results none :shebang #!/usr/bin/env bash :tangle no
+* Overview
+
+  This file handles creating all the basics for a DYI Linux desktop environment.  If you
+  forego the pre-packaged desktop environments such as Gnome, KDE, XFCE, Mate, etc. you
+  will need to substitute some of the conveniences those environments offer.
+
+  Things like a panel, system tray, media controls, and so forth.
+
+  The configuration below is very much geared to tiling window managers - I use EXWM, but
+  much of the config and helper applications would be useful with i3, StumpWM and others.
+
   Tangle this file to generate shell scripts.
 
 * OS Applications
@@ -98,7 +109,7 @@
      StartupNotification=false
    #+end_src
 
-   Install as X Session alternative
+   Install the above as an X Session alternative
    #+begin_src bash
      sudo update-alternatives --install /usr/share/xsessions/default.desktop default-xsession.desktop /usr/share/xsessions/emacs.desktop 20
    #+end_src
@@ -109,6 +120,9 @@
      sudo cp -v ~/emacs/pixmaps/emacs-icon-22x22.png /usr/share/slick-greeter/badges/emacs.png
    #+end_src
 ** Touchpad and external mouse settings
+   These configs set up my preference for scrolling direction with the touchpad and an
+   external mouse.
+
    #+begin_src conf :tangle /sudo::/usr/share/X11/xorg.conf.d/41-gregor-libinput.conf
      # Control scrolling direction and tap to click - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
      Section "InputClass"
