@@ -588,6 +588,7 @@
       (bind-key "s-1" 'delete-other-windows)
       (bind-key "s-2" 'gjg/split-window-below)
       (bind-key "s-3" 'gjg/split-window-right)
+      (bind-key "s-p") 'playerctl-play-pause-song)
       (bind-key "s-q" 'bury-buffer)
       (bind-key "s-\\" 'switch-to-buffer)
       ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
@@ -1132,6 +1133,7 @@
                       ([?\s-1] . delete-other-windows)
                       ([?\s-2] . gjg/split-window-below)
                       ([?\s-3] . gjg/split-window-right)
+                      ([?\s-p] . playerctl-play-pause-song)
                       ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
                       ;; 's-N': Switch to certain workspace.
                       ;; ,@(mapcar (lambda (i)
