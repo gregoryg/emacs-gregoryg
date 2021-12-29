@@ -36,10 +36,13 @@
 (straight-use-package 'gcmh) ;; garbage collection magic hack
 (gcmh-mode 1)
 (straight-use-package 'org)
-(org-babel-load-file
- (expand-file-name "emacs-init.org" user-emacs-directory)
- nil ; byte-compile the result?
- )
+(require 'org)
+(org-babel-tangle-file "~/emacs-gregoryg/emacs-init.org")
+(load-file "~/.emacs.d/emacs-init.el")
+;; (org-babel-load-file
+;;   "~/emacs-gregoryg/emacs-init.org"
+;;  nil ; byte-compile the result?
+;;  )
 
 
 ;; Message how long it took to load everything (minus packages)
