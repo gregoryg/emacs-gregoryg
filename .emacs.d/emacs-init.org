@@ -996,7 +996,6 @@
      (defun gjg/start-panel ()
        (interactive)
        (gjg/kill-panel)
-       ;; (setq gjg/polybar-process (start-process-shell-command "polybar" "*polybar-process*" (concat "polybar" (shell-quote-argument " --config /home/gregj/.config/polybar/config-simple-panel panel")))))
        (setq gjg/polybar-process (start-process-shell-command "polybar" "*polybar-process*" (concat "polybar --config=~/.config/polybar/config-fancy floating -r -l warning" ))))
 
      (defun gjg/send-polybar-hook (module-name hook-index)

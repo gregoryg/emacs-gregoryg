@@ -19,37 +19,6 @@
 * OS Applications
   The shell scripts here expect certain applications to be installed, so let's take care
   of those
-** openSUSE Tumbleweed or Leap
-   #+begin_src bash
-     sudo zypper install \
-          ulauncher \
-          blueman \
-          feh \
-          fontawesome-fonts \
-          git \
-          kubernetes-client \
-          lightdm \
-          lightdm-slick-greeter \
-          mlocate \
-          NetworkManager-applet \
-          numlockx \
-          parcellite \
-          picom \
-          polkit-gnome \
-          ruby \
-          ruby-devel \
-          setxkbmap \
-          the_silver_searcher \
-          xfce4-mount-plugin \
-          xfce4-panel \
-          xfce4-power-manager-plugin \
-          xfce4-pulseaudio-plugin \
-          xfce4-screenshooter-plugin \
-          xfce4-statusnotifier-plugin \
-          xfce4-whiskermenu-plugin \
-          xfconf \
-          xmodmap
-   #+end_src
 ** Ubuntu
    #+begin_src bash
      # Add repo for Albert - Ubuntu 20.04
