@@ -1,4 +1,3360 @@
-* emacs-gregoryg
-My emacs settings for use across Linux, Windows, OS X
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:2 todo:t |:t
+#+TITLE: Gregory's Emacs Initialization in Org-Mode
+#+DATE: <2019-09-08 Sun>
+#+AUTHOR: Greg Grubbs
+#+EMAIL: gregory@dynapse.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.2 (Org mode 9.1.9)
+#+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg-local.setup
+#+property: header-args:emacs-lisp :tangle ~/.emacs.d/emacs-init.el :results none
+#+property: header-args:bash :shebang #!/usr/bin/env bash :results none
 
-See .emacs.d/emacs-init.org to get started
+* Literate Programming Config file
+  This Org Mode file becomes "tangled" by the =org-babel-load-file= function in [[file:init.el][init.el]] to
+  produce the entire config for my Emacs sessions on Windows, MacOS, Linux and ChromeOS
+
+  Hip tip: to exclude entire code block sections from the resulting tangled config file,
+  just add a =:tangle no= header to the source block - but do *not* use =:tangle yes= for
+  that will lead to tears by interfering with =org-babel-load-file=
+
+  If reading this file on GitHub, use the =raw= view to see all the code markings and
+  header parameters.
+
+* Should I use =evil-mode=?
+
+  No.
+
+* Set executable path
+#+begin_src emacs-lisp
+  (when (file-exists-p "~/bin")
+    (add-to-list 'exec-path "~/bin"))
+
+  (when (file-exists-p "/usr/local/bin")
+    (add-to-list 'exec-path "/usr/local/bin"))
+#+end_src
+
+* Deal with required packages
+
+  This first section installs most required packages automatically when
+  =gjg/check-packages-on-startup= is set.
+
+  Very useful when bringing up a virgin Emacs on a new system
+
+#+BEGIN_SRC emacs-lisp
+  (defvar gjg/check-packages-on-startup nil) ; should be nil in repo
+
+  (add-to-list 'load-path "~/emacs")
+  (require 'cl)
+  (require 'package)
+
+  ;; get control of required packages across different emacs environments
+  (defvar gjg/required-packages
+    '(bind-key
+      buffer-expose
+      cider
+      exwm
+      magit
+      magit-todos
+      org
+      org-superstar
+      ;; org-plus-contrib
+      org-tree-slide
+      ob-async
+      ob-http
+      pyvenv
+      prettify-greek
+  ;;    company-pr
+      rainbow-delimiters
+      selectrum
+      selectrum-prescient
+      smartparens
+      use-package
+      xterm-color
+      ;; language modes
+      ;; csv-mode
+      js2-mode
+      json-mode
+      markdown-mode
+      ;; scala-mode
+      ssh-config-mode
+      ;; web-mode
+      ))
+
+  (defun gjg/packages-installed-p ()
+    (cl-loop for p in gjg/required-packages
+      when (not (package-installed-p p)) do (cl-return nil)
+      finally (cl-return t)))
+
+  ;; if not all packages are installed, install 'em
+  ;; (when gjg/check-packages-on-startup
+  ;;   (unless (gjg/packages-installed-p)
+  ;;     ;; check for new package versions
+  ;;     (message "%s" "This copy of Emacs is now refreshing its package database...")
+  ;;     (package-refresh-contents)
+  ;;     (message "%s" "  done.")
+  ;;     ;; install the missing packages
+  ;;     (dolist (p gjg/required-packages)
+  ;;   (when (not (package-installed-p p))
+  ;;     (package-install p)))))
+
+#+END_SRC
+** straight.el: use-package without package.el
+   + [[https://github.com/raxod502/straight.el][Next-generation, purely functional package manager using Git]]
+   + [[https://shivjm.blog/switching-to-straight-el/][Switching to straight.el]]
+
+   I had to move this into =init.el= due to a compatibility package required for Org
+   #+begin_src emacs-lisp
+     ;; (defvar bootstrap-version)
+     ;; (load "~/projects/emacs/straight.el/bootstrap.el")
+     ;; (straight-use-package 'use-package)
+     ;;  (straight-use-package 'org)
+     ;; (let ((bootstrap-file "~/projects/emacs/straight.el/bootstrap.el")
+
+     ;;       (bootstrap-version 5))
+     ;;   (unless (file-exists-p bootstrap-file)
+     ;;     (with-current-buffer
+     ;;         (url-retrieve-synchronously
+     ;;          "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+     ;;          'silent 'inhibit-cookies)
+     ;;       (goto-char (point-max))
+     ;;       (eval-print-last-sexp)))
+     ;;   (load bootstrap-file nil 'nomessage))
+   #+end_src
+
+** Packages with no configuration
+   Fastest searcher in the West - need to install it on the OS as package
+   =the_silver_searcher= or =silversearcher-ag=
+   #+begin_src emacs-lisp
+     (use-package exwm :straight t)
+     ;; (use-package buffer-expose :straight t)
+     (use-package magit :straight t)
+     (use-package magit-todos :straight t)
+     (use-package csv-mode :straight t)
+     (use-package s
+       :straight t)
+     (use-package ssh-config-mode :straight t)
+     (use-package ag
+       :straight t)
+     (use-package prettify-greek :straight t)
+     (use-package ob-async :straight t)
+     (use-package dumb-jump
+       :straight t)
+     (use-package edit-indirect
+       :straight t)
+     (use-package help-fns+ :straight t)
+     (use-package highlight-indentation
+       :straight t)
+     ;; (use-package counsel-projectile
+     ;;   :straight nil)
+     (use-package htmlize
+       :straight t)
+     (use-package keychain-environment
+       :straight t)
+     (use-package material-theme
+       :straight t)
+     (use-package ob-http :straight t)
+     (use-package org-present :straight t)
+     (use-package org-superstar :straight t)
+     (use-package selectrum :straight t)
+     (use-package selectrum-prescient :straight t)
+     (use-package rainbow-delimiters :straight t)
+     (use-package smartparens :straight t)
+     (use-package uuid
+       :straight t)
+     (use-package playerctl :straight t)
+     (use-package which-key :straight t)
+     (use-package terraform-mode
+       :straight t)
+     (use-package vterm :straight t)
+     (use-package yafolding
+       :straight t)
+   #+end_src
+
+* Greg's customizations!
+** Embark
+   + from [[https://www.youtube.com/watch?v=qk2Is_sC8Lk&t=29][System Crafters Live! - The Many Uses of Embark - YouTube]]
+     #+begin_src emacs-lisp :tangle no
+       (use-package embark
+         ;; :straight t
+         :bind
+         (("C-." . embark-act)
+          ("M-." . embark-dwim)
+          ("C-h B" . embark-bindings))
+         :init
+         (setq prefix-help-command #'embark-prefix-help-command))
+     #+end_src
+** Cleanup on file save
+   Tip o' the hat to [[https://github.com/mitchty][@mitchty]]
+   Remove trailing whitespace when saving files
+    #+BEGIN_SRC emacs-lisp
+      ;; from https://stackoverflow.com/a/3533933/457574
+      (defun delete-trailing-whitespace-except-current-line ()
+        "do delete-trailing-whitespace, except preserve whitespace of current line"
+        (interactive)
+        (let ((current-line (buffer-substring (line-beginning-position) (line-end-position)))
+              (backward (- (line-end-position) (point))))
+          (delete-trailing-whitespace)
+          (when (not (string-equal (buffer-substring (line-beginning-position) (line-end-position))
+                                   current-line))
+            (delete-region (line-beginning-position) (line-end-position))
+            (insert current-line)
+            (backward-char backward))))
+
+
+      (add-hook 'before-save-hook 'delete-trailing-whitespace-except-current-line)
+   #+end_src
+
+   Make it executable if it should be executable!
+
+   #+begin_src emacs-lisp
+   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+   #+end_src
+
+** Microsoft Windows things
+*** Printing
+   #+begin_src emacs-lisp
+;; **** Windows printing that relies on ghostscript and gsview
+
+(defcustom gjg/gsprint "c:/Program Files/Ghostgum/gsview/gsprint.exe"
+  "Path to gsprint.exe: usually in Program Files or Program Files (x86)"
+  :group 'gjg
+  :type 'string)
+
+(when (and (string= (window-system) "w32") (file-exists-p gjg/gsprint))
+  (progn
+    ;;  Windows printer
+    (setq-default ps-lpr-command (expand-file-name gjg/gsprint))
+    (setq-default ps-printer-name t)
+    (setq-default ps-printer-name-option nil)
+    (setq ps-lpr-switches '("-query")) ; show printer dialog
+    (setq ps-right-header '("/pagenumberstring load" ps-time-stamp-mon-dd-yyyy))))
+
+   #+end_src
+*** Info on Windows
+    #+begin_src emacs-lisp
+      (when  (eq window-system 'w32)
+        (progn
+          (setq Info-directory-list Info-default-directory-list)
+          (setq Info-additional-directory-list '("c:/emacs/share/info"))))
+    #+end_src
+
+*** File opens
+    #+begin_src emacs-lisp
+      (when (eq window-system 'w32)
+        (setq w32-get-true-file-attributes nil)
+        (remove-hook 'find-file-hook 'vc-find-file-hook))
+    #+end_src
+** Linux things
+   Fix to make Org export to HTML and open do the right thing: open in the preferred
+   browser rather than just HTML in an Emacs buffer
+   #+begin_src emacs-lisp
+     (when (eq window-system 'x)
+       (setq org-file-apps
+             '((auto-mode . emacs)
+               ("\\.mm\\'" . default)
+               ("\\.x?html?\\'" . "/usr/bin/x-www-browser %s")
+               ("\\.pdf\\'" . default))))
+   #+end_src
+** Chrome OS / Crostini things
+   Assure that web links will open in Chrome OS rather than invoking a browser
+   installed in the Linux container
+
+   As of [2020-07-31 Fri] I don't know how to determine I'm running in a Crostini
+   container, so we set this only if =sensible-browser= is found on the path
+   #+begin_src emacs-lisp
+     (when (executable-find "sensible-browser")
+       (setq browse-url-browser-function 'browse-url-generic)
+       (setq browse-url-generic-program "sensible-browser"))
+     ;; On the pixelbook, I use a script to open Chrome for Web links in Org
+     ;; this is in custom settings, since I don't know how to detect Crostini/Chrome OS in emacs
+     ;; (setq org-file-apps
+     ;;       '((auto-mode . emacs)
+     ;;         ("\\.mm\\'" . default)
+     ;;         ("\\.x?html?\\'" . "~/bin/open-in-browser-container.sh %s")
+     ;;         ("\\.pdf\\'" . default)))
+   #+end_src
+   #+begin_src bash
+     #!/usr/bin/env bash
+
+     url="http://localhost:80/"
+     fpath=$1
+
+     echo "fpath=${fpath}"
+     ## Get relative path
+     relpath=$(realpath --relative-to="${HOME}" ${fpath})
+
+     echo $relpath
+
+     sensible-browser "${url}${relpath}"
+     # echo "$fpath" >> /tmp/opened_by_script.txt
+   #+end_src
+** Fonts
+   Forever in search of the One True Holy and Apostolic Programmer Font.
+
+   Big fan of Inconsolata, Source Code Pro, and Hack.  Inability to decide on one is
+   encoded herein.
+
+   Make it a callable function so I can set new frames.  For now, do not tie it into a
+   frame hook - not certain I would want it for every frame.  This would make use of the
+   hook variable =after-make-frame-functions=
+
+   #+begin_src emacs-lisp
+     (defun gjg/set-frame-font ()
+       "Set frame font based on window system"
+       (interactive)
+       (cond ((or (eq window-system 'mac) (eq window-system 'ns))
+              (set-frame-font "Source Code Pro-17"))
+             ((eq window-system 'w32)
+              (set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1"))
+             ((eq window-system 'x)
+              (set-frame-font "Hack-14")
+              ;; (set-frame-font "Inconsolata-16")
+              )))
+     (gjg/set-frame-font)
+     ;; (add-hook 'after-make-frame-functions 'gjg/set-frame-font)
+     ;; (load-library "fontize")
+     ;; (require 'fontize)
+     (autoload 'inc-font-size "fontize" "Adjust buffer relative font size" t)
+     (autoload 'dec-font-size "fontize" "Adjust buffer relative font size" t)
+
+     (global-set-key [C-kp-subtract] 'dec-font-size)
+     (global-set-key [C-kp-add] 'inc-font-size)
+   #+end_src
+** Desktop save
+   TODO: Deal with  '(desktop-files-not-to-save "\\(\\`/[^/:]*:\\|(ftp)\\'\\|org.gpg\\'\\)")
+   #+begin_src emacs-lisp :tangle no
+     (desktop-save-mode 1)
+     (setq desktop-restore-eager 0)
+     (setq desktop-lazy-idle-delay 2)
+     (with-eval-after-load 'desktop-save-mode
+       (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+       (add-to-list 'desktop-modes-not-to-save 'Info-mode)
+       (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode))
+
+   #+end_src
+** Basic defaults that aren't default
+   So many defaults in Emacs make no sense.  If starting out with Emacs, consider these
+   settings to make your first experiences nicer.
+
+   If you have any questions about what these settings do, use Emacs to explore them:
+   + If it's a variable being set (line starts with the =setq= function, set the point in
+     the variable name and hit =C-h v= for help on that variable.
+   + If it's a function (line starts with almost anything other than =setq=, set the point
+     in the function name and hit "C-h f"
+
+#+begin_src emacs-lisp
+  ;; show parens: useful even in text modes
+  (show-paren-mode 1)
+  ;; fido-mode in emacs 27+: a new thing to hate
+  (fido-mode -1)
+  ;; When I want transient mark mode, I'll beat it out of you
+  (setq transient-mark-mode nil)
+  ;; (do not) display time and battery status in the mode line
+  (display-time-mode 0)
+  (display-battery-mode 0)
+  ;; turn off that stupid toolbar
+  (tool-bar-mode -1)
+  ;; scroll bars?
+  (scroll-bar-mode -1)
+  (menu-bar-mode -1)
+  ;; don't do that stoopid splash screen
+  (setq inhibit-splash-screen t)
+
+  ;; tab indents - if line is already indented, try to auto-complete
+  (setq tab-always-indent 'complete)
+
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-always-indent t)
+  (setq-default tab-width 4)
+  ;; blink parens and similar delimiters
+  (show-paren-mode 1)
+  ;; ** Global identity (ie, same on all machines) - Emacs does not make good guesses here
+  (setq user-full-name "Gregory Grubbs"
+        user-mail-address "gregory.grubbs@gmail.com")
+
+  (setq confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
+
+  ;; dippy bird FTW - single character y-n for all yes/no question dialogs
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (setq shell-file-name "bash")
+  (setq explicit-shell-file-name shell-file-name)
+  (setq explicit-bash-args '("--noediting" "-i"))
+
+  (global-hl-line-mode t) ;; highlight current line - turn off when figuring out faces
+
+  (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows
+
+  (setq fill-column 90); good default for wider screens - BUT this is buffer-local so should be set in mode hooks only
+
+  ;; ensure that the default for searches is case-insensitive
+  (setq case-fold-search t)
+
+  ;; highlight/colorize everything that can be colorized!
+  (global-font-lock-mode 1)
+
+  ;; never split windows horizontally by default
+  (setq split-width-threshold nil)
+  ;; Here's a choice one: stay in the same column while scrolling!
+  (setq scroll-preserve-screen-position t)
+  ;; in Emacs23+, make line-move move by a line, ignoring wrapping
+  (setq line-move-visual nil)
+  ;; enable hugely useful things that are disabled by default
+  (put 'narrow-to-region 'disabled nil)
+  (put 'set-goal-column 'disabled nil)
+
+  ;; echo quickly
+  (setq echo-keystrokes 0.1)
+  ;; keep the screen from jumping wildly as I cursor down/up
+  (setq scroll-conservatively 5)
+  ;; remember minibuffer history between sessions
+  (savehist-mode t)
+  ;; if point is at end of line, keep it there for vertical movement
+  (setq track-eol t)
+  (setq align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
+  (setq Man-notify-method 'pushy) ;; show man page in current window
+  (setq auth-source-save-behavior nil) ; NEVER store passwords
+#+end_src
+** Custom Functions in a separate file
+   TODO: pull these functions in
+   #+begin_src emacs-lisp
+(add-to-list 'load-path "~/emacs")
+(load-library "gjg-functions")
+(require 'gjg-functions)
+   #+end_src
+** Key bindings
+   #+begin_src emacs-lisp
+     (global-set-key [home] (lambda () (interactive) (goto-char (point-min))))
+     (global-set-key [end] (quote end-of-buffer))
+     ;; M-left and M-right on Pixelbook
+     (global-unset-key (kbd "<M-left>"))
+     (global-unset-key (kbd "<M-right>"))
+     (global-set-key (kbd "<M-left>") (lambda () (interactive) (goto-char (point-min))))
+     (global-set-key (kbd "<M-right>") 'end-of-buffer)
+     (global-unset-key (kbd "C-z"))
+     (global-set-key (kbd "C-z") 'undo)
+     (global-unset-key (kbd "M-]")) ; unset one next-buffer binding
+     (global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
+
+     (global-set-key [f1] 'delete-other-windows)
+     (global-set-key [f2] 'gjg/switch-to-other-buffer)
+     (global-set-key [f3] 'gjg/other-window-or-split)
+     (global-set-key [f4] 'narrow-to-defun)
+
+     (global-set-key [f5] 'gjg/widen-ask-if-indirect)
+     ;; (global-set-key [f6] 'read-only-mode)
+     (global-set-key [f6] 'gjg/open-work-agenda)
+     (global-set-key [f7] 'hl-line-mode) ;; toggle hl-line-mode for this window only
+     ;; (global-set-key [f8] 'bury-buffer)
+
+     (global-set-key [f9] 'bury-buffer)
+     (global-set-key [f10] 'dired-omit-mode)
+     ;; (global-set-key [f11] 'mac-toggle-max-window)
+     (global-set-key [f11] 'gjg/toggle-max-frame)
+     (global-set-key [M-f11] 'gjg/toggle-max-frame)
+     ;; (global-set-key [f11] 'toggle-fullscreen)
+     ;; (global-set-key [f11] 'switch-full-screen)
+     ;; (global-set-key (kbd "C-<f11>") 'gjg/emacs-max-coolness)
+     (global-set-key [f12] (lambda () (interactive) (message (or (buffer-file-name) "No file associated with this buffer."))))
+     (global-set-key (kbd "<C-f12>") 'yow)
+     (global-set-key [C-wheel-up] 'text-scale-increase)
+     (global-set-key [C-wheel-down] 'text-scale-decrease)
+     (global-set-key [S-wheel-up] 'inc-font-size)
+     (global-set-key [S-wheel-down] 'dec-font-size)
+     (global-set-key (kbd "M-]") 'next-buffer)
+     (global-set-key (kbd "M-[") 'previous-buffer)
+     (global-set-key (kbd "C-c C-v") 'browse-url-at-point)
+     ;; EXPERIMENTAL: unbind SPACE and ? in minibuffer, to allow typing in completions with those chars
+     (add-hook 'minibuffer-setup-hook (lambda ()
+                        (define-key minibuffer-local-completion-map " " nil)
+                        (define-key minibuffer-local-must-match-map " " nil)
+                        (define-key minibuffer-local-completion-map "?" nil)
+                        (define-key minibuffer-local-must-match-map "?" nil)))
+     (defalias 'ss 'gjg/open-remote-shell)
+     (defalias 'ht 'gjg/highlight-terraform-stuff)
+     (defalias 'rb 'rename-buffer)
+
+   #+end_src
+** Backup files
+   #+begin_src emacs-lisp
+;; backup files
+(setq
+ backup-by-copying t      ; don't clobber symlinks
+ backup-directory-alist
+ '(("." . "~/.emacs.d/backups"))    ; don't litter my fs tree
+ delete-old-versions t
+ kept-new-versions 5
+ kept-old-versions 5
+ version-control nil)
+   #+end_src
+** Window/buffer management
+*** GJG full screen, movement, transparency
+    TODO: figure out global Super key chords in exwm map vs global key map
+    #+begin_src emacs-lisp
+      ;; unbind some keys in favor of my functions bound to SUPER- combinations
+      ;; the existing keys will work in Emacs buffers, but not in EXWM X buffers; the SUPER combos work everywhere
+      (global-unset-key (kbd "M-]")) ; next-buffer
+      (global-unset-key (kbd "M-[")) ; previous-buffer
+
+      (defun revert-dammit () ; revert buffer without prompting
+        (interactive)
+        ;; revert buffer, don't use auto-save, preserve modes
+        (revert-buffer t t t))
+      (defalias 'rd 'revert-dammit)
+      (defun gjg/switch-to-other-buffer ()
+        (interactive)
+        (switch-to-buffer (other-buffer))
+        (message "Switched to other-buffer"))
+      (defun gjg/split-window-below ()
+        "Split window below, switch to the new window AND switch buffer in that window"
+        (interactive)
+        (split-window-below)
+        (other-window 1)
+        (switch-to-buffer (other-buffer)))
+      (defun gjg/split-window-right ()
+        "Split window right, switch to the new window AND switch buffer in that window"
+        (interactive)
+        (split-window-right)
+        (other-window 1)
+        (switch-to-buffer (other-buffer)))
+      (bind-key "C-x 2" 'gjg/split-window-below)
+      (bind-key "C-x 3" 'gjg/split-window-right)
+
+      (use-package ace-window
+        :straight t
+        :config
+        (custom-set-faces
+         '(aw-leading-char-face
+           ((t (:foreground "deep sky blue" :height 5.0)))
+           ))
+        :bind
+         (("C-x o" . ace-window)))
+      ;; (require 'ace-window)
+      ;; (custom-set-faces
+      ;;  '(aw-leading-char-face
+      ;;    ((t (:foreground "deep sky blue" :height 5.0)))))
+      ;; (bind-key "C-x o" 'ace-window)
+      ;; (setq winum-keymap
+      ;;       (let ((map (make-sparse-keymap)))
+      ;;         (define-key map (kbd "C-`") 'winum-select-window-by-number)
+      ;;         (define-key map (kbd "M-0") 'winum-select-window-0)
+      ;;         (define-key map (kbd "M-1") 'winum-select-window-1)
+      ;;         (define-key map (kbd "M-2") 'winum-select-window-2)
+      ;;         (define-key map (kbd "M-3") 'winum-select-window-3)
+      ;;         (define-key map (kbd "M-4") 'winum-select-window-4)
+      ;;         (define-key map (kbd "M-5") 'winum-select-window-5)
+      ;;         )
+      ;;       )
+      (use-package winum
+        :straight t
+        :config
+        (setq winum-scope                       'frame-local
+              winum-auto-assign-0-to-minibuffer nil
+              winum-auto-setup-mode-line        t))
+      (winum-mode)
+      (set-face-attribute 'winum-face nil :weight 'bold)
+      (defun gjg/other-window-with-winum ()
+        "if 2 windows, jump to other-window.  Elsecase use winum"
+        (interactive)
+        (cond ((= 1 winum--window-count)
+               (gjg/switch-to-other-buffer))
+              ((= 2 winum--window-count)
+               (other-window 1))
+              ((> 10 winum--window-count)
+               ;; jump immediately to window
+               ;; (let ((jwin (read-number (format "Jump to window num[1-%d]: " winum--window-count))))
+               (let ((jwin (string-to-number (char-to-string (read-char (format "Jump to window num[1-%d]: " winum--window-count))))))
+                 (message "Jumping to %d" jwin)
+                 (winum-select-window-by-number jwin)))
+              (t
+               (let ((jwin (read-number (format "Jump to window num[1-%d]: " winum--window-count))))
+                 (message "Jumping to %d" jwin)
+                 (winum-select-window-by-number jwin)))
+               ))
+      (bind-key "C-x o" 'gjg/other-window-with-winum)
+      (bind-key "s-a" 'gjg/open-work-agenda)
+      (bind-key "s-o" 'gjg/other-window-with-winum)
+      (bind-key "s-b" 'gjg/switch-to-other-buffer)
+      (bind-key "s-<up>" 'windmove-up)
+      (bind-key "s-<down>" 'windmove-down)
+      (bind-key "s-<right>" 'windmove-right)
+      (bind-key "s-<left>" 'windmove-left)
+
+      (bind-key "s-0" 'delete-window)
+      (bind-key "s-1" 'delete-other-windows)
+      (bind-key "s-2" 'gjg/split-window-below)
+      (bind-key "s-3" 'gjg/split-window-right)
+      (bind-key "s-p" 'playerctl-play-pause-song)
+      (bind-key "s-q" 'bury-buffer)
+      (bind-key "s-\\" 'switch-to-buffer)
+      ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
+      (defun gjg/widen-ask-if-indirect ()
+        "If buffer is indirect, ask before widening"
+        (interactive)
+        (if (buffer-base-buffer)
+            (when (yes-or-no-p "Buffer is indirect; really widen? ")
+          (widen))
+          (widen)))
+      (defun toggle-transparency (alpha-level)
+        (interactive "p")
+        (message (format "%s" alpha-level))
+        (if (< alpha-level 50) (setq alpha-level 85))
+        (let ((myalpha (frame-parameter nil 'alpha)))
+          (if (or (not myalpha)
+                  (= myalpha 100))
+          (set-frame-parameter nil 'alpha alpha-level)
+            (set-frame-parameter nil 'alpha 100))
+          )
+        (message (format "Alpha level is %d" (frame-parameter nil 'alpha)))
+        )
+
+      (defun set-transparency (alpha-level)
+        (interactive "p")
+        (message (format "Alpha level passed in: %s" alpha-level))
+        (let ((alpha-level (if (< alpha-level 2)
+                   (read-number "Opacity percentage: " 85)
+                     alpha-level))
+          (myalpha (frame-parameter nil 'alpha)))
+          (set-frame-parameter nil 'alpha alpha-level))
+        (message (format "Alpha level is %d" (frame-parameter nil 'alpha))))
+      (defalias 'set-opacity 'set-transparency )
+
+      (defun toggle-window-split ()
+        (interactive)
+        (if (= (count-windows) 2)
+            (let* ((this-win-buffer (window-buffer))
+               (next-win-buffer (window-buffer (next-window)))
+               (this-win-edges (window-edges (selected-window)))
+               (next-win-edges (window-edges (next-window)))
+               (this-win-2nd (not (and (<= (car this-win-edges)
+                           (car next-win-edges))
+                           (<= (cadr this-win-edges)
+                           (cadr next-win-edges)))))
+               (splitter
+                (if (= (car this-win-edges)
+                   (car (window-edges (next-window))))
+                'split-window-horizontally
+              'split-window-vertically)))
+          (delete-other-windows)
+          (let ((first-win (selected-window)))
+            (funcall splitter)
+            (if this-win-2nd (other-window 1))
+            (set-window-buffer (selected-window) this-win-buffer)
+            (set-window-buffer (next-window) next-win-buffer)
+            (select-window first-win)
+            (if this-win-2nd (other-window 1))))))
+
+      (define-key ctl-x-4-map "t" 'toggle-window-split)
+      ;; *** Full-screen frame defuns
+
+      (defun switch-full-screen ()
+        (interactive)
+        (shell-command (concat "/usr/bin/wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -btoggle,fullscreen")))
+
+      ;; (defun toggle-fullscreen ()
+      ;;   "toggles whether the currently selected frame consumes the entire display or is decorated with a window border"
+      ;;   (interactive)
+      ;;   (let ((f (selected-frame)))
+      ;;     (modify-frame-parameters f `((fullscreen . ,(if (eq nil (frame-parameter f 'fullscreen)) 'fullboth nil))))))
+
+      ;; (defun mac-toggle-max-window ()
+      ;;   "Toggle full-screen frame on Linux and OS X - use maxframe.el for Windows"
+      ;;   (interactive)
+      ;;   (if (frame-parameter nil 'fullscreen)
+      ;;       (set-frame-parameter nil 'fullscreen nil)
+      ;;     (set-frame-parameter nil 'fullscreen 'fullboth)))
+      ;; (defun toggle-full-screen ()
+      ;;   "Toggle between full screen and partial screen display on X11;
+      ;;     courtesy of http://www.emacswiki.org/cgi-bin/wiki/FullScreen"
+      ;;   (interactive)
+      ;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+      ;;                          '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+
+
+      ;; ;; add toggle for maxframe.el (works on Windows)
+      (when (eq window-system 'w32)
+        (require 'maxframe)
+        (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
+      ;; (modify-frame-parameters nil '((gjg/frame-maxp . nil)))
+      ;; ;; (defvar gjg/frame-maxp nil "Store whether frame is maximized using maxframe.el")
+      (defun gjg/switch-buffer-by-mode ()
+        "Switch to a buffer after choosing a mode."
+        (interactive)
+        (let* ((active-buffers-with-mode (mapcar #'(lambda (x) (with-current-buffer x (cons (buffer-name) (symbol-name major-mode)))) (buffer-list)))
+           (distinct-modes (-distinct (mapcar #'cdr active-buffers-with-mode)))
+           (selected-mode (ido-completing-read "Mode: " distinct-modes))
+           (candidate-buffers (mapcar #'car (remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
+           (selected-buffer (ido-completing-read "Buffer: " candidate-buffers)))
+          (switch-to-buffer selected-buffer)))
+      (global-set-key (kbd "C-c s") 'gjg/switch-buffer-by-mode)
+
+      (defun gjg/max-frame ()
+        "Maximize the current frame and toggle gjg/frame-maxp"
+        (interactive)
+        (cond ((eq window-system 'w32)
+           (maximize-frame))
+          ((eq window-system 'x)
+           (switch-full-screen))
+          (t
+           (mac-toggle-max-window)))
+        (modify-frame-parameters nil '((gjg/frame-maxp . t))))
+
+      (defun gjg/restore-frame ()
+        "Restore the current frame to its previous size and toggle gjg/frame-maxp"
+        (interactive)
+        (cond ((eq window-system 'w32)
+           (restore-frame))
+          ((eq window-system 'x)
+           (switch-full-screen))
+          (t
+           (mac-toggle-max-window)))
+        (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
+
+      (defun gjg/toggle-max-frame ()
+        "Check the status of gjg/max-framep and change to whichever mode we're not in now."
+        (interactive)
+        (cond ((eq window-system 'ns)
+           (toggle-frame-maximized))
+          (t
+           (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
+
+    #+end_src
+*** Winner-mode and Windmove
+    TODO: Verify that =org-timestamp-{up,down}= work as =S-up= and =S-down=
+   #+begin_src emacs-lisp
+     ;; winner
+     (winner-mode 1)
+     ;; windmove
+     ;; (windmove-default-keybindings)
+     ;; (with-eval-after-load 'windmove
+     ;;   (windmove-default-keybindings)
+     ;;   ;; Make windmove work in org-mode:
+     ;;   (setq org-replace-disputed-keys t))
+     ;; (add-hook 'org-shiftup-final-hook 'windmove-up)
+     ;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
+     ;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
+     ;; (add-hook 'org-shiftright-final-hook 'windmove-right)))
+
+
+   #+end_src
+*** Ibuffer FTW
+**** View customizations
+     #+begin_src emacs-lisp
+       (setq ibuffer-formats
+             '((mark modified read-only locked " "
+                     (name 50 50 :left :elide)  ; much wider buffer name column
+                     " "
+                     (size 9 -1 :right)
+                     " "
+                     (mode 16 16 :left :elide)
+                     " " filename-and-process)
+               (mark " "
+                     (name 16 -1)
+                     " " filename))
+             )
+     #+end_src
+**** Filter groups
+    Saved filter groups provide a nice organization.
+
+    #+begin_src emacs-lisp
+      (require 'ibuffer)
+      (global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
+      (setq ibuffer-expert t)
+      (setq ibuffer-default-sorting-mode 'alphabetic)
+      (setq ibuffer-saved-filter-groups
+            '(("home"
+               ("Org and Markdown" (or (mode . org-mode)
+                                       (mode . markdown-mode)))
+               ("Shells" (or (mode . shell-mode)
+                             (mode . eshell-mode)))
+               ("EXWM X Apps" (mode . exwm-mode))
+               ("Configs" (or (derived-mode .  conf-mode)
+                              (mode . yaml-mode)
+                              (mode . json-mode)))
+               ("Code" (derived-mode .  prog-mode))
+               ("Magit" (or (mode . magit-diff-mode)
+                            (mode . magit-status-mode)
+                            (mode . magit-process-mode)
+                            (mode . magit-revision-mode)
+                            (mode . magit-refs-mode)))
+               ("Dired" (mode . dired-mode))
+               ("Tramp sessions" (name . "\*tramp.+"))
+               ("Remote" (filename . "/\*:.+"))
+               )))
+      (add-hook 'ibuffer-mode-hook
+                '(lambda ()
+                   (ibuffer-auto-mode 1)
+                   (auto-revert-mode 1)
+                   (ibuffer-switch-to-saved-filter-groups "home")))
+    #+end_src
+**** Preview buffer in side window
+     Preview without selecting the window - stay on current line in Ibuffer
+
+     This function should work just like =occur-mode-display-occurence= in [[file:/usr/local/share/emacs/28.0.50/lisp/replace.el.gz][replace.el]]
+    #+begin_src emacs-lisp
+      (defun gjg/ibuffer-only-exwm ()
+        (interactive)
+        (ibuffer nil "*EXWM Thang*" '((used-mode . exwm-mode)))
+        (gjg/ibuffer-preview))
+      (global-set-key (kbd "s-e") 'gjg/ibuffer-only-exwm)
+      (defun gjg/ibuffer-preview ()
+        "View the current file in other window but to do select"
+        (interactive)
+        (delete-other-windows)
+        (when (not (window-parent)) ;; only one window, so split
+          (split-window nil nil 'right))
+        (let ((buf (ibuffer-current-buffer t)))
+          (display-buffer buf '((display-buffer-use-some-window
+                                 display-buffer-pop-up-window)
+                                (inhibit-same-window . t))))
+        :refresh-p nil)
+
+      (define-key ibuffer-mode-map (kbd "SPC") 'gjg/ibuffer-preview)
+    #+end_src
+
+*** Uniquify
+    #+begin_src emacs-lisp
+      (autoload 'uniquify "uniquify" "unique buffer names dependent on file name")
+      (with-eval-after-load 'uniquify
+        (setq uniquify-buffer-name-style 'reverse)
+        (setq uniquify-separator "/")
+        (setq uniquify-after-kill-buffer-p t)
+        (setq uniquify-ignore-buffers-re "^\\*"))
+    #+end_src
+*** Theme
+    #+begin_src emacs-lisp :results none
+      (when (boundp 'custom-theme-load-path)
+        (add-to-list 'custom-theme-load-path
+                     "~/projects/emacs/brutalist-theme/")
+        (add-to-list 'load-path
+                     "~/projects/emacs/brutalist-theme/"))
+      (load-theme 'brutalist t)
+    #+end_src
+
+** Automatic typing - abbrevs and expansions
+   #+begin_src emacs-lisp
+;; Dynamic abbrevs should expand both words and symbols
+(setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
+;; and now set up hippie-expand
+(global-set-key (kbd "M-/") 'hippie-expand)
+
+   #+end_src
+** Games and silliness
+   #+begin_src emacs-lisp
+     ;; very important: keep a long list of yow lines
+     ;;   in emacs 24.4 yow.el is obsolete; use cookie instead
+     (when (featurep 'yow)
+       (unload-feature 'yow))
+     (with-eval-after-load 'cookie1
+       (setq yow-file "~/emacs/yow.lines")
+       (defun yow ()
+         (interactive)
+         (let ((suggest-key-bindings nil))
+           (message (cookie yow-file nil nil)))))
+     ;; )
+     ;; almost as important: keep track of those tetris scores
+     (setq tetris-score-file "~/.emacs.d/tetris.score")
+
+
+   #+end_src
+** Weird random rarely used maybe interesting things
+*** MOOs and MUDs - NOT legacy - added 2019!
+   #+begin_src emacs-lisp
+;; Moos and MUDs - NOT legacy stuff - added 2019!
+(add-to-list 'load-path "~/projects/emacs/rmoo/")
+;; (require 'rmoo-autoload)
+;; (require 'moocode-mode)
+;; ;; (global-set-key (kbd "C-c C-r") 'rmoo)
+;; (add-to-list 'auto-mode-alist '("\\.moo$" . moocode-mode))
+;; (add-hook 'rmoo-interactive-mode-hooks
+;;           (lambda ()
+;;             (linum-mode -1)                  ;; ... no line numbers
+;;             (goto-address-mode t)))          ;; ... clickable links
+
+
+   #+end_src
+
+* Encryption
+  Set value of =epg-gpg-program= to location on local system
+  #+begin_src emacs-lisp
+;; let's get encryption established
+;; For gpg, disable external pinentry - let emacs handle pass phrase
+;; (setenv "GPG_AGENT_INFO" nil)
+(require 'epa-file)
+;; (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
+(epa-file-enable)
+(setq epg-pinentry-mode 'loopback)
+(require 'org-crypt)
+(org-crypt-use-before-save-magic)
+
+  #+end_src
+* EXWM : The Emacs X Window Manager
+   This crazy idea is better than I thought it could be!
+
+   This section is only useable on Linux - or Unix presumably - with X Window System
+   running but no window manager.  An entire window manager has been written in Emacs
+   Lisp - the fundamental package that exercises the X11 APIs is called =xelb= - its GitHub
+   repository is [[https://github.com/ch11ng/xelb][here]] - also available on GNU ELPA.
+
+   The package built atop that to provide a usable window manager is EXWM - Emacs X Window
+   Manager - GitHub repo [[https://github.com/ch11ng/exwm][here]]
+
+   EXWM is primarily a tiling window manager, but it supports floating windows as well -
+   very nice for transient dialogs.  You have control to take an application window and
+   change it to a floating window, along with the ability to move and resize it.
+
+   EXWM supports workspaces, which here is an abstraction based on Emacs frames.  The only
+   time I use workspaces in EXWM is when I have 2 or more monitors, where I place one
+   workspace per display.
+
+** Recommended changes to workflow when using a tiling window manager
+*** Web browser should open new windows rather than tabs
+    Doing this allows Emacs to search window/tab titles.  It's a weird change at first,
+    but it's a much better experience in a tiling window manager that has good search.
+
+    In Firefox, you can go to =about:preferences=.  Under the *Tabs*, uncheck =Open links
+    in tabs instead of new windows=
+*** Scripts will be required to handle operations normally managed by Desktop Environment
+    I have moved all the generated scripts and configs I use to support EXWM - and
+    theoretically any other tiling window manager - to [[file:exwm-scripts-and-configs.org][this Org file]].  I use that Org file
+    generate (tangle) everything I need in a Linux environment.
+
+*** Launching applications without a Desktop Environment
+    EXWM default config suggests a handy shell launch command from Emacs, but I prefer to
+    use exactly what I do on every other OS - a pop-up app launcher such as [[https://github.com/albertlauncher/albert][Albert]] or ulauncher.
+
+** Unresolved problems
+*** TODO Fix clipboard integration / behavior
+    + The problem is consistent cut/paste copy/yank behavior between Emacs windows and
+      managed X windows.
+
+      + Copy text in Emacs -> paste to Firefox works in =char= mode
+
+      + Copy text in Emacs -> paste to Firefox in =line= mode no worky - have to use right
+        mouse click or =S-<insert>  *how to define simulation key??*
+
+      + Copy text in Firefox =char= mode -> yank in Emacs works
+
+      + Copy text in Firefox =line= mode using =M-w= -> yank in Emacs works
+
+
+** System tray widgets
+   EXWM has a system tray that can be enabled, and some panel widgets work with it.  For
+   me, I'd rather either use pure Emacs or Linux shell methods of getting info and setting
+   values, *or* just go ahead and use a "proper" panel.
+
+    I have found that both =xfce4-panel= and the LXDE panel work a treat!  For
+    =xfce4-panel= do *not* check =Don't reserve space on borders= - that way the panel
+    will not obscure the echo area at the very bottom of the screen
+
+    One can either bring up Emacs with no DE and then run the panels as processes, or
+    hijack the default window manager in one of the lightweight DEs.
+
+*** Useful panel widgets
+      + [[https://docs.xfce.org/panel-plugins/clipman/start][xfce4-clipman - a clipboard manager]]
+      + parcellite - a different clipboard manager
+      + /usr/bin/python3 /usr/share/system-config-printer/applet.py - printer notifications
+      + nm-applet --indicator  - NetworkManager applet - absolutely needed
+      + /usr/lib/blueberry/blueberry-tray.py - a Blueberry setup app triggered from the panel
+      + /usr/bin/python3 /usr/bin/blueman-applet - a *nicer* bluetooth applet with setup
+        and file transfer
+
+** Panel with Polybar
+
+   This is a potential alternative to the XFCE Panel - let's try it out using @daviwil's config
+
+   Check out the Polybar wiki for more details on how to configure it: https://github.com/polybar/polybar/wiki
+
+   + [[https://awesomeopensource.com/projects/polybar][The Top 422 Polybar Open Source Projects on Github]]
+
+
+*** Integration with =emacsclient=
+
+   Polybar provides a great, minimalistic panel for your EXWM desktop configuration.  The
+   following config integrates =emacsclient= and Polybar with =polybar-msg= to enable you
+   to gather *any* information from Emacs and display it in the panel!
+
+   #+begin_src emacs-lisp
+     ;; Make sure the server is started
+     (unless (server-running-p)
+       (server-start))
+
+     (defvar gjg/polybar-process nil
+       "Holds the process of the running Polybar instance, if any")
+
+     (defun gjg/kill-panel ()
+       (interactive)
+       (when gjg/polybar-process
+         (ignore-errors
+           (kill-process gjg/polybar-process)))
+       (setq gjg/polybar-process nil))
+
+     (defun gjg/start-panel ()
+       (interactive)
+       (gjg/kill-panel)
+       (setq gjg/polybar-process (start-process-shell-command "polybar" "*polybar-process*" (concat "polybar --config=~/.config/polybar/config-fancy floating -r -l warning" ))))
+
+     (defun gjg/send-polybar-hook (module-name hook-index)
+       (start-process-shell-command "polybar-msg" nil (format "polybar-msg hook %s %s" module-name hook-index)))
+
+     (defun gjg/send-polybar-exwm-workspace ()
+       (gjg/send-polybar-hook "exwm-workspace" 1))
+
+     ;; Update panel indicator when workspace changes
+     (add-hook 'exwm-workspace-switch-hook #'gjg/send-polybar-exwm-workspace)
+
+   #+end_src
+
+*** Panel configuration
+    The configuration for our ingeniously named panel, "panel".  Invoke it with =polybar
+    panel= on the command line!
+
+    + A variation of @daviwil's config [[file:~/projects/homelab/dotfiles/.config/polybar/config-simple-panel][here]]
+    +
+
+*** Helpful Polybar scripts
+**** hideIt.sh - hide *any* X window - we will use it just for polybar
+     Polybar - remarkably and shockingly - does not have an autohide feature (I believe).
+
+     So there is a clever script called [[https://raw.githubusercontent.com/Tadly/hideIt.sh/master/hideIt.sh][hideIt.sh]] - which will actually work for any X window
+
+     My current variation is based on [[https://github.com/Tadly/hideIt.sh][Tadly's hideIt.sh]]
+
+**** toggle hideIt - authohide or pin
+     We will 'pin' the polybar panel simply by killing the hideIt process
+     #+begin_src bash :tangle ~/bin/toggle-auto-hide-polybar.sh
+       pid=$(ps fax | grep hideIt | grep -v grep|head -1 | awk '{print $1}')
+       echo "Debug: pid is |${pid}|"
+       if [ -n "${pid}" ] ; then
+           # it's active, so kill it, thus "pinning" our panel
+           echo "killing ${pid}"
+           ps fax | grep hideIt | grep -v grep | awk '{print $1}' | xargs kill
+       else
+           # it's not running so, start 'er up and autohide the panel
+           # We first have to grab monitor 0 resolution to properly set regiob
+           hregion=$(xrandr --listactivemonitors | egrep '^ *0:'  |cut -d':' -f2|cut -d' ' -f3 | sed 's,\([0-9]\+\)\/[0-9]\+x\([0-9]\+\).\+,0x\2+\1+-10,')
+           setsid ~/.config/polybar/scripts/hideIt.sh --wait --region ${hregion} --name '^polybar-floating' > /dev/null 2>&1 &
+
+       fi
+     #+end_src
+
+** To launch or not to launch
+   My configuration tests for the existence of a window manager.  If one is already
+   running, just skip all the EXWM setup and bring up a "normal" Emacs instance.
+
+   I shared this solution in an Emacs Stackexchange question: [[https://emacs.stackexchange.com/a/60455/418][Launch EXWM only when no another WM or DE are being used]]
+
+#+begin_src emacs-lisp
+  (when (get-buffer "*window-manager*")
+    (kill-buffer "*window-manager*"))
+  (when (get-buffer "*window-manager-error*")
+    (kill-buffer "*window-manager-error*"))
+  (when (executable-find "wmctrl")
+    (progn
+      (shell-command "wmctrl -m ; echo $?" "*window-manager*" "*window-manager-error*")))
+  (setq gjg/exwm-needed-p
+        (and (get-buffer "*window-manager-error*")
+             (eq window-system 'x)))
+#+end_src
+** Let's get this show on the road - if no window manager was detected
+   We start a large =when= block here
+ #+begin_src emacs-lisp
+   (when gjg/exwm-needed-p
+ #+end_src
+*** Start wallpaper with transparency first for aesthetics
+    Script below is generated with the [[file:exwm-scripts-and-configs.org][Org file referenced above]]
+    #+begin_src emacs-lisp
+      (set-opacity 95)
+      (async-start-process "wallpaper-thang"  "nohup" nil "/home/gregj/bin/schedule-rotate-wallpapers.sh" "&")
+    #+end_src
+*** My specific config function
+    I did not want =ido= integration and wanted to evolve my config.  So I copied the
+    default config function and commenced modifying
+
+    This sets the amazing simulation keys.  What does that little miracle do for us? It
+    gives us Emacs keys in Firefox, that's what it does!  And other X applications, of
+    course.
+
+    So now we can hit =C-n= to move to the next line.  I use =C-s= to search in Firefox,
+    which translates to sending a =C-f=.  There's more I want to configure but I haven't
+    entirely figured out how this works in char mode, whether it works with the Super key
+    and so forth.
+
+    TODO: Define super-{left,right,0,1,2} to mean the same thing I have in the global
+    keymap: windmove etc.
+
+    TODO: Define simulation key for "Print"
+     #+begin_src emacs-lisp
+          (defun gjg/exwm-config ()
+            "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
+            ;; Set the initial workspace number.
+            (unless (get 'exwm-workspace-number 'saved-value)
+              (setq exwm-workspace-number 2)) ; GJG changed from default
+            ;; Global keybindings.
+            ;; (unless (get 'exwm-input-global-keys 'saved-value)
+              (message "Setting exwm-input-global-keys")
+              (setq exwm-input-global-keys
+                    `(
+                      ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
+                      ([?\s-l] .   ;; super/windows l
+                              (lambda ()
+                                (interactive)
+                                (call-process-shell-command "xfce4-screensaver-command -l")))
+                      ;; 's-r': Reset (to line-mode).
+                      ([?\s-r] . exwm-reset)
+                      ([?\s-s] . save-some-buffers)
+                      ;; 's-w': Switch workspace.
+                      ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
+                      ;; 's-&': Launch application. - poor man's albert/launchy
+                      ([?\s-&] . (lambda (command)
+                                   (interactive (list (read-shell-command "$ ")))
+                                   (start-process-shell-command command nil command)))
+                      ;; 's-&': Launch application. - poor man's albert/launchy
+                      ([?\s-7] . (lambda (command)
+                                   (interactive (list (read-shell-command "$ ")))
+                                   (start-process-shell-command command nil command)))
+                      ([?\s-o] .  gjg/other-window-with-winum)
+                      ([s-left] . windmove-left)
+                      ([s-right] . windmove-right)
+                      ([s-up] . windmove-up)
+                      ([s-down] . windmove-down)
+                      ([?\s-e] . gjg/ibuffer-only-exwm)
+                      ([s-backspace] . bury-buffer)
+                      ([?\s-q] . bury-buffer)
+                      ([?\s-\\] . switch-to-buffer )
+                      ([?\s-a] . gjg/open-work-agenda)
+                      ([?\s-b] . gjg/switch-to-other-buffer)
+                      ([?\s-0] . delete-window)
+                      ([?\s-1] . delete-other-windows)
+                      ([?\s-2] . gjg/split-window-below)
+                      ([?\s-3] . gjg/split-window-right)
+                      ([?\s-p] . playerctl-play-pause-song)
+                      ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
+                      ;; 's-N': Switch to certain workspace.
+                      ;; ,@(mapcar (lambda (i)
+                      ;;             `(,(kbd (format "s-%d" i)) .
+                      ;;               (lambda ()
+                      ;;                 (interactive)
+                      ;;                 (exwm-workspace-switch-create ,i))))
+                      ;;           (number-sequence 4 9))
+                      ))
+              ;; )
+            ;; Line-editing shortcuts
+            (unless (get 'exwm-input-simulation-keys 'saved-value)
+              (setq exwm-input-simulation-keys
+                    '(([?\C-b] . left)
+                      ([?\C-f] . [right])
+                      ([?\C-p] . [up])
+                      ;; ([?\C-P] . [?\C-p]) ; Print
+                      ([?\C-n] . [down])
+                      ([?\C-a] . [home])
+       ([?\C-e] . [end])
+                      ([?\M-v] . [prior])
+                      ([?\C-v] . [next])
+                      ([?\C-d] . [delete])
+                      ([?\C-k] . [S-end delete])
+                      ([?\C-l] . [?\C-l])
+                      ([?\C-t] . [?\C-t])
+                    ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way
+                    ([?\M-w] . [?\C-c]) ; Copy that!
+                    ;; ([?\S-p] . [?\C-p]) ; TODO Print - not working
+                    ([?\C-y] . [?\C-v]) ; yank/paste
+                    )))
+            ;; Enable EXWM
+            (exwm-enable)
+            ;; ;; Configure Ido
+            ;; (exwm-config-ido)
+            ;; Other configurations
+            ;; (exwm-config-misc)
+            )
+     #+end_src
+*** Define special logout if using LXDE
+    I do not use this - but beware if using a lightweight desktop environment in
+    conjunction with EXWM, you may have to use this code or something similar to get a
+    clean user session logout
+ #+begin_src emacs-lisp :tangle no
+   (defun exwm-logout ()
+     (interactive)
+     ;; (recentf-save-list)
+     (save-some-buffers)
+     (start-process-shell-command "logout" nil "lxsession-logout"))
+ #+end_src
+*** Require packages and run my custom conifg
+  #+begin_src emacs-lisp
+    ;; (< 0 (length (with-current-buffer "*window-manager-error*" (buffer-string)))))
+    (require 'exwm)
+    (require 'exwm-config)
+    (gjg/exwm-config)
+  #+end_src
+*** Configure hooks
+**** Deal with displays
+    When an external monitor is connected or disconnected, =exwm-randr-screen-change-hook=
+    is called.
+
+    The single command I currently run adds my external widescreen monitor to the left of
+    the internal display.
+
+    Disconnecting the external monitor was not working well until I started using
+    =autorandr= with a laptop-only and a monitor-connected profile.  I allow autodetection
+    of the appropriate profile with the =--change= parameter.  The solution came from a
+    [[https://www.reddit.com/r/emacs/comments/j0zda7/exwm_randr_config_for_laptop_disconnect/?utm_source=share&utm_medium=web2x&context=3][post on /r/emacs]]
+
+        #+begin_src emacs-lisp
+          (require 'exwm-randr)
+          ;; (setq exwm-randr-workspace-monitor-plist '(0 "DP-1")) ;; DP-1 is the big monitor, if connected
+          (setq exwm-randr-workspace-monitor-plist '(0 "DP-3" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
+
+          (add-hook 'exwm-randr-screen-change-hook
+                    (lambda()
+                      (message "Starting exwm-randr-screen-change-hook")
+                      (start-process-shell-command
+                       "autorandr" nil "autorandr --change ; autorandr"
+                       ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
+                       ;; WORKS WHEN ADDING MONITOR, NOT WHEN DISCONNECTING "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
+                       ;; and here's how I might get a mirrored setup
+                       ;; xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --mode 1920x1080 --same-as eDP-1
+                       )))
+        #+end_src
+**** Intelligently rename new buffers
+    By default, each new window's buffer is named by the 'class name': So Firefox, Slack,
+    Alacritty and so on.  This means that I will get similar buffer names for each new
+    Firefox window: Firefox<1>, Firefox<2>....
+
+    Examining both =exwm-class-name= and =exwm-title= allows us to rename the buffers so
+    that navigation via regular Emacs commands is made easy.
+
+        #+begin_src emacs-lisp
+          ;; Make class name the buffer name
+          (add-hook 'exwm-update-class-hook
+                    (lambda ()
+                      (cond
+                       (:else
+                        (exwm-workspace-rename-buffer exwm-class-name)))))
+          (add-hook 'exwm-update-title-hook
+                    (lambda ()
+                      (let ((browsers '(("Mozilla Firefox" . "firefox")
+                                        ("Personal - Microsoft​ Edge Beta" . "msedge")
+                                        ("Google Chrome" . "chrome"))))
+                            (cond
+                             ((s-starts-with-p "Mail - Greg Grubbs - Outlook - " exwm-title)
+                              (exwm-workspace-rename-buffer "email - outlook"))
+                             ((s-starts-with-p "Calendar - Greg Grubbs - Outlook" exwm-title)
+                              (exwm-workspace-rename-buffer "calendar - outlook"))
+                             ((s-starts-with-p "Google Hangouts - " exwm-title)
+                              (exwm-workspace-rename-buffer "hangouts"))
+                             ((s-starts-with-p "Chat - " exwm-title)
+                              (exwm-workspace-rename-buffer "chat"))
+                             ((s-starts-with-p "Slack" exwm-title)
+                              (exwm-workspace-rename-buffer "slack"))
+                             ((string= "zoom" exwm-class-name)
+                              (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
+                             ((s-starts-with-p "Dashboard - " exwm-title)
+                              (exwm-workspace-rename-buffer "Rancher UI - Dashboard"))
+                             ((string= "Spotify" exwm-class-name)
+                              (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
+                             (:else
+                              (exwm-workspace-rename-buffer
+                               (s-replace-all browsers exwm-title)))))))
+        #+end_src
+**** Clean up on exit
+     #+begin_src emacs-lisp
+       (add-hook 'exwm-exit-hook
+                 (lambda ()
+                 (async-start-process "exwm-exit" "/usr/bin/pkill -f schedule-rotate-wallpapers")))
+     #+end_src
+
+*** Start up the window manager
+    As noted above, I do not use the EXWM system tray.
+        #+begin_src emacs-lisp
+        (exwm-enable)
+        (exwm-randr-enable)
+        ;; (require 'exwm-systemtray)
+        ;; (exwm-systemtray-enable)
+        #+end_src
+*** Deal with brightness and volume, since we don't have a DE
+    There is a =desktop-environment= package on Melpa, but it's overkill for what I need.
+        #+begin_src emacs-lisp :tangle no
+          (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")
+                              (lambda ()
+                                (interactive)
+                                (call-process-shell-command "gjg-bright.sh +5")))
+          (exwm-input-set-key (kbd "<XF86MonBrightnessDown>")
+                              (lambda ()
+                                (interactive)
+                                (call-process-shell-command "gjg-bright.sh -5")))
+          ;; N.B. keyboard backlight level (0 1 2) is kept in /sys/class/leds/dell\:\:kbd_backlight/brightness
+          (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
+                              (lambda ()
+                                (interactive)
+                                (call-process-shell-command "amixer sset 'Master' 5%+")))
+          (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
+                              (lambda ()
+                                (interactive)
+                                (call-process-shell-command "amixer sset 'Master' 5%-")))
+          (exwm-input-set-key (kbd "<XF86AudioMute>")
+                              (lambda ()
+                                (interactive)
+                                (call-process-shell-command "amixer sset 'Master' toggle")))
+        #+end_src
+*** Navigate and manipulate windows
+    Now that we will be running *everything* in Emacs, we will be doing a lot of window
+    switching and frame splitting.  Here are some ways to bring sanity to that process and
+    hopefully ease Emacs Pinky Syndrome.
+
+    =buffer-expose= is an alternative to alt-tab
+
+    TODO: look for alternative to buffer-expose, as it does not play
+    well with EXWM - many times the EXWM windows such as the browsers
+    become unusable, with click and normal keyboard events throwing
+    warnings/errors
+    Oneto consider:
+    + [[https://github.com/casouri/emacs-mission-control][GitHub - casouri/emacs-mission-control: Mac mission-control-like buffer switch]]
+      #+begin_src emacs-lisp
+        (straight-use-package
+         '(mission-control
+           :type git
+           :host github
+           :repo "casouri/emacs-mission-control"))
+        (use-package mission-control
+          :straight t
+          :config
+          (mcon-c-tab-setup-binding))
+      #+end_src
+
+    =window-divider-mode= makes it easy to  resize vertically split windows with the mouse - EXWM
+    makes it nearly impossible to select the vertical margin without this!
+
+    =zoom-mode= is also quite useful to avoid having to manually resize horizontal and
+    vertical splits - so useful I have added it in as part of my normal Emacs config
+        #+begin_src emacs-lisp
+          ;; (require 'buffer-expose)
+          ;; (buffer-expose-mode 1)
+          (require 'magit) ; to make magit-mode-map available
+
+          ;; https://github.com/ch11ng/exwm/wiki#unable-to-resize-an-x-window-by-dragging-its-right-edge
+          (global-unset-key (kbd "M-<tab>"))
+          (unbind-key (kbd "M-<tab>") magit-mode-map)
+          ;; (global-set-key (kbd "M-<tab>") (lambda () (buffer-expose-major-mode nil 'exwm-mode))); now we have alt-tab in EXWM!
+          ;; (unbind-key (kbd "C-c C-<tab>") org-mode-map)
+          ;; (global-set-key (kbd "C-c C-<tab>") (lambda () (interactive) (buffer-expose-major-mode nil 'exwm-mode)))
+          ;; (unbind-key (kbd "C-c C-d") buffer-expose-mode-map) ; unsteal key from Org Mode: org-deadline
+          ;; (unbind-key (kbd "C-c C-<tab>") buffer-expose-mode-map)
+          (setq window-divider-default-right-width 1)
+          (window-divider-mode 1)
+        #+end_src
+*** Changes to modeline
+    Now that I don't have the typical DE panels, I want to show clock and battery in the modeline
+        #+begin_src emacs-lisp
+          ;; TODO: find a system-tray/panel solution to showing clock and battery - modeline is so crowded already
+          (display-time)
+          (display-battery-mode 1)
+        #+end_src
+*** Start the OS processes
+    #+begin_src emacs-lisp
+      (call-process-shell-command "~/bin/emacswm.sh")
+      (setenv "EDITOR" "emacsclient")
+    #+end_src
+
+** And FINALLY - this must be last - close out the =when= clause
+        #+begin_src emacs-lisp
+        ) ;; when gjg/exwm-needed-p
+        #+end_src
+
+* Commonly used modes
+** Start emacs server
+   #+begin_src emacs-lisp
+(server-start)
+   #+end_src
+** Eshell
+   Okay, not yet "commonly used" (as of [2020-09-23 Wed]) ... but it appears to be
+   awesome.
+
+   Ref Howard Abrams' [[https://www.youtube.com/watch?v=RhYNu6i_uY4&t=1548s][Introduction to EShell - YouTube]]
+
+   + Eshell uses =term= when a non-line-mode command is invoked.  Set it so that the
+     =term= window goes away when the process ends.  Also make various =git= things work
+     nicely.
+   #+begin_src emacs-lisp
+     (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
+     (setq eshell-destroy-buffer-when-process-dies t)
+   #+end_src
+** Project.el
+   Project.el is built in
+
+   #+begin_src emacs-lisp
+     (setq project-switch-commands
+        '((project-find-file "Find file")
+          (project-find-regexp "Find regexp")
+          (project-find-dir "Dired somewhere")
+          (project-dired "Root dired" 114)
+          (project-shell "Shell" 115)
+          (magit-project-status "Magit" 109)
+          ))
+     (defun gjg/project-dired-choose ()
+       "Visit a directory (with completion) in the current project."
+       (interactive)
+       (let* ((pr (project-current t))
+              (dir "/home/gregj/projects/homelab")
+              (localdir (file-name-unquote (file-local-name (expand-file-name dir))))
+              (dirs (process-file-shell-command (format "%s -H %s -type d " find-program (shell-quote-argument (directory-file-name localdir))))))
+
+         (completing-read "Ohai: " dirs)))
+         ;; (message dirs)))
+
+         ;; (project-find-file-in (thing-at-point 'filename) dirs pr)))
+   #+end_src
+** EDE
+   I have no use for the built-in EDE.  The only thing EDE does for me is to steal the
+   =C-c .= keystroke away from Org Mode - thanks for nothin' EDE.
+
+   I'll just remap the keys to the currently-unsed =C-c e=
+
+   #+begin_src emacs-lisp
+     (with-eval-after-load 'ede
+       (define-key ede-minor-mode-map (kbd "C-c e")
+         (lookup-key ede-minor-mode-map (kbd "C-c .")))
+       (define-key ede-minor-mode-map (kbd "C-c .") nil))
+   #+end_src
+
+** Company
+ #+BEGIN_SRC emacs-lisp
+   (use-package company-mode
+     :straight t
+     :after lsp-mode
+     :hook (lsp-mode . company-mode)
+     :bind (:map company-active-map ("<tab>" . company-complete-selection))
+           (:map lsp-mode-map ("<tab>" . company-indent-or-complete-common))
+    :config
+     (company-idle-delay 0.0)
+     (setq company-minimum-prefix-length 1))
+
+   ;; (use-package company-lsp
+   ;;   :straight t
+   ;;   :config
+   ;;  (push 'company-lsp company-backends)
+   ;; )
+ #+END_SRC
+** TRAMP
+   #+begin_src emacs-lisp
+;;(require 'tramp)
+   #+end_src
+*** Add methods for Docker, DC/OS, Google Cloud Shell
+**** Add a helper script for Kubernetes =kube= method
+
+     + Firstly, implement my custom way of handling multiple clusters
+       #+begin_src bash :tangle ~/bin/load-kubeconfigs.sh
+         # Stolen from https://medium.com/@alexgued3s/multiple-kubeconfigs-no-problem-f6be646fc07d
+
+         # Start by "resetting" KUBECONFIG
+         unset KUBECONFIG
+         # If there's already a kubeconfig file in ~/.kube/config it will import that too and all the contexts
+         DEFAULT_KUBECONFIG_FILE="$HOME/.kube/config"
+         if test -f "${DEFAULT_KUBECONFIG_FILE}"
+         then
+           export KUBECONFIG="$DEFAULT_KUBECONFIG_FILE"
+         fi
+         # Your additional kubeconfig files should be inside ~/.kube/config-files
+         ADD_KUBECONFIG_FILES="$HOME/.kube/config-files"
+         mkdir -p "${ADD_KUBECONFIG_FILES}"
+
+         OIFS="$IFS"
+         IFS=$'\n'
+         for kubeconfigFile in `find "${ADD_KUBECONFIG_FILES}" -type f -name "*.yml" -o -name "*.yaml"`
+         do
+             export KUBECONFIG="$kubeconfigFile:$KUBECONFIG"
+         done
+         IFS="$OIFS"
+       #+end_src
+     + This will work with the custom method.  It will honor the existing setting of
+       context namespace, so set that first if the Pod is running in something other than
+       =default= namespace.
+
+       E.g.
+       #+begin_src bash
+         kn tigergraph # using alias
+         kubectl config set-context --current --namespace tigergraph # full cmd
+       #+end_src
+       #+begin_src bash :tangle ~/bin/mykubectl
+         source ~/bin/load-kubeconfigs.sh
+         /usr/bin/kubectl $@
+       #+end_src
+
+**** Define TRAMP methods
+    #+begin_src emacs-lisp
+      ;; add method to connect to Mesosphere DC/OS tasks
+      ;; we need to execute a command like the following
+      ;;  dcos task exec --tty --interactive <taskname> -- bash
+      ;; example TRAMP URI:   //dcos:jupyter:
+      (require 'tramp)
+      (with-eval-after-load 'tramp
+        (add-to-list 'tramp-methods
+                     `("docker"
+                       (tramp-login-program      "docker")
+                       (tramp-login-args         (nil ("exec" "-it") ("-u" "%u") ("%h") ("sh")))
+                       (tramp-remote-shell       "/bin/sh")
+                       (tramp-remote-shell-args  ("-i" "-c"))))
+        (add-to-list 'tramp-methods
+                     '("dcos"
+                       (tramp-login-program "dcos")
+                       (tramp-login-args
+                        (nil
+                         ("task" "exec" "-it")
+                         ("%h")
+                         ("bash")))
+                       (tramp-remote-shell "/bin/sh")
+                       (tramp-remote-shell-args ("-i" "-c"))))
+        ;; Add method to connect to Kubernetes pods
+        ;; we need to execute a command like the following
+        ;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
+        ;; example TRAMP URI:   //kexec:jhub@jupyter:
+        (add-to-list 'tramp-methods
+                     '("kube"
+                       (tramp-login-program "mykubectl")
+                       (tramp-login-args
+                        (nil
+                         ("exec" "-it")
+                         ("--namespace" "%u")
+                         ("%h")
+                         ("--" "sh")))
+                       (tramp-remote-shell "/bin/sh")
+                       (tramp-remote-shell-args ("-i" "-c"))))
+
+        ;; Google Cloud Shell
+        (add-to-list 'tramp-methods
+                     '("gshell"
+                       (tramp-login-program        "gcloud alpha cloud-shell ssh")
+                       (tramp-default-host "cloud-shell")
+                       (tramp-login-args (("#%h")))
+                       ;; (tramp-login-args           (("%h")))
+                       ;; (tramp-async-args           (("-q")))
+                       (tramp-remote-shell         "/bin/bash")
+                       (tramp-remote-shell-args    ("-c"))
+                       ;; (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+                       ;;                              ("-o" "UserKnownHostsFile=/dev/null")
+                       ;;                              ("-o" "StrictHostKeyChecking=no")))
+                       (tramp-default-port         22)))
+        ;; TRAMP gcloud ssh with no helper script
+        (add-to-list 'tramp-methods
+                     '("gssh"
+                       (tramp-login-program        "gcloud compute ssh")
+                       (tramp-login-args           (("%h")))
+                       (tramp-async-args           (("-q")))
+                       (tramp-remote-shell         "/bin/sh")
+                       (tramp-remote-shell-args    ("-c")))))
+
+
+    #+end_src
+*** Handle SUDO - root and other users
+    #+begin_src emacs-lisp
+;; TRAMP SUDO FUN - snarfed from Peter Dyballa on gmane.emacs.help
+(defun my-tramp-header-line-function ()
+  (when (string-match "^/.*su\\(do\\)?:" default-directory)
+    (setq header-line-format
+	      (format-mode-line "----- THIS BUFFER IS VISITED WITH SUDO PRIVILEGES -----"
+			                'font-lock-warning-face))))
+
+(with-eval-after-load 'tramp
+  (add-hook 'find-file-hook 'my-tramp-header-line-function)
+  (add-hook 'dired-mode-hook 'my-tramp-header-line-function))
+    #+end_src
+*** Shell sugar
+**** Open remote shell in current remote directory
+#+begin_src emacs-lisp
+  (defun gjg/open-shell-prompted (newdir)
+    "Directly open shell local or TRAMP remote"
+    (interactive "D")
+    (message (format "Changing directory to %s" newdir))
+    (cd newdir)
+    (if (file-remote-p newdir)
+        (shell (format "%s-sh" (file-remote-p newdir 'host)))
+      (shell
+       (format "%s-sh"
+        (file-name-nondirectory
+         (directory-file-name
+          (file-name-directory newdir)))))))
+
+
+
+  (defun gjg/open-remote-shell ()
+    "If current buffer is remote, open a new uniquely named shell based on host name"
+    (interactive)
+    (if (file-remote-p default-directory)
+        (progn
+          ;; do stuff
+          (message "Now I shall do stuff")
+          (shell (concat (file-remote-p default-directory 'host) "-sh")))
+      (shell
+       (concat
+        (file-name-nondirectory
+         (directory-file-name
+          (file-name-directory
+           default-directory))) "-sh"))))
+#+end_src
+**** Open SUDO at current remote directory
+#+begin_src emacs-lisp
+(defun gjg/tramp-sudo-to-etc ()
+  "Dired browse as root (sudo) to /etc on current machine"
+  (interactive)
+  (let* ((trampvec (tramp-dissect-file-name default-directory))
+         (tramphop (elt trampvec 4))
+         (conntype (elt trampvec 0))
+         (trampuser (elt trampvec 1)) ; may be nil, which is cool
+         (tramphost (elt trampvec 2))
+         (sudopath (concat "/" tramphop conntype ":" tramphost "|sudo:" tramphost ":/etc/"))
+         )
+    (find-file sudopath)
+    )
+  )
+#+end_src
+
+** Rainbow delimiters for various programming modes
+   #+begin_src emacs-lisp
+     ;; rainbow delimiters ; make much stronger (more saturated) colors
+     (autoload 'rainbow-delimiters "rainbow-delimiters" "Highlight brackets according to their depth")
+     (with-eval-after-load 'rainbow-delimiters
+       (require 'cl-lib)
+       (require 'color)
+       (cl-loop
+        for index from 1 to rainbow-delimiters-max-face-count
+        do
+        (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
+          (cl-callf color-saturate-name (face-foreground face) 30))))
+
+   #+end_src
+** Dired
+   =dired-dwim-target= is just awesome.  Whenever you have 2 Dired
+   windows in a frame, hitting Copy or Rename from one Dired buffer
+   automatically suggests the other as the target
+
+   =dired-omit-files= is a regexp for files you want to hide using
+   =dired-omit-mode= Depending on your workflow, that may include
+   compiled files (.elc, .o etc) as well as normally hidden files.
+
+   =auto-revert-mode= refreshes the visible buffer when something in
+   the directory changes.
+
+   #+begin_src emacs-lisp
+(require 'dired) ;; TODO: use-package
+(define-key dired-mode-map [mouse-1] 'dired-find-file)
+(define-key dired-mode-map [mouse-2] 'dired-find-file)
+(setq dired-dwim-target t)
+(setq dired-omit-files "^\\.?#\\|^\\..*")
+;; set key binding in key map prior to dired-x being loaded - for autoload
+(define-key dired-mode-map "\C-x\M-o" 'dired-omit-mode)
+(autoload 'dired-omit-mode "dired-x" "Dired-X")
+;; (declare (special dired-x-hands-off-my-keys
+;; 		  dired-bind-vm
+;; 		  dired-omit-files-p))
+;; (add-hook 'dired-load-hook
+;; 	  (function
+;; 	   (lambda ()
+;; 	     (declare (special dired-x-hands-off-my-keys
+;; 			       dired-bind-vm))
+;; 	     (load-library "dired-x")
+;; 	     (setq dired-x-hands-off-my-keys nil
+;; 		   dired-bind-vm t))))
+
+(setq auto-revert-verbose nil)
+(add-hook 'dired-mode-hook
+	  (function (lambda ()
+		      (auto-revert-mode))))
+;; 		      ;; Set dired-x buffer-local variables here.  For example:
+;; 		      (setq dired-omit-mode t)
+;; 		      (setq dired-omit-files "^\\..*")
+;; 		      )))
+
+   #+end_src
+*** Open file in relevant OS app
+#+begin_src emacs-lisp
+;; swiped from Gilaras Drakeson <gilaras@gmail.com>
+(defcustom gjg/os-open "xdg-open"
+  "Command to open a document, e.g. 'xdg-open' on Linux, 'sensible-browser' on crostini, 'open' on OS X, 'explorer' or 'cygpath' on Windows"
+  :type 'string
+  :group 'gjg)
+
+
+(defun dired-open (&optional file-list)
+  (interactive
+   (list (dired-get-marked-files t current-prefix-arg)))
+  (progn
+    (message (format "Calling %s %s" gjg/os-open file-list))
+    (apply 'call-process gjg/os-open nil 0 nil file-list)))
+(define-key dired-mode-map (kbd "C-;") 'dired-open)
+#+end_src
+** Ediff
+   #+begin_src emacs-lisp
+     (setq ediff-split-window-function 'split-window-horizontally)
+     (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+   #+end_src
+*** Disable zoom-mode when using Ediff
+    TODO: Figure out zoom config for this.  The below is a hack - I should be able to
+    disable Zoom in its config by matching mode or buffer name.
+    #+begin_src emacs-lisp
+      (add-hook 'ediff-before-setup-hook
+                '(lambda ()
+                   (setq gjg/zoom-mode zoom-mode) ;; save current state
+                   (zoom-mode -1) ;; off unconditionally for Ediff
+                   ))
+
+      (add-hook 'ediff-quit-hook
+                '(lambda ()
+                   (zoom-mode (if gjg/zoom-mode 1 -1))  ;; reset to prior state
+                   (message (format "gjg/zoom-mode is %s, zoom-mode is now %s" gjg/zoom-mode zoom-mode))
+                   ))
+    #+end_src
+** Help and helpful modes
+   #+begin_src emacs-lisp
+     (setq help-window-select t)
+     (add-hook 'help-mode-hook
+               (lambda ()
+                 (local-set-key (kbd "M-p") 'help-go-back)
+                 (local-set-key (kbd "M-n") 'help-go-forward)
+                 ))
+
+     (when (fboundp 'helpful-function)
+       (progn
+         ;; Note that the built-in `describe-function' includes both functions
+         ;; and macros. `helpful-function' is functions only, so we provide
+         ;; `helpful-callable' as a drop-in replacement.
+         ;; (global-set-key (kbd "C-h f") #'helpful-callable)
+         ;; (global-set-key (kbd "C-h v") #'helpful-variable)
+         (global-set-key (kbd "C-h k") #'helpful-key)
+         ;; Lookup the current symbol at point. C-c C-d is a common keybinding
+         ;; for this in lisp modes.
+         (global-set-key (kbd "C-c C-d") #'helpful-at-point)
+         (setq counsel-describe-function-function #'helpful-callable)
+         (setq counsel-describe-variable-function #'helpful-variable)))
+   #+end_src
+** Tab Completion
+   #+begin_src emacs-lisp
+   #+end_src
+** Selectrum (will it replace Ivy which replaced Ido?)
+   #+begin_src emacs-lisp
+     (selectrum-mode +1)
+     (selectrum-prescient-mode +1)
+     (prescient-persist-mode +1)
+   #+end_src
+** Window balancing
+    Auto-zoom selected window (disabled to start)
+#+begin_src emacs-lisp
+  ;; Resize active frame according to golden ratio
+  (use-package zoom
+    :straight t
+    :config
+    (setq
+     ;; zoom-size '(0.618 . 0.618)
+     zoom-size '(0.54 . 0.54)
+     zoom-ignored-buffer-name-regexps '("^\\*magit +.*")
+     zoom-ignored-major-modes '("dired-mode" "ediff-mode" "buffer-expose-mode"))
+    (zoom-mode -1))
+#+end_src
+
+** Ivy / Smex / Counsel
+   Just starting to make use of =use-package= here.  The =:ensure= or =:straight= param will
+   automagically install the package if it is not already installed.
+
+*** Set up Ivy basics
+    This setup includes reliance on other packages such as Swiper for incremental search,
+    and Counsel for symbol completion and selection.
+
+	Smex helps sort commands by most-used
+
+    #+begin_src emacs-lisp
+      ;; (use-package counsel
+      ;;   :config (counsel-mode))
+   #+end_src
+
+**** Make some keybindings for these crazy packages
+     Use =M-j= during a Swiper search to add the sub-word at point to
+     the search - similar to =C-s C-w= in built-in isearch.
+
+     #+begin_src emacs-lisp
+       ;; ;; (global-set-key (kbd "C-s") 'swiper)
+       ;; ;; (global-set-key (kbd "C-M-s") 'swiper-isearch)
+       ;; ;; (global-set-key (kbd "C-M-r") 'swiper-isearch-backward)
+       ;; (global-set-key (kbd "M-x") 'counsel-M-x)
+       ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+       ;; (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+     #+end_src
+
+*** Set up a way to use `find-file` without Ivy
+    + I created this as an answer to [[https://emacs.stackexchange.com/a/58785/418][how to open a file without using Ivy - Emacs Stack Exchange]]
+    #+begin_src emacs-lisp
+      (defun gjg/find-file-no-ivy ()
+        (interactive)
+        (let ((ivy-state ivy-mode))
+          (ivy-mode -1)
+          (call-interactively 'find-file)
+          (ivy-mode ivy-state)))
+
+      (global-set-key (kbd "C-x F") 'gjg/find-file-no-ivy) ; steals the default key binding from set-fill-column
+    #+end_src
+** Grep
+   #+begin_src emacs-lisp
+     ;; (defun advice-without-ivy (o &rest a)
+     ;;   (ivy-mode -1)
+     ;;   (prog1 (apply o a)
+     ;;     (ivy-mode 1)))
+
+     ;; (advice-add 'grep-read-files :around #'advice-without-ivy)
+   #+end_src
+** Occur
+*** Navigation
+   #+begin_src emacs-lisp
+;;     Some simple sex-ups for occur-mode
+
+(define-key occur-mode-map "n" 'occur-next)
+(define-key occur-mode-map "p" 'occur-prev)
+(defadvice occur-next (after gjg/occur-navigation-other-window)
+  "Show match in other window as you navigate, as in rgrep"
+  (occur-mode-display-occurrence))
+(ad-activate 'occur-next)
+(defadvice occur-prev (after gjg/occur-navigation-other-window)
+  "Show match in other window as you navigate, as in rgrep"
+  (occur-mode-display-occurrence))
+(ad-activate 'occur-prev)
+   #+end_src
+** Shell mode
+*** Config for comint mode
+    #+begin_src emacs-lisp
+      (setq comint-input-ring-size 5000)
+    #+end_src
+*** Bash completions
+#+begin_src emacs-lisp
+  (use-package bash-completion
+    :straight t
+    :config
+    (bash-completion-setup))
+#+end_src
+*** Placement of new shell windows
+I want new shell buffers to open in the currently selected window, not replacing the text
+I'm referencing in a different window.  This is absurdly difficult to do because
+=shell-mode= does not offer a setting to control this behavior.  The solution I found was
+given in an answer [[https://stackoverflow.com/a/40351851/457574][here on stackoverflow]]
+
+#+begin_src emacs-lisp
+(defun shell-same-window-advice (orig-fn &optional buffer)
+  "Advice to make `shell' reuse the current window.
+
+Intended as :around advice."
+  (let* ((buffer-regexp
+          (regexp-quote
+           (cond ((bufferp buffer)  (buffer-name buffer))
+                 ((stringp buffer)  buffer)
+                 (:else             "*shell*"))))
+         (display-buffer-alist
+          (cons `(,buffer-regexp display-buffer-same-window)
+                display-buffer-alist)))
+    (funcall orig-fn buffer)))
+
+(advice-add 'shell :around #'shell-same-window-advice)
+#+end_src
+*** ANSI color
+The =xterm-color-filter= function is part of the =xterm-color= package.  It does the
+lawd's work in translating ANSI color codes to font properties so that things can look
+awesome.
+
+   #+begin_src emacs-lisp
+     (use-package xterm-color :straight t)
+     (ansi-color-for-comint-mode-on)
+     ;; try some xterm coloring in shell buffers
+     (setq comint-output-filter-functions
+           (remove 'ansi-color-process-output comint-output-filter-functions))
+     (add-hook 'shell-mode-hook
+           (lambda ()
+             (abbrev-mode 1)
+             (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))
+   #+end_src
+*** SSH Agent in subprocesses
+    + Not really related to shell-mode, this assures our keychain is activated for things
+      such as magit that fire off subproceess
+      #+begin_src emacs-lisp
+(keychain-refresh-environment)
+      #+end_src
+
+** Magit
+*** Initiate =magit-todos= only on =magit= invocation, since it loads slowly
+    #+begin_src emacs-lisp
+      (add-hook 'magit-status-mode-hook
+                (lambda ()
+                  (magit-todos-mode 1)
+                  ))
+    #+end_src
+*** Open Status in current window
+    Oh how I hate other-window for this!
+    Ref: https://github.com/magit/magit/issues/2541
+
+    Intent is to open only the Status buffer in the current window - other windows (diff,
+    push etc) will behave as they do by default.
+
+    #+begin_src emacs-lisp
+      (setq magit-display-buffer-function
+            (lambda (buffer)
+              (display-buffer
+               buffer
+               (cond ((and (derived-mode-p 'magit-mode)
+                           (eq (with-current-buffer buffer major-mode)
+                               'magit-status-mode))
+                      nil)
+                     ((memq (with-current-buffer buffer major-mode)
+                            '(magit-process-mode
+                              magit-revision-mode
+                              magit-diff-mode
+                              magit-stash-mode))
+                      nil)
+                     (t
+                      '(display-buffer-same-window))))))
+    #+end_src
+
+** Smartparens
+   #+begin_src emacs-lisp
+     (autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
+     (defun my-create-newline-and-enter-sexp (&rest _ignored)
+       "Open a new brace or bracket expression, with relevant newlines and indent. "
+       (newline)
+       (indent-according-to-mode)
+       (forward-line -1)
+       (indent-according-to-mode))
+
+
+     ;; (with-eval-after-load 'smartparens
+     ;;   (sp-with-modes
+     ;;       '(c++-mode objc-mode c-mode js2-mode clojure-mode clojurescript-mode)
+     ;;     (sp-local-pair "{" nil :post-handlers '(:add ("||\n[i]" "RET")))))
+
+     ;; (eval-after-load "smartparens-config"
+     ;;   '(progn
+     ;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+     ;; (sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+     ;; (sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+     ;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+     ;; ))
+
+   #+end_src
+** Spelling
+   #+begin_src emacs-lisp
+     ;; don't try to spell things in Org property drawers and code blocks
+     (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
+     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
+     ;; redefine the obsolete spell-word
+     (defalias 'spell-word  'ispell-word)
+
+     (defalias 'spell-buffer 'ispell-buffer)
+   #+end_src
+** YAML - You A Moth Licker
+   #+begin_src emacs-lisp
+     (use-package yaml-mode
+       :straight t
+       :hook (yaml-mode . (lambda () (yafolding-mode 1)
+                            (toggle-truncate-lines 1))))
+     (add-hook 'conf-mode-hook
+               (lambda ()
+                 (toggle-truncate-lines 1)))
+   #+end_src
+** Man pages
+Open man page in current window, rather than other window with
+#+begin_src emacs-lisp
+(custom-set-variables '(Man-notify-method 'pushy))
+#+end_src
+** OpenVPN
+   Mode to help using OpenVPN
+   #+begin_src emacs-lisp
+     (use-package ovpn-mode
+       :custom
+       (ovpn-mode-authinfo-path "~/.local/.authinfo.gpg")
+       (ovpn-mode-base-directory "~/.config/openvpn/")
+       (ovpn-mode-preferred-terminal "alacritty")
+       :bind (:map ovpn-mode-map
+                   (("n" . next-line)
+                   ("p" . previous-line)
+                   ("m" . ovpn-mode-start-vpn-with-namespace))))
+   #+end_src
+
+* Org mode stuff
+
+** Habits
+   #+begin_src emacs-lisp
+     (add-to-list 'org-modules 'org-habit t)
+     (require 'org-habit)
+     (setq org-habit-show-all-today t
+           org-habit-show-done-always-green t
+           org-habit-show-habits nil
+           org-habit-graph-column 60
+           ;; org-habit-completed-glyph 9989
+           org-habit-preceding-days 7
+           org-habit-following-days 2
+           org-habit-show-done-always-green t
+           org-habit-show-habits-only-for-today nil)
+   #+end_src
+** Org key mappings
+   Disable some that get in the way
+   #+begin_src emacs-lisp
+     (with-eval-after-load 'org
+       ;; little use for header COMMENT keyword
+       (define-key org-mode-map (kbd "C-c ;") nil)       ; org-toggle-comment
+       ;; don't accidentally archive things
+       (define-key org-mode-map (kbd "C-c C-x C-a") nil) ; org-archive-subtree-default
+       (define-key org-mode-map (kbd "C-c C-x C-s") nil) ; org-archive-to-subtree
+       (define-key org-mode-map (kbd "C-c C-x A") nil)   ; org-archive-to-archive-sibling
+       (define-key org-mode-map (kbd "C-c C-x a") nil)   ; org-toggle-archive-tag
+       ;; keys that conflict with buffer movement
+       (define-key org-mode-map (kbd "<M-right>") nil)     ; org-metaright
+       (define-key org-mode-map (kbd "<M-left>") nil)     ; org-metaleft
+       ;; keys that conflict with windmove package
+       ;; (define-key org-mode-map (kbd "<S-up>") nil)       ; org-shiftup
+       ;; (define-key org-mode-map (kbd "<S-down>") nil)     ; org-shiftdown
+       ;; (define-key org-mode-map (kbd "<S-left>") nil)     ; org-shiftleft
+       ;; (define-key org-mode-map (kbd "<S-right>") nil)    ; org-shiftright
+       )
+   #+end_src
+** Org Babel and Source Code Blocks
+*** Config including template shortcuts
+    TODO: install ob-jupyter package on systems with Jupyter
+     #+begin_src emacs-lisp
+       ;; (unless (version< org-version "9.2")
+       ;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
+       ;;   )
+       (with-eval-after-load 'org
+         (org-babel-do-load-languages
+          'org-babel-load-languages
+          (append org-babel-load-languages
+                  '(
+                    (clojure . t)
+                    (http . t) ;; curl
+                    (js . t)
+                    (latex . t)
+                    ;; (jupyter . t)
+                    (python . t)
+                    (shell  . t)
+                    (sql . t)
+                    )))
+         (setq org-confirm-babel-evaluate nil
+               org-export-with-sub-superscripts nil)
+
+         ;; ;; The Dreadful Timeline has brought us indentation-sensitive languages
+         ;; ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
+         ;; (setq org-src-preserve-indentation nil)
+         (setq org-src-window-setup 'current-window)
+         (setq org-structure-template-alist '(("C" . "comment")
+                                              ("e" . "example")
+                                              ("E" . "export")
+                                              ("h" . "export html")
+                                              ("l" . "export latex")
+                                              ("q" . "quote")
+                                              ("S" . "src")
+                                              ("sc" . "src conf")
+                                              ("sj" . "src json")
+                                              ("sl" . "src emacs-lisp")
+                                              ("sp" . "src python")
+                                              ("sq" . "src sql")
+                                              ("ss" . "src bash")
+                                              ("sy" . "src yaml"))))
+
+     #+end_src
+*** Company Org Block
+    + first seen in this reddit post: [[https://www.reddit.com/r/emacs/comments/ntj8gj/company_org_block_completion_now_on_melpa/][Company org block completion now on melpa : emacs]]
+    #+begin_src emacs-lisp
+      (use-package company-org-block
+        :straight t
+        :custom
+        (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
+        :hook ((org-mode . (lambda ()
+                             (setq-local company-backends '(company-org-block))
+                             (company-mode +1)))))
+    #+end_src
+*** Crazy way to allow babel elisp to modify window configuration  :noexport:
+    This disables Org's use of =save-window-excursion= for execution of source blocks
+    Stolen from [[https://emacs.stackexchange.com/questions/42096/running-elisp-within-an-orgmode-code-block][Running elisp within an orgmode code block]] (github)
+
+    Simply add the new block param =:keep-windows= to use this functionality
+
+    #+begin_src emacs-lisp
+      (when nil
+      (defun transform-tree (tree trafo)
+        "Transform TREE by TRAFO."
+        (let ((next tree))
+          (while next
+            (let ((this next))
+          (setq next (cdr next))
+          (if (consp (car this))
+              (transform-tree (car this) trafo)
+            (funcall trafo this)))))
+        tree)
+
+      (defun replace-in-fundef (fun sym &rest replacement)
+        "In function FUN perform REPLACEMENT."
+        (setq fun (or
+               (condition-case err
+               (let* ((pos (find-function-noselect fun t))
+                  (buf (car pos))
+                  (pt (cdr pos)))
+                 (with-current-buffer buf
+                   (save-excursion
+                     (goto-char pt)
+                     (read buf))))
+                 (error nil))
+               (and (symbolp fun) (symbol-function fun))
+               fun))
+        (transform-tree fun
+                (lambda (this)
+                  (when (eq (car this) sym)
+                    (let ((copy-repl (cl-copy-list replacement)))
+                  (setcdr (last copy-repl) (cdr this))
+                  (setcdr this (cdr copy-repl))
+                  (setcar this (car copy-repl)))))))
+
+      (defmacro save-window-excursion-if (pred &rest body)
+        "Act like `save-window-excursion' if PRED is non-nil."
+        (declare (indent 1) (debug t))
+        (let ((c (make-symbol "wconfig")))
+          `(let ((,c (and ,pred (current-window-configuration))))
+             (unwind-protect (progn ,@body)
+               (when ,c (set-window-configuration ,c))))))
+
+      (advice-remove 'org-babel-execute:emacs-lisp #'ad-org-babel-execute:emacs-lisp)
+      ;; make sure we have access to the source code of `org-babel-execute:emacs-lisp'
+      (find-function-noselect 'org-babel-execute:emacs-lisp t)
+      ;; (defun ad-org-babel-execute:emacs-lisp ...):
+      (eval (replace-in-fundef 'org-babel-execute:emacs-lisp 'org-babel-execute:emacs-lisp 'ad-org-babel-execute:emacs-lisp))
+      ;; Use `save-window-excursion-if' in `ad-org-babel-execute:emacs-lisp':
+      (declare-function 'ad-org-babel-execute:emacs-lisp " ")
+      (eval (replace-in-fundef 'ad-org-babel-execute:emacs-lisp
+                   'save-window-excursion 'save-window-excursion-if '(null (member (cdr (assoc :keep-windows params)) '("yes" "t")))))
+      ;; Replace `org-babel-execute:emacs-lisp':
+      (advice-add 'org-babel-execute:emacs-lisp :override #'ad-org-babel-execute:emacs-lisp)
+      )
+    #+end_src
+
+** Org num mode
+   #+begin_src emacs-lisp
+     ;; for use with org-num-mode
+     (defun org-num-skip-top-level-format (numbering)
+       "Number from subtree display function.
+     NUMBERING is a list of numbers."
+       (concat (mapconcat #'number-to-string (cdr numbering) ".") " "))
+     (setq org-num-format-function 'org-num-skip-top-level-format)
+   #+end_src
+** Org-mode hook
+   On =auto-fill-mode=: I prefer to have it on, but hate when
+   creating links and having it wrap while typing the description.
+   For this reason, I want to get in the habit of only adding links
+   using =C-c C-l= (=org-insert-link=)
+
+   #+begin_src emacs-lisp
+     (add-hook 'org-mode-hook
+           (lambda ()
+             (auto-fill-mode 1)
+             (org-superstar-mode 1)
+             (setq org-hide-leading-stars t)
+             (setq fill-column 90) ; good default for wide screens
+             (setq org-use-property-inheritance t)
+             (org-defkey org-mode-map [(control tab)] 'org-next-link)
+             ;; steal back my keys
+             (org-defkey org-mode-map [home] 'beginning-of-buffer)
+             (org-defkey org-mode-map [end] 'end-of-buffer)
+             ;; 	    ;; (local-set-key (kbd "C-c TAB") 'org-next-link)
+             ;; 	    ;; (local-set-key (kbd "S C-c TAB") 'org-previous-link)
+             ;; 	    (abbrev-mode 1)
+             ;; 	    ;; set sub/superscript interpretation OFFFFFFOOOFFF
+             ;; 	    (setq org-use-sub-superscripts nil)
+             (setq org-catch-invisible-edits 'show-and-error )
+             ))
+   #+end_src
+** Org tree to indirect
+   This useful feature is hampered by poor naming of the resulting buffer, making it very
+   difficult to know whether you are editing the original buffer or the created indirect
+   buffer.
+
+   There are no user variables that influence the indirect buffer naming, and no hooks
+   defined for any function related to =org-tree-to-indirect-buffer=
+
+   It therefore seems the only way to affect it is to advise a function.
+
+   #+begin_src emacs-lisp
+     (defun gjg/rename-org-indirect-buffer (orig-fun &rest arg)
+       (rename-buffer (concat "INDIRECT-" (buffer-name))))
+
+     (advice-add 'org-tree-to-indirect-buffer :after 'gjg/rename-org-indirect-buffer)
+
+
+   #+end_src
+** Blogs - linking and image additions
+   For blogging especially, we want to quickly add web links and images.  2 packages from
+   m?elpa help here
+   #+begin_src emacs-lisp
+(use-package org-cliplink :straight t)
+(use-package org-download :straight t)
+   #+end_src
+
+   And here's a handy keyboard macro =gjg/url-grab-cliplink=
+
+   Assume point is in an Org file, and there are two windows in the current frame *and*
+   the other window is a Web browser (this only works in EXWM!).  Go to the browser
+   window, copy the URL, then use =org-cliplink= at the starting point in the original Org window.
+
+   #+begin_src emacs-lisp
+   (fset 'gjg/url-grab-cliplink
+   (kmacro-lambda-form [?\C-x ?o ?\C-l ?\M-w tab ?\C-x ?o ?\M-x ?o ?r ?g ?- ?c ?l ?i ?p ?l ?i ?n ?k return] 0 "%d"))
+   #+end_src
+
+** Capture Templates
+*** Functions to support capture templates
+**** Bring in nicely formatted links to be used in the phone log capture template
+
+      These entries are in a table in each customer engagement Org file named =people=
+      #+begin_src emacs-lisp
+        (defun gjg/add-person-from-table ()
+          (let  ((myname (completing-read
+                          "Name to insert: "
+                          (mapcar (lambda (x) (nth 0  x)) table))))
+
+            (cl-loop
+             for row in table
+             if (equal (nth 0 row) myname)
+             return (format "+ [[%s][%s]] - %s - %s"
+                            (nth 1 row) ; LinkedIn URL
+                            (nth 0 row) ; Name
+                            (nth 2 row) ; Title
+                            (nth 3 row) ; Location
+                            ))))
+      #+end_src
+**** Create new blog post file for blog capture
+    #+begin_src emacs-lisp
+      ;; *** Org capture
+      ;; taken from StackOverflow answer https://stackoverflow.com/questions/11902620/org-mode-how-do-i-create-a-new-file-with-org-capture
+      ;; (defun capture-blog-filename (path)
+      (defun safe-blog-filename ()
+        (let ((thedate (org-read-date nil nil nil "Date of post: "))
+              (name (read-string "Blog post title: ")))
+          (expand-file-name (format "%s-%s.org"
+                                    (format-time-string "%Y-%m-%d")
+                                    (downcase
+                                     (replace-regexp-in-string "-+$" ""
+                                                               (replace-regexp-in-string "[^[:alnum:]]+" "-"
+                                                                                         (replace-regexp-in-string "[[:punct:]]" "" name)))))
+                            "~/projects/blogs/hypecyclist/content/post/"
+                            )))
+    #+end_src
+*** Variables and hook setup
+    I want to always be prompted to refile my corporate phone log - so I remap =C-c C-c=
+    for only that capture template.
+    #+begin_src emacs-lisp
+      (setq org-default-notes-file "~/projects/notes.org")
+      (with-eval-after-load 'org-capture
+        ;; (add-hook 'org-capture-mode-hook 'turn-on-auto-fill)
+        (add-hook 'org-capture-mode-hook
+                  (lambda ()
+                    (let ((mykey (plist-get org-capture-plist :key)))
+                      (if (string= "p" mykey )
+                          (define-key org-capture-mode-map (kbd "C-c C-c") 'org-capture-refile)
+                        (define-key org-capture-mode-map (kbd "C-c C-c") 'org-capture-finalize))))))
+      (define-key global-map "\C-cc" 'org-capture)
+      (setq org-capture-templates nil) ; initialize to nil prior to grand setup below
+    #+end_src
+
+*** Template definitions
+   + N.B. First set up org-protocol (require the library) prior to using the related
+     capture templates.  I'm not doing it at the moment because I can use the JS clip
+     extension from ChromeOS (no =emacsclient= binary on Chrome OS, just in a Linux
+     container I cannot reach)
+
+**** Blog post
+     Start a new blog post for hypecyclist.org using my default Hugo template
+     #+begin_src emacs-lisp
+       (push
+        '("b" "Blog post" plain
+                     (file safe-blog-filename)
+                     (file "~/.emacs.d/hugo-default-blog.tmpl")
+                     :jump-to-captured t)
+        org-capture-templates)
+     #+end_src
+
+**** org-protocol capture - will I ever ever ever use this again??
+     #+begin_src emacs-lisp :results none
+       (push '("c" "org-protocol-capture" entry "~/projects/private-orgmode/inbox.org"
+               "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish nil)
+             org-capture-templates)
+     #+end_src
+
+**** Add items to a/the inbox - GTD style
+     #+begin_src emacs-lisp
+       (push
+        '("i" "inbox" entry
+          (file "~/projects/private-orgmode/inbox.org")
+          "* TODO %?\n  :LOGBOOK:\n  CREATED: %U\n  :END:")
+        org-capture-templates
+        )
+     #+end_src
+
+**** Phone/meeting/task - the heart of it all
+     #+begin_src emacs-lisp
+       (push
+        '("p" "Phone/Meeting" entry
+          (file+headline "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" "Calls and Meetings")
+          "* %t %^{type|Call|Meeting|Task} with %^{with|SE Team|Steven|Marketing|Sales|Engineering|South Central Sales Team|North Central Sales Team}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro|Weekly cadence|Learning Update|Working session|Status update}
+         :PROPERTIES:
+         :NOBLOCKING: t
+         :END:
+         :LOGBOOK:
+         CREATED: %U
+         :END:
+         %i
+         + From Tigergraph: GG
+         + From %\\2:
+           \#+begin_src emacs-lisp :var table=people :results append raw :exports results :eval never-export
+            (gjg/add-person-from-table)
+           \#+end_src
+         %?" :prepend t :clock-in t :clock-keep t :jump-to-captured t) org-capture-templates)
+     #+end_src
+
+**** Regular TODO
+     #+begin_src emacs-lisp
+       (push
+        '             ("t" "Regular todo" entry
+                       (file "~/projects/private-orgmode/inbox.org")
+                       "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
+        org-capture-templates)
+     #+end_src
+
+**** Status update for the Slack #consultants team
+     #+begin_src emacs-lisp
+       (push
+        '             ("s" "Status update for Slack" entry
+                       (file+headline "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" "Write Daily Status to #consulting")
+                       "* Status update %u
+            ,*Today*
+              ,* %?
+            ,*Tomorrow*
+              ,* another thing
+            ,*Blockers*
+              ,* none"
+                       :prepend t )
+        org-capture-templates)
+     #+end_src
+
+**** Web page entry - what is this for exactly?
+     #+begin_src emacs-lisp
+       (push
+        '             ("w" "Web page" entry (file "~/projects/private-orgmode/inbox.org")
+                       "* TODO Read %(org-cliplink-capture)
+                             Captured %u")
+        org-capture-templates)
+     #+end_src
+** Exporting
+*** General preferences
+#+begin_src emacs-lisp
+  (custom-set-variables '(org-export-with-sub-superscripts nil))
+#+end_src
+*** Exporting Babel without evaluation
+#+begin_src emacs-lisp
+(custom-set-variables '(org-export-use-babel nil))
+#+end_src
+*** Export without theme interference
+	:LOGBOOK:
+	- State "DONE"       from "TODO"       [2020-01-14 Tue 10:40]
+	- State "DONE"       from "STARTED"    [2020-01-14 Tue 10:40]
+	- State "STARTED"    from "TODO"       [2019-09-17 Tue 19:37]
+	:END:
+	Wrap advice around any means of exporting HTML, including export-and-open
+#+begin_src emacs-lisp
+  ;; export to html - use light theme for export
+  ;; tip o' the hat to legoscia https://github.com/legoscia/dotemacs/blob/master/dotemacs.org#theme-for-org-html-export
+  (defvar my-org-html-export-theme 'material-light)
+
+  (defun my-with-theme (orig-fun &rest args)
+    (load-theme my-org-html-export-theme)
+    (unwind-protect
+        (apply orig-fun args)
+      (disable-theme my-org-html-export-theme)))
+
+  (use-package ox-gfm :straight t)
+  (with-eval-after-load "ox-html"
+    (advice-add 'org-export-to-buffer :around 'my-with-theme)
+    (advice-add 'org-export-to-file :around 'my-with-theme))
+#+end_src
+** Speed commands
+   #+begin_src emacs-lisp
+     (setq org-use-speed-commands t) ;; POWER USER BABY
+     ;; (setq org-speed-commands-user
+     ;;       '(
+     ;;         ("," . org-columns)
+     ;;         ("q" . bury-buffer)))
+     ;; DAN DAVISON nifty speed commands
+     (defun ded/org-show-next-heading-tidily ()
+       "Show next entry, keeping other entries closed."
+       (if (save-excursion (end-of-line) (outline-invisible-p))
+           (progn (org-show-entry) (outline-show-children))
+         (outline-next-heading)
+         (unless (and (bolp) (org-at-heading-p))
+           (org-up-heading-safe)
+           (outline-hide-subtree)
+           (error "Boundary reached"))
+         (org-overview)
+         (org-reveal t)
+         (org-show-entry)
+         (outline-show-children)))
+
+     (defun ded/org-show-previous-heading-tidily ()
+       "Show previous entry, keeping other entries closed."
+       (let ((pos (point)))
+         (outline-previous-heading)
+         (unless (and (< (point) pos) (bolp) (org-at-heading-p))
+           (goto-char pos)
+           (outline-hide-subtree)
+           (error "Boundary reached"))
+         (org-overview)
+         (org-reveal t)
+         (org-show-entry)
+         (outline-show-children)))
+
+     (add-to-list 'org-speed-commands
+              '("]" ded/org-show-next-heading-tidily))
+     (add-to-list 'org-speed-commands
+              '("[" ded/org-show-previous-heading-tidily))
+     (add-to-list 'org-speed-commands
+                  '("s" save-buffer))
+     (add-to-list 'org-speed-commands
+                  '("d" org-toggle-narrow-to-subtree))
+
+
+
+     ;; END DAN DAVISON nifty speed commands
+
+   #+end_src
+** Agenda
+*** Set up agenda files lists
+    I keep one set of agenda files for personal / everyday use and another for work use.
+
+    For work files, the rules are:
+    + include the primary working file (e.g. mycompany.org.gpg)
+    + include all all task files under the active engagements directory
+      (e.g. ./mycompany/engagements/customer1/customer1.org.gpg)
+    + Active task files are either any encrypted org file under engagements/ or the single
+      unencrypted org file named for its containing directory
+      (e.g. ./mycompany/engagements/customer2/customer2.org)
+    + include the special case =inbox.org=
+
+  #+begin_src emacs-lisp
+    ;; Make sure we match encrypted files for Agenda
+    ;; ref https://emacs.stackexchange.com/a/36543/418
+    (unless (string-match-p "\\.gpg" org-agenda-file-regexp)
+      (setq org-agenda-file-regexp
+            (replace-regexp-in-string "\\\\\\.org" "\\\\.org\\\\(\\\\.gpg\\\\)?"
+                                      org-agenda-file-regexp)))
+    (global-set-key (kbd "C-c a") 'org-agenda)
+    (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
+    (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
+                                          "~/projects/private-orgmode/inbox.org"
+                                          "~/projects/private-orgmode/someday.org"
+                                          "~/projects/private-orgmode/projects.org"
+                                          "~/projects/private-orgmode/next.org"
+                                          "~/projects/private-orgmode/fit.org"
+                                          "~/projects/private-orgmode/habits.org"))
+    (defun gjg/get-work-agenda-files ()
+      "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
+      (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/tigergraph/engagements/"
+                                                           "\\`[^.].*\\.org\\(\\.gpg\\)?\\'")))
+        (add-to-list 'engagement-files "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" t)
+        (add-to-list 'engagement-files "~/projects/private-orgmode/habits.org" t)
+        (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)))
+        ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
+    (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
+    ;; Set agenda files to personal, override in work-related templates
+    (setq org-agenda-files gjg/personal-org-agenda-files)
+  #+end_src
+*** Settings for all agenda types
+  #+begin_src emacs-lisp
+    ;;(setq org-agenda-span 'day)
+    ;;(setq org-agenda-skip-scheduled-if-done t)
+    ;; (setq org-agenda-start-with-log-mode t)
+    ;; (setq org-agenda-start-with-clockreport-mode nil)
+    (setq org-agenda-sticky t
+          org-agenda-hide-tags-regexp "noagenda"
+          org-agenda-restore-windows-after-quit t
+          -agenda-entry-text-maxlines 10
+          org-agenda-diary-file "~/projects/private-orgmode/diary.org"
+          org-agenda-include-diary t
+          org-special-ctrl-a/e t
+          org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99)
+          org-cycle-separator-lines 1
+          org-clock-history-length 12)
+
+    (setq org-agenda-exporter-settings
+          '((ps-number-of-columns 1)
+            (ps-landscape-mode t)
+            (org-agenda-add-entry-text-maxlines 10)
+            (htmlize-output-type 'css)))
+
+   #+end_src
+*** Initialize for all agendas
+   #+begin_src emacs-lisp
+     (setq org-agenda-custom-commands nil)
+   #+end_src
+*** Custom Agenda definitions
+**** Tiger(G)raph agendas
+     These views use the work files
+
+     TODO  why does starting with clocktable and/or log-mode not work??
+
+    #+begin_src emacs-lisp
+      (add-to-list 'org-agenda-custom-commands
+                   '("G" "Tigergraph"
+                      ((agenda ""
+                               ((org-agenda-span 'day)
+                                (org-agenda-start-with-log-mode '(clock))
+                                (org-deadline-warning-days 2)
+                                (org-agenda-start-with-clockreport-mode t)
+                                )
+                               )
+                       ;; (todo "TODO"
+                       ;;         ((org-agenda-span 'day)
+                       ;;          (org-deadline-warning-days 21)
+                       ;;          ))
+                       )
+                      ((org-agenda-files gjg/work-agenda-files))) t)
+
+      (add-to-list 'org-agenda-custom-commands
+                   '("gc" "Clock report" agenda ""
+                     ((org-agenda-files gjg/work-agenda-files)
+                      (org-agenda-span 'day)
+                      (org-agenda-start-with-clockreport-mode t)
+                      (org-agenda-time-grid nil)
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled)))) t)
+
+      (add-to-list 'org-agenda-custom-commands
+                   '("gt" "Tigergraph TODOs" alltodo ""
+                     ((org-agenda-files gjg/work-agenda-files)
+                      (org-agenda-span 'day)
+                      (org-agenda-tag-filter-preset '("-habit"))
+                      )) t)
+
+    #+end_src
+**** Home based agendas
+     Fitness and @home
+    #+begin_src emacs-lisp
+      ;; TODO Filter on fitness tag
+      (add-to-list 'org-agenda-custom-commands
+                   '("f" "Fitness"
+                     ((agenda "" (
+                                  (org-agenda-span 'day))))) t)
+      (add-to-list 'org-agenda-custom-commands
+                   '("h" "thing TODO at Home"
+                     ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
+                      (agenda "" ((org-agenda-span 'day)
+                                  (org-agenda-sorting-strategy
+                                   (quote ((agenda time-up priority-down tag-up))))
+                                  (org-deadline-warning-days 0)))
+                      (tags "reading")
+                      (tags "writing")
+                      (tags-todo "refile"))
+                     ((org-agenda-tag-filter-preset '("-project" "-@office"))
+                      )) t)
+
+      (add-to-list 'org-agenda-custom-commands
+                   '("i" "Inbox review"
+                     ((todo "TODO"
+                            ((org-agenda-overriding-header "Review and Refile")
+                             (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org"))))))) t)
+    #+end_src
+
+    #+begin_src emacs-lisp
+      ;; (add-to-list 'org-agenda-custom-commands
+      ;; '("P" "Projects" tags "Project|project|PROJECT" ((org-use-tag-inheritance nil))))
+
+      (add-to-list 'org-agenda-custom-commands
+                   '("S" "Started Tasks" todo "STARTED" ((org-agenda-todo-ignore-with-date nil))))
+
+      (add-to-list 'org-agenda-custom-commands
+                   '("w" "Tasks waiting on something" tags "WAITING|PAUSED" ((org-use-tag-inheritance nil))))
+
+    #+end_src
+*** Agenda hooks setup
+    #+begin_src emacs-lisp
+      ;; org-agenda: some handy keys
+      ;; you might also want to set:
+      (setq org-agenda-skip-unavailable-files t)
+      (add-hook 'org-agenda-mode-hook
+                (lambda ()
+                  (hl-line-mode 1)
+                  ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
+                  ;;       (local-unset-key "o")
+                  ;; rebind to a sweet and beautiful function
+                  (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
+                  (local-unset-key "a") ;; don't let this accidentally archive a tree!
+                  ;; "R" is used for clock report by default
+                  (define-key org-agenda-mode-map "R" 'org-agenda-refile)
+                  (define-key org-agenda-mode-map "'" 'org-agenda-clockreport-mode)
+                  (define-key org-agenda-mode-map  "g" 'org-agenda-redo) ;; instead of org-agenda-redo-all
+                  ;; (define-key org-agenda-mode-map "h" 'org-habit-toggle-display-in-agenda)
+                  ))
+      (add-hook 'org-export-preprocess-hook
+                (lambda ()
+                  (org-dblock-update 2) ;; update all dynamic blocks in the buffer
+                  ))
+      ;; Function stolen from Bernt Hansen on gmane.emacs.orgmode: insert inactive time stamp for new entries
+
+      (setq org-agenda-format-date
+            (concat "%Y-%m-%d %a "
+                    (make-string (- (window-width) 15) (string-to-char "_"))))
+
+   #+end_src
+*** Clock table
+    #+begin_src emacs-lisp
+      ;; First set clock summary to *not* show hours as days
+      ;; ref: https://stackoverflow.com/a/54376827/457574
+      (setq org-duration-format (quote h:mm))
+
+      (setq org-clocktable-defaults
+            '(:maxlevel 2
+                 :lang "en"
+                 :scope file
+                 :block nil
+                 :wstart 1
+                 :mstart 1
+                 :tstart nil
+                 :tend nil
+                 :step nil
+                 :stepskip0 nil
+                 :fileskip0 t
+                 :tags nil
+                 :match nil
+                 :emphasize t
+                 :link t
+                 :narrow 75!
+                 :indent t
+                 :hidefiles nil
+                 :formula nil
+                 :timestamp nil
+                 :level nil
+                 :tcolumns nil
+                 :formatter nil)
+            )
+    #+end_src
+** Tags/TODOs/Projects Oh My
+   #+begin_src emacs-lisp
+     (setq org-tag-persistent-alist
+           '(("habit")
+             ("billable")
+             ("noexport" . ?x)
+             ))
+     (setq org-tag-alist '(("project" . ?p)
+                           ("NEXT" . ?n)
+                           ("noexport" . ?x)
+                           ("cloud" . ?c)
+                           (:startgroup . nil)
+                           ("@customer")
+                           ("@office" . ?o)
+                           ("@home" . ?h)
+                           ("@errands" . ?e)
+                           ("@happy-hour")
+                           (:endgroup . nil)
+                           ("maybe-someday" . ?m)
+                           ("writing" . ?w)
+                           ))
+     ;; Projects are identified by a :Project: tag unless they are marked DONE;
+     ;;   Any project must have one sub-task identified by :NEXT: to be considered un-stuck
+     ;;   MAYBE: exclude special tags like Someday/Maybe
+     (setq org-stuck-projects '("Project|project/-DONE"
+                                nil
+                                ("NEXT")
+                                ""))
+     (setq org-columns-default-format "%TODO %CATEGORY %60ITEM(Task)%5Effort(Estim){:} %5CLOCKSUM(Clock) %SCHEDULED(Time) %DEADLINE")
+     (setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s!)" "PAUSED(p!)" "|" "DONE(d!)")      ;; ordinary sequence is Todo -> Started -> Done
+                                     (sequence "WAITING(w@/!)" "MAYBE(m!)" "NEXT(n!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
+                                     ;; (sequence "QUOTE(q!)" "QUOTED(Q!)" "|" "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")     ;; sequence for quotes
+                                     )))
+     ;; (setq org-todo-keyword-faces
+     ;;       '(("TODO"
+     ;;          (:foreground "#ff39a3" :weight bold))
+     ;;         ("STARTED" . "#E35DBF")
+     ;;         ("CANCELLED" :foreground "green" :weight bold :strike-through t)
+     ;;         ("PROPOSED" . "pink")
+     ;;         ("PAUSED"  . "yellow")
+     ;;         ("WAITING" . "yellow")))
+
+     ;; (setq org-todo-state-tags-triggers
+     ;;       (quote (("CANCELLED" ("CANCELLED" . t))
+     ;; 	      ("WAITING" ("WAITING" . t) ("NEXT"))
+     ;; 	      ("SOMEDAY" ("WAITING" . t))
+     ;; 	      (done ("NEXT") ("WAITING"))
+     ;; 	      ("TODO" ("WAITING") ("CANCELLED"))
+     ;; 	      ("STARTED" ("WAITING") ("NEXT" . t)))))
+     ;; Change task state to STARTED when clocking in
+     (setq org-clock-in-switch-to-state "STARTED")
+
+     (setq org-tags-exclude-from-inheritance '("Project" "project" "interview2"))
+                                             ;(setq org-tag-alist '(("project" . ?p)("car" . ?c)))
+
+     (setq org-enforce-todo-dependencies t)
+   #+end_src
+** Refile
+   I think the best approach here is to use =org-agenda-files= as the source for refile
+   targets.  Then set =org-agenda-files= to whatever is appropriate for current context -
+   i.e., work vs home
+
+   #+begin_src emacs-lisp
+     ;; navigate to files using org-refile; use C-u C-c C-w
+     (setq org-outline-path-complete-in-steps nil) ; use ivy for quicker completion
+     (setq gjg/refile-targets (seq-remove (lambda (elt) (string= "~/projects/private-orgmode/inbox.org" elt)) (append gjg/personal-org-agenda-files gjg/work-agenda-files)))
+     (setq org-refile-targets '((
+                                 gjg/refile-targets :maxlevel . 2))
+           org-refile-use-outline-path 'file
+           org-refile-target-verify-function
+           (lambda ()
+             (not (member "ARCHIVE" (org-get-tags)))))
+
+     ;; (setcdr (assoc 'org-refile ivy-initial-inputs-alist) "")
+     ;; (setcdr (assoc 'org-agenda-refile ivy-initial-inputs-alist) "")
+     ;; (setcdr (assoc 'org-capture-refile ivy-initial-inputs-alist) "")
+
+     (defun gjg/org-refile-goto ()
+       "Call org-refile with arg to visit an org-mode location. A convenience function to bind to a global key."
+       (interactive)
+       (org-refile 1))
+
+
+   #+end_src
+** Org Roam - experimental
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :straight t
+    :hook
+    (after-init . org-roam-mode)
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory "~/projects/private-orgmode/roam-notes")
+    (org-roam-completion-everywhere t)
+    ;; :bind (:map org-roam-mode-map
+    ;;             (("C-c n l" . org-roam)
+    ;;              ("C-c n f" . org-roam-find-file)
+    ;;              ("C-c n g" . org-roam-show-graph))
+    ;;             :map org-mode-map
+    ;;             (("C-c n i" . org-roam-insert)))
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           :map org-mode-map
+           ("C-M-i" . completion-at-point)
+           )
+    :config
+    (org-roam-setup)
+    )
+#+end_src
+** Publishing
+   This is for publishing to a website
+   #+begin_src emacs-lisp
+(setq org-publish-project-alist
+      '(
+	("ted-talks"
+	 :components
+	 ("ted-talks-notes" "ted-talks-static"))
+	("ted-talks-notes"
+	 :base-directory "/c/Copy/projects/programming/ted"
+	 :base-extension "org"
+	 :publishing-directory "/rsync:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/ted"
+	 :recursive t
+	 :publishing-function org-html-publish-to-html
+	 :headline-levels 4)  ;; default for this project
+	("ted-talks-static"
+	 :base-directory "/c/Copy/projects/programming/ted"
+	 :base-extension "html"
+	 :publishing-directory "/rsync:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/ted"
+	 :recursive t
+	 :publishing-function org-publish-attachment)
+	("syncsort-pm2015-notes"
+	 :base-directory "~/syncsort/db/pm/syncsort-pm2015"
+	 :base-extension "org"
+	 :publishing-directory "/cygssh:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/syncsort-pm2015"
+	 :recursive t
+	 :publishing-function org-html-publish-to-html
+	 :headline-levels 4  ;; default for this project
+	 :html-head "<style>.timestamp {color: #ff0033;} .notes-image img {width: 60%;} body {counter-reset: section;} h4 {counter-increment: section; color: auto;} h4:before { counter(section) " ";}</style><style>html {font-family: Georgia, "Times New Roman", Times, serif; font-size: large;}</style>"
+	 )
+	("syncsort-pm2015-static"
+	 :base-directory "~/syncsort/db/pm/syncsort-pm2015/images"
+	 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|dxt\\|dxj\\|sdk\\|txt"
+	 :publishing-directory "/cygssh:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/syncsort-pm2015/images"
+	 :recursive t
+	 :publishing-function org-publish-attachment
+	 )
+	("syncsort-pm2015"
+	 :components
+	 ("syncsort-pm2015-notes" "syncsort-pm2015-static"))
+	("hadoop-howtows-notes"
+	 :base-directory "~/syncsort/db/docs/hadoop/howto"
+	 :base-extension "org"
+	 :publishing-directory "/plink:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/private/joins"
+	 :recursive t
+	 :publishing-function org-publish-org-to-html
+	 :headline-levels 4  ;; default for this project
+	 )
+	("syncsort-pm-blog-posts"
+	 :base-directory "~/syncsort/db/pm"
+	 :base-extension "org"
+	 :publishing-directory "/plink:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/blog"
+	 :recursive nil
+	 :with-toc nil
+	 :section-numbers nil
+	 :with-todo-keywords nil
+	 :publishing-function org-html-publish-to-html
+	 )
+	("blog-static"
+	 :base-directory "~/syncsort/db/pm"
+	 :recursive t
+	 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|dxt\\|dxj\\|sdk\\|txt"
+	 :publishing-directory "/plink:gortsleigh@hoochiepep.com:/home/gortsleigh/dynapse.net/blog"
+	 :publishing-function org-publish-attachment
+	 )
+	))
+
+
+   #+end_src
+** Clocking time
+*** Variables and keys
+    Keep =org-clock-persist= unset (its default) to avoid opening files that may have had
+    clock activity - the problem in my case is that many of those files are encrypted so I
+    have to enter a pass phrase just to open nearly any Org mode file!  The problematic
+    code is in the =org-clock= library:
+    #+begin_src emacs-lisp :tangle no
+      (defun org-clock-load ()
+        "Load clock-related data from disk, maybe resuming a stored clock."
+        (when (and org-clock-persist (not org-clock-loaded))
+          (if (not (file-readable-p org-clock-persist-file))
+          (message "Not restoring clock data; %S not found" org-clock-persist-file)
+            (message "Restoring clock data")
+            ;; Load history.
+            (load-file org-clock-persist-file)
+            (setq org-clock-loaded t)
+            (pcase-dolist (`(,(and file (pred file-exists-p)) . ,position)
+                   org-clock-stored-history)
+          (org-clock-history-push position (find-file-noselect file)))
+      ...
+    #+end_src
+#+begin_src emacs-lisp
+  (setq org-clock-persist nil)
+  ;; (org-clock-persistence-insinuate)
+  (setq org-clock-report-include-clocking-task t)
+  (setq org-read-date-prefer-future 'time)
+  ;; make the clock jump key global!
+  (define-key comint-mode-map (kbd "C-c C-x") nil)
+  (global-set-key (kbd "C-c C-x j") 'org-clock-goto)
+#+end_src
+*** Clock in also to Harvest for work files
+    + Goal - when clocking in on work tasks (org file is somewhere in
+      ~/projects/private-orgmode/rancher), prompt for project/task to start timer for in
+      Harvest also.
+
+      TODO: Make =hcl= commands async
+      #+begin_src emacs-lisp
+        (defun gjg/start-harvest-timer ()
+          (interactive)
+          (let ((harvest-alias
+                 (completing-read
+                  "Harvest project: "
+                  (split-string
+                   (concat "non-harvest,"
+                           (string-trim (shell-command-to-string "hcl aliases"))) "[ ,]+"))))
+                  ;; nil ; no predicate to limit choices
+                  ;; nil ; do not require match
+                  ;; "non-harvest")))
+            (if (string= "@" (substring harvest-alias 0 1))
+                (progn
+                      (message (format "Clocking in to %s" harvest-alias))
+                      (call-process-shell-command
+                       (format "hcl start %s '%s'" harvest-alias org-clock-heading)
+                       nil
+                       "harvest-commands"))
+              (message "Not clocking into Harvest"))))
+
+
+        (defun gjg/stop-harvest-timer ()
+          (interactive)
+          (call-process-shell-command
+           "hcl stop"
+           nil
+           "harvest-commands")
+          (message "Stopped harvest timer (if any)"))
+
+        ;; (add-hook 'org-clock-in-hook 'gjg/start-harvest-timer)
+        ;; (add-hook 'org-clock-out-hook 'gjg/stop-harvest-timer)
+
+                  ;; (message (format "Selected task is %s" org-clock-heading) )))
+      #+end_src
+** Behavior
+#+begin_src emacs-lisp
+  ;; make c-y pay attention to current level
+  (setq org-agenda-window-setup 'current-window)
+  (setq org-yank-adjusted-subtrees t)
+  ;; (setq org-yank-folded-subtrees nil)
+  (setq org-insert-heading-respect-content t); new headings go AFTER CONTENT, even from the middle of content area
+  (setq org-indirect-buffer-display 'other-window)
+  (setq org-reverse-note-order t) ; notes go at the top
+  (setq org-return-follows-link t)
+  (setq org-treat-S-cursor-todo-selection-as-state-change nil) ;; use S-arrow without having to log state change!
+  (setq org-log-into-drawer t)
+
+  ;; delete the seleted region when something is typed - don't do that
+  (delete-selection-mode -1)
+
+  ;; show only current/today's/all time in the clock task modeline
+  ;; this SHOULD be settable on a file basis by using property CLOCK_MODELINE_TOTAL
+  (setq org-clock-mode-line-total 'current)
+  (setq org-loop-over-headlines-in-active-region t)
+#+end_src
+** Org Drill flashcards
+#+begin_src emacs-lisp
+(defun gjg/org-drill-set-cloze1 ()
+  "Set current question as 'cloze1' type"
+  (interactive)
+  (insert ":PROPERTIES:\n:DRILL_CARD_TYPE: hide1cloze\n:END:\n")
+  )
+
+#+end_src
+
+* Programming language modes
+
+** All modes derived from =prog-mode=
+   #+begin_src emacs-lisp
+     (add-hook 'prog-mode-hook
+               (lambda ()
+                 (rainbow-delimiters-mode 0)
+                 (rainbow-delimiters-mode 1)
+                 (company-mode 1)
+                 (yafolding-mode 1)
+                 (smartparens-mode 1)))
+   #+end_src
+** Language Servers and setup for LSP
+*** Language Servers
+**** Bash
+     #+begin_src bash
+       sudo npm install --save-dev bash-language-server
+     #+end_src
+**** Go
+     #+begin_src bash
+       sudo apt -y install gopls
+     #+end_src
+**** Go
+     #+begin_src bash
+       go install golang.org/x/tools/gopls@latest
+     #+end_src
+
+**** JavaScript / TypeScript / Node.js
+     #+begin_src bash
+       sudo npm install --save-dev typescript-language-server
+     #+end_src
+**** Python
+     #+begin_src bash
+       sudo apt -y install python3-pyls
+     #+end_src
+**** R
+     #+begin_src R
+       install.packages("languageserver")
+     #+end_src
+**** SQL
+     #+begin_src bash
+       sudo npm i -g sql-language-server
+     #+end_src
+**** YAML
+     #+begin_src bash
+       sudo npm install --save-dev yaml-language-server
+     #+end_src
+*** LSP Package configuration
+   + [[https://www.youtube.com/watch?v=EmLCTPwhC4I][System Crafters Live! - Emacs Package Potluck (Trying Your Suggestions!) - Yo...]]
+
+     #+begin_src emacs-lisp
+       (use-package lsp-mode
+         :straight t
+         :commands (lsp lsp-deferred)
+         :init
+         (setq lsp-keymap-prefix "C-c l") ;; Or C-l or s-l as alternatives
+         :config
+         (lsp-enable-which-key-integration t))
+       (use-package lsp-ui
+         :straight t
+         :hook (lsp-mode . lsp-ui-mode))
+     #+end_src
+** Typescript
+   I don't actually use Typescript - but this was the example given by SystemCrafters for LSP
+
+   + [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/][JavaScript/TypeScript (theia-ide) - LSP Mode - LSP support for Emacs]]
+   + Install a TypeScript language server for each language
+   #+begin_src bash
+     npm i -g typescript-language-server ; npm i -g typescript
+   #+end_src
+   #+begin_src emacs-lisp
+     (use-package typescript-mode
+       :straight t
+       :mode "\\.ts\\'"
+       :hook (typescript-mode . lsp-deferred )
+       :config
+       (setq typescript-indent-level 2))
+   #+end_src
+** Clojure
+   #+begin_src emacs-lisp
+;; (add-hook 'cider-repl-mode-hook #'company-
+(add-hook 'cider-mode-hook #'company-mode)
+;; (use-package lsp-mode
+;;   :straight nil
+;;   :commands lsp
+;;   :config
+;;   (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure-mode"))
+;;   :init
+;;   (setq lsp-enable-indentation nil)
+;;   (add-hook 'clojure-mode-hook #'lsp)
+;;   (add-hook 'clojurec-mode-hook #'lsp)
+;;   (add-hook 'clojurescript-mode-hook #'lsp))
+
+;; ;; (add-to-list 'load-path "~/emacs/cider")
+;; (autoload 'cider "cider" "Cider for Clojure")
+;; (require 'cider)
+;; (eval-after-load "cider"
+;;   '(progn
+;;      ;; (require 'cider)
+;;      ;; (defadvice cider--lein-present-p (around gjg-find-the-damn-script activate)
+;;      ;;   "Lein shell script is not detected on Windows as executable"
+;;      ;;   (if (eq window-system 'w32)
+;;      ;;       (setq ad-return-value (or (file-remote-p default-directory)
+;;      ;;    			     (locate-file "lein" exec-path nil 'exists)))
+;;      ;;     (ad-do-it)))
+;;      (add-hook 'cider-repl-mode-hook 'company-mode)
+;;      (add-hook 'cider-mode-hook 'company-mode)))
+
+   #+end_src
+** Go
+   Initial configuration was nabbed from a 2-parter by @tleydn
+   [[http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch/][Configure Emacs as a Go Editor From Scratch]]
+
+   #+begin_src emacs-lisp :tangle no
+     (use-package go-mode
+       :defer t
+       :straight t
+       :custom
+       (lsp-gopls-staticcheck t)
+       (lsp-eldoc-render-all t)
+       (lsp-gopls-complete-unimported t)
+       :config
+       (add-hook 'go-mode-hook 'lsp-deferred)
+       (add-hook 'go-mode-hook (lambda () (add-hook 'before-save-hook 'ime-go-before-save)))
+       (use-package go-autocomplete :straight t)
+       (auto-complete-mode 1)
+       (setenv "GOPATH" "/home/gregj/projects/coding/go/")
+       )
+     ;; (setenv "GOPATH" "/home/gregj/projects/coding/go/")
+     ;; (defun my-go-mode-hook ()
+     ;;   ; Use goimports instead of go-fmt
+     ;;   (setq gofmt-command "goimports")
+     ;;   ;; Call Gofmt before saving
+     ;;   (add-hook 'before-save-hook 'gofmt-before-save)
+     ;;   ;; jump into code with M-. and jump back with M-*
+     ;;   (local-set-key (kbd "M-.") 'godef-jump)
+     ;;   (local-set-key (kbd "M-*") 'pop-tag-mark)
+     ;;   ;; Customize compile command to run go build
+     ;;   ;; NOTE: may want to start with =go generate= for some projects
+     ;;   (if (not (string-match "go" compile-command))
+     ;;       (set (make-local-variable 'compile-command)
+     ;;            "go build -v && go test -v && go vet"))
+     ;;   ;; ; Go oracle/guru
+     ;;   ;; (load-file "$GOPATH/src/golang.org/x/tools/cmd/oracle/oracle.el")
+     ;;   ;; (load-file "$GOPATH/sr")
+     ;;   (auto-complete-mode 1)
+     ;;   )
+     ;; (add-hook 'go-mode-hook 'my-go-mode-hook)
+     ;; (with-eval-after-load 'go-mode
+     ;;   (require 'go-autocomplete))
+     ;; (setq lsp-gopls-staticcheck t)
+     ;; (setq lsp-eldoc-render-all t)
+   #+end_src
+
+** Rust
+   + [[https://robert.kra.hn/posts/2021-02-07_rust-with-emacs/][Configuring Emacs for Rust development | Robert Krahn]]
+   +
+
+   #+begin_src emacs-lisp
+     (use-package rustic
+       :straight
+       :bind (:map rustic-mode-map
+                   ("M-j" . lsp-ui-imenu)
+                   ("M-?" . lsp-find-references)
+                   ("C-c C-c l" . flycheck-list-errors)
+                   ("C-c C-c a" . lsp-execute-code-action)
+                   ("C-c C-c r" . lsp-rename)
+                   ("C-c C-c q" . lsp-workspace-restart)
+                   ("C-c C-c Q" . lsp-workspace-shutdown)
+                   ("C-c C-c s" . lsp-rust-analyzer-status))
+       :config
+       ;; uncomment for less flashiness
+       (setq lsp-eldoc-hook nil)
+       (setq lsp-enable-symbol-highlighting nil)
+       (setq lsp-signature-auto-activate nil)
+
+       ;; comment to disable rustfmt on save
+       (setq rustic-format-on-save t)
+       (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+
+     (defun rk/rustic-mode-hook ()
+       ;; so that run C-c C-c C-r works without having to confirm
+       (setq-local buffer-save-without-query t))
+   #+end_src
+
+** Javascript
+*** Prefer =js2= mode
+   #+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+   #+end_src
+*** Treat =.cue= as JSON or Bazel
+	#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.cue$" . bazel-mode))
+
+	#+end_src
+** Python
+*** LSP Language Server
+    Just make sure the language server is installed before using LSP with Python
+    #+begin_src bash
+      pip install -U setuptools
+      pip install python-lsp-server[all]
+    #+end_src
+*** Python mode setup
+   #+begin_src emacs-lisp
+     ;; Python
+
+     (use-package python
+       :straight t
+       :custom
+       (org-babel-python-command "python3")
+       :config
+       (setq python-shell-interpreter "ipython3"
+             python-shell-interpreter-args "-i --simple-prompt")
+       (setq org-babel-python-command "python3")
+       (add-hook 'python-mode-hook
+             (lambda ()
+               (setq indent-tabs-mode nil)
+               (setq python-indent-offset 4)
+               (setq tab-width 4)
+               (setq prettify-symbols-alist prettify-greek-lower)
+               (pyvenv-mode t)
+               (prettify-symbols-mode t)))
+       )
+
+     (custom-set-variables '(org-babel-python-command "python3"))
+
+     ;; (setq ansi-color-drop-regexp
+     ;;       "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
+
+     ;; (require 'elpy)
+
+     ;; (require 'prettify-greek)
+
+   #+end_src
+*** Treat Bazel/Starlark files as Python
+	#+begin_src emacs-lisp
+	  (add-to-list 'auto-mode-alist '("\\.starlark$" . python-mode))
+	#+end_src
+** Jupyter
+   + Interesting blog post: [[https://sqrtminusone.xyz/posts/2021-05-01-org-python/][Replacing Jupyter Notebook with Org Mode]]
+     + consider setting =(org-babel-jupyter-override-src-block "python")=
+     + consider =(setq ob-async-no-async-languages-alist '("python" "jupyter-python"))=
+   +
+
+#+begin_src emacs-lisp
+  (use-package jupyter
+    :straight t
+     :hook (ein:notebook-mode . lsp-deferred)
+    )
+  (use-package ob-ipython
+    :straight t)
+  (use-package ein :straight t)
+  ;; (when (memq window-system '(mac ns x))
+  ;;   (exec-path-from-shell-initialize))
+#+end_src
+** R
+   #+begin_src emacs-lisp
+     (use-package polymode :straight t
+       :config
+       (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
+       (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
+       (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode)))
+     (use-package ess :straight t
+       :config
+       (setq ess-sas-edit-keys-toggle nil)
+       (add-to-list 'display-buffer-alist
+                    '("^\\*R" display-buffer-reuse-window display-buffer-same-window))
+       :init (require 'ess-site))
+   #+end_src
+** SQL and even GSQL
+*** Format SQL
+    Emacs doesn't come out of the box with a useful SQL formatter, so go ahead and use an
+    external process
+
+    Ref https://emacs.stackexchange.com/a/35683/418
+
+    #+begin_src bash
+      pip3 install sqlparse
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (defun gjg/sqlparse-region (beg end)
+        (interactive "r")
+        (shell-command-on-region
+         beg end
+         "python -c 'import sys, sqlparse; print(sqlparse.format(sys.stdin.read(), reindent=True))'"
+         t t))
+    #+end_src
+
+*** MySQL / MariaDB
+
+    + Assure that client prompt is recognized for both products
+   #+begin_src emacs-lisp
+     (add-hook 'sql-interactive-mode-hook (lambda ()
+                                            (setq sql-prompt-regexp "\\(Maria[BD]*\\|MySQL\\) [^\\>]+\\>")
+                                            ))
+     (with-eval-after-load 'sql
+       ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
+       (sql-set-product-feature 'mysql :prompt-regexp
+                                "^\\(MariaDB\\|MySQL\\|mysql\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
+       (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
+       (sql-set-product-feature 'sqlite :prompt-regexp
+                                "^\\(sqlite\\|\\|mysql\\) *\\[[\\(\\)_a-zA-Z]*\\]> ")
+       )
+     ;; (require 'sql)
+     ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
+     ;; (sql-set-product-feature 'mysql :prompt-regexp
+     ;;                          "^\\(MariaDB\\|MySQL\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
+     ;; (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
+   #+end_src
+   + Allow for alternative port
+     #+begin_src emacs-lisp
+       (setq sql-mysql-login-params '(user password server database port))
+       (setq sql-port 3306)
+     #+end_src
+
+*** GSQL (TigerGraph)
+    For now, use =sql-mode=
+    #+begin_src emacs-lisp
+      (add-to-list 'auto-mode-alist '("\\.gsql" . sql-mode))
+    #+end_src
+* Devops
+** Working with containers
+   This is largely a function of TRAMP.  I have added simple ways to
+   get Dired and =shell-mode= in
+   + Docker containers using =docker-tramp= package
+   + DC/OS tasks with the =dcos= TRAMP method
+   + Kubernetes pods with the =kube= TRAMP method.  This will grab a
+     shell on the first container defined in the pod
+   + Google Cloud Shell with =gshell= TRAMP method
+
+** Highlight Terraform and Ansible messages
+   This function highlights the typical lines for:
+   + Terraform (Creation/Destruction complete)
+   + Ansible (RUNNING/STAGE/TASK/PLAY)
+   + Docker build (Step n/n)
+
+  #+begin_src emacs-lisp
+    (defun gjg/highlight-terraform-stuff ()
+      (interactive)
+      ; Terraform patterns
+      (highlight-regexp "Creation complete" 'hi-green)
+      (highlight-regexp "Destruction complete" 'hi-pink)
+      ; Docker build
+      (highlight-regexp "Step [0-9]+/[0-9]+ : [A-Z]+" 'hi-aquamarine)
+      ; Ansible
+      (highlight-regexp "\\(RUNNING\\|STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
+
+    (defun gjg/highlight-squid ()
+      (interactive)
+      ;; Registry pull-through cache
+      (highlight-regexp "^HIT" 'hi-green)
+      (highlight-regexp "^MISS" 'hi-pink)
+      ;; Docker pull-through registry patterns
+      (highlight-regexp "\"HIT\"" 'hi-green)
+      (highlight-regexp "\"MISS\"" 'hi-pink)
+      ;; Squid caching patterns
+      (highlight-regexp "[A-Z_]*_HIT[A-Z_]*" 'hi-green)
+      (highlight-regexp "[A-Z_]*_MISS[A-Z_]*" 'hi-pink)
+      (highlight-regexp "[A-Z_]*_UNMODIFIED[A-Z_]*" 'hi-green)
+      (highlight-regexp "application/[-a-z0-9A-Z]+" 'hi-yellow)
+      (highlight-regexp "/[^/]+\.rpm" 'hi-black-b)
+      (highlight-regexp "/[^/]+\.deb" 'hi-black-b))
+
+
+
+
+
+
+
+
+
+  #+end_src
+
+* Modeline and Title
+ Fancy icons may require fonts (like =texlive-fonts-extra=)
+
+** Awesome Tray
+   #+begin_src emacs-lisp :tangle no
+     (use-package awesome-tray
+       :straight (awesome-tray :type git :host github :repo "manateelazycat/awesome-tray")
+       :config
+       (setq awesome-tray-active-modules
+             '("location" "git" "buffer-read-only" "buffer-name" "mode-name" "input-method" "battery" "date")
+             awesome-tray-buffer-name-buffer-changed t
+             awesome-tray-buffer-read-only-style "%")
+       (awesome-tray-mode 0))
+   #+end_src
+** Simple mode line
+   #+begin_src emacs-lisp
+     (use-package simple-modeline
+       :straight t
+       :config
+       (simple-modeline-mode 1))
+   #+end_src
+** Smart Mode line
+   + Smart mode line defines a face for battery charging/discharging - thus green for
+     10% plugged in, and red for 90% on battery.  I prefer the way =battery.el= sets
+     faces for level of charge with +/- optionally for charging/discharging.
+   #+begin_src emacs-lisp :tangle no
+     (use-package smart-mode-line-powerline-theme
+       :straight t)
+     (use-package smart-mode-line
+       :straight t
+       :config
+       (sml/setup))
+
+     (advice-remove 'battery-update 'ad-Advice-battery-update)
+   #+end_src
+** Hide the little bleeder altogether
+   Set to hide globally, then bind a Super key to toggle only the current buffer. Super
+   nice to use when screen sharing
+   #+begin_src emacs-lisp
+     (use-package hide-mode-line
+       :straight t
+       :config
+       (global-hide-mode-line-mode 0)
+       (bind-key "s-m" 'simple-modeline-mode))
+   #+end_src
+** Frame title and mode line tweaks
+  #+begin_src emacs-lisp :tangle no
+    ;; (require 'spaceline-config)
+    ;; (setq spaceline-always-show-segments t)
+    ;; (spaceline-spacemacs-theme)
+    ;; show column number in modeline - in addition to line number
+    (column-number-mode t)
+    ;; do not show load average
+    (setq display-time-default-load-average nil)
+
+    (setq frame-title-format (concat "emacs@" (system-name) " - %f; %b"))
+    ;; fancy git icon
+    (defadvice vc-mode-line (after strip-backend () activate)
+      (when (stringp vc-mode)
+        (let ((gitlogo (replace-regexp-in-string "^ Git." "  " vc-mode))) ;; symbol from fonts-font-awesome
+          (setq vc-mode gitlogo))))
+
+  #+end_src
+* Final steps
+#+begin_src emacs-lisp
+(shell (get-buffer-create "sh1"))
+#+end_src
