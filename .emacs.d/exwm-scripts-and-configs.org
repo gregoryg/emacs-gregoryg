@@ -69,10 +69,6 @@
           xscreensaver
 
    #+end_src
-** Autorandr special case
-   This is probably best installed using =pip3= -- but I still need to test the version
-   available using Pip
-   TODO: test =pip3 install autorandr=
 ** X Session Desktop file
    Having this allows EXWM to be chosen from the Display Manager
 
