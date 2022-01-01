@@ -3154,6 +3154,11 @@ Open man page in current window, rather than other window with
        (setq sql-port 3306)
      #+end_src
 
+*** GSQL (TigerGraph)
+    Working on syntax highlighting for GSQL
+    #+begin_src emacs-lisp
+      (load-file "~/projects/homelab/graph/tigergraph/gsql-mode2.el")
+    #+end_src
 ** FINAL step after all language modes have been configured
    #+begin_src emacs-lisp
      (org-babel-do-load-languages
