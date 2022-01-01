@@ -2221,6 +2221,7 @@ Open man page in current window, rather than other window with
       (defun safe-blog-filename ()
         (let ((thedate (org-read-date nil nil nil "Date of post: "))
               (name (read-string "Blog post title: ")))
+          (setq gjg/blogpost-title name)
           (expand-file-name (format "%s-%s.org"
                                     (format-time-string "%Y-%m-%d")
                                     (downcase
