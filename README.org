@@ -2023,19 +2023,6 @@ Open man page in current window, rather than other window with
        ;;   (require 'org-tempo) ; required for Easy Templates since Org 9.2
        ;;   )
        (with-eval-after-load 'org
-         (org-babel-do-load-languages
-          'org-babel-load-languages
-          (append org-babel-load-languages
-                  '(
-                    (clojure . t)
-                    (http . t) ;; curl
-                    (js . t)
-                    (latex . t)
-                    ;; (jupyter . t)
-                    (python . t)
-                    (shell  . t)
-                    (sql . t)
-                    )))
          (setq org-confirm-babel-evaluate nil
                org-export-with-sub-superscripts nil)
 
@@ -3236,11 +3223,22 @@ Open man page in current window, rather than other window with
        (setq sql-port 3306)
      #+end_src
 
-*** GSQL (TigerGraph)
-    For now, use =sql-mode=
-    #+begin_src emacs-lisp
-      (add-to-list 'auto-mode-alist '("\\.gsql" . sql-mode))
-    #+end_src
+** FINAL step after all language modes have been configured
+   #+begin_src emacs-lisp
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      (append org-babel-load-languages
+              '(
+                (clojure . t)
+                (http . t) ;; curl
+                (js . t)
+                (latex . t)
+                (jupyter . t)
+                (python . t)
+                (shell  . t)
+                (sql . t)
+                )))
+   #+end_src
 * Devops
 ** Working with containers
    This is largely a function of TRAMP.  I have added simple ways to
