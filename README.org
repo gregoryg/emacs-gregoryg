@@ -3061,6 +3061,7 @@ Open man page in current window, rather than other window with
                (pyvenv-mode t)
                (prettify-symbols-mode t)))
        )
+     (use-package pyvenv :straight t)
 
      (custom-set-variables '(org-babel-python-command "python3"))
 
