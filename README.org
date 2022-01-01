@@ -2039,9 +2039,13 @@ Open man page in current window, rather than other window with
                                               ("S" . "src")
                                               ("sc" . "src conf")
                                               ("sj" . "src json")
+                                              ("sJ" . "src javascript")
                                               ("sl" . "src emacs-lisp")
                                               ("sp" . "src python")
+                                              ("sP" . "src jupyter-python")
                                               ("sq" . "src sql")
+                                              ("sr" . "src R")
+                                              ("sR" . "src jupyter-R")
                                               ("ss" . "src bash")
                                               ("sy" . "src yaml"))))
 
