@@ -16,6 +16,9 @@
 #+PROPERTY: header-args:bash :results none :shebang #!/usr/bin/env bash :tangle no
 * Overview
 
+  Minimalistic desktop environment things that are closely tied with my EXWM configuration
+  and/or include some emacs lisp will be found in [[file:README.org][README.org]]
+
   This file handles creating all the basics for a DYI Linux desktop environment.  If you
   forego the pre-packaged desktop environments such as Gnome, KDE, XFCE, Mate, etc. you
   will need to substitute some of the conveniences those environments offer.
@@ -1038,7 +1041,6 @@
          setsid ~/.config/polybar/hideIt.sh --wait --region ${hregion} --name '^polybar-floating' > /dev/null 2>&1 &
 
      fi
-
    #+end_src
 ** Toggle XFCE4 Panel Show/Hide
    #+begin_src conf :tangle ~/.local/share/applications/toggle-xfce-panel-visibility.desktop
