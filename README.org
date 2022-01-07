@@ -3133,6 +3133,18 @@ Open man page in current window, rather than other window with
        :init (require 'ess-site))
    #+end_src
 ** SQL and even GSQL
+*** Display SQL Interactive buffer in selected (same) window
+    + Tip of the hat to [[https://emacs.stackexchange.com/questions/54988/how-to-make-emacs-to-launch-sql-modes-runtime-window-always-at-the-bottom][config - How to make emacs to launch sql modes runtime window always at the b...]]
+      #+begin_src emacs-lisp
+        (add-to-list 'display-buffer-alist
+                     '((lambda (buffer action)
+                         (with-current-buffer buffer
+                           (derived-mode-p 'sql-interactive-mode)
+                           )
+                         )
+                       display-buffer-same-window)
+                     )
+      #+end_src
 *** Format SQL
     Emacs doesn't come out of the box with a useful SQL formatter, so go ahead and use an
     external process
