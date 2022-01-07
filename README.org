@@ -1062,24 +1062,7 @@
 
      My current variation is based on [[https://github.com/Tadly/hideIt.sh][Tadly's hideIt.sh]]
 
-**** toggle hideIt - authohide or pin
-     We will 'pin' the polybar panel simply by killing the hideIt process
-     #+begin_src bash :tangle ~/bin/toggle-auto-hide-polybar.sh
-       pid=$(ps fax | grep hideIt | grep -v grep|head -1 | awk '{print $1}')
-       echo "Debug: pid is |${pid}|"
-       if [ -n "${pid}" ] ; then
-           # it's active, so kill it, thus "pinning" our panel
-           echo "killing ${pid}"
-           ps fax | grep hideIt | grep -v grep | awk '{print $1}' | xargs kill
-       else
-           # it's not running so, start 'er up and autohide the panel
-           # We first have to grab monitor 0 resolution to properly set regiob
-           hregion=$(xrandr --listactivemonitors | egrep '^ *0:'  |cut -d':' -f2|cut -d' ' -f3 | sed 's,\([0-9]\+\)\/[0-9]\+x\([0-9]\+\).\+,0x\2+\1+-10,')
-           setsid ~/.config/polybar/scripts/hideIt.sh --wait --region ${hregion} --name '^polybar-floating' > /dev/null 2>&1 &
-
-       fi
-     #+end_src
-
+     Script(s) and desktop shortcuts are to be found in [[file:Desktop.org][Desktop.org]]
 ** To launch or not to launch
    My configuration tests for the existence of a window manager.  If one is already
    running, just skip all the EXWM setup and bring up a "normal" Emacs instance.
