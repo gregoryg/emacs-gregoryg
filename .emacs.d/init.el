@@ -37,13 +37,8 @@
 (gcmh-mode 1)
 (straight-use-package 'org)
 (require 'org)
-(org-babel-tangle-file "~/emacs-gregoryg/emacs-init.org")
+(org-babel-tangle-file "~/emacs-gregoryg/README.org")
 (load-file "~/.emacs.d/emacs-init.el")
-;; (org-babel-load-file
-;;   "~/emacs-gregoryg/emacs-init.org"
-;;  nil ; byte-compile the result?
-;;  )
-
 
 ;; Message how long it took to load everything (minus packages)
 (let ((elapsed (float-time (time-subtract (current-time)
