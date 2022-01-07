@@ -27,6 +27,31 @@
 
   Tangle this file to generate shell scripts.
 
+* Key bindings
+
+** Volume
+   Volume control uses the =pulseaudio-control= script
+
+   To simplify invocation of the command, create a wrapperr script per machine with all
+   the parameters filled in.
+
+   Here's the wrapper for GladOS, my Dell XPS 13" 2-in-1 laptop
+   #+begin_src bash :tangle ~/bin/pulseaudio-control-glados
+     # The arguments for this script:
+     if [ -z "$1" ]; then
+         echo "\
+     Usage: $0 [output, up, down, mute, unmute, togmute, next-sink, sync]"
+         exit 0
+     fi
+     ~/bin/pulseaudio-control \
+         --icons-volume " , " \
+         --icon-muted " " \
+         --sink-nicknames-from "device.description" \
+         --sink-nickname "alsa_output.pci-0000_00_1f.3.analog-stereo:  Speakers" \
+         --sink-nickname "bluez_sink.38_18_4C_3E_36_51.a2dp_sink:  Headphones" \
+         --sink-nickname "bluez_sink.BC_F2_92_A7_29_EC.a2dp_sink: Earpiece" \
+         $1
+   #+end_src
 * OS Applications
   The shell scripts here expect certain applications to be installed, so let's take care
   of those

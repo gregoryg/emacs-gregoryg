@@ -428,6 +428,15 @@
 (require 'gjg-functions)
    #+end_src
 ** Key bindings
+*** Audio and media
+    #+begin_src emacs-lisp
+      (bind-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (call-process-shell-command "/home/gregj/bin/pulseaudio-control-glados down")))
+      (bind-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive) (call-process-shell-command "/home/gregj/bin/pulseaudio-control-glados up")))
+      (bind-key (kbd "<XF86AudioMute>") (lambda () (interactive) (call-process-shell-command "/home/gregj/bin/pulseaudio-control-glados togmute")))
+      (bind-key (kbd "<XF86AudioPlay>") (lambda () (interactive) (call-process-shell-command "/usr/bin/playerctl play-pause") ))
+      (bind-key (kbd "<XF86AudioMute>") (lambda () (interactive) (call-process-shell-command "/home/gregj/bin/pulseaudio-control-glados togmute")))
+    #+end_src
+*** Big blob of various key bindings
    #+begin_src emacs-lisp
      (global-set-key [home] (lambda () (interactive) (goto-char (point-min))))
      (global-set-key [end] (quote end-of-buffer))
