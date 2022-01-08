@@ -1019,7 +1019,7 @@
      Categories=Office;Productivity;
    #+end_src
 ** Toggle Polybar Panel Show/Hide
-   #+begin_src conf :tangle ~/.local/share/applications/toggle-xfce-panel-visibility.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/toggle-polybar-panel-visibility.desktop
      [Desktop Entry]
      Name=Toggle Polybar Panel Show/Hide
      Comment=Polybar panel with system tray
