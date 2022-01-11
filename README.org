@@ -1339,7 +1339,7 @@
     warnings/errors
     Oneto consider:
     + [[https://github.com/casouri/emacs-mission-control][GitHub - casouri/emacs-mission-control: Mac mission-control-like buffer switch]]
-      #+begin_src emacs-lisp
+      #+begin_src emacs-lisp :tangle no
         (straight-use-package
          '(mission-control
            :type git
