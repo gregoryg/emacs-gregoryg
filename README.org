@@ -1063,6 +1063,24 @@
      My current variation is based on [[https://github.com/Tadly/hideIt.sh][Tadly's hideIt.sh]]
 
      Script(s) and desktop shortcuts are to be found in [[file:Desktop.org][Desktop.org]]
+**** Function and script to DWIM switch to EXWM buffer
+     #+begin_src emacs-lisp
+       (defun gjg/exwm-switch-to-buffer-or-launch (searchstring &optional application)
+         "Switch to the first buffer matching SEARCHSTRING
+          If no matching buffer is found, launch the APPLICATION using gtk-launch."
+           (let
+             ((mybuf (car (remove-if-not (lambda (row) (search searchstring (buffer-name row))) (buffer-list)))))
+           (if mybuf
+               (switch-to-buffer mybuf)
+             (when application
+                 (call-process-shell-command (concat "gtk-launch " application))))))
+     #+end_src
+     + Bring up the corporate Gmail window - works in conjuction with =gmail.desktop= in [[file:Desktop.org][Desktop.org]]
+     #+begin_src bash :tangle ~/bin/gmail-buffer-or-launch.sh
+       #!/usr/bin/env bash
+       emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch "TigerGraph Mail" "gmail")'
+     #+end_src
+
 ** To launch or not to launch
    My configuration tests for the existence of a window manager.  If one is already
    running, just skip all the EXWM setup and bring up a "normal" Emacs instance.
