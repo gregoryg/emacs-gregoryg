@@ -598,8 +598,13 @@
       (bind-key "s-1" 'delete-other-windows)
       (bind-key "s-2" 'gjg/split-window-below)
       (bind-key "s-3" 'gjg/split-window-right)
+      (bind-key "M-s-<up>" 'windmove-delete-up)
+      (bind-key "M-s-<down>" 'windmove-delete-down)
+      (bind-key "M-s-<left>" 'windmove-delete-left)
+      (bind-key "M-s-<right>" 'windmove-delete-right)
       (bind-key "s-p" 'playerctl-play-pause-song)
       (bind-key "s-q" 'bury-buffer)
+      (bind-key "s-t" 'toggle-truncate-lines)
       (bind-key "s-." '(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
       (bind-key "s-\\" 'switch-to-buffer)
       ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
@@ -1080,7 +1085,6 @@
        #!/usr/bin/env bash
        emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch "TigerGraph Mail" "gmail")'
      #+end_src
-
 ** To launch or not to launch
    My configuration tests for the existence of a window manager.  If one is already
    running, just skip all the EXWM setup and bring up a "normal" Emacs instance.
@@ -1161,6 +1165,11 @@
                  ([s-right] . windmove-right)
                  ([s-up] . windmove-up)
                  ([s-down] . windmove-down)
+                 ([M-s-up] . windmove-delete-up)
+                 ([M-s-down] . windmove-delete-down)
+                 ([M-s-left] . windmove-delete-left)
+                 ([M-s-right] . windmove-delete-right)
+
                  ([?\s-e] . gjg/ibuffer-only-exwm)
                  ([s-backspace] . bury-buffer)
                  ([?\s-q] . bury-buffer)
