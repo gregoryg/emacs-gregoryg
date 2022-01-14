@@ -3225,7 +3225,7 @@ Open man page in current window, rather than other window with
 *** GSQL (TigerGraph)
     Working on syntax highlighting for GSQL
     #+begin_src emacs-lisp
-      (load-file "~/projects/homelab/graph/tigergraph/gsql-mode2.el")
+      (load-file "~/projects/emacs/gsql-mode.el/gsql-mode.el")
     #+end_src
 ** FINAL step after all language modes have been configured
    #+begin_src emacs-lisp
