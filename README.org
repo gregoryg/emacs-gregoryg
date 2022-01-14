@@ -1181,6 +1181,7 @@
                  ([?\s-2] . gjg/split-window-below)
                  ([?\s-3] . gjg/split-window-right)
                  ([?\s-p] . playerctl-play-pause-song)
+                 ([?\s-t] . toggle-truncate-lines)
                  ([?\s-.] . (lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
 
                  ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
