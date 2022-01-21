@@ -30,7 +30,7 @@
 
   Tangle this file to generate shell scripts.
 
-* Key bindings
+* Control scripts
 
 ** Volume
    Volume control uses the =pulseaudio-control= script
@@ -173,40 +173,15 @@
      EndSection
    #+end_src
 
-* Shell scripts that become useful when no DE is available
-** Assure our app launcher is running at login
-   This is for =ulauncher=, installed previously
-   #+begin_src bash
-     # mkdir -p ~/.config/systemd/user
-   #+end_src
-   If using ulauncher, tangle following block to ~/.config/systemd/user/ulauncher.service
-   #+begin_src conf :tangle no
-     [Unit]
-     Description=Linux Application Launcher
-     Documentation=https://ulauncher.io/
-     After=display-manager.service
-
-     [Service]
-     Type=simple
-     Restart=always
-     RestartSec=1
-     ExecStart=/usr/bin/ulauncher --hide-window
-
-     [Install]
-     # WantedBy=graphical.target
-     WantedBy=default.target
-   #+end_src
-   #+begin_src bash
-     systemctl --user enable ulauncher
-   #+end_src
+* Useful shell when no DE is available
 ** Script to run autostart apps including compositor
   I run a shell script which starts up key helper apps like albert/ulauncher, picom/compton and
   xscreensaver.  Also some common mouse and keyboard settings that are ordinarily handled
   in the DE.
 
   NOTE: If both =xscreensaver= and =xfce4-screensaver= are running, they can "fight" for
-  control in the Lightdm screen and prevent any user input!  So for now I will just not
-  start =xscreensaver=
+  control in the Lightdm screen and prevent any user input!  So for now I will just use
+   =xfce4-screensaver=
 
   #+begin_src bash :tangle ~/bin/dns-restarter.sh
     sudo systemctl restart systemd-resolved.service
@@ -232,13 +207,6 @@
     # nmcli connection delete moodseer-5G
     # nmcli d wifi connect moodseer-5G password blah
 
-    # Control scrolling direction and tap to click - Add this to libinput touchpad config in  =/etc/X11/xorg.conf.d/40-libinput.conf=
-    #
-    #        Option "NaturalScrolling" "on"
-    #        Option "Tapping" "on"
-    #        Option "ClickMethod" "clickfinger"
-
-
     # run an authentication agent for graphical programs that need SUDO - like GParted
     if [ -x "/usr/lib/polkit-gnome-authentication-agent-1" ] ; then
         (cd /tmp && nohup /usr/lib/polkit-gnome-authentication-agent-1&)
@@ -250,9 +218,6 @@
     # Set scrolling direction to "natural"
     xmodmap -e "pointer = 1 2 3 4 5"
 
-    # Make a left-handed mouse
-    # xmodmap -e "pointer = 3 2 1"
-
     rm -vf nohup.out
     echo Start compositor
     if /usr/bin/which picom ; then
@@ -261,27 +226,15 @@
         nohup compton &
     fi
 
-
-    echo Starting notification daemon
-    nohup /usr/lib/xfce4/notifyd/xfce4-notifyd &
-
     echo Start albert
     nohup albert &
     nohup nm-applet&
-    # or ulauncher!
-    # systemctl --user start ulauncher
     # echo Remember iflipb for changing buffers - and/or buffer-expose-mode
     # xrandr --output eDP-1 --brightness .8
 
     # echo Start xscreensaver
     # xscreensaver &
     nohup xfce4-power-manager&
-    ## Deal with LXDE if running as the WM
-    ## pcmanfm --desktop-off
-
-    # XFCE4 panel or polybar or whatever
-    echo Start panel
-    # /home/gregj/bin/xfce-panel-widgets.sh &
   #+end_src
 ** Scripts to rotate wallpaper on multiple screens
    The schedule script runs only if it is not already running
