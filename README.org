@@ -2088,6 +2088,7 @@ Open man page in current window, rather than other window with
                                               ("q" . "quote")
                                               ("S" . "src")
                                               ("sc" . "src conf")
+                                              ("sg" . "src sql :product gsql")
                                               ("sj" . "src json")
                                               ("sJ" . "src javascript")
                                               ("sl" . "src emacs-lisp")
@@ -3199,9 +3200,9 @@ Open man page in current window, rather than other window with
 
     + Assure that client prompt is recognized for both products
    #+begin_src emacs-lisp
-     (add-hook 'sql-interactive-mode-hook (lambda ()
-                                            (setq sql-prompt-regexp "\\(Maria[BD]*\\|MySQL\\) [^\\>]+\\>")
-                                            ))
+     ;; (add-hook 'sql-interactive-mode-hook (lambda ()
+     ;;                                        (setq sql-prompt-regexp "\\(Maria[BD]*\\|MySQL\\) [^\\>]+\\>")
+     ;;                                        ))
      (with-eval-after-load 'sql
        ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
        (sql-set-product-feature 'mysql :prompt-regexp
@@ -3210,11 +3211,6 @@ Open man page in current window, rather than other window with
        (sql-set-product-feature 'sqlite :prompt-regexp
                                 "^\\(sqlite\\|\\|mysql\\) *\\[[\\(\\)_a-zA-Z]*\\]> ")
        )
-     ;; (require 'sql)
-     ;; (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|[Mm][Yy][Ss][Qq][Ll]\\) *\\[?[\\[\\]]]_a-zA-Z0-9()]*\\]?> ")
-     ;; (sql-set-product-feature 'mysql :prompt-regexp
-     ;;                          "^\\(MariaDB\\|MySQL\\) \\[[\\(\\)_a-zA-Z]*\\]> ")
-     ;; (setq sql-mysql-options '("-C" "-t" "-f" "-n"))
    #+end_src
    + Allow for alternative port
      #+begin_src emacs-lisp
