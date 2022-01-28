@@ -1146,7 +1146,7 @@
                  ([?\s-l] .   ;; super/windows l
                   (lambda ()
                     (interactive)
-                    (call-process-shell-command "xfce4-screensaver-command -l")))
+                    (call-process-shell-command "xscreensaver-command -l")))
                  ;; 's-r': Reset (to line-mode).
                  ([?\s-r] . exwm-reset)
                  ([?\s-s] . save-some-buffers)
