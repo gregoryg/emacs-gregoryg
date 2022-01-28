@@ -606,6 +606,7 @@
       (bind-key "s-q" 'bury-buffer)
       (bind-key "s-t" 'toggle-truncate-lines)
       (bind-key "s-." '(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
+      (bind-key "M-SPC" '(lambda () (interactive (call-process-shell-command "rofi -show run"))))
       (bind-key "s-\\" 'switch-to-buffer)
       ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
       (defun gjg/widen-ask-if-indirect ()
