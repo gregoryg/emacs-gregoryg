@@ -35,7 +35,7 @@
 ** Volume
    Volume control uses the =pulseaudio-control= script
 
-   To simplify invocation of the command, create a wrapperr script per machine with all
+   To simplify invocation of the command, create a wrapper script per machine with all
    the parameters filled in.
 
    Here's the wrapper for GladOS, my Dell XPS 13" 2-in-1 laptop
@@ -58,6 +58,8 @@
 * OS Applications
   The shell scripts here expect certain applications to be installed, so let's take care
   of those
+** Guix
+  GNU Guix changes everything - packages will be added declaratively
 ** Ubuntu
    #+begin_src bash
      # Add repo for Albert - Ubuntu 21.10
@@ -220,9 +222,9 @@
 
     rm -vf nohup.out
     echo Start compositor
-    if /usr/bin/which picom ; then
+    if which picom ; then
         nohup picom &
-    elif /usr/bin/which compton ; then
+    elif which compton ; then
         nohup compton &
     fi
 
@@ -254,7 +256,7 @@
      # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 1 --bg-max --randomize ~/backgrounds/safe/1920x1200/
      # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 0 --bg-max --randomize ~/backgrounds/safe/3440x1440/
 
-     DISPLAY=:0 /usr/bin/feh --bg-fill --randomize --recursive  ~/backgrounds/safe/
+     feh --bg-fill --randomize --recursive  ~/backgrounds/safe/
    #+end_src
    #+begin_src bash :tangle ~/bin/schedule-rotate-wallpapers.sh
      #!/usr/bin/env bash
