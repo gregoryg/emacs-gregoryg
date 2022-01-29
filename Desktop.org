@@ -385,7 +385,7 @@
      /home/gregj/bin/capsctrl.sh
      /home/gregj/bin/schedule-rotate-wallpapers.sh
    #+end_src
-* Desktop files to use with Albert / ulauncher
+* Desktop files to use with Albert / ulauncher / rofi
 ** Assure directories are created before tangling
    #+begin_src bash
      mkdir -p ~/.local/share/applications ~/.local/share/pixmaps/
@@ -403,19 +403,19 @@
      [Desktop Entry]
      Name=Amazon.com
      Comment=That's right
-     Exec=x-www-browser --new-window https://www.amazon.com/
+     Exec=xdg-open https://www.amazon.com/
      Icon=/home/gregj/.local/share/pixmaps/amazon-logo-rgb.png
      Terminal=false
      Type=Application
      Categories=Shopping;Retail;
    #+end_src
 ** Browser
-   + generic browser, specified by update-alternatives x-www-browser
+   + generic browser, specified by update-alternatives x-www-browser *or* xdg-settings
    #+begin_src conf :tangle ~/.local/share/applications/browser-generic.desktop
      [Desktop Entry]
      Name=Browser
      Comment=The default web browser
-     Exec=x-www-browser --new-window
+     Exec=xdg-open https://google.com
      Icon=/home/gregj/.local/share/pixmaps/browser-generic.png
      Terminal=false
      Type=Application
@@ -432,12 +432,30 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
+** Chrome
+   Use this if you are not using the OS package manager or Flatpak installation - set
+   =:tangle no= if you are
+   #+begin_src conf :tangle no
+     # ~/.local/share/applications/chrome.desktop
+     [Desktop Entry]
+     Encoding=UTF-8
+     Name=Google Chrome
+     GenericName=Web Browser
+     Comment=Browse the Web
+     Exec=flatpak run com.google.Chrome
+     Icon= /home/gregj/.local/share/pixmaps/google-cloud-logo.png
+     Terminal=false
+     Type=Application
+     Categories=Application;Network;WebBrowser;
+     MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;
+     StartupNotify=True
+   #+end_src
 ** Cloudflare
    #+begin_src conf :tangle ~/.local/share/applications/cloudflare.desktop
      [Desktop Entry]
      Name=Cloudflare
      Comment=
-     Exec=x-www-browser --new-window https://cloudflare.com
+     Exec=xdg-open https://cloudflare.com
      Icon= /home/gregj/.local/share/pixmaps/cloudflare-icon.png
      Terminal=false
      Type=Application
@@ -458,6 +476,18 @@
         Icon= /home/gregj/.local/share/pixmaps/rotate-wallpapers.jpg
         # Terminal=false
         Categories=Office;Productivity;Coolness
+   #+end_src
+** Discord
+   #+begin_src conf :tangle ~/.local/share/applications/discord.desktop
+     [Desktop Entry]
+     Encoding=UTF-8
+     Name=Discord
+     Comment=Communicate
+     Exec=flatpak run com.discordapp.Discord
+     Icon= /home/gregj/.local/share/pixmaps/discord.png
+     Terminal=false
+     Type=Application
+     Categories=Messaging
    #+end_src
 ** DNS Restarter
    #+begin_src conf :tangle ~/.local/share/applications/dns-restarter.desktop
@@ -486,7 +516,7 @@
      [Desktop Entry]
      Name=Erebor Synology DSM
      Comment=Erebor
-     Exec=x-www-browser --new-window https://erebor.magichome:5001
+     Exec=xdg-open https://erebor.magichome:5001
      Icon= /home/gregj/.local/share/pixmaps/synology.png
      Terminal=false
      Type=Application
@@ -515,7 +545,7 @@
      [Desktop Entry]
      Name=GitHub
      Comment=GitHub
-     Exec=x-www-browser --new-window https://github.com/gregoryg/
+     Exec=xdg-open https://github.com/gregoryg/
      Icon= /home/gregj/.local/share/pixmaps/github4.jpg
      Terminal=false
      Type=Application
@@ -526,7 +556,7 @@
      [Desktop Entry]
      Name=GCP Google Cloud
      Comment=GCP
-     Exec=x-www-browser --new-window https://console.cloud.google.com/compute/instances?authuser=0
+     Exec=xdg-open https://console.cloud.google.com/compute/instances?authuser=0
      Icon= /home/gregj/.local/share/pixmaps/google-cloud-logo.png
      Terminal=false
      Type=Application
@@ -538,7 +568,7 @@
      [Desktop Entry]
      Name=Google Maps
      Comment=
-     Exec=x-www-browser --new-window https://maps.google.com?authuser=1
+     Exec=xdg-open https://maps.google.com?authuser=1
      Icon= /home/gregj/.local/share/pixmaps/Maps_Pin_FullColor.max-1000x1000.png
      Terminal=false
      Type=Application
@@ -551,7 +581,7 @@
      [Desktop Entry]
      Name=GoToWebinar
      Comment=Launched in Chrome
-     Exec=google-chrome --new-window https://app.gotowebinar.com/unified/index.html#/
+     Exec=google-chrome https://app.gotowebinar.com/unified/index.html#/
      Icon= /home/gregj/.local/share/pixmaps/gotowebinar.png
      Terminal=false
      Type=Application
@@ -562,7 +592,7 @@
      [Desktop Entry]
      Name=Chat (nee Hangouts)
      Comment=Google Chat
-     Exec=x-www-browser --new-window https://mail.google.com/chat/u/1
+     Exec=xdg-open https://mail.google.com/chat/u/0
      Icon=/home/gregj/.local/share/pixmaps/google-chat.png
      Terminal=false
      Type=Application
@@ -573,7 +603,7 @@
      [Desktop Entry]
      Name=Harvester Awesomeness
      Comment=Why, k8s virtualization of course
-     Exec=x-www-browser --new-window https://protomolecule.magichome:30443
+     Exec=xdg-open https://protomolecule.magichome:30443
      Icon= /home/gregj/.local/share/pixmaps/harvester-icon-text.png
      Terminal=false
      Type=Application
@@ -584,7 +614,7 @@
      [Desktop Entry]
      Name=HBO Max
      Comment=HBO Max in Browser
-     Exec=x-www-browser --new-window https://play.hbomax.com/
+     Exec=xdg-open https://play.hbomax.com/
      Icon=/home/gregj/.local/share/pixmaps/hbomax.png
      Terminal=false
      Type=Application
@@ -595,7 +625,7 @@
      [Desktop Entry]
      Name=Home Assistant
      Comment=Home Assistant of 2 Moonz
-     Exec=x-www-browser --new-window http://erebor.magichome:8123/
+     Exec=xdg-open http://erebor.magichome:8123/
      Icon= /home/gregj/.local/share/pixmaps/homeassistant.png
      Terminal=false
      Type=Application
@@ -627,7 +657,7 @@
      [Desktop Entry]
      Name=Jupyter Lab
      Comment=Browse local Jupyter Lab server
-     Exec=x-www-browser --new-window http://jupyter.127.0.0.1.nip.io:8442
+     Exec=xdg-open http://jupyter.127.0.0.1.nip.io:8442
      Icon= /home/gregj/.local/share/pixmaps/1200px-Jupyter_logo.svg.png
      Terminal=false
      Type=Application
@@ -651,7 +681,7 @@
      [Desktop Entry]
      Name=LinkedIn
      Comment=Networking
-     Exec=x-www-browser --new-window https://linkedin.com/
+     Exec=xdg-open https://linkedin.com/
      Icon=/home/gregj/.local/share/pixmaps/linkedin-glossy.jpg
      Terminal=false
      Type=Application
@@ -662,7 +692,7 @@
      [Desktop Entry]
      Name=Google Calendar
      Comment=Google Calendar in Browser
-     Exec=x-www-browser --new-window https://calendar.google.com/calendar/u/0/
+     Exec=xdg-open https://calendar.google.com/calendar/u/1/
      Icon=/home/gregj/.local/share/pixmaps/google-calendar-icon.png
      Terminal=false
      Type=Application
@@ -671,9 +701,9 @@
 ** Google Gmail
    #+begin_src conf :tangle ~/.local/share/applications/gmail.desktop
      [Desktop Entry]
-     Name=Gmail Google Mail
+     Name=Gmail Corporate Mail
      Comment=Google EMail in Browser
-     Exec=x-www-browser --new-window https://mail.google.com/mail/u/0/#search/in:inbox+is:unread
+     Exec=xdg-open https://mail.google.com/mail/u/1/#search/in:inbox+is:unread
      Icon=/home/gregj/.local/share/pixmaps/gmail-logo.jpg
      Terminal=false
      Type=Application
@@ -686,7 +716,7 @@
      [Desktop Entry]
      Name=Microsoft Teams in browser
      Comment=
-     Exec=x-www-browser --new-window https://teams.microsoft.com
+     Exec=xdg-open https://teams.microsoft.com
      Icon=/home/gregj/.local/share/pixmaps/teams-logo.png
      Terminal=false
      Type=Application
@@ -733,7 +763,7 @@
      [Desktop Entry]
      Name=Protomolecule
      Comment=Protomolecule HCI
-     Exec=x-www-browser --new-window https://protomolecule.magichome:30443
+     Exec=xdg-open https://protomolecule.magichome:30443
      Icon= /home/gregj/.local/share/pixmaps/protomolecule.png
      Terminal=false
      Type=Application
@@ -745,7 +775,7 @@
      [Desktop Entry]
      Name=Rancher Homelab
      Comment=Rancher
-     Exec=x-www-browser --new-window https://rancher.172.16.17.116.nip.io/
+     Exec=xdg-open https://rancher.172.16.17.116.nip.io/
      Icon=/home/gregj/.local/share/pixmaps/rancher-labs-icon.png
      Terminal=false
      Type=Application
@@ -757,7 +787,7 @@
      [Desktop Entry]
      Name=Rancher Public
      Comment=Rancher in TG AWS
-     Exec=x-www-browser --new-window https://rancher.hypecyclist.org/
+     Exec=xdg-open https://rancher.hypecyclist.org/
      Icon=/home/gregj/.local/share/pixmaps/rancher-labs-icon.png
      Terminal=false
      Type=Application
@@ -769,7 +799,7 @@
      [Desktop Entry]
      Name=Reddit
      Comment=Reddit
-     Exec=x-www-browser --new-window https://reddit.com/
+     Exec=xdg-open https://reddit.com/
      Icon=/home/gregj/.local/share/pixmaps/reddit-monster.png
      Terminal=false
      Type=Application
@@ -808,13 +838,23 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
+** Signal
+   #+begin_src conf :tangle ~/.local/share/applications/signal.desktop
+     [Desktop Entry]
+     Name=Signal
+     Comment=Signal
+     Exec=flatpak run org.signal.Signal
+     Icon= /home/gregj/.local/share/pixmaps/signal-desktop.png
+     Terminal=false
+     Type=Application
+     Categories=Messaging
+   #+end_src
 ** Slack
-##   #+begin_src conf :tangle ~/.local/share/applications/flack.desktop
-   #+begin_src conf :tangle no
+   #+begin_src conf :tangle ~/.local/share/applications/slack.desktop
      [Desktop Entry]
      Name=Slack
-     Comment=Slack in Browser
-     Exec=x-www-browser --new-window https://rancher.slack.com/
+     Comment=Slack
+     Exec=flatpak run com.slack.Slack
      Icon=/home/gregj/.local/share/pixmaps/slack.jpeg
      Terminal=false
      Type=Application
@@ -832,12 +872,23 @@
      Categories=Utility
    #+end_src
 ** Spotify
+   #+begin_src conf :tangle ~/.local/share/applications/spotify.desktop
+     [Desktop Entry]
+     Name=Spotify
+     Comment=Spotify
+     Exec=flatpak run com.spotify.Client
+     Icon= /home/gregj/.local/share/pixmaps/spotify-client.png
+     Terminal=false
+     Type=Application
+     Categories=Music;Media
+   #+end_src
+** Spotify in browser
    #+begin_src conf :tangle no
      # ~/.local/share/applications/fspotify.desktop
      [Desktop Entry]
      Name=Spotify
      Comment=Spotify web player in Browser
-     Exec=x-www-browser --new-window https://open.spotify.com
+     Exec=xdg-open https://open.spotify.com
      Icon=/home/gregj/.local/share/pixmaps/spotify-client.png
      Terminal=false
      Type=Application
@@ -931,7 +982,7 @@
      [Desktop Entry]
      Name=Switchy
      Comment=Netgear ProSafe Gigabit switch
-     Exec=x-www-browser --new-window http://switchy.magichome/
+     Exec=xdg-open http://switchy.magichome/
      Icon= /home/gregj/.local/share/pixmaps/netgear.jpeg
      Terminal=false
      Type=Application
@@ -943,7 +994,7 @@
      [Desktop Entry]
      Name=TigerGraph DOCUMENTATION
      Comment=Ohai
-     Exec=x-www-browser --new-window https://docs.tigergraph.com/v/3.2/admin/admin-guide/kubernetes
+     Exec=xdg-open https://docs.tigergraph.com/v/3.2/admin/admin-guide/kubernetes
      Icon= /home/gregj/.local/share/pixmaps/tiger-freaky.png
      Terminal=false
      Type=Application
@@ -955,7 +1006,7 @@
      [Desktop Entry]
      Name=Tigergraph GraphStudio
      Comment=
-     Exec=x-www-browser --new-window https://gs.hypecyclist.org:14240
+     Exec=xdg-open https://gs.hypecyclist.org:14240
      Icon= /home/gregj/.local/share/pixmaps/tigergraph-graphstudio-logo.png
      Terminal=false
      Type=Application
@@ -967,7 +1018,7 @@
      [Desktop Entry]
      Name=TigerGraph Test Drive Demo
      Comment=Test Drives for TigerGraph!
-     Exec=x-www-browser --new-window https://testdrive.tigergraph.com/
+     Exec=xdg-open https://testdrive.tigergraph.com/
      Icon= /home/gregj/.local/share/pixmaps/tiger-freaky.png
      Terminal=false
      Type=Application
@@ -1015,7 +1066,7 @@
      [Desktop Entry]
      Name=Trello
      Comment=Um ... Trello!
-     Exec=x-www-browser --new-window https://trello.com/
+     Exec=xdg-open https://trello.com/
      Icon=/home/gregj/.local/share/pixmaps/trello.png
      Terminal=false
      Type=Application
@@ -1050,7 +1101,7 @@
      [Desktop Entry]
      Name=YouTube
      Comment=
-     Exec=x-www-browser --new-window https://youtube.com
+     Exec=xdg-open https://youtube.com
      Icon= /home/gregj/.local/share/pixmaps/youtube-kids-new-logo.png
      Terminal=false
      Type=Application
@@ -1062,9 +1113,26 @@
      [Desktop Entry]
      Name=Yummy Sauce Recipes
      Comment=
-     Exec=x-www-browser --new-window http://172.16.17.5:9925/
+     Exec=xdg-open http://172.16.17.5:9925/
      Icon= /home/gregj/.local/share/pixmaps/mealie-favicon.png
      Terminal=false
      Type=Application
      Categories=Cooking;Recipes
+   #+end_src
+
+** Zoom
+   Use this if you are not using the OS package manager installation - set =:tangle no= if
+   you are
+   #+begin_src conf :tangle ~/.local/share/applications/zoom.desktop
+     [Desktop Entry]
+     Encoding=UTF-8
+     Name=Zoom
+     GenericName=Zoom
+     Comment=Zoom it up
+     Exec=flatpak run us.zoom.Zoom
+     Icon= /home/gregj/.local/share/pixmaps/google-cloud-logo.png
+     Terminal=false
+     Type=Application
+     Categories=Application;Network;Productivity;
+     StartupNotify=True
    #+end_src
