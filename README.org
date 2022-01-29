@@ -16,7 +16,7 @@
 #+property: header-args:bash :shebang #!/usr/bin/env bash :results none
 
 * Literate Programming Config file
-  This Org Mode file becomes "tangled" by the =org-babel-load-file= function in [[file:init.el][init.el]] to
+  This Org Mode file becomes "tangled" by the =org-babel-load-file= function in =init.el= to
   produce the entire config for my Emacs sessions on Windows, MacOS, Linux and ChromeOS
 
   Hip tip: to exclude entire code block sections from the resulting tangled config file,
@@ -606,7 +606,7 @@
       (bind-key "s-q" 'bury-buffer)
       (bind-key "s-t" 'toggle-truncate-lines)
       (bind-key "s-." '(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
-      (bind-key "M-SPC" '(lambda () (interactive (call-process-shell-command "rofi -show run"))))
+      (bind-key "M-SPC" '(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
       (bind-key "s-\\" 'switch-to-buffer)
       ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
       (defun gjg/widen-ask-if-indirect ()
@@ -842,7 +842,7 @@
 **** Preview buffer in side window
      Preview without selecting the window - stay on current line in Ibuffer
 
-     This function should work just like =occur-mode-display-occurence= in [[file:/usr/local/share/emacs/28.0.50/lisp/replace.el.gz][replace.el]]
+     This function should work just like =occur-mode-display-occurence= in =replace.el=
     #+begin_src emacs-lisp
       (defun gjg/ibuffer-only-exwm ()
         (interactive)
@@ -968,7 +968,7 @@
     in tabs instead of new windows=
 *** Scripts will be required to handle operations normally managed by Desktop Environment
     I have moved all the generated scripts and configs I use to support EXWM - and
-    theoretically any other tiling window manager - to [[file:exwm-scripts-and-configs.org][this Org file]].  I use that Org file
+    theoretically any other tiling window manager - to [[file:Desktop.org][this Org file]].  I use that Org file
     generate (tangle) everything I need in a Linux environment.
 
 *** Launching applications without a Desktop Environment
@@ -1110,7 +1110,7 @@
    (when gjg/exwm-needed-p
  #+end_src
 *** Start wallpaper with transparency first for aesthetics
-    Script below is generated with the [[file:exwm-scripts-and-configs.org][Org file referenced above]]
+    Script below is generated with the [[file:Desktop.org][Org file referenced above]]
     #+begin_src emacs-lisp
       (set-opacity 95)
       (async-start-process "wallpaper-thang"  "nohup" nil "/home/gregj/bin/schedule-rotate-wallpapers.sh" "&")
@@ -1170,7 +1170,7 @@
                  ([M-s-down] . windmove-delete-down)
                  ([M-s-left] . windmove-delete-left)
                  ([M-s-right] . windmove-delete-right)
-
+                 ;; ([s-SPC] . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
                  ([?\s-e] . gjg/ibuffer-only-exwm)
                  ([s-backspace] . bury-buffer)
                  ([?\s-q] . bury-buffer)
@@ -3164,6 +3164,18 @@ Open man page in current window, rather than other window with
        (add-to-list 'display-buffer-alist
                     '("^\\*R" display-buffer-reuse-window display-buffer-same-window))
        :init (require 'ess-site))
+   #+end_src
+** Scheme
+   Setup for Guile Scheme - primarily for use on Guix system
+   #+begin_src emacs-lisp
+     (use-package geiser
+       :straight t
+       :config
+       (setq geiser-default-implementation 'guile
+             geiser-active-implementations '(guile)
+             ;; geiser-repl-default-port 44555 ; for Gambit Scheme (from @daviwil)
+             ))
+     (use-package geiser-guile :straight t)
    #+end_src
 ** SQL and even GSQL
 *** Display SQL Interactive buffer in selected (same) window
