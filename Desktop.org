@@ -228,6 +228,10 @@
         nohup compton &
     fi
 
+    echo Start notification system
+    nohup dunst&
+
+
     echo Start albert
     nohup albert &
     nohup nm-applet&
