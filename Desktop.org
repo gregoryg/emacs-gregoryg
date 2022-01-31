@@ -572,7 +572,7 @@
      [Desktop Entry]
      Name=Google Maps
      Comment=
-     Exec=xdg-open https://maps.google.com?authuser=1
+     Exec=xdg-open https://maps.google.com?authuser=0
      Icon= /home/gregj/.local/share/pixmaps/Maps_Pin_FullColor.max-1000x1000.png
      Terminal=false
      Type=Application
