@@ -1941,6 +1941,10 @@ awesome.
       #+end_src
 
 ** Magit
+*** Behavior
+    #+begin_src emacs-lisp
+      (setq magit-clone-set-remote.pushDefault t)
+    #+end_src
 *** Initiate =magit-todos= only on =magit= invocation, since it loads slowly
     #+begin_src emacs-lisp
       (add-hook 'magit-status-mode-hook
