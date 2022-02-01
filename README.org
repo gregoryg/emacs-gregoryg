@@ -2879,6 +2879,7 @@ Open man page in current window, rather than other window with
       #+end_src
 ** Behavior
 #+begin_src emacs-lisp
+  (setq org-adapt-indentation t)
   ;; make c-y pay attention to current level
   (setq org-agenda-window-setup 'current-window)
   (setq org-yank-adjusted-subtrees t)
