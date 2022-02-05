@@ -1294,7 +1294,7 @@
      #+begin_src emacs-lisp
        (add-hook 'exwm-exit-hook
                  (lambda ()
-                 (async-start-process "exwm-exit" "/usr/bin/pkill -f schedule-rotate-wallpapers")))
+                 (async-start-process "exwm-exit" "pkill -f schedule-rotate-wallpapers")))
      #+end_src
 
 *** Start up the window manager
