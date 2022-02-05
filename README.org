@@ -1282,8 +1282,8 @@
                               (exwm-workspace-rename-buffer "slack"))
                              ((string= "zoom" exwm-class-name)
                               (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
-                             ((s-starts-with-p "Dashboard - " exwm-title)
-                              (exwm-workspace-rename-buffer "Rancher UI - Dashboard"))
+                             ;; ((s-starts-with-p "Dashboard - " exwm-title)
+                             ;;  (exwm-workspace-rename-buffer "Rancher UI - Dashboard"))
                              ((string= "Spotify" exwm-class-name)
                               (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
                              (:else
