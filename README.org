@@ -759,37 +759,6 @@
 
 
    #+end_src
-*** Perspective - workspaces for buffers
-    Refs:
-    + system crafters
-    + [[https://www.reddit.com/r/emacs/comments/ruzl0z/using_exwm_and_perspectiveel_on_a_multimonitor/][Reddit post in /r/emacs: Using EXWM and perspective.el on a multi-monitor setup]]
-    + [[https://sqrtminusone.xyz/posts/2022-01-03-exwm/][Using EXWM and perspective.el on multi-monitor setup]]
-    #+begin_src emacs-lisp
-      (use-package perspective-exwm :straight t
-        :config
-        (perspective-exwm-mode 1)
-        (setq perspective-exwm-override-initial-name
-            '((0 . "misc")
-              (1 . "core")
-              (2 . "browser")
-              (3 . "comms")
-              (4 . "dev"))))
-
-      ;; try out sqrtminusone config - Firefox will always open in 'browser' workspace
-      (defun my/exwm-configure-window ()
-        (interactive)
-        (pcase exwm-class-name
-          ((or "Firefox" "Nightly")
-           (perspective-exwm-assign-window
-            :workspace-index 2
-            :persp-name "browser"))
-          ("Alacritty"
-           (perspective-exwm-assign-window
-            :persp-name "term"))))
-
-      (add-hook 'exwm-manage-finish-hook #'my/exwm-configure-window)
-    #+end_src
-
 *** Ibuffer FTW
 **** View customizations
      #+begin_src emacs-lisp
