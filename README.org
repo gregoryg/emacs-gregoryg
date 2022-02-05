@@ -2849,24 +2849,26 @@ Open man page in current window, rather than other window with
       #+end_src
 ** Behavior
 #+begin_src emacs-lisp
-  (setq org-adapt-indentation t)
-  ;; make c-y pay attention to current level
-  (setq org-agenda-window-setup 'current-window)
-  (setq org-yank-adjusted-subtrees t)
-  ;; (setq org-yank-folded-subtrees nil)
-  (setq org-insert-heading-respect-content t); new headings go AFTER CONTENT, even from the middle of content area
-  (setq org-indirect-buffer-display 'other-window)
-  (setq org-reverse-note-order t) ; notes go at the top
-  (setq org-return-follows-link t)
-  (setq org-treat-S-cursor-todo-selection-as-state-change nil) ;; use S-arrow without having to log state change!
-  (setq org-log-into-drawer t)
-
+  (setq org-adapt-indentation t
+        org-agenda-window-setup 'current-window ; make c-y pay attention to current level
+        org-yank-adjusted-subtrees t
+        ;; org-yank-folded-subtrees nil
+        org-insert-heading-respect-content t    ; new headings go AFTER CONTENT, even from the middle of content area
+        org-indirect-buffer-display 'other-window
+        org-reverse-note-order t                ; notes go at the top
+        org-return-follows-link t
+        org-treat-S-cursor-todo-selection-as-state-change nil ; use S-arrow without having to log state change!
+        org-log-into-drawer t
+        org-export-use-babel nil
+        org-export-with-sub-superscripts nil
+        org-html-extension "org.html"
+        org-replace-disputed-keys t)
   ;; delete the seleted region when something is typed - don't do that
   (delete-selection-mode -1)
 
   ;; show only current/today's/all time in the clock task modeline
   ;; this SHOULD be settable on a file basis by using property CLOCK_MODELINE_TOTAL
-  (setq org-clock-mode-line-total 'current)
+  (setq org-clock-mode-line-total 'today)
   (setq org-loop-over-headlines-in-active-region t)
 #+end_src
 ** Org Drill flashcards
