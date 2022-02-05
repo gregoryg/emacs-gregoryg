@@ -1267,7 +1267,8 @@
                     (lambda ()
                       (let ((browsers '(("Mozilla Firefox" . "firefox")
                                         ("Personal - Microsoft​ Edge Beta" . "msedge")
-                                        ("Google Chrome" . "chrome"))))
+                                        ("Google Chrome" . "chrome")
+                                        ("Chromium" . "chromium"))))
                             (cond
                              ((s-starts-with-p "Mail - Greg Grubbs - Outlook - " exwm-title)
                               (exwm-workspace-rename-buffer "email - outlook"))
