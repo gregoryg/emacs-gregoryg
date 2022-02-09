@@ -789,15 +789,16 @@
    #+end_src
 
 ** Rancher Homelab
-   #+begin_src conf :tangle ~/.local/share/applications/rancher-homelab.desktop
-     [Desktop Entry]
-     Name=Rancher Homelab
-     Comment=Rancher
-     Exec=xdg-open https://rancher.172.16.17.116.nip.io/
-     Icon=/home/gregj/.local/share/pixmaps/rancher-labs-icon.png
-     Terminal=false
-     Type=Application
-     Categories=Kubernetes;Administration;Awesomeness
+   #+begin_src conf :tangle no
+         ~/.local/share/applications/rancher-homelab.desktop
+         [Desktop Entry]
+         Name=Rancher Homelab
+         Comment=Rancher
+         Exec=xdg-open https://rancher.172.16.17.116.nip.io/
+         Icon=/home/gregj/.local/share/pixmaps/rancher-labs-icon.png
+         Terminal=false
+         Type=Application
+         Categories=Kubernetes;Administration;Awesomeness
    #+end_src
 
 ** Rancher Public
