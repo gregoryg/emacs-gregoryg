@@ -936,9 +936,13 @@
 
     In Firefox, you can go to =about:preferences=.  Under the *Tabs*, uncheck =Open links
     in tabs instead of new windows=
+
+    If you want to make a radical change, find an extension for your web browser that
+    disallows tabs altogether - so even when you explicitly ask to open a new tab, the
+    extension makes it a new window.
 *** Scripts will be required to handle operations normally managed by Desktop Environment
     I have moved all the generated scripts and configs I use to support EXWM - and
-    theoretically any other tiling window manager - to [[file:Desktop.org][this Org file]].  I use that Org file
+    theoretically any other tiling window manager - to [[file:Desktop.org][this Org file]].  I use that Org file to
     generate (tangle) everything I need in a Linux environment.
 
 *** Launching applications without a Desktop Environment
@@ -1383,8 +1387,8 @@
     Now that I don't have the typical DE panels, I want to show clock and battery in the modeline
         #+begin_src emacs-lisp
           ;; TODO: find a system-tray/panel solution to showing clock and battery - modeline is so crowded already
-          (display-time)
-          (display-battery-mode 1)
+          ;; (display-time)
+          ;; (display-battery-mode 1)
         #+end_src
 *** Start the OS processes
     #+begin_src emacs-lisp
@@ -1514,7 +1518,7 @@
        #+end_src
        #+begin_src bash :tangle ~/bin/mykubectl
          source ~/bin/load-kubeconfigs.sh
-         /usr/bin/kubectl $@
+         kubectl $@
        #+end_src
 
 **** Define TRAMP methods
