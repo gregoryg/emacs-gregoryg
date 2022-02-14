@@ -994,7 +994,7 @@
      Name=Suspend / Sleep
      Comment=Sleepytime
      # Exec=/usr/bin/systemctl suspend
-     Exec=loginctl suspend
+     Exec=systemctl suspend
      Icon= /home/gregj/.local/share/pixmaps/sleepy-stars.png
      Terminal=false
      Type=Application
