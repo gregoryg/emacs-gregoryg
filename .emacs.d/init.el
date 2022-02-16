@@ -33,11 +33,11 @@
       [(meta shift -)])))
 (load "~/projects/emacs/straight.el/bootstrap.el")
 (straight-use-package 'use-package)
-(straight-use-package 'gcmh) ;; garbage collection magic hack
-(gcmh-mode 1)
+;; (straight-use-package 'gcmh) ;; garbage collection magic hack
+;; (gcmh-mode 1)
 (straight-use-package 'org)
 (require 'org)
-(org-babel-tangle-file "~/emacs-gregoryg/README.org")
+;(org-babel-tangle-file "~/emacs-gregoryg/README.org")
 (load-file "~/.emacs.d/emacs-init.el")
 
 ;; Message how long it took to load everything (minus packages)
