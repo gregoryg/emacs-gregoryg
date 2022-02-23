@@ -62,18 +62,11 @@
   GNU Guix changes everything - packages will be added declaratively
 ** Ubuntu
    #+begin_src bash
-     # Add repo for Albert - Ubuntu 21.10
-     curl https://build.opensuse.org/projects/home:manuelschneid3r/public_key | sudo apt-key add -
-     echo 'deb http://download.opensuse.org/repositories/home:/manuelschneid3r/xUbuntu_21.10/ /' | sudo tee /etc/apt/sources.list.d/home:manuelschneid3r.list
-     sudo wget -nv https://download.opensuse.org/repositories/home:manuelschneid3r/xUbuntu_21.10/Release.key -O "/etc/apt/trusted.gpg.d/home:manuelschneid3r.asc"
-     sudo apt update
-     sudo apt install albert
-
      sudo apt update
      sudo apt -y install \
-          albert \
           autorandr \
           blueman \
+          cmake \
           compton \
           cowsay \
           discount \
@@ -232,8 +225,6 @@
     nohup dunst&
 
 
-    echo Start albert
-    nohup albert &
     nohup nm-applet&
     # echo Remember iflipb for changing buffers - and/or buffer-expose-mode
     # xrandr --output eDP-1 --brightness .8
@@ -823,17 +814,6 @@
      Terminal=false
      Type=Application
      Categories=InstantMessaging;
-   #+end_src
-** Relaunch Albert
-   #+begin_src conf :tangle ~/.local/share/applications/relaunch-albert.desktop
-     [Desktop Entry]
-     Name=Relaunch Albert
-     Comment=Use Albert to relaunch Albert
-     Exec= /home/gregj/bin/relaunch-albert.sh
-     Icon= /home/gregj/.local/share/pixmaps/albert-einstein.jpg
-     Terminal=false
-     Type=Application
-     Categories=Office;Productivity;
    #+end_src
 ** Righty Tighty
    #+begin_src conf :tangle ~/.local/share/applications/righty.desktop
