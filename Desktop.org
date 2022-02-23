@@ -916,10 +916,29 @@
      Type=Application
      Categories=Music;Media
    #+end_src
+** Nyaancat Studio
+   #+begin_src conf :tangle ~/.local/share/applications/nyaancat.desktop
+     [Desktop Entry]
+     Name=Nyaancat Studio
+     Comment=
+     Exec=firefox --private-window http://localhost:8888/
+     Icon= /home/gregj/.local/share/pixmaps/nyaancat-icon.png
+     Terminal=false
+     Type=Application
+     Categories=Database;Graph
+   #+end_src
 ** Steam games
-*** Braid
+   *Don't* create desktop shortcuts - Steam already add =.desktop= files for all currently
+    installed games.
+
+    Point =XDG_DATA_DIRS= to the directory above =/applications=
+    For example, for a Flatpak user installation of Steam:
+    #+begin_src bash
+      export XDG_DATA_DIRS=$XDG_DATA_DIRS:/var/lib/exports/share:/home/gregj/.local/share/flatpak/exports/share:/home/gregj/.var/app/com.valvesoftware.Steam/.local/share
+    #+end_src
 *** Cuphead
-    #+begin_src conf :tangle ~/.local/share/applications/steam-cuphead.desktop
+    #+begin_src conf :tangle no
+  ~/.local/share/applications/steam-cuphead.desktop
       [Desktop Entry]
       Name=Cuphead
       Comment=Play this game on Steam
