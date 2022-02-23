@@ -928,11 +928,9 @@
       Type=Application
       Categories=Game;
     #+end_src
-*** Half-Life 2
-*** Lovers in a Dangerous Spacetime
-*** Moon Hunters
 *** Overcooked! 2
-    #+begin_src conf :tangle ~/.local/share/applications/steam-overcooked2.desktop
+    #+begin_src conf :tangle no
+ ~/.local/share/applications/steam-overcooked2.desktop
       [Desktop Entry]
       Name=Overcooked! 2
       Comment=Play this game on Steam
@@ -943,7 +941,8 @@
       Categories=Game;
     #+end_src
 *** Portal 2
-    #+begin_src conf :tangle ~/.local/share/applications/steam-portal2.desktop
+    #+begin_src conf :tangle no
+ ~/.local/share/applications/steam-portal2.desktop
       [Desktop Entry]
       Name=Portal 2
       Comment=Play this game on Steam
@@ -954,7 +953,8 @@
       Categories=Game;
     #+end_src
 *** Rocket League
-    #+begin_src conf :tangle ~/.local/share/applications/steam-rocketleague.desktop
+    #+begin_src conf :tangle no
+ ~/.local/share/applications/steam-rocketleague.desktop
       [Desktop Entry]
       Name=Rocket League
       Comment=Play this game on Steam
@@ -965,7 +965,8 @@
       Categories=Game;
     #+end_src
 *** Starbound
-    #+begin_src conf :tangle ~/.local/share/applications/steam-starbound.desktop
+    #+begin_src conf :tangle no
+ ~/.local/share/applications/steam-starbound.desktop
       [Desktop Entry]
       Name=Starbound
       Comment=Play this game on Steam
@@ -976,7 +977,8 @@
       Categories=Game;
     #+end_src
 *** Stardew Valley
-    #+begin_src conf :tangle ~/.local/share/applications/steam-stardewvalley.desktop
+    #+begin_src conf :tangle no
+ ~/.local/share/applications/steam-stardewvalley.desktop
       [Desktop Entry]
       Name=Stardew Valley
       Comment=Play this game on Steam
