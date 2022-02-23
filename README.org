@@ -2953,8 +2953,7 @@ Open man page in current window, rather than other window with
        :config
        (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql-mode"))
        :custom
-       (sparql-language-server-)
-         )
+       (sparql-language-server))
    #+end_src
 ** Typescript
    I don't actually use Typescript - but this was the example given by SystemCrafters for LSP
