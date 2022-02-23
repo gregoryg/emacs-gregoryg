@@ -84,6 +84,7 @@
           jupyter \
           libgccjit-9-dev \
           libreoffice-gtk3 \
+          libtool-bin \
           mlocate \
           pdsh \
           policykit-1-gnome \
@@ -545,7 +546,7 @@
      Icon= /home/gregj/.local/share/pixmaps/github4.jpg
      Terminal=false
      Type=Application
-     Categories=Office;Calendar;
+     Categories=Development;Coding
    #+end_src
 ** Google Cloud Platform
    #+begin_src bash  :tangle ~/.local/share/applications/gcp.desktop
@@ -713,6 +714,17 @@
      Name=Gmail Corporate Mail
      Comment=Google EMail in Browser
      Exec=xdg-open https://mail.google.com/mail/u/0/#search/in:inbox+is:unread
+     Icon= /home/gregj/.local/share/pixmaps/gmail-logo.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Mail;
+   #+end_src
+** Google Gmail - Personal
+   #+begin_src conf :tangle ~/.local/share/applications/gmail-personal.desktop
+     [Desktop Entry]
+     Name=Gmail Personal Mail
+     Comment=Google EMail in Browser
+     Exec=xdg-open https://mail.google.com/mail/u/1/#search/in:inbox+is:unread
      Icon= /home/gregj/.local/share/pixmaps/gmail-logo.png
      Terminal=false
      Type=Application
@@ -1129,7 +1141,7 @@
      Icon= /home/gregj/.local/share/pixmaps/youtube-kids-new-logo.png
      Terminal=false
      Type=Application
-     Categories=Chat;Community
+     Categories=Video
    #+end_src
 
 ** Yummy Sauce - mealie
