@@ -3236,7 +3236,7 @@ Open man page in current window, rather than other window with
                 (http . t) ;; curl
                 (js . t)
                 (latex . t)
-                (jupyter . t)
+     ;;           (jupyter . t) ;; makes Emacs core dump???
                 (python . t)
                 (shell  . t)
                 (sql . t)
