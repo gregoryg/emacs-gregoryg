@@ -3135,9 +3135,9 @@ Open man page in current window, rather than other window with
     :straight t
      :hook (ein:notebook-mode . lsp-deferred)
     )
-  (use-package ob-ipython
-    :straight t)
-  (use-package ein :straight t)
+  ;; (use-package ob-ipython ; abandoned project https://github.com/syl20bnr/spacemacs/issues/9941#issuecomment-543227397
+  ;;   :straight t)
+  ;; (use-package ein :straight t)
   ;; (when (memq window-system '(mac ns x))
   ;;   (exec-path-from-shell-initialize))
 #+end_src
