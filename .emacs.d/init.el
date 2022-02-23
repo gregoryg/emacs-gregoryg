@@ -56,7 +56,7 @@
 ;; (gcmh-mode 1)
 (straight-use-package 'org)
 (require 'org)
-;;(org-babel-tangle-file "~/emacs-gregoryg/README.org")
+;(org-babel-tangle-file "~/emacs-gregoryg/README.org")
 (load-file "~/.emacs.d/emacs-init.el")
 
 ;; Message how long it took to load everything (minus packages)
