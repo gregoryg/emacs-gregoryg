@@ -383,7 +383,7 @@
   ;; dippy bird FTW - single character y-n for all yes/no question dialogs
   (fset 'yes-or-no-p 'y-or-n-p)
   (setq shell-file-name "bash")
-  (setq shell-command-switch "-ic") ; source .bashrc to get aliases etc
+  ;; (setq shell-command-switch "-ic") ; source .bashrc to get aliases etc
   (setq explicit-shell-file-name shell-file-name)
   (setq explicit-bash-args '("--noediting" "-i"))
 
