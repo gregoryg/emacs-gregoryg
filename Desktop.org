@@ -733,15 +733,16 @@
 ** Microsoft Teams
    As of [2021-01-26 Tue] I am having microphone problems using the Linux client for
    Teams.  Things seem to run fine in the browser, however.
-   #+begin_src conf :tangle ~/.local/share/applications/teams-browser.desktop
-     [Desktop Entry]
-     Name=Microsoft Teams in browser
-     Comment=
-     Exec=xdg-open https://teams.microsoft.com
-     Icon=/home/gregj/.local/share/pixmaps/teams-logo.png
-     Terminal=false
-     Type=Application
-     Categories=InstantMessaging;
+   #+begin_src conf :tangle no
+         # ~/.local/share/applications/teams-browser.desktop
+         [Desktop Entry]
+         Name=Microsoft Teams in browser
+         Comment=
+         Exec=xdg-open https://teams.microsoft.com
+         Icon=/home/gregj/.local/share/pixmaps/teams-logo.png
+         Terminal=false
+         Type=Application
+         Categories=InstantMessaging;
    #+end_src
 ** Monitor change
    Run when external monitor is connected/disconnected
@@ -1087,15 +1088,16 @@
      fi
    #+end_src
 ** Toggle XFCE4 Panel Show/Hide
-   #+begin_src conf :tangle ~/.local/share/applications/toggle-xfce-panel-visibility.desktop
-     [Desktop Entry]
-     Name=Toggle XFCE4 Panel Show/Hide
-     Comment=Panel with widgets for use with EXWM
-     Exec=/home/gregj/bin/toggle-xfce4-panel-hide.sh
-     Icon= /home/gregj/.local/share/pixmaps/xfce4-panel-icon-png-icon.jpg
-     Terminal=false
-     Type=Application
-     Categories=Office;Productivity;
+   #+begin_src conf :tangle no
+         # ~/.local/share/applications/toggle-xfce-panel-visibility.desktop
+         [Desktop Entry]
+         Name=Toggle XFCE4 Panel Show/Hide
+         Comment=Panel with widgets for use with EXWM
+         Exec=/home/gregj/bin/toggle-xfce4-panel-hide.sh
+         Icon= /home/gregj/.local/share/pixmaps/xfce4-panel-icon-png-icon.jpg
+         Terminal=false
+         Type=Application
+         Categories=Office;Productivity;
    #+end_src
 ** Trello
    #+begin_src conf :tangle ~/.local/share/applications/trello.desktop
