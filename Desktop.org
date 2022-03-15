@@ -1031,7 +1031,7 @@
      [Desktop Entry]
      Name=TigerGraph DOCUMENTATION
      Comment=Ohai
-     Exec=xdg-open https://docs.tigergraph.com/v/3.2/admin/admin-guide/kubernetes
+     Exec=xdg-open https://docs.tigergraph.com/home/
      Icon= /home/gregj/.local/share/pixmaps/tiger-freaky.png
      Terminal=false
      Type=Application
