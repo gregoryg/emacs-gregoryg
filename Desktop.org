@@ -565,7 +565,7 @@
      [Desktop Entry]
      Name=Google Maps
      Comment=
-     Exec=xdg-open https://maps.google.com?authuser=1
+     Exec=xdg-open https://maps.google.com?authuser=0
      Icon= /home/gregj/.local/share/pixmaps/Maps_Pin_FullColor.max-1000x1000.png
      Terminal=false
      Type=Application
@@ -589,7 +589,7 @@
      [Desktop Entry]
      Name=Chat (nee Hangouts)
      Comment=Google Chat
-     Exec=xdg-open https://mail.google.com/chat/u/1
+     Exec=xdg-open https://mail.google.com/chat/u/0
      Icon=/home/gregj/.local/share/pixmaps/google-chat.png
      Terminal=false
      Type=Application
@@ -702,7 +702,7 @@
      [Desktop Entry]
      Name=Google Calendar
      Comment=Google Calendar in Browser
-     Exec=xdg-open https://calendar.google.com/calendar/u/0/
+     Exec=xdg-open https://calendar.google.com/calendar/u/1/
      Icon=/home/gregj/.local/share/pixmaps/google-calendar-icon.png
      Terminal=false
      Type=Application
@@ -713,7 +713,7 @@
      [Desktop Entry]
      Name=Gmail Corporate Mail
      Comment=Google EMail in Browser
-     Exec=xdg-open https://mail.google.com/mail/u/0/#search/in:inbox+is:unread
+     Exec=xdg-open https://mail.google.com/mail/u/1/#search/in:inbox+is:unread
      Icon= /home/gregj/.local/share/pixmaps/gmail-logo.png
      Terminal=false
      Type=Application
@@ -724,7 +724,7 @@
      [Desktop Entry]
      Name=Gmail Personal Mail
      Comment=Google EMail in Browser
-     Exec=xdg-open https://mail.google.com/mail/u/1/#search/in:inbox+is:unread
+     Exec=xdg-open https://mail.google.com/mail/u/0/#search/in:inbox+is:unread
      Icon= /home/gregj/.local/share/pixmaps/gmail-logo.png
      Terminal=false
      Type=Application
