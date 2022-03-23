@@ -1553,7 +1553,7 @@
         ;; example TRAMP URI:   //kexec:jhub@jupyter:
         (add-to-list 'tramp-methods
                      '("kube"
-                       (tramp-login-program "mykubectl")
+                       (tramp-login-program "/home/gregj/bin/mykubectl")
                        (tramp-login-args
                         (nil
                          ("exec" "-it")
@@ -3247,6 +3247,7 @@ Open man page in current window, rather than other window with
                 (js . t)
                 (latex . t)
      ;;           (jupyter . t) ;; makes Emacs core dump???
+                (plantuml . t)
                 (python . t)
                 (shell  . t)
                 (sql . t)
