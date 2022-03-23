@@ -607,6 +607,7 @@
       (bind-key "s-q" 'bury-buffer)
       (bind-key "s-t" 'toggle-truncate-lines)
       (bind-key "s-." '(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
+      (bind-key "s-." '(lambda () (interactive) (call-process-shell-command "polybar-msg cmd toggle")))
       (bind-key "M-SPC" '(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
       (bind-key "s-\\" 'switch-to-buffer)
       ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
@@ -1165,6 +1166,7 @@
                  (,(kbd "<XF86AudioMute>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados togmute")))
                  (,(kbd "<XF86AudioPlay>") . playerctl-play-pause-song)
                  ([?\s-.] . (lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
+                 ([?\s-,] . (lambda () (interactive) (call-process-shell-command "polybar-msg cmd toggle")))
 
                  ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
                  ;; 's-N': Switch to certain workspace.
