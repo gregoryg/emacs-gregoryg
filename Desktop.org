@@ -60,7 +60,7 @@
   of those
 ** Guix
   GNU Guix changes everything - packages will be added declaratively
-** Ubuntu
+** Debian and Ubuntu
    #+begin_src bash
      sudo apt update
      sudo apt -y install \
@@ -82,12 +82,13 @@
           gwenview \
           ipython3 \
           jupyter \
-          libgccjit-9-dev \
           libreoffice-gtk3 \
           libtool-bin \
           mlocate \
           pdsh \
           policykit-1-gnome \
+          polybar \
+          rofi \
           ruby \
           silversearcher-ag \
           slick-greeter \
