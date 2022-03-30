@@ -555,7 +555,7 @@
      [Desktop Entry]
      Name=GCP Google Cloud
      Comment=GCP
-     Exec=xdg-open https://console.cloud.google.com/compute/instances?authuser=0
+     Exec=xdg-open https://console.cloud.google.com/compute/instances?authuser=1
      Icon= /home/gregj/.local/share/pixmaps/google-cloud-logo.png
      Terminal=false
      Type=Application
@@ -916,7 +916,7 @@
      [Desktop Entry]
      Name=Nyaancat Studio
      Comment=
-     Exec=firefox --private-window http://localhost:8888/
+     Exec=google-chrome --incognito http://localhost:8888/
      Icon= /home/gregj/.local/share/pixmaps/nyaancat-icon.png
      Terminal=false
      Type=Application
