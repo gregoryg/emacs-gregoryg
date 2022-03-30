@@ -70,6 +70,7 @@
           compton \
           cowsay \
           discount \
+          dunst \
           feh \
           fonts-hack \
           fonts-opensymbol \
