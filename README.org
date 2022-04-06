@@ -802,10 +802,10 @@
                             (mode . magit-refs-mode)))
                ("Dired" (mode . dired-mode))
                ("Tramp sessions" (name . "\*tramp.+"))
-               ("Remote" (filename . "/\*:.+"))
+               ;; ("Remote" (filename . "\/.+:.+"))
                )))
       (add-hook 'ibuffer-mode-hook
-                '(lambda ()
+                #'(lambda ()
                    (ibuffer-auto-mode 1)
                    (auto-revert-mode 1)
                    (ibuffer-switch-to-saved-filter-groups "home")))
