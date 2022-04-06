@@ -142,6 +142,12 @@
    #+begin_src bash
      sudo update-alternatives --install /usr/share/xsessions/default.desktop default-xsession.desktop /usr/share/xsessions/emacs.desktop 20
    #+end_src
+** Lightdm auto-login and default user behavior
+   #+begin_src conf :tangle /sudo::/usr/share/lightdm/lightdm.conf.d/42-gregthang.conf
+     [Seat:*]
+     autologin-user=gregj
+     greeter-hide-users=false
+   #+end_src
 ** Lightdm fancy icon for Emacs window manager
    This is for use with LightDM Slick Greeter - look for a =badges= directory for
    whichever DM you use
