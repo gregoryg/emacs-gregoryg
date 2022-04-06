@@ -62,7 +62,8 @@
       magit
       magit-todos
       org
-      org-superstar
+      ;; org-superstar
+      org-modern-mode
       ;; org-plus-contrib
       org-tree-slide
       ob-async
@@ -160,7 +161,8 @@
        :straight t)
      (use-package ob-http :straight t)
      (use-package org-present :straight t)
-     (use-package org-superstar :straight t)
+     ;; (use-package org-superstar :straight t)
+     (use-package org-modern :straight t)
      (use-package selectrum :straight t)
      (use-package selectrum-prescient :straight t)
      (use-package rainbow-delimiters :straight t)
@@ -2182,7 +2184,8 @@ Open man page in current window, rather than other window with
      (add-hook 'org-mode-hook
            (lambda ()
              (auto-fill-mode 1)
-             (org-superstar-mode 1)
+             ;; (org-superstar-mode 1)
+             (org-modern-mode 1)
              (setq org-hide-leading-stars t)
              (setq fill-column 90) ; good default for wide screens
              (setq org-use-property-inheritance t)
