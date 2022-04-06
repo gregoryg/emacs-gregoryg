@@ -62,53 +62,54 @@
   GNU Guix changes everything - packages will be added declaratively
 ** Debian and Ubuntu
    #+begin_src bash
-     sudo apt update
-     sudo apt -y install \
-          autorandr \
-          blueman \
-          cmake \
-          compton \
-          cowsay \
-          discount \
-          dunst \
-          feh \
-          fonts-hack \
-          fonts-opensymbol \
-          fonts-cantarell \
-          fonts-material-design-icons-iconfont \
-          fonts-firacode \
-          fortune-mod \
-          gcc \
-          git \
-          gwenview \
-          ipython3 \
-          jupyter \
-          libreoffice-gtk3 \
-          libtool-bin \
-          mlocate \
-          pdsh \
-          policykit-1-gnome \
-          polybar \
-          rofi \
-          ruby \
-          silversearcher-ag \
-          slick-greeter \
-          tree \
-          vlc \
-          wmctrl \
-          xdotool \
-          xfce4-mount-plugin \
-          xfce4-panel \
-          xfce4-power-manager-plugins \
-          xfce4-pulseaudio-plugin \
-          xfce4-screenshooter \
-          xfce4-statusnotifier-plugin \
-          xfce4-whiskermenu-plugin \
-          xfconf \
-          xscreensaver
+          sudo apt update
+          sudo apt -y install \
+               autorandr \
+               blueman \
+               cmake \
+               compton \
+               cowsay \
+               discount \
+               dunst \
+               feh \
+               fonts-hack \
+               fonts-opensymbol \
+               fonts-cantarell \
+               fonts-material-design-icons-iconfont \
+               fonts-firacode \
+               fortune-mod \
+               gcc \
+               git \
+               gwenview \
+               ipython3 \
+               jupyter \
+               libreoffice-gtk3 \
+               libtool-bin \
+               mlocate \
+               network-manager-openvpn-gnome \
+               pdsh \
+               policykit-1-gnome \
+               polybar \
+               rofi \
+               ruby \
+               silversearcher-ag \
+               slick-greeter \
+               tree \
+               vlc \
+               wmctrl \
+               xdotool \
+               xfce4-mount-plugin \
+               xfce4-panel \
+               xfce4-power-manager-plugins \
+               xfce4-pulseaudio-plugin \
+               xfce4-screenshooter \
+               xfce4-statusnotifier-plugin \
+               xfce4-whiskermenu-plugin \
+               xfconf \
+               xscreensaver
 
    #+end_src
-** X Session Desktop file
+** X Session Desktop file for Lightdm
    Having this allows EXWM to be chosen from the Display Manager
 
    Place in =/usr/share/xsessions/emacs.desktop=
