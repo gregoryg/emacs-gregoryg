@@ -1052,7 +1052,7 @@
      [Desktop Entry]
      Name=Tigergraph GraphStudio
      Comment=
-     Exec=xdg-open https://gs.hypecyclist.org:14240
+     Exec=xdg-open http://172.16.17.230:14240
      Icon= /home/gregj/.local/share/pixmaps/tigergraph-graphstudio-logo.png
      Terminal=false
      Type=Application
