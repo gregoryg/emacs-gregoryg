@@ -1733,7 +1733,7 @@
 *** Disable zoom-mode when using Ediff
     TODO: Figure out zoom config for this.  The below is a hack - I should be able to
     disable Zoom in its config by matching mode or buffer name.
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle no
       (add-hook 'ediff-before-setup-hook
                 '(lambda ()
                    (setq gjg/zoom-mode zoom-mode) ;; save current state
@@ -1780,7 +1780,7 @@
    #+end_src
 ** Window balancing
     Auto-zoom selected window (disabled to start)
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   ;; Resize active frame according to golden ratio
   (use-package zoom
     :straight t
