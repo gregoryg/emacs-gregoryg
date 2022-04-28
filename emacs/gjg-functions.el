@@ -21,6 +21,11 @@
   (let ((fill-column (point-max)))
     (fill-paragraph nil)))
 
+(defcustom gjg/employer-org-file "~/wherever/poodlepep/poodlepep.org.gpg"
+  "Path to probably-encrypted org file to use with capture templates"
+  :type 'string
+  :group 'gjg)
+
 (defcustom gjg/visual-notify-command "notify-send"
   "Command to create a visual notification"
   :type 'string
