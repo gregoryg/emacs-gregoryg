@@ -6,13 +6,8 @@
 ;; (setq gc-cons-threshold 64000000)
 (setq package-enable-at-startup nil)
 
-(let ((elapsed (float-time (time-subtract (current-time)
-										  emacs-start-time))))
-  (message "Loaded absolutely zero packages in %.3fs" elapsed))
-
-
 ;; keep customized variables in a separate file
-(setq custom-file "~/.emacs.d/emacs-custom.el")
+(setq custom-file "~/.emacs.d/emacs-custom")
 (load custom-file)
 
 ;; keep Emacs from garbage collection during init + other helpers
@@ -50,14 +45,14 @@
      ([(control shift left)]
       .
       [(meta shift -)])))
-(load "~/projects/emacs/straight.el/bootstrap.el")
+(load "~/projects/emacs/straight.el/bootstrap")
 (straight-use-package 'use-package)
 ;; (straight-use-package 'gcmh) ;; garbage collection magic hack
 ;; (gcmh-mode 1)
 (straight-use-package 'org)
 (require 'org)
 ;(org-babel-tangle-file "~/emacs-gregoryg/README.org")
-(load-file "~/.emacs.d/emacs-init.el")
+(load "~/.emacs.d/emacs-init")
 
 ;; Message how long it took to load everything (minus packages)
 (let ((elapsed (float-time (time-subtract (current-time)

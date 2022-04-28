@@ -426,9 +426,9 @@
 ** Custom Functions in a separate file
    TODO: pull these functions in
    #+begin_src emacs-lisp
-(add-to-list 'load-path "~/emacs")
-(load-library "gjg-functions")
-(require 'gjg-functions)
+     (add-to-list 'load-path "~/emacs")
+     (load "gjg-functions")
+     (require 'gjg-functions)
    #+end_src
 ** Key bindings
 *** Audio and media
@@ -609,7 +609,7 @@
       (bind-key "s-q" 'bury-buffer)
       (bind-key "s-t" 'toggle-truncate-lines)
       (bind-key "s-." '(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
-      (bind-key "s-." '(lambda () (interactive) (call-process-shell-command "polybar-msg cmd toggle")))
+      (bind-key "s-," '(lambda () (interactive) (call-process-shell-command "polybar-msg cmd toggle")))
       (bind-key "M-SPC" '(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
       (bind-key "s-\\" 'switch-to-buffer)
       ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
@@ -2332,8 +2332,8 @@ Open man page in current window, rather than other window with
      #+begin_src emacs-lisp
        (push
         '("p" "Phone/Meeting" entry
-          (file+headline "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" "Calls and Meetings")
-          "* %t %^{type|Call|Meeting|Task} with %^{with|SE Team|Steven|Marketing|Sales|Engineering|South Central Sales Team|North Central Sales Team}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro|Weekly cadence|Learning Update|Working session|Status update}
+          (file+headline gjg/employer-org-file "Calls and Meetings")
+          "* %t %^{type|Call|Meeting|Task} with %^{with|SE Team|Steven|Marketing|Sales|Engineering|South Sales Team|Central Sales Team}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro|Weekly cadence|Learning Update|Working session|Status update}
          :PROPERTIES:
          :NOBLOCKING: t
          :END:
@@ -2362,7 +2362,7 @@ Open man page in current window, rather than other window with
      #+begin_src emacs-lisp
        (push
         '             ("s" "Status update for Slack" entry
-                       (file+headline "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" "Write Daily Status to #consulting")
+                       (file+headline gjg/employer-org-file "Write Daily Status to #consulting")
                        "* Status update %u
             ,*Today*
               ,* %?
@@ -2496,7 +2496,7 @@ Open man page in current window, rather than other window with
       "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
       (let ((engagement-files (directory-files-recursively "~/projects/private-orgmode/tigergraph/engagements/"
                                                            "\\`[^.].*\\.org\\(\\.gpg\\)?\\'")))
-        (add-to-list 'engagement-files "~/projects/private-orgmode/tigergraph/tigergraph.org.gpg" t)
+        (add-to-list 'engagement-files gjg/employer-org-file t)
         (add-to-list 'engagement-files "~/projects/private-orgmode/habits.org" t)
         (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)))
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
@@ -3237,7 +3237,7 @@ Open man page in current window, rather than other window with
 *** GSQL (TigerGraph)
     Working on syntax highlighting for GSQL
     #+begin_src emacs-lisp
-      (load-file "~/projects/emacs/gsql-mode.el/gsql-mode.el")
+      (load "~/projects/emacs/gsql-mode.el/gsql-mode")
     #+end_src
 ** FINAL step after all language modes have been configured
    #+begin_src emacs-lisp
