@@ -2341,7 +2341,7 @@ Open man page in current window, rather than other window with
          CREATED: %U
          :END:
          %i
-         + From Tigergraph: GG
+         + Team: GG
          + From %\\2:
            \#+begin_src emacs-lisp :var table=people :results append raw :exports results :eval never-export
             (gjg/add-person-from-table)
@@ -3234,7 +3234,7 @@ Open man page in current window, rather than other window with
        (setq sql-port 3306)
      #+end_src
 
-*** GSQL (TigerGraph)
+*** GSQL for TigerGraph
     Working on syntax highlighting for GSQL
     #+begin_src emacs-lisp
       (load "~/projects/emacs/gsql-mode.el/gsql-mode")
