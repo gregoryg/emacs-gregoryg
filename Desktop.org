@@ -935,7 +935,7 @@
      [Desktop Entry]
      Name=Nyaancat Studio
      Comment=
-     Exec=google-chrome --incognito http://localhost:8888/
+     Exec=google-chrome http://localhost:8888/
      Icon= /home/gregj/.local/share/pixmaps/nyaancat-icon.png
      Terminal=false
      Type=Application
