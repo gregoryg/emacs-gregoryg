@@ -7,7 +7,7 @@
 (setq package-enable-at-startup nil)
 
 ;; keep customized variables in a separate file
-(setq custom-file "~/.emacs.d/emacs-custom")
+(setq custom-file "~/.emacs.d/emacs-custom.el")
 (load custom-file)
 
 ;; keep Emacs from garbage collection during init + other helpers
