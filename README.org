@@ -2763,6 +2763,7 @@ Open man page in current window, rather than other window with
 
    #+end_src
 ** Org Roam - experimental
+*** Configuration and startup
 #+begin_src emacs-lisp
   (use-package org-roam
     :straight t
@@ -2789,6 +2790,47 @@ Open man page in current window, rather than other window with
     (org-roam-setup)
     )
 #+end_src
+*** Org Roam Capture templates
+    Let's leave the default one alone for now - make a new 'g'reg template
+    #+begin_src emacs-lisp
+      (require 'org-roam)
+      (push
+       '("g" "greg" plain "%?" :target
+         (file+head "${slug}.org" "#+title: ${title}\\n") :unnarrowed nil)
+       org-roam-capture-templates)
+    #+end_src
+*** Immediate thing in video
+    Ref: comment by Umar Ahmad in [[https://www.youtube.com/watch?v=AyhPmypHDEw][Getting Started with Org Roam - Build a Second Brain in Emacs - YouTube]]
+    #+begin_src emacs-lisp
+      ;; To get the old "immediate" insert you can add the following in your config:
+      (defvar org-roam-capture-immediate-template
+        (append (car org-roam-capture-templates) '(:immediate-finish t)))
+      (defun org-roam-insert-immediate (arg &rest args)
+        (interactive "P")
+        (let ((args (push arg args))
+              (org-roam-capture-templates (list org-roam-capture-immediate-template)))
+          (apply #'org-roam-node-insert args)))
+      ;; And then bind `org-roam-insert-immediate` to a keybinding.
+    #+end_src
+*** Visualizations of the graph
+    org-roam-server only worked on v1 of org-roam.
+**** Org Roam UI
+     #+begin_src emacs-lisp
+       (use-package org-roam-ui
+         :straight t
+         ;; (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+         :after org-roam
+         ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+         ;;         a hookable mode anymore, you're advised to pick something yourself
+         ;;         if you don't care about startup time, use
+         ;;  :hook (after-init . org-roam-ui-mode)
+         :config
+         (setq org-roam-ui-sync-theme t
+               org-roam-ui-follow t
+               org-roam-ui-update-on-save t
+               org-roam-ui-open-on-start t))
+     #+end_src
+
 ** Clocking time
 *** Variables and keys
     Keep =org-clock-persist= unset (its default) to avoid opening files that may have had
