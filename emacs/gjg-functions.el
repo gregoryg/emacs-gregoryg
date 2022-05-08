@@ -149,6 +149,6 @@ do-capitalize: t means run text through capitalize function, nil will respect Ca
 
 (defun gjg/open-work-agenda ()
   (interactive)
-  (org-agenda nil "w"))
+  (org-agenda nil "W"))
 
 (provide 'gjg-functions)
