@@ -179,6 +179,12 @@
    #+end_src
 
 * Greg's customizations!
+** Investigate using Emacs as app launcher (with completions)
+   #+begin_src emacs-lisp
+     (use-package app-launcher
+       :straight '(app-launcher :host github :repo "SebastienWae/app-launcher"))
+     (global-set-key (kbd "s-SPC") 'app-launcher-run-app)
+   #+end_src
 ** Embark
    + from [[https://www.youtube.com/watch?v=qk2Is_sC8Lk&t=29][System Crafters Live! - The Many Uses of Embark - YouTube]]
      #+begin_src emacs-lisp :tangle no
