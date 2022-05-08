@@ -21,6 +21,10 @@
   (let ((fill-column (point-max)))
     (fill-paragraph nil)))
 
+(defcustom gjg/employer-name "Poodles R Us"
+  "Name used by Gmail for use in gmail-buffer-or-launch script"
+  :type 'string
+  :group 'gjg)
 (defcustom gjg/employer-org-file "~/wherever/poodlepep/poodlepep.org.gpg"
   "Path to probably-encrypted org file to use with capture templates"
   :type 'string
@@ -145,6 +149,6 @@ do-capitalize: t means run text through capitalize function, nil will respect Ca
 
 (defun gjg/open-work-agenda ()
   (interactive)
-  (org-agenda nil "G"))
+  (org-agenda nil "w"))
 
 (provide 'gjg-functions)
