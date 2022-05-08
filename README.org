@@ -3004,10 +3004,15 @@ Open man page in current window, rather than other window with
        :mode "\\.sparql\\'"
        :hook (sparql-mode . lsp-deferred)
        :config
-       (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql-mode"))
+       (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql"))
        :custom
        (sparql-language-server))
    #+end_src
+   #+begin_src emacs-lisp
+     ;; (add-to-list 'lsp-language-id-configuration '(".*\\.sparql" . "sparql"))
+;;     (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql"))
+   #+end_src
+
 ** Typescript
    I don't actually use Typescript - but this was the example given by SystemCrafters for LSP
 
