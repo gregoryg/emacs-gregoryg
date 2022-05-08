@@ -574,7 +574,7 @@
      [Desktop Entry]
      Name=GCP Google Cloud
      Comment=GCP
-     Exec=xdg-open https://console.cloud.google.com/compute/instances?authuser=1
+     Exec=xdg-open https://console.cloud.google.com/compute/instances?authuser=0
      Icon= /home/gregj/.local/share/pixmaps/google-cloud-logo.png
      Terminal=false
      Type=Application
@@ -723,7 +723,7 @@
      [Desktop Entry]
      Name=Google Calendar
      Comment=Google Calendar in Browser
-     Exec=xdg-open https://calendar.google.com/calendar/u/1/
+     Exec=xdg-open https://calendar.google.com/calendar/u/2/
      Icon=/home/gregj/.local/share/pixmaps/google-calendar-icon.png
      Terminal=false
      Type=Application
@@ -734,7 +734,7 @@
      [Desktop Entry]
      Name=Gmail Corporate Mail
      Comment=Google EMail in Browser
-     Exec=xdg-open https://mail.google.com/mail/u/1/#search/in:inbox+is:unread
+     Exec=xdg-open https://mail.google.com/mail/u/2/#search/in:inbox+is:unread
      Icon= /home/gregj/.local/share/pixmaps/gmail-logo.png
      Terminal=false
      Type=Application
@@ -1047,29 +1047,6 @@
      Categories=Office;Productivity;
    #+end_src
 
-** TigerGraph Documentation
-   #+begin_src conf :tangle ~/.local/share/applications/tigergraph-documentation.desktop
-     [Desktop Entry]
-     Name=TigerGraph DOCUMENTATION
-     Comment=Ohai
-     Exec=xdg-open https://docs.tigergraph.com/home/
-     Icon= /home/gregj/.local/share/pixmaps/tiger-freaky.png
-     Terminal=false
-     Type=Application
-     Categories=Office;Productivity;
-   #+end_src
-
-** TigerGraph GraphStudio
-   #+begin_src conf :tangle ~/.local/share/applications/tigergraph-graphstudio.desktop
-     [Desktop Entry]
-     Name=Tigergraph GraphStudio
-     Comment=
-     Exec=xdg-open http://172.16.17.230:14240
-     Icon= /home/gregj/.local/share/pixmaps/tigergraph-graphstudio-logo.png
-     Terminal=false
-     Type=Application
-     Categories=Office;Productivity;
-   #+end_src
 
 ** TigerGraph Documentation
    #+begin_src conf :tangle ~/.local/share/applications/tigergraph-testdrives.desktop
@@ -1078,6 +1055,17 @@
      Comment=Test Drives for TigerGraph!
      Exec=xdg-open https://testdrive.tigergraph.com/
      Icon= /home/gregj/.local/share/pixmaps/tiger-freaky.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
+   #+end_src
+** TigerGraph GraphStudio
+   #+begin_src conf :tangle ~/.local/share/applications/tigergraph-graphstudio.desktop
+     [Desktop Entry]
+     Name=Tigergraph GraphStudio
+     Comment=
+     Exec=xdg-open http://172.16.17.230:14240
+     Icon= /home/gregj/.local/share/pixmaps/tigergraph-graphstudio-logo.png
      Terminal=false
      Type=Application
      Categories=Office;Productivity;
