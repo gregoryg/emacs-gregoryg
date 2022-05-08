@@ -2503,7 +2503,6 @@ Open man page in current window, rather than other window with
       (let ((engagement-files (directory-files-recursively (concat (f-dirname gjg/employer-org-file) "/engagements/")
                                                            "\\`[^.].*\\.org\\(\\.gpg\\)?\\'")))
         (add-to-list 'engagement-files gjg/employer-org-file t)
-        (add-to-list 'engagement-files "~/projects/private-orgmode/habits.org" t)
         (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)))
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
     (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
@@ -2559,7 +2558,11 @@ Open man page in current window, rather than other window with
                        ;;          (org-deadline-warning-days 21)
                        ;;          ))
                        )
-                      ((org-agenda-files gjg/work-agenda-files))) t)
+                      (
+                       (org-agenda-files gjg/work-agenda-files)
+                       )
+                      )
+                   t)
 
       (add-to-list 'org-agenda-custom-commands
                    '("gc" "Clock report" agenda ""
