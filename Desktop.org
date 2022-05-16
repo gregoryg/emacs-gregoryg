@@ -961,79 +961,6 @@
     #+begin_src bash
       export XDG_DATA_DIRS=$XDG_DATA_DIRS:/var/lib/exports/share:/home/gregj/.local/share/flatpak/exports/share:/home/gregj/.var/app/com.valvesoftware.Steam/.local/share
     #+end_src
-*** Cuphead
-    #+begin_src conf :tangle no
-  ~/.local/share/applications/steam-cuphead.desktop
-      [Desktop Entry]
-      Name=Cuphead
-      Comment=Play this game on Steam
-      Exec=steam steam://rungameid/268910
-      Icon= /home/gregj/.local/share/pixmaps/cuphead.png
-      Terminal=false
-      Type=Application
-      Categories=Game;
-    #+end_src
-*** Overcooked! 2
-    #+begin_src conf :tangle no
- ~/.local/share/applications/steam-overcooked2.desktop
-      [Desktop Entry]
-      Name=Overcooked! 2
-      Comment=Play this game on Steam
-      Exec=steam steam://rungameid/728880
-      Icon= /home/gregj/.local/share/pixmaps/overcooked2.png
-      Terminal=false
-      Type=Application
-      Categories=Game;
-    #+end_src
-*** Portal 2
-    #+begin_src conf :tangle no
- ~/.local/share/applications/steam-portal2.desktop
-      [Desktop Entry]
-      Name=Portal 2
-      Comment=Play this game on Steam
-      Exec=steam steam://rungameid/620
-      Icon= /home/gregj/.local/share/pixmaps/portal2.png
-      Terminal=false
-      Type=Application
-      Categories=Game;
-    #+end_src
-*** Rocket League
-    #+begin_src conf :tangle no
- ~/.local/share/applications/steam-rocketleague.desktop
-      [Desktop Entry]
-      Name=Rocket League
-      Comment=Play this game on Steam
-      Exec=steam steam://rungameid/252950
-      Icon= /home/gregj/.local/share/pixmaps/rocketleague.png
-      Terminal=false
-      Type=Application
-      Categories=Game;
-    #+end_src
-*** Starbound
-    #+begin_src conf :tangle no
- ~/.local/share/applications/steam-starbound.desktop
-      [Desktop Entry]
-      Name=Starbound
-      Comment=Play this game on Steam
-      Exec=steam steam://rungameid/211820
-      Icon= /home/gregj/.local/share/pixmaps/starbound.png
-      Terminal=false
-      Type=Application
-      Categories=Game;
-    #+end_src
-*** Stardew Valley
-    #+begin_src conf :tangle no
- ~/.local/share/applications/steam-stardewvalley.desktop
-      [Desktop Entry]
-      Name=Stardew Valley
-      Comment=Play this game on Steam
-      Exec=steam steam://rungameid/413150
-      Icon= /home/gregj/.local/share/pixmaps/stardew-valley.png
-      Terminal=false
-      Type=Application
-      Categories=Game;
-    #+end_src
-
 ** Suspend laptop
    #+begin_src conf :tangle ~/.local/share/applications/suspend-laptop.desktop
      [Desktop Entry]
@@ -1059,7 +986,7 @@
    #+end_src
 
 
-** TigerGraph Documentation
+** TigerGraph Test Drives
    #+begin_src conf :tangle ~/.local/share/applications/tigergraph-testdrives.desktop
      [Desktop Entry]
      Name=TigerGraph Test Drive Demo
