@@ -2728,8 +2728,6 @@ Open man page in current window, rather than other window with
 
      (setq org-tags-exclude-from-inheritance '("Project" "project" "interview2"))
                                              ;(setq org-tag-alist '(("project" . ?p)("car" . ?c)))
-
-     (setq org-enforce-todo-dependencies t)
    #+end_src
 ** Refile
    I think the best approach here is to use =org-agenda-files= as the source for refile
