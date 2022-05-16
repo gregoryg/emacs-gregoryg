@@ -3292,6 +3292,7 @@ Open man page in current window, rather than other window with
       'org-babel-load-languages
       (append org-babel-load-languages
               '(
+                (sparql . t)
                 (clojure . t)
                 (http . t) ;; curl
                 (js . t)
