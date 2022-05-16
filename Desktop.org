@@ -930,16 +930,27 @@
      Type=Application
      Categories=Music;Media
    #+end_src
-** Nyaancat Studio
-   #+begin_src conf :tangle ~/.local/share/applications/nyaancat.desktop
+** Stardog Studio
+   #+begin_src conf :tangle ~/.local/share/applications/stardog-studio.desktop
      [Desktop Entry]
-     Name=Nyaancat Studio
+     Name=Stardog Studio
      Comment=
      Exec=google-chrome http://localhost:8888/
-     Icon= /home/gregj/.local/share/pixmaps/nyaancat-icon.png
+     Icon= /home/gregj/.local/share/pixmaps/stardog-logo.png
      Terminal=false
      Type=Application
      Categories=Database;Graph
+   #+end_src
+** Stardog Documentation
+   #+begin_src conf :tangle ~/.local/share/applications/stardog.desktop
+     [Desktop Entry]
+     Name=Dog Docs
+     Comment=
+     Exec=google-chrome https://docs.stardog.com/
+     Icon= /home/gregj/.local/share/pixmaps/stardog-logo.png
+     Terminal=false
+     Type=Application
+     Categories=Docs
    #+end_src
 ** Steam games
    *Don't* create desktop shortcuts - Steam already add =.desktop= files for all currently
