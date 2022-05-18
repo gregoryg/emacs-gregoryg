@@ -2339,7 +2339,7 @@ Open man page in current window, rather than other window with
        (push
         '("p" "Phone/Meeting" entry
           (file+headline gjg/employer-org-file "Calls and Meetings")
-          "* %t %^{type|Call|Meeting|Task} with %^{with|SE Team|Steven|Marketing|Sales|Engineering|South Sales Team|Central Sales Team}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro|Weekly cadence|Learning Update|Working session|Status update}
+          "* %t %^{type|Call|Meeting|Task} with %^{with|Solutions Team|SE Team|Steven|Marketing|Sales|Engineering|South Sales Team|Central Sales Team}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro|Weekly cadence|Learning Update|Working session|Status update}
          :PROPERTIES:
          :NOBLOCKING: t
          :END:
@@ -2943,6 +2943,7 @@ Open man page in current window, rather than other window with
                  (rainbow-delimiters-mode 1)
                  (company-mode 1)
                  (yafolding-mode 1)
+                 (electric-pair-local-mode 1)
                  (smartparens-mode 1)))
    #+end_src
 ** Language Servers and setup for LSP
