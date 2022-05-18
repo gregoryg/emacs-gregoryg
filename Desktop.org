@@ -563,7 +563,7 @@
      [Desktop Entry]
      Name=GitHub
      Comment=GitHub
-     Exec=xdg-open https://github.com/gregoryg/
+     Exec=xdg-open https://github.com/gregoryg?tab=repositories
      Icon= /home/gregj/.local/share/pixmaps/github4.jpg
      Terminal=false
      Type=Application
@@ -929,6 +929,17 @@
      Terminal=false
      Type=Application
      Categories=Music;Media
+   #+end_src
+** Stardog AWS Console
+   #+begin_src conf :tangle ~/.local/share/applications/stardog-aws-console.desktop
+     [Desktop Entry]
+     Name=Amazon Web Services Console - Stardog
+     Comment=
+     Exec=google-chrome https://stardog-solutions.signin.aws.amazon.com/console
+     Icon= /home/gregj/.local/share/pixmaps/aws.png
+     Terminal=false
+     Type=Application
+     Categories=Cloud;Productivity
    #+end_src
 ** Stardog Studio
    #+begin_src conf :tangle ~/.local/share/applications/stardog-studio.desktop
