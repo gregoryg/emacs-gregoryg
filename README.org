@@ -2417,6 +2417,8 @@ Open man page in current window, rather than other window with
     (advice-add 'org-export-to-file :around 'my-with-theme))
 #+end_src
 ** Speed commands
+   The square bracket "show heading tidily" shortcuts can be used as a flexible
+   slide show presentation
    #+begin_src emacs-lisp
      (setq org-use-speed-commands t) ;; POWER USER BABY
      ;; (setq org-speed-commands-user
@@ -2426,6 +2428,7 @@ Open man page in current window, rather than other window with
      ;; DAN DAVISON nifty speed commands
      (defun ded/org-show-next-heading-tidily ()
        "Show next entry, keeping other entries closed."
+       (widen)
        (if (save-excursion (end-of-line) (outline-invisible-p))
            (progn (org-show-entry) (outline-show-children))
          (outline-next-heading)
@@ -2436,10 +2439,12 @@ Open man page in current window, rather than other window with
          (org-overview)
          (org-reveal t)
          (org-show-entry)
-         (outline-show-children)))
+         (outline-show-children)
+         (org-narrow-to-subtree)))
 
      (defun ded/org-show-previous-heading-tidily ()
        "Show previous entry, keeping other entries closed."
+       (widen)
        (let ((pos (point)))
          (outline-previous-heading)
          (unless (and (< (point) pos) (bolp) (org-at-heading-p))
@@ -2449,7 +2454,8 @@ Open man page in current window, rather than other window with
          (org-overview)
          (org-reveal t)
          (org-show-entry)
-         (outline-show-children)))
+         (outline-show-children)
+         (org-narrow-to-subtree)))
 
      (add-to-list 'org-speed-commands
               '("]" ded/org-show-next-heading-tidily))
