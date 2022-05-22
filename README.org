@@ -3035,33 +3035,44 @@ Open man page in current window, rather than other window with
    #+end_src
 ** Clojure
    #+begin_src emacs-lisp
-;; (add-hook 'cider-repl-mode-hook #'company-
-(add-hook 'cider-mode-hook #'company-mode)
-;; (use-package lsp-mode
-;;   :straight nil
-;;   :commands lsp
-;;   :config
-;;   (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure-mode"))
-;;   :init
-;;   (setq lsp-enable-indentation nil)
-;;   (add-hook 'clojure-mode-hook #'lsp)
-;;   (add-hook 'clojurec-mode-hook #'lsp)
-;;   (add-hook 'clojurescript-mode-hook #'lsp))
+     ;; (add-hook 'cider-repl-mode-hook #'company-
+     (use-package clojure-mode
+       :straight t
+       :mode "\\.clj[sc]?\\'"
+       :config
+       ;; (add-hook 'clojure-mode-hook #'smartparens-strict-mode)
+       (add-hook 'clojure-mode-hook #'lispy-mode)
+       (add-hook 'clojure-mode-hook #'aggressive-indent-mode))
 
-;; ;; (add-to-list 'load-path "~/emacs/cider")
-;; (autoload 'cider "cider" "Cider for Clojure")
-;; (require 'cider)
-;; (eval-after-load "cider"
-;;   '(progn
-;;      ;; (require 'cider)
-;;      ;; (defadvice cider--lein-present-p (around gjg-find-the-damn-script activate)
-;;      ;;   "Lein shell script is not detected on Windows as executable"
-;;      ;;   (if (eq window-system 'w32)
-;;      ;;       (setq ad-return-value (or (file-remote-p default-directory)
-;;      ;;    			     (locate-file "lein" exec-path nil 'exists)))
-;;      ;;     (ad-do-it)))
-;;      (add-hook 'cider-repl-mode-hook 'company-mode)
-;;      (add-hook 'cider-mode-hook 'company-mode)))
+     (use-package cider
+       :mode "\\.clj[sc]?\\'"
+       :straight t)
+     (add-hook 'cider-mode-hook #'company-mode)
+     ;; (use-package lsp-mode
+     ;;   :straight nil
+     ;;   :commands lsp
+     ;;   :config
+     ;;   (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure-mode"))
+     ;;   :init
+     ;;   (setq lsp-enable-indentation nil)
+     ;;   (add-hook 'clojure-mode-hook #'lsp)
+     ;;   (add-hook 'clojurec-mode-hook #'lsp)
+     ;;   (add-hook 'clojurescript-mode-hook #'lsp))
+
+     ;; ;; (add-to-list 'load-path "~/emacs/cider")
+     ;; (autoload 'cider "cider" "Cider for Clojure")
+     ;; (require 'cider)
+     ;; (eval-after-load "cider"
+     ;;   '(progn
+     ;;      ;; (require 'cider)
+     ;;      ;; (defadvice cider--lein-present-p (around gjg-find-the-damn-script activate)
+     ;;      ;;   "Lein shell script is not detected on Windows as executable"
+     ;;      ;;   (if (eq window-system 'w32)
+     ;;      ;;       (setq ad-return-value (or (file-remote-p default-directory)
+     ;;      ;;    			     (locate-file "lein" exec-path nil 'exists)))
+     ;;      ;;     (ad-do-it)))
+     ;;      (add-hook 'cider-repl-mode-hook 'company-mode)
+     ;;      (add-hook 'cider-mode-hook 'company-mode)))
 
    #+end_src
 ** Go
