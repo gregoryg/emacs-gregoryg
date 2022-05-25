@@ -616,6 +616,8 @@
       (bind-key "s-t" 'toggle-truncate-lines)
       (bind-key "s-." '(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
       (bind-key "s-," '(lambda () (interactive) (call-process-shell-command "polybar-msg cmd toggle")))
+      (bind-key "s-]" 'ded/org-show-next-heading-tidily)
+      (bind-key "s-[" 'ded/org-show-previous-heading-tidily)
       (bind-key "M-SPC" '(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
       (bind-key "s-\\" 'switch-to-buffer)
       ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
@@ -2428,6 +2430,7 @@ Open man page in current window, rather than other window with
      ;; DAN DAVISON nifty speed commands
      (defun ded/org-show-next-heading-tidily ()
        "Show next entry, keeping other entries closed."
+       (interactive)
        (widen)
        (if (save-excursion (end-of-line) (outline-invisible-p))
            (progn (org-show-entry) (outline-show-children))
@@ -2444,6 +2447,7 @@ Open man page in current window, rather than other window with
 
      (defun ded/org-show-previous-heading-tidily ()
        "Show previous entry, keeping other entries closed."
+       (interactive)
        (widen)
        (let ((pos (point)))
          (outline-previous-heading)
