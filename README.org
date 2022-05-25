@@ -2197,6 +2197,7 @@ Open man page in current window, rather than other window with
              (setq org-hide-leading-stars t)
              (setq fill-column 90) ; good default for wide screens
              (setq org-use-property-inheritance t)
+             (setq org-link-search-must-match-exact-headline nil)
              (org-defkey org-mode-map [(control tab)] 'org-next-link)
              ;; steal back my keys
              (org-defkey org-mode-map [home] 'beginning-of-buffer)
