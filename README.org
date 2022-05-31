@@ -2083,7 +2083,9 @@ Open man page in current window, rather than other window with
                                               ("E" . "export")
                                               ("h" . "export html")
                                               ("l" . "export latex")
-                                              ("q" . "quote")
+                                              ("\"" . "quote")
+                                              ("qp" . "src sparql")
+                                              ("qq" . "src sql")
                                               ("S" . "src")
                                               ("sc" . "src conf")
                                               ("sg" . "src sql :product gsql")
@@ -2804,7 +2806,7 @@ Open man page in current window, rather than other window with
       (require 'org-roam)
       (push
        '("g" "greg" plain "%?" :target
-         (file+head "${slug}.org" "#+title: ${title}\\n") :unnarrowed nil)
+         (file+head "${slug}.org" "#+title: ${title}") :unnarrowed nil)
        org-roam-capture-templates)
     #+end_src
 *** Immediate thing in video
