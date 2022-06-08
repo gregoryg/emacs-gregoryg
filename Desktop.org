@@ -62,51 +62,55 @@
   GNU Guix changes everything - packages will be added declaratively
 ** Debian and Ubuntu
    #+begin_src bash
-          sudo apt update
-          sudo apt -y install \
-               autorandr \
-               blueman \
-               cmake \
-               compton \
-               cowsay \
-               discount \
-               dunst \
-               feh \
-               fonts-hack \
-               fonts-opensymbol \
-               fonts-cantarell \
-               fonts-material-design-icons-iconfont \
-               fonts-firacode \
-               fortune-mod \
-               gcc \
-               git \
-               gwenview \
-               ipython3 \
-               jupyter \
-               libreoffice-gtk3 \
-               libtool-bin \
-               mlocate \
-               network-manager-openvpn-gnome \
-               pdsh \
-               policykit-1-gnome \
-               polybar \
-               rofi \
-               ruby \
-               silversearcher-ag \
-               slick-greeter \
-               tree \
-               vlc \
-               wmctrl \
-               xdotool \
-               xfce4-mount-plugin \
-               xfce4-panel \
-               xfce4-power-manager-plugins \
-               xfce4-pulseaudio-plugin \
-               xfce4-screenshooter \
-               xfce4-statusnotifier-plugin \
-               xfce4-whiskermenu-plugin \
-               xfconf \
-               xscreensaver
+     sudo apt update
+     sudo apt -y install \
+          autorandr \
+          blueman \
+          cmake \
+          compton \
+          cowsay \
+          discount \
+          dunst \
+          feh \
+          font-manager \
+          fonts-hack \
+          fonts-opensymbol \
+          fonts-cantarell \
+          fonts-material-design-icons-iconfont \
+          fonts-firacode \
+          fortune-mod \
+          texlive-fonts-extra \
+          fonts-oxygen \
+          fonts-freefont-otf \
+          gcc \
+          git \
+          gwenview \
+          ipython3 \
+          jupyter \
+          libreoffice-gtk3 \
+          libtool-bin \
+          mlocate \
+          network-manager-openvpn-gnome \
+          pdsh \
+          policykit-1-gnome \
+          polybar \
+          rofi \
+          ruby \
+          silversearcher-ag \
+          slick-greeter \
+          tree \
+          vlc \
+          wmctrl \
+          xdotool \
+          xfce4-mount-plugin \
+          xfce4-panel \
+          xfce4-power-manager-plugins \
+          xfce4-pulseaudio-plugin \
+          xfce4-screenshooter \
+          xfce4-statusnotifier-plugin \
+          xfce4-whiskermenu-plugin \
+          xfconf \
+          xscreensaver
 
    #+end_src
 ** X Session Desktop file for Lightdm
@@ -800,6 +804,18 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
+** Protege Desktop
+   #+begin_src conf :tangle ~/.local/share/applications/protege.desktop
+     [Desktop Entry]
+     Name=Protege Ontology Knowledge Model tool
+     Comment=
+     Exec=/usr/local/Protege-5.5.0/run.sh
+     Icon= /home/gregj/.local/share/pixmaps/CAPSoff.gif
+     Terminal=false
+     Type=Application
+     Categories=Ontologies;Graph
+   #+end_src
+
 ** Protomolecule Virtualization - Proxmox or Harvester
    + Port 8006 for Proxmox, 30443 for Harvester
    #+begin_src conf :tangle ~/.local/share/applications/protomolecule.desktop
@@ -937,6 +953,18 @@
      Comment=
      Exec=google-chrome https://stardog-solutions.signin.aws.amazon.com/console
      Icon= /home/gregj/.local/share/pixmaps/aws.png
+     Terminal=false
+     Type=Application
+     Categories=Cloud;Productivity
+   #+end_src
+
+** Stardog Cloud
+   #+begin_src conf :tangle ~/.local/share/applications/stardog-cloud.desktop
+     [Desktop Entry]
+     Name=Stardog Cloud
+     Comment=
+     Exec=google-chrome https://cloud.stardog.com
+     Icon= /home/gregj/.local/share/pixmaps/stardog-doghouse-icon.png
      Terminal=false
      Type=Application
      Categories=Cloud;Productivity
