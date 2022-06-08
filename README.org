@@ -65,7 +65,6 @@
       org-superstar
       ;; org-modern-mode
       ;; org-plus-contrib
-      org-tree-slide
       ob-async
       ob-http
       pyvenv
@@ -160,7 +159,6 @@
      (use-package material-theme
        :straight t)
      (use-package ob-http :straight t)
-     (use-package org-present :straight t)
      (use-package org-superstar :straight t)
      ;; (use-package org-modern :straight t)
      (use-package selectrum :straight t)
@@ -1112,6 +1110,12 @@
     which translates to sending a =C-f=.  There's more I want to configure but I haven't
     entirely figured out how this works in char mode, whether it works with the Super key
     and so forth.
+
+    RESERVED for OBS Studio:
+    + Super-X
+    + Super-C
+    + Super-/
+
 
     TODO: Define super-{left,right,0,1,2} to mean the same thing I have in the global
     keymap: windmove etc.
