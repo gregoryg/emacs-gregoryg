@@ -2356,8 +2356,7 @@ Open man page in current window, rather than other window with
          CREATED: %U
          :END:
          %i
-         + Team: GG%?
-         + From %\\2:
+         + Team: GG and %?
            \#+begin_src emacs-lisp :var table=people :results append raw :exports results :eval never-export
             (gjg/add-person-from-table)
            \#+end_src
