@@ -181,7 +181,19 @@
              Option "AccelSpeed" "0.3"
      EndSection
    #+end_src
+* Fix problems with conflicting DE features and applications
+** Symptom: C-: brings up a text entry popup
+   This interferes with my key binding for =dired-open=.  The same mechanism offers other
+   keybindings I don't want to be stolen from Emacs: =C-.= and =S-C-u=
 
+   The first 2 bindings bring up a handy pop-up window of emojis when invoked in a
+   graphical application window.
+
+   The offending system is =ibus=, installed by the Zoom Debian package and potentially by
+   various desktop environments.
+
+   The fix: invoke =ibus-setup=, and delete all keyboard shortcuts under the =Emoji= tab
+   
 * Useful shell when no DE is available
 ** Script to run autostart apps including compositor
   I run a shell script which starts up key helper apps like albert/ulauncher, picom/compton and
