@@ -13,7 +13,7 @@
 #+CREATOR: Emacs 28.0.50 with nativecomp
 #+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg.setup
 #+PROPERTY: header-args:emacs-lisp :results none
-#+PROPERTY: header-args:bash :results none :shebang #!/usr/bin/env bash :tangle no
+#+PROPERTY: header-args:bash :results none :shebang #!/usr/bin/env bash
 * Overview
 
   Minimalistic desktop environment things that are closely tied with my EXWM configuration
@@ -193,7 +193,7 @@
    various desktop environments.
 
    The fix: invoke =ibus-setup=, and delete all keyboard shortcuts under the =Emoji= tab
-   
+
 * Useful shell when no DE is available
 ** Script to run autostart apps including compositor
   I run a shell script which starts up key helper apps like albert/ulauncher, picom/compton and
@@ -387,21 +387,18 @@
 
 ** Laptop-only
    #+begin_src bash :tangle ~/.config/autorandr/laptop-only/postswitch
-     #!/usr/bin/env bash
      /home/gregj/bin/righty
      /home/gregj/bin/capsctrl.sh
      /home/gregj/bin/schedule-rotate-wallpapers.sh
    #+end_src
 ** Dual-monitor
    #+begin_src bash :tangle ~/.config/autorandr/dual-monitor/postswitch
-     #!/usr/bin/env bash
      /home/gregj/bin/lefty
      /home/gregj/bin/capsctrl.sh
      /home/gregj/bin/schedule-rotate-wallpapers.sh
    #+end_src
 ** Monitor-only
    #+begin_src bash :tangle ~/.config/autorandr/monitor-only/postswitch
-     #!/usr/bin/env bash
      /home/gregj/bin/lefty
      /home/gregj/bin/capsctrl.sh
      /home/gregj/bin/schedule-rotate-wallpapers.sh
