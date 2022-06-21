@@ -446,7 +446,7 @@
      Name=Browser
      Comment=The default web browser
      Exec=xdg-open https://google.com
-     Icon=/home/gregj/.local/share/pixmaps/browser-generic.png
+     Icon= /home/gregj/.local/share/pixmaps/browser-mashup-icon.png
      Terminal=false
      Type=Application
      Categories=Fun;Web
