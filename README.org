@@ -3090,7 +3090,7 @@ Open man page in current window, rather than other window with
    Initial configuration was nabbed from a 2-parter by @tleydn
    [[http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch/][Configure Emacs as a Go Editor From Scratch]]
 
-   #+begin_src emacs-lisp :tangle no
+   #+begin_src emacs-lisp
      (use-package go-mode
        :defer t
        :straight t
