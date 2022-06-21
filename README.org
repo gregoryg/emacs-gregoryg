@@ -2866,10 +2866,11 @@ Open man page in current window, rather than other window with
       ...
     #+end_src
 #+begin_src emacs-lisp
-  (setq org-clock-persist nil)
+  (setq org-clock-persist nil
+        org-clock-string-limit 60 ; truncate very long clocked tasks
+        org-clock-report-include-clocking-task t
+        org-read-date-prefer-future 'time)
   ;; (org-clock-persistence-insinuate)
-  (setq org-clock-report-include-clocking-task t)
-  (setq org-read-date-prefer-future 'time)
   ;; make the clock jump key global!
   (define-key comint-mode-map (kbd "C-c C-x") nil)
   (global-set-key (kbd "C-c C-x j") 'org-clock-goto)
