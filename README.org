@@ -3403,8 +3403,15 @@ Open man page in current window, rather than other window with
              awesome-tray-buffer-read-only-style "%")
        (awesome-tray-mode 0))
    #+end_src
-** Simple mode line
+** Moodline
    #+begin_src emacs-lisp
+     (use-package mood-line
+       :straight t
+       :config
+       (mood-line-mode 1))
+   #+end_src
+** Simple mode line
+   #+begin_src emacs-lisp :tangle no
      (use-package simple-modeline
        :straight t
        :config
@@ -3432,7 +3439,7 @@ Open man page in current window, rather than other window with
        :straight t
        :config
        (global-hide-mode-line-mode 0)
-       (bind-key "s-m" 'simple-modeline-mode))
+       (bind-key "s-m" 'mood-line-mode))
    #+end_src
 ** Frame title and mode line tweaks
   #+begin_src emacs-lisp :tangle no
