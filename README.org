@@ -3248,7 +3248,7 @@ Open man page in current window, rather than other window with
    #+end_src
 ** Scheme
    Setup for Guile Scheme - primarily for use on Guix system
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package geiser
        :straight t
        :config
