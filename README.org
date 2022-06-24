@@ -3017,11 +3017,12 @@ Open man page in current window, rather than other window with
    #+begin_src emacs-lisp
      (use-package sparql-mode :straight t
        :mode "\\.sparql\\'"
-       :hook (sparql-mode . lsp-deferred)
-       :config
-       (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql"))
-       :custom
-       (sparql-language-server))
+       ;; :hook (sparql-mode . lsp-deferred)
+       ;; :config
+       ;; (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql"))
+       ;; :custom
+       ;; (sparql-language-server)
+       )
    #+end_src
    #+begin_src emacs-lisp
      ;; (add-to-list 'lsp-language-id-configuration '(".*\\.sparql" . "sparql"))
