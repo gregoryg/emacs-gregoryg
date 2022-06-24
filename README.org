@@ -3314,7 +3314,7 @@ Open man page in current window, rather than other window with
 
 *** GSQL for TigerGraph
     Working on syntax highlighting for GSQL
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle no
       (load "~/projects/emacs/gsql-mode.el/gsql-mode")
     #+end_src
 ** FINAL step after all language modes have been configured
