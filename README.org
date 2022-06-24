@@ -3328,7 +3328,7 @@ Open man page in current window, rather than other window with
                 (http . t) ;; curl
                 (js . t)
                 (latex . t)
-     ;;           (jupyter . t) ;; makes Emacs core dump???
+;;                (jupyter . t) ;; makes Emacs core dump??? (related to compiled zmq)
                 (plantuml . t)
                 (python . t)
                 (shell  . t)
