@@ -445,7 +445,7 @@
      [Desktop Entry]
      Name=Browser
      Comment=The default web browser
-     Exec=xdg-open https://google.com
+     Exec=xdg-open https://
      Icon= /home/gregj/.local/share/pixmaps/browser-mashup-icon.png
      Terminal=false
      Type=Application
@@ -628,17 +628,6 @@
      Terminal=false
      Type=Application
      Categories=InstantMessaging;
-   #+end_src
-** Harvester VIRTUALIZATION BABAY
-   #+begin_src conf :tangle ~/.local/share/applications/harvester.desktop
-     [Desktop Entry]
-     Name=Harvester Awesomeness
-     Comment=Why, k8s virtualization of course
-     Exec=xdg-open https://protomolecule.magichome:30443
-     Icon= /home/gregj/.local/share/pixmaps/harvester-icon-text.png
-     Terminal=false
-     Type=Application
-     Categories=Office;Productivity
    #+end_src
 ** HBO Max
    #+begin_src conf :tangle ~/.local/share/applications/hbomax.desktop
@@ -960,7 +949,7 @@
      [Desktop Entry]
      Name=Amazon Web Services Console - Stardog
      Comment=
-     Exec=google-chrome https://stardog-solutions.signin.aws.amazon.com/console
+     Exec=xdg-open https://stardog-solutions.signin.aws.amazon.com/console
      Icon= /home/gregj/.local/share/pixmaps/aws.png
      Terminal=false
      Type=Application
@@ -970,9 +959,9 @@
 ** Stardog Cloud
    #+begin_src conf :tangle ~/.local/share/applications/stardog-cloud.desktop
      [Desktop Entry]
-     Name=Stardog Cloud
-     Comment=
-     Exec=google-chrome https://cloud.stardog.com
+     Name=Stardog Cloud - Doghouse
+     Comment=Doghouse
+     Exec=xdg-open https://cloud.stardog.com
      Icon= /home/gregj/.local/share/pixmaps/stardog-doghouse-icon.png
      Terminal=false
      Type=Application
@@ -983,7 +972,7 @@
      [Desktop Entry]
      Name=Stardog Studio
      Comment=
-     Exec=google-chrome http://localhost:8888/
+     Exec=xdg-open http://localhost:8888/
      Icon= /home/gregj/.local/share/pixmaps/stardog-logo.png
      Terminal=false
      Type=Application
@@ -994,7 +983,7 @@
      [Desktop Entry]
      Name=Dog Docs
      Comment=
-     Exec=google-chrome https://docs.stardog.com/
+     Exec=xdg-open https://docs.stardog.com/
      Icon= /home/gregj/.local/share/pixmaps/stardog-logo.png
      Terminal=false
      Type=Application
