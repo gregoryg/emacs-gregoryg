@@ -587,7 +587,7 @@
      [Desktop Entry]
      Name=GCP Google Cloud
      Comment=GCP
-     Exec=xdg-open https://console.cloud.google.com/compute/instances?authuser=0
+     Exec=xdg-open https://console.cloud.google.com/compute/instances?authuser=2
      Icon= /home/gregj/.local/share/pixmaps/google-cloud-logo.png
      Terminal=false
      Type=Application
@@ -1127,7 +1127,7 @@
      Icon= /home/gregj/.local/share/pixmaps/youtube-kids-new-logo.png
      Terminal=false
      Type=Application
-     Categories=Video
+     Categories=Video;yt
    #+end_src
 
 ** Yummy Sauce - mealie
