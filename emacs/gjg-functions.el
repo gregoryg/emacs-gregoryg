@@ -151,4 +151,17 @@ do-capitalize: t means run text through capitalize function, nil will respect Ca
   (interactive)
   (org-agenda nil "W"))
 
+(defun gjg/set-sparql-header-args (url db endpoint)
+
+  (let ((fullurl (concat url "/" db "/" endpoint "/" )))
+    ;; (message "My lovely url is %s\n" fullurl)
+    (setq-local org-babel-default-header-args:sparql
+                (cons `(:url  . ,fullurl)
+                      (assq-delete-all :url org-babel-default-header-args:sparql)))))
+(defun gjg/set-stardog-bash-header-args (tramp-path )
+  (setq-local org-babel-default-header-args:bash
+              (cons `(:dir . ,tpath)
+                    (assq-delete-all :dir org-babel-default-header-args:bash)))
+  )
+
 (provide 'gjg-functions)
