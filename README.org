@@ -891,17 +891,17 @@
    #+end_src
 ** Weird random rarely used maybe interesting things
 *** MOOs and MUDs - NOT legacy - added 2019!
-   #+begin_src emacs-lisp
-;; Moos and MUDs - NOT legacy stuff - added 2019!
-(add-to-list 'load-path "~/projects/emacs/rmoo/")
-;; (require 'rmoo-autoload)
-;; (require 'moocode-mode)
-;; ;; (global-set-key (kbd "C-c C-r") 'rmoo)
-;; (add-to-list 'auto-mode-alist '("\\.moo$" . moocode-mode))
-;; (add-hook 'rmoo-interactive-mode-hooks
-;;           (lambda ()
-;;             (linum-mode -1)                  ;; ... no line numbers
-;;             (goto-address-mode t)))          ;; ... clickable links
+   #+begin_src emacs-lisp :tangle no
+     ;; Moos and MUDs - NOT legacy stuff - added 2019!
+     (add-to-list 'load-path "~/projects/emacs/rmoo/")
+     (require 'rmoo-autoload)
+     (require 'moocode-mode)
+     ;; (global-set-key (kbd "C-c C-r") 'rmoo)
+     (add-to-list 'auto-mode-alist '("\\.moo$" . moocode-mode))
+     (add-hook 'rmoo-interactive-mode-hooks
+               (lambda ()
+                 (linum-mode -1)                  ;; ... no line numbers
+                 (goto-address-mode t)))          ;; ... clickable links
 
 
    #+end_src
