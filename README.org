@@ -133,6 +133,7 @@
    #+begin_src emacs-lisp
      (use-package exwm :straight t)
      ;; (use-package buffer-expose :straight t)
+     (use-package hl-line+ :straight t)
      (use-package magit :straight t)
      (use-package magit-todos :straight t)
      (use-package csv-mode :straight t)
