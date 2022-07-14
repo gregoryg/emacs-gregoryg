@@ -59,13 +59,14 @@
   The shell scripts here expect certain applications to be installed, so let's take care
   of those
 ** Guix
-  GNU Guix changes everything - packages will be added declaratively
-** Debian and Ubuntu
+  GNU Guix changes everything - packages will be added declaratively*
+* Debian and Ubuntu
    #+begin_src bash
      sudo apt update
      sudo apt -y install \
           autorandr \
           blueman \
+          cifs-utils \
           cmake \
           compton \
           cowsay \
@@ -90,10 +91,14 @@
           libreoffice-gtk3 \
           libtool-bin \
           mlocate \
+          nm-applet \
           network-manager-openvpn-gnome \
           pdsh \
+          playerctl \
           policykit-1-gnome \
           polybar \
+          python3-venv \
+          qlipper \
           rofi \
           ruby \
           silversearcher-ag \
@@ -976,7 +981,7 @@
      Icon= /home/gregj/.local/share/pixmaps/stardog-logo.png
      Terminal=false
      Type=Application
-     Categories=Database;Graph
+     Categories=Database;Graph;dh
    #+end_src
 ** Stardog Documentation
    #+begin_src conf :tangle ~/.local/share/applications/stardog.desktop
