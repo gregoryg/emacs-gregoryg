@@ -497,6 +497,17 @@
      Categories=Storage
    #+end_src
 
+** Databricks VGTEST
+   #+begin_src conf :tangle ~/.local/share/applications/cloudflare.desktop
+     [Desktop Entry]
+     Name=Databricks vgtest
+     Comment=
+     Exec=xdg-open https://adb-8799800888063735.15.azuredatabricks.net/?o=8799800888063735
+     Icon= /home/gregj/.local/share/pixmaps/databricks-logo.png
+     Terminal=false
+     Type=Application
+     Categories=Spark
+   #+end_src
 ** Dired
    #+begin_src conf :tangle ~/.local/share/applications/emacs-dired.desktop
      # Stolen from https://emacs.stackexchange.com/a/16394/418
