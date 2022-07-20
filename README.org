@@ -1889,7 +1889,21 @@
 ** Shell mode
 *** Config for comint mode
     #+begin_src emacs-lisp
+      (defun gjg/turn-on-comint-history (history-file)
+        (setq comint-input-ring-file-name history-file)
+        (comint-read-input-ring 'silent))
       (setq comint-input-ring-size 5000)
+    #+end_src
+*** Hook in shell history
+    #+begin_src emacs-lisp
+      (add-hook 'shell-mode-hook
+                (lambda ()
+                  (gjg/turn-on-comint-history (getenv "HISFILE"))))
+      (add-hook 'kill-buffer-hook #'comint-write-input-ring)
+      (add-hook 'kill-emacs-hook
+                (lambda ()
+                  (--each (buffer-list)
+                    (with-current-buffer it (comint-write-input-ring)))))
     #+end_src
 *** Bash completions
 #+begin_src emacs-lisp
