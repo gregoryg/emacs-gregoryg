@@ -1955,7 +1955,7 @@ awesome.
     + Not really related to shell-mode, this assures our keychain is activated for things
       such as magit that fire off subproceess
       #+begin_src emacs-lisp
-(keychain-refresh-environment)
+        (keychain-refresh-environment)
       #+end_src
 
 ** Magit
@@ -3253,10 +3253,19 @@ Open man page in current window, rather than other window with
    +
 
 #+begin_src emacs-lisp
+  ;; (use-package jupyter
+  ;;   :straight t
+  ;;    :hook (ein:notebook-mode . lsp-deferred)
+  ;;   )
+  ;; config from https://martinralbrecht.wordpress.com/2020/08/23/conda-jupyter-and-emacs/
   (use-package jupyter
     :straight t
-     :hook (ein:notebook-mode . lsp-deferred)
-    )
+    :commands (jupyter-run-server-repl
+               jupyter-run-repl
+               jupyter-server-list-kernels)
+    :init (eval-after-load 'jupyter-org-extensions ; conflicts with my helm config, I use <f2 #>
+            '(unbind-key "C-c h" jupyter-org-interaction-mode-map)))
+
   ;; (use-package ob-ipython ; abandoned project https://github.com/syl20bnr/spacemacs/issues/9941#issuecomment-543227397
   ;;   :straight t)
   ;; (use-package ein :straight t)
@@ -3408,15 +3417,6 @@ Open man page in current window, rather than other window with
       (highlight-regexp "application/[-a-z0-9A-Z]+" 'hi-yellow)
       (highlight-regexp "/[^/]+\.rpm" 'hi-black-b)
       (highlight-regexp "/[^/]+\.deb" 'hi-black-b))
-
-
-
-
-
-
-
-
-
   #+end_src
 
 * Modeline and Title
