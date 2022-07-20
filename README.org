@@ -58,6 +58,7 @@
     '(bind-key
       buffer-expose
       cider
+      exec-path-from-shell
       exwm
       magit
       magit-todos
@@ -131,6 +132,7 @@
    Fastest searcher in the West - need to install it on the OS as package
    =the_silver_searcher= or =silversearcher-ag=
    #+begin_src emacs-lisp
+     (use-package exec-path-from-shell :straight t)
      (use-package exwm :straight t)
      ;; (use-package buffer-expose :straight t)
      (use-package hl-line+ :straight t)
@@ -422,6 +424,9 @@
   (setq scroll-conservatively 5)
   ;; remember minibuffer history between sessions
   (savehist-mode t)
+  ;; https://emacs.stackexchange.com/a/9952/418
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "HISTFILE")
   ;; if point is at end of line, keep it there for vertical movement
   (setq track-eol t)
   (setq align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
