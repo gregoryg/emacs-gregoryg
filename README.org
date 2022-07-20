@@ -1696,34 +1696,44 @@
    the directory changes.
 
    #+begin_src emacs-lisp
-(require 'dired) ;; TODO: use-package
-(define-key dired-mode-map [mouse-1] 'dired-find-file)
-(define-key dired-mode-map [mouse-2] 'dired-find-file)
-(setq dired-dwim-target t)
-(setq dired-omit-files "^\\.?#\\|^\\..*")
-;; set key binding in key map prior to dired-x being loaded - for autoload
-(define-key dired-mode-map "\C-x\M-o" 'dired-omit-mode)
-(autoload 'dired-omit-mode "dired-x" "Dired-X")
-;; (declare (special dired-x-hands-off-my-keys
-;; 		  dired-bind-vm
-;; 		  dired-omit-files-p))
-;; (add-hook 'dired-load-hook
-;; 	  (function
-;; 	   (lambda ()
-;; 	     (declare (special dired-x-hands-off-my-keys
-;; 			       dired-bind-vm))
-;; 	     (load-library "dired-x")
-;; 	     (setq dired-x-hands-off-my-keys nil
-;; 		   dired-bind-vm t))))
+     (require 'dired)
+     (use-package all-the-icons-dired :straight t)
+     (use-package dired-collapse :straight t)
 
-(setq auto-revert-verbose nil)
-(add-hook 'dired-mode-hook
-	  (function (lambda ()
-		      (auto-revert-mode))))
-;; 		      ;; Set dired-x buffer-local variables here.  For example:
-;; 		      (setq dired-omit-mode t)
-;; 		      (setq dired-omit-files "^\\..*")
-;; 		      )))
+     (define-key dired-mode-map [mouse-1] 'dired-find-file)
+     (define-key dired-mode-map [mouse-2] 'dired-find-file)
+     (setq dired-dwim-target t
+           dired-omit-files "^\\.?#\\|^\\..*"
+           delete-by-moving-to-trash t
+           dired-listing-switches "-alh --group-directories-first")
+
+     ;; set key binding in key map prior to dired-x being loaded - for autoload
+     (define-key dired-mode-map "\C-x\M-o" 'dired-omit-mode)
+     (autoload 'dired-omit-mode "dired-x" "Dired-X")
+     ;; (declare (special dired-x-hands-off-my-keys
+     ;; 		  dired-bind-vm
+     ;; 		  dired-omit-files-p))
+     ;; (add-hook 'dired-load-hook
+     ;; 	  (function
+     ;; 	   (lambda ()
+     ;; 	     (declare (special dired-x-hands-off-my-keys
+     ;; 			       dired-bind-vm))
+     ;; 	     (load-library "dired-x")
+     ;; 	     (setq dired-x-hands-off-my-keys nil
+     ;; 		   dired-bind-vm t))))
+
+     (setq auto-revert-verbose nil)
+     (add-hook 'dired-mode-hook
+           (lambda ()
+             (interactive)
+             (dired-omit-mode 1)
+             ;; (dired-hide-details-mode 1)
+             (all-the-icons-dired-mode 1)
+             (auto-revert-mode)))
+     ;; 		      ;; Set dired-x buffer-local variables here.  For example:
+     ;; 		      (setq dired-omit-mode t)
+     ;; 		      (setq dired-omit-files "^\\..*")
+     ;; 		      )))
 
    #+end_src
 *** Open file in relevant OS app
