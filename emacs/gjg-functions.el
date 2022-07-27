@@ -36,20 +36,20 @@
   :group 'gjg)
 
 (defun gjg/nag-timer () "Nag me when there isn't a clock running"
-  (unless (marker-buffer org-clock-marker)
-    (call-process-shell-command gjg/visual-notify-command nil 0 nil "Org-Mode\\ Nudge" "What\\'s\\ \\going\\ on?")
-    (if (fboundp 'async-start-process)
-        (async-start-process "naggynorman" "espeak" nil "What the heck is going on?")
-      (call-process "espeak" nil nil nil  "What the heck is going on?"))))
+       (unless (marker-buffer org-clock-marker)
+         (call-process-shell-command gjg/visual-notify-command nil 0 nil "Org-Mode\\ Nudge" "What\\'s\\ \\going\\ on?")
+         (if (fboundp 'async-start-process)
+             (async-start-process "naggynorman" "espeak" nil "What the heck is going on?")
+           (call-process "espeak" nil nil nil  "What the heck is going on?"))))
 
 (defun gjg/nag () "Start nagging me every 15 minutes when not clocked in to an Org task"
-  (interactive)
-  (cancel-function-timers 'gjg/nag-timer) ;; don't start two timers
-  (run-with-timer 1 900 'gjg/nag-timer))
+       (interactive)
+       (cancel-function-timers 'gjg/nag-timer) ;; don't start two timers
+       (run-with-timer 1 900 'gjg/nag-timer))
 
 (defun gjg/cancel-nag () "Cancel the org-mode clock nag timer"
-  (interactive)
-  (cancel-function-timers 'gjg/nag-timer))
+       (interactive)
+       (cancel-function-timers 'gjg/nag-timer))
 
 (defun gjg/acronyminize (text &optional do-capitalize)
   "Make an acronym from the text
@@ -163,5 +163,4 @@ do-capitalize: t means run text through capitalize function, nil will respect Ca
               (cons `(:dir . ,tpath)
                     (assq-delete-all :dir org-babel-default-header-args:bash)))
   )
-
-(provide 'gjg-functions)
+  (provide 'gjg-functions)
