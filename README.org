@@ -3361,6 +3361,12 @@ Open man page in current window, rather than other window with
        (setq sql-port 3306)
      #+end_src
 
+*** Postgresql
+    + Allow for alternative port
+     #+begin_src emacs-lisp
+       (setq sql-postgres-login-params '(user password server database port))
+       ;; (setq sql-port 3306)
+     #+end_src
 *** GSQL for TigerGraph
     Working on syntax highlighting for GSQL
     #+begin_src emacs-lisp :tangle no
