@@ -3260,15 +3260,18 @@ Open man page in current window, rather than other window with
              python-shell-interpreter-args "-i --simple-prompt")
        (setq org-babel-python-command "python3")
        (add-hook 'python-mode-hook
-             (lambda ()
-               (setq indent-tabs-mode nil)
-               (setq python-indent-offset 4)
-               (setq tab-width 4)
-               (setq prettify-symbols-alist prettify-greek-lower)
-               (pyvenv-mode t)
-               (prettify-symbols-mode t)))
+                 (lambda ()
+                   (setq indent-tabs-mode nil)
+                   (setq python-indent-offset 4)
+                   (setq tab-width 4)
+                   (setq prettify-symbols-alist prettify-greek-lower)
+                   (pyvenv-mode t)
+                   (prettify-symbols-mode t)))
        )
-     (use-package pyvenv :straight t)
+     (use-package pyvenv :straight t
+       :config
+       (setenv "WORKON_HOME" "/home/gregj/.local/python-venvs/" )
+       )
 
      (custom-set-variables '(org-babel-python-command "python3"))
 
