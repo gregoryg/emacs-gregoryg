@@ -199,7 +199,7 @@
 
    The fix: invoke =ibus-setup=, and delete all keyboard shortcuts under the =Emoji= tab
 
-* Useful shell when no DE is available
+* Useful scripts when no DE is available
 ** Script to run autostart apps including compositor
   I run a shell script which starts up key helper apps like albert/ulauncher, picom/compton and
   xscreensaver.  Also some common mouse and keyboard settings that are ordinarily handled
@@ -246,11 +246,7 @@
 
     rm -vf nohup.out
     echo Start compositor
-    if which picom ; then
-        nohup picom &
-    elif which compton ; then
-        nohup compton &
-    fi
+    reset-compositor.sh
 
     echo Start notification system
     nohup dunst&
@@ -316,8 +312,6 @@
    #+end_src
 ** Script to toggle autohiding of xfce4-panel
    #+begin_src bash :tangle ~/bin/toggle-xfce4-panel-hide.sh
-     #!/bin/bash
-
      ##### EDIT these values to suit
      # the panel to affect
      PANEL=1
@@ -376,6 +370,46 @@
      echo $new_brightness > $handler"brightness"
 
    #+end_src
+**  Script to invert colors on the active window
+   I use this to cleanse the sins of Spotify's dark-only theme
+
+   #+begin_src bash :tangle ~/bin/invert-color.sh
+     ID=$(xdotool getactivewindow)
+     if [ $? -ne 0 ]; then
+         echo "Cannot get ID of active window - exiting"
+         exit 0
+     fi
+     CLASS=$(xprop -id "$ID"  | grep "WM_CLASS" | awk '{print $4}')
+     COND="class_g=${CLASS}"
+
+     if [ "$(pidof compton)" ];
+     then
+         pkill compton
+         compositor=compton
+     elif [ "$(pidof picom)"];
+     then
+         pkill picom
+         compositor=picom
+     else
+         echo "No known compositor is running - exiting"
+         exit 0
+     fi
+
+     ID=$(xdotool getactivewindow)
+     CLASS=$(xprop -id "$ID"  | grep "WM_CLASS" | awk '{print $4}')
+     COND="class_g=${CLASS}"
+     ${compositor} --invert-color-include "$COND" &
+   #+end_src
+   #+begin_src bash :tangle ~/bin/reset-compositor.sh
+     if which picom ; then
+         pkill picom
+        nohup picom &
+     elif which compton ; then
+         pkill compton
+         nohup compton &
+     fi
+   #+end_src
+
 * Autorandr setup
   The config to start with is set up using =autorandr --save <profile>= with and without
   monitors attached.  I create =laptop-only=, =dual-monitor= and =monitor-only= profiles
@@ -844,12 +878,11 @@
    #+end_src
 
 ** Rancher Homelab
-   #+begin_src conf :tangle no
-         ~/.local/share/applications/rancher-homelab.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/rancher-homelab.desktop
          [Desktop Entry]
          Name=Rancher Homelab
          Comment=Rancher
-         Exec=xdg-open https://rancher.172.16.17.116.nip.io/
+         Exec=xdg-open https://abstract-blackbird-q7vpfs.g57fzg0l.traefikhub.io/
          Icon=/home/gregj/.local/share/pixmaps/rancher-labs-icon.png
          Terminal=false
          Type=Application
@@ -878,6 +911,17 @@
      Terminal=false
      Type=Application
      Categories=InstantMessaging;
+   #+end_src
+** Reset compositor
+   #+begin_src conf :tangle ~/.local/share/applications/capsctrl.desktop
+     [Desktop Entry]
+     Name=Reset Compositor and remove invert-colors
+     Comment=
+     Exec=/home/gregj/bin/reset-compositor.sh
+     Icon=/home/gregj/.local/share/pixmaps/compton_compton.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Productivity;
    #+end_src
 ** Righty Tighty
    #+begin_src conf :tangle ~/.local/share/applications/righty.desktop
