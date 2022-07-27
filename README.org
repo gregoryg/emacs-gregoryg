@@ -1003,7 +1003,7 @@
 
 ** Panel with Polybar
 
-   This is a potential alternative to the XFCE Panel - let's try it out using @daviwil's config
+   Polybar is a highly  customizable alternative to the XFCE Panel
 
    Check out the Polybar wiki for more details on how to configure it: https://github.com/polybar/polybar/wiki
 
@@ -1059,7 +1059,14 @@
      My current variation is based on [[https://github.com/Tadly/hideIt.sh][Tadly's hideIt.sh]]
 
      Script(s) and desktop shortcuts are to be found in [[file:Desktop.org][Desktop.org]]
-**** Function and script to DWIM switch to EXWM buffer
+** Interaction between Emacs and X applications
+   Emacsclient with --eval allows for some great interactions between the shell and Emacs.
+   Let's create a combination of Emacs Lisp and shell script for some of these.
+
+*** Jump to or launch email with unread threads shown
+    If we already have a Gmail browser window, select it and bring it to the foreground.
+    If not, launch it, showing just unread threads.
+
      #+begin_src emacs-lisp
        (defun gjg/exwm-switch-to-buffer-or-launch (searchstring &optional application)
          "Switch to the first buffer matching SEARCHSTRING
@@ -1920,7 +1927,7 @@ I'm referencing in a different window.  This is absurdly difficult to do because
 =shell-mode= does not offer a setting to control this behavior.  The solution I found was
 given in an answer [[https://stackoverflow.com/a/40351851/457574][here on stackoverflow]]
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defun shell-same-window-advice (orig-fn &optional buffer)
   "Advice to make `shell' reuse the current window.
 
@@ -2808,9 +2815,9 @@ Open man page in current window, rather than other window with
 
 
    #+end_src
-** Org Roam - experimental
+** Org Roam - experimental - and currently off
 *** Configuration and startup
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package org-roam
     :straight t
     :hook
