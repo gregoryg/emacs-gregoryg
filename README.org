@@ -1078,11 +1078,30 @@
              (when application
                  (call-process-shell-command (concat "gtk-launch " application))))))
      #+end_src
-     + Bring up the corporate Gmail window - works in conjuction with =gmail.desktop= in [[file:Desktop.org][Desktop.org]]
-     #+begin_src bash :tangle ~/bin/gmail-buffer-or-launch.sh
-       #!/usr/bin/env bash
-       emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch (concat gjg/employer-name " Mail") "gmail")'
-     #+end_src
+    #+begin_src bash :tangle ~/bin/gmail-buffer-or-launch.sh
+      emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch (concat gjg/employer-name " Mail") "gmail")'
+    #+end_src
+
+*** Update Spotify's buffer name when song changes
+    If running EXWM, let's keep Spotify's buffer name hip
+    #+begin_src emacs-lisp
+      (defun gjg/update-spotify-exwm-window (songname)
+        "When running EXWM add current song name to buffer name"
+        ;; find the buffer
+        (when (frame-parameter (selected-frame) 'exwm-active)
+          (dolist (mybuf (cl-remove-if-not (lambda (row) (search "Spotify" (buffer-name row))) (buffer-list)))
+            (with-current-buffer mybuf
+              (when (string= "Spotify" exwm-class-name) (exwm-workspace-rename-buffer (concat exwm-class-name " - " songname)))))))
+    #+end_src
+    #+begin_src bash :tangle ~/bin/update-spotify-exwm.sh
+      # Called from dunst when Spotify makes a notification (changes song)
+      # Dunst passes these parameters in order: appname, summary, body, icon, urgency
+      echo $0 >> /tmp/update-spotify.log
+      summary=$2
+      body=$3
+      # emacsclient -e "(gjg/update-spotify-exwm-window \"${summary} - ${body}\")"
+      emacsclient -e "(gjg/update-spotify-exwm-window \"${body}\")"
+    #+end_src
 ** To launch or not to launch
    My configuration tests for the existence of a window manager.  If one is already
    running, just skip all the EXWM setup and bring up a "normal" Emacs instance.
