@@ -1811,19 +1811,29 @@
                  (local-set-key (kbd "M-n") 'help-go-forward)
                  ))
 
-     (when (fboundp 'helpful-function)
-       (progn
-         ;; Note that the built-in `describe-function' includes both functions
-         ;; and macros. `helpful-function' is functions only, so we provide
-         ;; `helpful-callable' as a drop-in replacement.
-         ;; (global-set-key (kbd "C-h f") #'helpful-callable)
-         ;; (global-set-key (kbd "C-h v") #'helpful-variable)
-         (global-set-key (kbd "C-h k") #'helpful-key)
-         ;; Lookup the current symbol at point. C-c C-d is a common keybinding
-         ;; for this in lisp modes.
-         (global-set-key (kbd "C-c C-d") #'helpful-at-point)
-         (setq counsel-describe-function-function #'helpful-callable)
-         (setq counsel-describe-variable-function #'helpful-variable)))
+     (use-package helpful
+       :straight t
+       :config
+       (global-set-key (kbd "C-h f") #'helpful-callable)
+       (global-set-key (kbd "C-h v") #'helpful-variable)
+       (global-set-key (kbd "C-h k") #'helpful-key)
+       (global-set-key (kbd "C-h d") #'helpful-at-point)
+       (global-set-key (kbd "C-h F") #'helpful-function)
+       (global-set-key (kbd "C-h C") #'helpful-command))
+
+     ;; (when (fboundp 'helpful-function)
+     ;;   (progn
+     ;;     ;; Note that the built-in `describe-function' includes both functions
+     ;;     ;; and macros. `helpful-function' is functions only, so we provide
+     ;;     ;; `helpful-callable' as a drop-in replacement.
+     ;;     ;; (global-set-key (kbd "C-h f") #'helpful-callable)
+     ;;     ;; (global-set-key (kbd "C-h v") #'helpful-variable)
+     ;;     (global-set-key (kbd "C-h k") #'helpful-key)
+     ;;     ;; Lookup the current symbol at point. C-c C-d is a common keybinding
+     ;;     ;; for this in lisp modes.
+     ;;     (global-set-key (kbd "C-c C-d") #'helpful-at-point)
+     ;;     (setq counsel-describe-function-function #'helpful-callable)
+     ;;     (setq counsel-describe-variable-function #'helpful-variable)))
    #+end_src
 ** Tab Completion
    #+begin_src emacs-lisp
