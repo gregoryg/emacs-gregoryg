@@ -225,6 +225,11 @@
    (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
    #+end_src
 
+** Emacs version things
+   #+begin_src emacs-lisp
+     (when (<= emacs-major-version 27)
+       (remove-hook 'kill-emacs-hook #'org-babel-remove-temporary-stable-directory))
+   #+end_src
 ** Microsoft Windows things
 *** Printing
    #+begin_src emacs-lisp
