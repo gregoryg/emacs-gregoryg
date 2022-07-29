@@ -70,7 +70,6 @@
       ob-http
       pyvenv
       prettify-greek
-  ;;    company-pr
       rainbow-delimiters
       selectrum
       selectrum-prescient
@@ -1513,8 +1512,8 @@
        (define-key ede-minor-mode-map (kbd "C-c .") nil))
    #+end_src
 
-** Company
- #+BEGIN_SRC emacs-lisp
+** Company - retired?
+ #+BEGIN_SRC emacs-lisp :tangle no
    (use-package company-mode
      :straight t
      :after lsp-mode
@@ -1531,6 +1530,73 @@
    ;;  (push 'company-lsp company-backends)
    ;; )
  #+END_SRC
+
+** Corfu - auto-complete and more
+   I want something for auto-complete that behaves more like selectrum and other such
+   tools
+
+   + [[https://github.com/minad/corfu][GitHub - minad/corfu: corfu.el - Completion Overlay Region FUnction]]
+   #+begin_src emacs-lisp
+     (use-package corfu
+       :straight t
+       ;; Optional customizations
+       :custom
+       ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+       (corfu-auto t)                 ;; Enable auto completion
+       (corfu-separator ?\s)          ;; Orderless field separator
+       ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+       ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+       ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+       ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
+       ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+       ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
+       ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+
+       ;; Enable Corfu only for certain modes.
+       ;; :hook ((prog-mode . corfu-mode)
+       ;;        (shell-mode . corfu-mode)
+       ;;        (eshell-mode . corfu-mode))
+
+       ;; Recommended: Enable Corfu globally.
+       ;; This is recommended since Dabbrev can be used globally (M-/).
+       ;; See also `corfu-excluded-modes'.
+       (corfu-excluded-modes '(shell-mode vterm-mode comint-mode))
+       :init
+       (global-corfu-mode))
+
+     (use-package orderless
+       :straight t
+       :init
+       (setq completion-styles '(orderless basic)
+             completion-category-defaults nil
+             completion-category-overrides '((file (styles . (partial-completion))))))
+
+     ;; A few more useful configurations...
+     (use-package emacs
+       :init
+       ;; TAB cycle if there are only few candidates
+       (setq completion-cycle-threshold 3)
+
+       ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+       ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+       ;; (setq read-extended-command-predicate
+       ;;       #'command-completion-default-include-p)
+
+       ;; Enable indentation+completion using the TAB key.
+       ;; `completion-at-point' is often bound to M-TAB.
+       (setq tab-always-indent 'complete))
+   #+end_src
+** Marginalia - crazy annotations for completions
+   #+begin_src emacs-lisp
+     (use-package marginalia
+       :straight t
+       :bind (("M-A" . marginalia-cycle)
+              :map minibuffer-local-map
+              ("M-A" . marginalia-cycle)
+              )
+       :init
+       (marginalia-mode))
+   #+end_src
 ** TRAMP
    #+begin_src emacs-lisp
 ;;(require 'tramp)
@@ -2178,17 +2244,6 @@ Open man page in current window, rather than other window with
                                               ("sy" . "src yaml"))))
 
      #+end_src
-*** Company Org Block
-    + first seen in this reddit post: [[https://www.reddit.com/r/emacs/comments/ntj8gj/company_org_block_completion_now_on_melpa/][Company org block completion now on melpa : emacs]]
-    #+begin_src emacs-lisp
-      (use-package company-org-block
-        :straight t
-        :custom
-        (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
-        :hook ((org-mode . (lambda ()
-                             (setq-local company-backends '(company-org-block))
-                             (company-mode +1)))))
-    #+end_src
 *** Crazy way to allow babel elisp to modify window configuration  :noexport:
     This disables Org's use of =save-window-excursion= for execution of source blocks
     Stolen from [[https://emacs.stackexchange.com/questions/42096/running-elisp-within-an-orgmode-code-block][Running elisp within an orgmode code block]] (github)
@@ -2879,7 +2934,7 @@ Open man page in current window, rather than other window with
 #+end_src
 *** Org Roam Capture templates
     Let's leave the default one alone for now - make a new 'g'reg template
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle no
       (require 'org-roam)
       (push
        '("g" "greg" plain "%?" :target
@@ -2888,7 +2943,7 @@ Open man page in current window, rather than other window with
     #+end_src
 *** Immediate thing in video
     Ref: comment by Umar Ahmad in [[https://www.youtube.com/watch?v=AyhPmypHDEw][Getting Started with Org Roam - Build a Second Brain in Emacs - YouTube]]
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle no
       ;; To get the old "immediate" insert you can add the following in your config:
       (defvar org-roam-capture-immediate-template
         (append (car org-roam-capture-templates) '(:immediate-finish t)))
@@ -3032,7 +3087,7 @@ Open man page in current window, rather than other window with
                (lambda ()
                  (rainbow-delimiters-mode 0)
                  (rainbow-delimiters-mode 1)
-                 (company-mode 1)
+                 (corfu-mode 1)
                  (yafolding-mode 1)
                  (electric-pair-local-mode 1)
                  (smartparens-mode 1)))
