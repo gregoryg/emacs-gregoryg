@@ -1107,6 +1107,12 @@
       # emacsclient -e "(gjg/update-spotify-exwm-window \"${summary} - ${body}\")"
       emacsclient -e "(gjg/update-spotify-exwm-window \"${body}\")"
     #+end_src
+*** Start secondary Emacs in char-mode
+    #+begin_src emacs-lisp
+      (setq exwm-manage-configurations
+            '(((member exwm-class-name '("Emacs" "Gnome-terminal" "konsole"))
+               char-mode t)))
+    #+end_src
 ** To launch or not to launch
    My configuration tests for the existence of a window manager.  If one is already
    running, just skip all the EXWM setup and bring up a "normal" Emacs instance.
