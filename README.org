@@ -1851,9 +1851,9 @@
      (add-hook 'dired-mode-hook
            (lambda ()
              (interactive)
-             (dired-omit-mode 1)
+             (dired-omit-mode 0)
              ;; (dired-hide-details-mode 1)
-             (all-the-icons-dired-mode 1)
+             ;; (all-the-icons-dired-mode 1)
              (auto-revert-mode)))
      ;; 		      ;; Set dired-x buffer-local variables here.  For example:
      ;; 		      (setq dired-omit-mode t)
