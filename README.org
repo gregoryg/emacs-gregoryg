@@ -134,6 +134,7 @@
      (use-package exec-path-from-shell :straight t)
      (use-package exwm :straight t)
      ;; (use-package buffer-expose :straight t)
+     (use-package font-lock+ :straight t)
      (use-package hl-line+ :straight t)
      (use-package magit :straight t)
      (use-package magit-todos :straight t)
@@ -1485,6 +1486,7 @@
           (project-dired "Root dired" 114)
           (project-shell "Shell" 115)
           (magit-project-status "Magit" 109)
+          (treemacs-add-and-display-current-project "Treemacs" 116)
           ))
      (defun gjg/project-dired-choose ()
        "Visit a directory (with completion) in the current project."
@@ -1795,9 +1797,33 @@
    the directory changes.
 
    #+begin_src emacs-lisp
-     (require 'dired)
-     (use-package all-the-icons-dired :straight t)
+     ;; (require 'dired)
+     (with-eval-after-load 'dired)
+     ;; (use-package all-the-icons-dired :straight t)
      (use-package dired-collapse :straight t)
+     (use-package treemacs
+       :straight t
+       :defer t
+       :config
+       (progn
+         (treemacs-fringe-indicator-mode 'only-when-focused)
+         (when treemacs-python-executable
+           (treemacs-git-commit-diff-mode t))
+         (pcase (cons (not (null (executable-find "git")))
+                      (not (null treemacs-python-executable)))
+           (`(t . t)
+            (treemacs-git-mode 'deferred))
+           (`(t . _)
+            (treemacs-git-mode 'simple))))
+       :bind
+       (:map treemacs-mode-map
+             ("C-o" . treemacs-visit-node-no-split))
+       )
+
+     (use-package treemacs-icons-dired
+       :straight t
+       :hook
+       (dired-mode . treemacs-icons-dired-enable-once))
 
      (define-key dired-mode-map [mouse-1] 'dired-find-file)
      (define-key dired-mode-map [mouse-2] 'dired-find-file)
