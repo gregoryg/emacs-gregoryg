@@ -2936,6 +2936,50 @@ Open man page in current window, rather than other window with
 
 
    #+end_src
+** Denote - note taking
+   + Prot's denote - on System Crafters [[https://systemcrafters.net/live-streams/july-15-2022/][System Crafters Live! - July 15, 2022 - System Crafters]]
+   +
+   #+begin_src emacs-lisp
+     (package-install 'denote)
+     (require 'denote)
+     (use-package denote
+       :config
+       (setq denote-directory "~/projects/private-orgmode/denotes/")
+       (setq denote-known-keywords '("journal" "projects" "ideas"))
+       ;; (setq denote-prompts '(title subdirectory))
+
+       )
+
+     (require 'denote-dired)
+     (add-hook 'dired-mode-hook #'denote-dired-mode)
+
+     (with-eval-after-load 'org-capture
+       (require 'denote-org-capture)
+       (add-to-list 'org-capture-templates
+                    '("n" "New note (with Denote)" plain
+                      (file denote-last-path)
+                      #'(lambda ()
+                          (let ((denote-org-capture-specifiers (concat "* " denote-last-title  "\n" denote-org-capture-specifiers)))
+                           (denote-org-capture)))
+                      :no-save t
+                      :immediate-finish nil
+                      :kill-buffer t
+                      :jump-to-captured t)))
+
+
+
+      (defun my-denote-journal ()
+       "Create an entry tagged 'journal' with the date as its title."
+       (interactive)
+       (denote
+        (format-time-string "%A %e %B %Y")   ; format like Tuesday 14 June 2022
+        '("journal")
+        nil
+        "~/Denotes/Journal")
+
+       (insert "* Thoughts\n\n* Tasks\n\n")) ; multiple keywords are a list of strings: '("one" "two")
+
+   #+end_src
 ** Org Roam - experimental - and currently off
 *** Configuration and startup
 #+begin_src emacs-lisp :tangle no
