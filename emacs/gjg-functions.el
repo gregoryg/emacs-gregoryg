@@ -35,6 +35,16 @@
   :type 'string
   :group 'gjg)
 
+(defcustom gjg/preferred-light-theme "brutalist"
+  "Current preferred light theme"
+  :type 'string
+  :group 'gjg)
+
+(defcustom gjg/preferred-dark-theme "brutalist-dark"
+  "Current preferred dark theme"
+  :type 'string
+  :group 'gjg)
+
 (defun gjg/nag-timer () "Nag me when there isn't a clock running"
        (unless (marker-buffer org-clock-marker)
          (call-process-shell-command gjg/visual-notify-command nil 0 nil "Org-Mode\\ Nudge" "What\\'s\\ \\going\\ on?")
@@ -139,13 +149,13 @@ do-capitalize: t means run text through capitalize function, nil will respect Ca
 (defun gjg/go-dark ()
   "switch to preferred dark theme"
   (interactive)
-  (load-theme 'brutalist-dark t)
-  (disable-theme 'brutalist))
+  (load-theme (intern gjg/preferred-dark-theme) t)
+  (disable-theme (intern gjg/preferred-light-theme)))
 (defun gjg/go-light ()
   "switch to preferred light theme"
   (interactive)
-  (load-theme 'brutalist t)
-  (disable-theme 'brutalist-dark))
+  (load-theme (intern gjg/preferred-light-theme) t)
+  (disable-theme (intern gjg/preferred-dark-theme)))
 
 (defun gjg/open-work-agenda ()
   (interactive)
