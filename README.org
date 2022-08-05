@@ -430,6 +430,11 @@
   (setq align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
   (setq Man-notify-method 'pushy) ;; show man page in current window
   (setq auth-source-save-behavior nil) ; NEVER store passwords
+  (setq enable-recursive-minibuffers t)
+  ;; Allow Emacs to resize mini windows, otherwise this does not work:
+  ;;   (setq org-use-fast-todo-selection 'expert)
+  (setq resize-mini-windows t)
+
 #+end_src
 ** Custom Functions in a separate file
    TODO: pull these functions in
