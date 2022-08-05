@@ -1589,7 +1589,7 @@
        ;; Recommended: Enable Corfu globally.
        ;; This is recommended since Dabbrev can be used globally (M-/).
        ;; See also `corfu-excluded-modes'.
-       (corfu-excluded-modes '(shell-mode vterm-mode comint-mode))
+       ;; (corfu-excluded-modes '(shell-mode vterm-mode comint-mode))
        :init
        (global-corfu-mode))
 
