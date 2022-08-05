@@ -335,15 +335,22 @@
    #+end_src
 ** Desktop save
    TODO: Deal with  '(desktop-files-not-to-save "\\(\\`/[^/:]*:\\|(ftp)\\'\\|org.gpg\\'\\)")
-   #+begin_src emacs-lisp :tangle no
+   #+begin_src emacs-lisp
      (desktop-save-mode 1)
-     (setq desktop-restore-eager 0)
-     (setq desktop-lazy-idle-delay 2)
-     (with-eval-after-load 'desktop-save-mode
-       (add-to-list 'desktop-modes-not-to-save 'dired-mode)
-       (add-to-list 'desktop-modes-not-to-save 'Info-mode)
-       (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode))
+     (setq desktop-restore-eager 0
+           desktop-lazy-idle-delay 2
+           desktop-file-name-format 'tilde
+           desktop-files-not-to-save
+           (concat "\\("
+                   "\\`/[^/:]*:\\|(ftp)\\'"
+                   "\\|~/projects/private-orgmode[.]*"
+                   "\\)"))
 
+     (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+     (add-to-list 'desktop-modes-not-to-save 'Info-mode)
+     (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
+     (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
+     (add-to-list 'desktop-modes-not-to-save 'emacs-lisp-mode)
    #+end_src
 ** Basic defaults that aren't default
    So many defaults in Emacs make no sense.  If starting out with Emacs, consider these
