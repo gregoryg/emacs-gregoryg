@@ -870,7 +870,6 @@
                      "~/projects/emacs/brutalist-theme/")
         (add-to-list 'load-path
                      "~/projects/emacs/brutalist-theme/"))
-      (gjg/go-light) ; start with preferred light theme
     #+end_src
 **** Modus themes
      #+begin_src emacs-lisp
@@ -878,17 +877,22 @@
        (when (boundp 'modus-themes-headings)
          (setq modus-themes-headings
                '((1 . ( semibold 1.3))
-                 (2 . ( semibold overline  1.1))
-                 (3 . ( semibold overline  1.1))
-                 (4 . ( semibold overline  1.1))
-                 (5 . ( semibold overline  1.1))
-                 (6 . ( semibold overline  1.1)))
+                 (2 . ( semibold 1.1))
+                 (3 . ( semibold 1.1))
+                 (4 . ( semibold 1.1))
+                 (5 . ( semibold 1.1))
+                 (6 . ( semibold 1.1)))
                modus-themes-org-agenda
                '((header-block . (1.3))
                  (header-date . (bold-today 1.2))
                  )
                modus-themes-org-blocks nil))
 
+     #+end_src
+**** Load default theme
+     Deferred here until all theme tweaks have been applied
+     #+begin_src emacs-lisp
+      (gjg/go-light) ; start with preferred light theme
      #+end_src
 
 ** Automatic typing - abbrevs and expansions
