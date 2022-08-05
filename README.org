@@ -46,9 +46,14 @@
 
   Very useful when bringing up a virgin Emacs on a new system
 
+  Explicitly include =/usr/share/emacs/site-lisp/= when using a self-compiled Emacs.
+  Debian and other distros place important files from their packages in that path
+
+
 #+BEGIN_SRC emacs-lisp
   (defvar gjg/check-packages-on-startup nil) ; should be nil in repo
 
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/")
   (add-to-list 'load-path "~/emacs")
   (require 'cl)
   (require 'package)
