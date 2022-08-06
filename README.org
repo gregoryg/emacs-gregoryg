@@ -453,11 +453,11 @@
 ** Key bindings
 *** Audio and media
     #+begin_src emacs-lisp
-      (bind-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (call-process-shell-command "/home/gregj/bin/pulseaudio-control-glados down")))
-      (bind-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive) (call-process-shell-command "/home/gregj/bin/pulseaudio-control-glados up")))
-      (bind-key (kbd "<XF86AudioMute>") (lambda () (interactive) (call-process-shell-command "/home/gregj/bin/pulseaudio-control-glados togmute")))
+      (bind-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados down"))))
+      (bind-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados up"))))
+      (bind-key (kbd "<XF86AudioMute>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados togmute"))))
       (bind-key (kbd "<XF86AudioPlay>") (lambda () (interactive) (call-process-shell-command "/usr/bin/playerctl play-pause") ))
-      (bind-key (kbd "<XF86AudioMute>") (lambda () (interactive) (call-process-shell-command "/home/gregj/bin/pulseaudio-control-glados togmute")))
+      (bind-key (kbd "<XF86AudioMute>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados togmute"))))
     #+end_src
 *** Big blob of various key bindings
    #+begin_src emacs-lisp
@@ -1168,7 +1168,7 @@
     Script below is generated with the [[file:Desktop.org][Org file referenced above]]
     #+begin_src emacs-lisp
       (set-opacity 95)
-      (async-start-process "wallpaper-thang"  "nohup" nil "/home/gregj/bin/schedule-rotate-wallpapers.sh" "&")
+      (async-start-process "wallpaper-thang"  "nohup" nil (expand-file-name "~/bin/schedule-rotate-wallpapers.sh") "&")
     #+end_src
 *** My specific config function
     I did not want =ido= integration and wanted to evolve my config.  So I copied the
@@ -1526,7 +1526,7 @@
        "Visit a directory (with completion) in the current project."
        (interactive)
        (let* ((pr (project-current t))
-              (dir "/home/gregj/projects/homelab")
+              (dir (expand-file-name "~/projects/homelab"))
               (localdir (file-name-unquote (file-local-name (expand-file-name dir))))
               (dirs (process-file-shell-command (format "%s -H %s -type d " find-program (shell-quote-argument (directory-file-name localdir))))))
 
@@ -1708,7 +1708,7 @@
         ;; example TRAMP URI:   //kexec:jhub@jupyter:
         (add-to-list 'tramp-methods
                      '("kube"
-                       (tramp-login-program "/home/gregj/bin/mykubectl")
+                       (tramp-login-program (expand-file-name "~/bin/mykubectl"))
                        (tramp-login-args
                         (nil
                          ("exec" "-it")
@@ -3339,9 +3339,9 @@ Open man page in current window, rather than other window with
        (add-hook 'go-mode-hook (lambda () (add-hook 'before-save-hook 'ime-go-before-save)))
        (use-package go-autocomplete :straight t)
        (auto-complete-mode 1)
-       (setenv "GOPATH" "/home/gregj/projects/coding/go/")
+       (setenv "GOPATH" (expand-file-name "~/projects/coding/go/"))
        )
-     ;; (setenv "GOPATH" "/home/gregj/projects/coding/go/")
+     ;; (setenv "GOPATH" (expand-file-name "~/projects/coding/go/"))
      ;; (defun my-go-mode-hook ()
      ;;   ; Use goimports instead of go-fmt
      ;;   (setq gofmt-command "goimports")
@@ -3436,7 +3436,7 @@ Open man page in current window, rather than other window with
        )
      (use-package pyvenv :straight t
        :config
-       (setenv "WORKON_HOME" "/home/gregj/.local/python-venvs/" )
+       (setenv "WORKON_HOME" (expand-file-name "~/.local/python-venvs/") )
        )
 
      (custom-set-variables '(org-babel-python-command "python3"))
