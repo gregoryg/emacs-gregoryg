@@ -881,7 +881,9 @@
 **** Modus themes
      #+begin_src emacs-lisp
        ;; make the modus themes act more like my brutalist them in Org
-       (when (boundp 'modus-themes-headings)
+       (use-package modus-themes
+         :straight t
+         :config
          (setq modus-themes-headings
                '((1 . ( semibold 1.3))
                  (2 . ( semibold 1.1))
@@ -889,12 +891,15 @@
                  (4 . ( semibold 1.1))
                  (5 . ( semibold 1.1))
                  (6 . ( semibold 1.1)))
+               modus-themes-syntax '(faint alt-syntax)
                modus-themes-org-agenda
                '((header-block . (1.3))
                  (header-date . (bold-today 1.2))
                  )
-               modus-themes-org-blocks nil))
-
+               modus-themes-org-blocks 'gray-background
+               modus-themes-vivendi-color-overrides
+               '((bg-main . "gray20")
+                 (fg-main . "gray93"))))
      #+end_src
 **** Load default theme
      Deferred here until all theme tweaks have been applied
