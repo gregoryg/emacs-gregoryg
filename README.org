@@ -334,8 +334,8 @@
      (global-set-key [C-kp-add] 'inc-font-size)
    #+end_src
 ** Desktop save
-   TODO: Deal with  '(desktop-files-not-to-save "\\(\\`/[^/:]*:\\|(ftp)\\'\\|org.gpg\\'\\)")
-   #+begin_src emacs-lisp
+   TODO: Does Desktop mode really mess with themes? it seems it tries to restore pieces of previous theme
+   #+begin_src emacs-lisp :tangle no
      (desktop-save-mode 1)
      (setq desktop-restore-eager 0
            desktop-lazy-idle-delay 2
