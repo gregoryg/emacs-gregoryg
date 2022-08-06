@@ -3583,23 +3583,37 @@ Open man page in current window, rather than other window with
     #+begin_src emacs-lisp :tangle no
       (load "~/projects/emacs/gsql-mode.el/gsql-mode")
     #+end_src
+** Music notation - Lilypond et al
+   =lilypond-mode= is provided by Lilypond installation - in debian it will be found
+   installed in =/usr/share/emacs/site-lisp/lilypond-mode.el=
+
+   #+begin_src emacs-lisp
+     (require 'lilypond-mode nil t) ; comes from lilypond OS package
+     (use-package lilypond :straight t) ; provides ob-lilypond
+   #+end_src
+
+   =lilypond-mode= is not derived from =prog-mode= but we want the same hooks
+   #+begin_src emacs-lisp
+     (setq LilyPond-mode-hook prog-mode-hook)
+   #+end_src
 ** FINAL step after all language modes have been configured
    #+begin_src emacs-lisp
-     (org-babel-do-load-languages
-      'org-babel-load-languages
-      (append org-babel-load-languages
-              '(
-                (sparql . t)
-                (clojure . t)
-                (http . t) ;; curl
-                (js . t)
-                (latex . t)
-;;                (jupyter . t) ;; makes Emacs core dump??? (related to compiled zmq)
-                (plantuml . t)
-                (python . t)
-                (shell  . t)
-                (sql . t)
-                )))
+          (org-babel-do-load-languages
+           'org-babel-load-languages
+           (append org-babel-load-languages
+                   '(
+                     (sparql . t)
+                     (clojure . t)
+                     (http . t) ;; curl
+                     (js . t)
+                     (latex . t)
+     ;;                (jupyter . t) ;; makes Emacs core dump??? (related to compiled zmq)
+                     (plantuml . t)
+                     (lilypond . t)
+                     (python . t)
+                     (shell  . t)
+                     (sql . t)
+                     )))
    #+end_src
 * Devops
 ** Working with containers
