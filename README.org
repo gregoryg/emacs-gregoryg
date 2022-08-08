@@ -2606,7 +2606,7 @@ Open man page in current window, rather than other window with
 **** Web page entry - what is this for exactly?
      #+begin_src emacs-lisp
        (push
-        '             ("w" "Web page" entry (file "~/projects/private-orgmode/inbox.org")
+        '             ("w" "Web page to read from copied URL" entry (file "~/projects/private-orgmode/inbox.org")
                        "* TODO Read %(org-cliplink-capture)
                              Captured %u")
         org-capture-templates)
