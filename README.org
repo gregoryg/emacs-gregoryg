@@ -471,7 +471,7 @@
      (global-set-key (kbd "C-z") 'undo)
      (global-unset-key (kbd "M-]")) ; unset one next-buffer binding
      (global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
-
+     (global-set-key (kbd "s-y") 'gjg/exwm-select-or-launch-spotify)
      (global-set-key [f1] 'delete-other-windows)
      (global-set-key [f2] 'gjg/switch-to-other-buffer)
      (global-set-key [f3] 'gjg/other-window-or-split)
@@ -627,6 +627,7 @@
       (bind-key "s-p" 'playerctl-play-pause-song)
       (bind-key "s-q" 'bury-buffer)
       (bind-key "s-t" 'toggle-truncate-lines)
+      (bind-key "s-y" 'gjg/exwm-select-or-launch-spotify)
       (bind-key "s-c" '(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
       (bind-key "s-." '(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
       (bind-key "s-," '(lambda () (interactive) (call-process-shell-command "polybar-msg cmd toggle")))
@@ -1100,13 +1101,15 @@
    Emacsclient with --eval allows for some great interactions between the shell and Emacs.
    Let's create a combination of Emacs Lisp and shell script for some of these.
 
-*** Jump to or launch email with unread threads shown
-    If we already have a Gmail browser window, select it and bring it to the foreground.
+*** Jump to or launch application like Gmail or Spotify
+    If we already have a browser window running, select it and bring it to the foreground.
     If not, launch it, showing just unread threads.
+
+**** Function =gjg/exwm-switch-to-buffer-or-launch=
 
      #+begin_src emacs-lisp
        (defun gjg/exwm-switch-to-buffer-or-launch (searchstring &optional application)
-         "Switch to the first buffer matching SEARCHSTRING
+         "Switch to the first buffer matching SEARCHSTRING as a substring
           If no matching buffer is found, launch the APPLICATION using gtk-launch."
            (let
              ((mybuf (car (remove-if-not (lambda (row) (search searchstring (buffer-name row))) (buffer-list)))))
@@ -1115,9 +1118,22 @@
              (when application
                  (call-process-shell-command (concat "gtk-launch " application))))))
      #+end_src
+
+**** Shell script to select corporate Gmail window with unread threads
+     This shell script can be called from Polybar (my config includes a button that
+     invokes this script)
+
     #+begin_src bash :tangle ~/bin/gmail-buffer-or-launch.sh
       emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch (concat gjg/employer-name " Mail") "gmail")'
     #+end_src
+
+**** Function to select or launch Spotify
+     #+begin_src emacs-lisp
+       (defun gjg/exwm-select-or-launch-spotify ()
+         "Select the running Spotify window in EXWM, or launch the app"
+         (interactive)
+         (gjg/exwm-switch-to-buffer-or-launch "Spotify" "spotify"))
+     #+end_src
 
 *** Update Spotify's buffer name when song changes
     If running EXWM, let's keep Spotify's buffer name hip
