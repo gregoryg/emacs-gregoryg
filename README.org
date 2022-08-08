@@ -2458,23 +2458,39 @@ Open man page in current window, rather than other window with
 ** Capture Templates
 *** Functions to support capture templates
 **** Bring in nicely formatted links to be used in the phone log capture template
-
       These entries are in a table in each customer engagement Org file named =people=
-      #+begin_src emacs-lisp
-        (defun gjg/add-person-from-table ()
-          (let  ((myname (completing-read
-                          "Name to insert: "
-                          (mapcar (lambda (x) (nth 0  x)) table))))
 
-            (cl-loop
-             for row in table
-             if (equal (nth 0 row) myname)
-             return (format "+ [[%s][%s]] - %s - %s"
-                            (nth 1 row) ; LinkedIn URL
-                            (nth 0 row) ; Name
-                            (nth 2 row) ; Title
-                            (nth 3 row) ; Location
-                            ))))
+      #+begin_src emacs-lisp
+        (defun gjg/annotate-person (s)
+          "Provide annotations for completing-read using the data in a \"person\" table as used in my work files"
+          (let ((item (assoc s minibuffer-completion-table)))
+            (when item (concat
+                        (string-pad "" (- 40 (string-width (nth 0 item) )))
+                        (nth 2 item)
+                        (if (string-empty-p (nth 4 item)) "" (concat " (" (nth 4 item) ")"))
+                        ))))
+
+        (defun gjg/add-person-from-table (table)
+          "Add person from table to an Org unorder list - used with phone log capture template"
+          (let* ((marginalia-align-offset 80)
+                 (completion-extra-properties '(:annotation-function gjg/annotate-person))
+                 (myperson (assoc (completing-read "Person: " table) table))
+                 (myname (nth 0 myperson))
+                 (title (nth 2 myperson))
+                 (linkedin (nth 1 myperson))
+                 (company (nth 4 myperson))
+                 (location (nth 3 myperson)))
+
+            ;; Name Title (Company) Location
+            (format "+ %s - %s %s - %s"
+                    (if (string-empty-p linkedin)
+                        myname
+                      (concat "[[" linkedin "][" myname "]]"))
+                    title
+                    (if (string-empty-p company)
+                        ""
+                      (concat "(" company ")"))
+                    location)))
       #+end_src
 **** Create new blog post file for blog capture
     #+begin_src emacs-lisp
@@ -2561,7 +2577,7 @@ Open man page in current window, rather than other window with
          %i
          + Team: GG and %?
            \#+begin_src emacs-lisp :var table=people :results append raw :exports results :eval never-export
-            (gjg/add-person-from-table)
+            (gjg/add-person-from-table table)
            \#+end_src
        ,** Notes
          +
