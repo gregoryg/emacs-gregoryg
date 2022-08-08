@@ -422,7 +422,7 @@
   ;; enable hugely useful things that are disabled by default
   (put 'narrow-to-region 'disabled nil)
   (put 'set-goal-column 'disabled nil)
-
+  (setq narrow-to-defun-include-comments t)
   ;; echo quickly
   (setq echo-keystrokes 0.1)
   ;; keep the screen from jumping wildly as I cursor down/up
