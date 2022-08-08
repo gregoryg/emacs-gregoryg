@@ -85,7 +85,6 @@
       ;; csv-mode
       js2-mode
       json-mode
-      markdown-mode
       ;; scala-mode
       ssh-config-mode
       ;; web-mode
@@ -1637,6 +1636,16 @@
               )
        :init
        (marginalia-mode))
+   #+end_src
+** Markdown
+   It's common to have very long lines in Markdown text - so turn on =visual-line-mode=
+   with lovely word wrapping only for those files.
+   #+begin_src emacs-lisp
+     (use-package markdown-mode
+       :straight t
+       :hook
+       (markdown-mode . visual-line-mode)
+     )
    #+end_src
 ** TRAMP
    #+begin_src emacs-lisp
