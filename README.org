@@ -1693,8 +1693,8 @@
        (marginalia-mode))
    #+end_src
 ** Markdown
-   It's common to have very long lines in Markdown text - so turn on =visual-line-mode=
-   with lovely word wrapping only for those files.
+   It's common to have very long lines in Markdown text - so turn on =longlines-mode=
+   with word wrapping only for those files.
    #+begin_src emacs-lisp
      (use-package markdown-mode
        :straight t
