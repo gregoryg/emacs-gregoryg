@@ -3,10 +3,10 @@
 #+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
 #+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
 #+OPTIONS: timestamp:t title:t toc:2 todo:t |:t
-#+TITLE: Gregory's Emacs Initialization in Org-Mode
+#+TITLE: gregoryg's Emacs Initialization in Org-Mode
 #+DATE: <2019-09-08 Sun>
 #+AUTHOR: Greg Grubbs
-#+EMAIL: gregory@dynapse.com
+#+EMAIL: gregory.grubbs@gmail.com
 #+LANGUAGE: en
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
@@ -1158,7 +1158,7 @@
 *** Start secondary Emacs in char-mode
     #+begin_src emacs-lisp
       (setq exwm-manage-configurations
-            '(((member exwm-class-name '("Emacs" "Gnome-terminal" "konsole"))
+            '(((member exwm-class-name '("Emacs" "Gnome-terminal" "konsole" "libreoffice-calc"))
                char-mode t)))
     #+end_src
 ** To launch or not to launch
@@ -1777,7 +1777,7 @@
         ;; example TRAMP URI:   //kexec:jhub@jupyter:
         (add-to-list 'tramp-methods
                      '("kube"
-                       (tramp-login-program (expand-file-name "~/bin/mykubectl"))
+                       (tramp-login-program "~/bin/mykubectl")
                        (tramp-login-args
                         (nil
                          ("exec" "-it")
