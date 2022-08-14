@@ -47,6 +47,18 @@
        "Current preferred dark theme"
        :type 'string
        :group 'gjg)
+
+     (defcustom gjg/stardog-connections-alist
+       nil
+       "List of stardog connections "
+       :type '(alist :key-type (symbol :tag "Connection name")
+                     :value-type (list (string :tag "Endpoint URL")
+                                       (string :tag "Database name")
+                                       ))
+       :group 'gjg
+       :version "0.1"
+       )
+
    #+end_src
 ** Quick theme switching
    #+begin_src emacs-lisp
@@ -86,18 +98,39 @@
    #+end_src
 ** Stardog and other RDF/SPARQL databases
    #+begin_src emacs-lisp
-    (defun gjg/set-sparql-header-args (url db endpoint)
+     (defun gjg/set-sparql-header-args (url db endpoint)
 
-      (let ((fullurl (concat url "/" db "/" endpoint "/" )))
-        ;; (message "My lovely url is %s\n" fullurl)
-        (setq-local org-babel-default-header-args:sparql
-                    (cons `(:url  . ,fullurl)
-                          (assq-delete-all :url org-babel-default-header-args:sparql)))))
-    (defun gjg/set-stardog-bash-header-args (tramp-path )
-      (setq-local org-babel-default-header-args:bash
-                  (cons `(:dir . ,tpath)
-                        (assq-delete-all :dir org-babel-default-header-args:bash)))
-      )
+       (let ((fullurl (concat url "/" db "/" endpoint "/" )))
+         ;; (message "My lovely url is %s\n" fullurl)
+         (setq-local org-babel-default-header-args:sparql
+                     (cons `(:url  . ,fullurl)
+                           (assq-delete-all :url org-babel-default-header-args:sparql)))))
+     (defun gjg/set-stardog-bash-header-args (tramp-path )
+       (setq-local org-babel-default-header-args:bash
+                   (cons `(:dir . ,tpath)
+                         (assq-delete-all :dir org-babel-default-header-args:bash))))
+
+     (defun gjg/annotate-sparql-selection (s)
+       "Provide annotations for completing-read using the data in a SPARQL Stardog server table"
+       ;; (message (format "DEBUG: stardog list |%s|, table |%s}" s minibuffer-completion-table))
+       (let ((item (assoc (intern s) minibuffer-completion-table)))
+         (when item (concat
+                     (string-pad "" (- 20 (string-width (symbol-name (nth 0 item)))))
+                     (nth 1 item)
+                     " " (nth 2 item) " " (nth 3 item)))))
+
+     (defun gjg/set-sparql-headers ()
+       "Set Org Babel headers for SPARQL.   table named `svar` should have these columns: connection-name, base-url, database, api-type"
+       (interactive)
+       (let* ((marginalia-align-offset 80)
+              (completion-extra-properties '(:annotation-function gjg/annotate-sparql-selection))
+              (myconnection (assoc (intern (completing-read "SPARQL Server name: " gjg/stardog-connections-alist)) gjg/stardog-connections-alist))
+              (connection-name (nth 0 myconnection))
+              (url (nth 1 myconnection))
+              (db (nth 2 myconnection))
+              (api-type "query"))
+         ;; (message (format "I will surely set sparql header args to %s %s %s %s" connection-name url db api-type))
+         (gjg/set-sparql-header-args url db api-type)))
    #+end_src
 **  Odds and ends
    #+begin_src emacs-lisp
