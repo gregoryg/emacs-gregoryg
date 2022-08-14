@@ -898,8 +898,8 @@
                  )
                modus-themes-org-blocks 'gray-background
                modus-themes-vivendi-color-overrides
-               '((bg-main . "gray20")
-                 (fg-main . "gray93"))))
+               '((bg-main . "gray25")
+                 (fg-main . "gray95"))))
      #+end_src
 **** Load default theme
      Deferred here until all theme tweaks have been applied
