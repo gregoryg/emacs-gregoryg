@@ -2277,6 +2277,7 @@ awesome.
                             (toggle-truncate-lines 1))))
      (add-hook 'conf-mode-hook
                (lambda ()
+                 (yafolding-mode 1)
                  (toggle-truncate-lines 1)))
    #+end_src
 ** Man pages
