@@ -96,15 +96,17 @@
       (interactive)
       (org-agenda nil "W"))
    #+end_src
-** Stardog and other RDF/SPARQL databases
+* Stardog and other RDF/SPARQL databases
    #+begin_src emacs-lisp
+     ;; TODO: create function to change just the database
+     ;; TODO: create function select database after querying server ( /admin/databases)
      (defun gjg/set-sparql-header-args (url db endpoint)
-
-       (let ((fullurl (concat url "/" db "/" endpoint "/" )))
+       (let ((fullurl (concat (replace-regexp-in-string "//+$" "" url) "/" db "/" endpoint "/" )))
          ;; (message "My lovely url is %s\n" fullurl)
          (setq-local org-babel-default-header-args:sparql
                      (cons `(:url  . ,fullurl)
                            (assq-delete-all :url org-babel-default-header-args:sparql)))))
+
      (defun gjg/set-stardog-bash-header-args (tramp-path )
        (setq-local org-babel-default-header-args:bash
                    (cons `(:dir . ,tpath)
@@ -113,11 +115,17 @@
      (defun gjg/annotate-sparql-selection (s)
        "Provide annotations for completing-read using the data in a SPARQL Stardog server table"
        ;; (message (format "DEBUG: stardog list |%s|, table |%s}" s minibuffer-completion-table))
-       (let ((item (assoc (intern s) minibuffer-completion-table)))
+       (let* ((item (assoc (intern s) minibuffer-completion-table))
+              (connection-name (symbol-name (nth 0 item)))
+              (displayurl (s-truncate 50 (nth 1 item)))
+              (db (nth 2 item))
+              )
          (when item (concat
-                     (string-pad "" (- 20 (string-width (symbol-name (nth 0 item)))))
-                     (nth 1 item)
-                     " " (nth 2 item) " " (nth 3 item)))))
+                     (string-pad "" (- 20 (string-width connection-name)))
+                     displayurl
+                     (string-pad "" (- 55 (string-width displayurl)))
+                     db
+                     ))))
 
      (defun gjg/set-sparql-headers ()
        "Set Org Babel headers for SPARQL.   table named `svar` should have these columns: connection-name, base-url, database, api-type"
