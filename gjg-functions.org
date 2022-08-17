@@ -3,7 +3,7 @@
 #+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
 #+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
 #+OPTIONS: timestamp:t title:t toc:2 todo:t |:t
-#+TITLE: gjg-functions
+#+TITLE: gjg-functions library
 #+DATE: <2022-08-13 Sat>
 #+AUTHOR: Greg Grubbs
 #+EMAIL: gregory.grubbs@gmail.com
@@ -14,9 +14,11 @@
 #+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg-local.setup
 #+property: header-args:emacs-lisp :tangle ~/emacs-gregoryg/emacs/gjg-functions.el :comments org :results none
 #+property: header-args:bash :shebang #!/usr/bin/env bash :results none
+#+startup: content
 
-* gjg-functions library
-** Variables defvar and defcustom
+A sort-of package with customization framework.  The famed =gjg= package.
+
+* Variables with =defcustom=
    #+begin_src emacs-lisp
      (defcustom gjg/audioplayer "mplayer"
        "Audio player for this machine"
@@ -60,7 +62,7 @@
        )
 
    #+end_src
-** Quick theme switching
+* Quick theme switching
    #+begin_src emacs-lisp
     (defun gjg/go-dark ()
       "switch to preferred dark theme"
@@ -74,7 +76,7 @@
       (disable-theme (intern gjg/preferred-dark-theme)))
 
    #+end_src
-** Work/Job/Consulting/Employer functions
+* Work/Job/Consulting/Employer functions
    #+begin_src emacs-lisp
     (defun gjg/nag-timer () "Nag me when there isn't a clock running"
            (unless (marker-buffer org-clock-marker)
@@ -140,7 +142,7 @@
          ;; (message (format "I will surely set sparql header args to %s %s %s %s" connection-name url db api-type))
          (gjg/set-sparql-header-args url db api-type)))
    #+end_src
-**  Odds and ends
+* Odds and ends
    #+begin_src emacs-lisp
     (defun replace-smart-quotes (beg end)
       "Replace 'smart quotes' in buffer or region with ascii quotes."
@@ -245,7 +247,7 @@
 
 
    #+end_src
-** Provide the library - we're done!
+* Provide the library - we're done!
    #+begin_src emacs-lisp
     (provide 'gjg-functions)
    #+end_src
