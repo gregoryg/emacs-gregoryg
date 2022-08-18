@@ -880,7 +880,7 @@
     #+end_src
 **** Modus themes
      #+begin_src emacs-lisp
-       ;; make the modus themes act more like my brutalist them in Org
+       ;; make the modus themes act more like my brutalist theme in Org
        (use-package modus-themes
          :straight t
          :config
