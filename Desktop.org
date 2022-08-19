@@ -913,7 +913,7 @@
      Categories=InstantMessaging;
    #+end_src
 ** Reset compositor
-   #+begin_src conf :tangle ~/.local/share/applications/capsctrl.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/reset-compositor.desktop
      [Desktop Entry]
      Name=Reset Compositor and remove invert-colors
      Comment=
@@ -1026,6 +1026,17 @@
      Terminal=false
      Type=Application
      Categories=Cloud;Productivity
+   #+end_src
+** Stardog Community
+   #+begin_src conf :tangle ~/.local/share/applications/stardog-cloud.desktop
+     [Desktop Entry]
+     Name=Stardog Community
+     Comment=
+     Exec=xdg-open https://community.stardog.com/
+     Icon= /home/gregj/.local/share/pixmaps/stardog-doghouse-icon.png
+     Terminal=false
+     Type=Application
+     Categories=Community
    #+end_src
 ** Stardog Studio
    #+begin_src conf :tangle ~/.local/share/applications/stardog-studio.desktop
