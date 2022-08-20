@@ -1028,7 +1028,7 @@
      Categories=Cloud;Productivity
    #+end_src
 ** Stardog Community
-   #+begin_src conf :tangle ~/.local/share/applications/stardog-cloud.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/stardog-community.desktop
      [Desktop Entry]
      Name=Stardog Community
      Comment=
