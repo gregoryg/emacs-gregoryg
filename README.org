@@ -1268,6 +1268,7 @@
                  ([?\s-c] . (lambda () (interactive) (call-process-shell-command "invert-color.sh")))
                  ([?\s-p] . playerctl-play-pause-song)
                  ([?\s-t] . toggle-truncate-lines)
+                 ([?\s-y] . gjg/exwm-select-or-launch-spotify)
                  (,(kbd "<XF86MonBrightnessUp>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh +5")))
                  (,(kbd "<XF86MonBrightnessDown>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh -5")))
                  (,(kbd "<XF86AudioRaiseVolume>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados up")))
