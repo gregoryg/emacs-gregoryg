@@ -892,14 +892,16 @@
                  (5 . ( semibold 1.1))
                  (6 . ( semibold 1.1)))
                modus-themes-syntax '(faint alt-syntax)
+               modus-themes-org-blocks nil
                modus-themes-org-agenda
                '((header-block . (1.3))
                  (header-date . (bold-today 1.2))
                  )
                modus-themes-org-blocks 'gray-background
                modus-themes-vivendi-color-overrides
-               '((bg-main . "gray25")
+               '((bg-main . "#263238")
                  (fg-main . "gray95"))))
+       ;; NOTE: was using gray25
      #+end_src
 **** Load default theme
      Deferred here until all theme tweaks have been applied
