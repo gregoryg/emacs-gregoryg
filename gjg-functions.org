@@ -186,6 +186,36 @@ n         ;; (with-current-buffer (get-buffer-create "zgrego")
          ;; (message (format "I will surely set sparql header args to %s %s %s %s" connection-name url db api-type))
          (gjg/set-sparql-header-args url db api-type)))
    #+end_src
+* Polybar for use with Linux EXWM and desktop environments
+  #+begin_src emacs-lisp
+    (defun gjg/polybar-start-or-toggle ()
+      "Toggle visibility of polybar, or start it if not running"
+      (interactive)
+      (if (get-process "polybar")
+          (call-process-shell-command "polybar-msg cmd toggle")
+        (start-process-shell-command "polybar" nil (concat "polybar --config=~/.config/polybar/config-fancy floating -r -l warning"))
+        )
+      )
+
+    (defun gjg/kill-polybar ()
+      (interactive)
+      (let ((polybar-process (get-process "polybar")))
+        (when polybar-process
+          (ignore-errors
+            (kill-process polybar-process)))))
+    (defalias 'gjg/kill-panel 'gjg/polybar-start-or-toggle)
+
+    (when (boundp 'exwm-workspace-switch-hook)
+      (defun gjg/send-polybar-hook (module-name hook-index)
+        (start-process-shell-command "polybar-msg" nil (format "polybar-msg hook %s %s" module-name hook-index)))
+
+      (defun gjg/send-polybar-exwm-workspace ()
+        (gjg/send-polybar-hook "exwm-workspace" 1))
+
+      ;; Update panel indicator when workspace changes
+      (add-hook 'exwm-workspace-switch-hook #'gjg/send-polybar-exwm-workspace))
+
+  #+end_src
 * Odds and ends
    #+begin_src emacs-lisp
     (defun replace-smart-quotes (beg end)

@@ -630,7 +630,7 @@
       (bind-key "s-y" 'gjg/exwm-select-or-launch-spotify)
       (bind-key "s-c" '(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
       (bind-key "s-." '(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
-      (bind-key "s-," '(lambda () (interactive) (call-process-shell-command "polybar-msg cmd toggle")))
+      (bind-key "s-," 'gjg/polybar-start-or-toggle)
       (bind-key "s-]" 'ded/org-show-next-heading-tidily)
       (bind-key "s-[" 'ded/org-show-previous-heading-tidily)
       (bind-key "M-SPC" '(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
@@ -1056,35 +1056,13 @@
    following config integrates =emacsclient= and Polybar with =polybar-msg= to enable you
    to gather *any* information from Emacs and display it in the panel!
 
+   Functions defined in [[file:gjg-functions.org::*Polybar for use with Linux EXWM and desktop environments][Polybar for use with Linux EXWM and desktop environments]]
    #+begin_src emacs-lisp
      ;; Make sure the server is started
      (unless (server-running-p)
        (server-start))
 
-     (defvar gjg/polybar-process nil
-       "Holds the process of the running Polybar instance, if any")
-
-     (defun gjg/kill-panel ()
-       (interactive)
-       (when gjg/polybar-process
-         (ignore-errors
-           (kill-process gjg/polybar-process)))
-       (setq gjg/polybar-process nil))
-
-     (defun gjg/start-panel ()
-       (interactive)
-       (gjg/kill-panel)
-       (setq gjg/polybar-process (start-process-shell-command "polybar" nil (concat "polybar --config=~/.config/polybar/config-fancy floating -r -l warning" ))))
-
-     (defun gjg/send-polybar-hook (module-name hook-index)
-       (start-process-shell-command "polybar-msg" nil (format "polybar-msg hook %s %s" module-name hook-index)))
-
-     (defun gjg/send-polybar-exwm-workspace ()
-       (gjg/send-polybar-hook "exwm-workspace" 1))
-
-     ;; Update panel indicator when workspace changes
-     (add-hook 'exwm-workspace-switch-hook #'gjg/send-polybar-exwm-workspace)
-
+     ;; polybar functions are defined in gjg-functions library
    #+end_src
 
 *** Panel configuration
@@ -1276,7 +1254,7 @@
                  (,(kbd "<XF86AudioMute>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados togmute")))
                  (,(kbd "<XF86AudioPlay>") . playerctl-play-pause-song)
                  ([?\s-.] . (lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
-                 ([?\s-,] . (lambda () (interactive) (call-process-shell-command "polybar-msg cmd toggle")))
+                 ([?\s-,] . gjg/polybar-start-or-toggle)
 
                  ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
                  ;; 's-N': Switch to certain workspace.
