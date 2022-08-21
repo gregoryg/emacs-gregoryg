@@ -102,12 +102,56 @@ A sort-of package with customization framework.  The famed =gjg= package.
    #+begin_src emacs-lisp
      ;; TODO: create function to change just the database
      ;; TODO: create function select database after querying server ( /admin/databases)
+     (defun gjg/handle-stardog-result (status &optional output-buffer)
+       "Handle it!"
+       (message "Status is %s" status)
+       (when (zerop (buffer-size))
+         (error "URL '%s' is not accessible" (url-recreate-url url-current-object)))
+       (let ((results-buffer (current-buffer))
+             (response (url-http-parse-response)))
+n         ;; (with-current-buffer (get-buffer-create "zgrego")
+         (with-temp-buffer
+           (erase-buffer)
+           (if (and (<= 200 response) (<= response 299))
+               (url-insert results-buffer)
+             (insert-buffer-substring results-buffer))
+             ;; (message "I got these databases %s" response ))
+           (goto-char 0)
+           (completing-read "Ohai: "
+                            (append (cdr (assq 'databases (json-read))) nil)
+                            )
+             )))
+     (defun gjg/stardog-get-databases (server)
+       "Get list of databases from the Stardog server - will work for users with admin rights"
+       ;; (url-retrieve (concat server "/admin/databases") #'gjg/handle-stardog-result )
+       (url-retrieve (concat (replace-regexp-in-string "/+$" "" server) "/admin/databases") #'gjg/handle-stardog-result )
+         )
+
+     (defun gjg/stardog-build-url (arg &optional server database api-endpoint reasoning  )
+       "Create a Stardog specific URL for use with Stardog Platform API.  Support query and update endpoints as well as reasoning"
+       (interactive "P")
+       (let* ((server (or server
+                       (cdr (assoc :server (gjg/set-sparql-headers)))))
+              (database (or database (completing-read "Database name: " '("this" "thag"))))
+              (api-endpoint (if arg "update" "query"))
+              )
+         (message
+         (format "%s/%s/%s"
+                 server
+                 database
+                 api-endpoint
+                 (when (and (not arg) (string= "query" api-endpoint)) "?reasoning=true")
+                 )
+         )))
+
      (defun gjg/set-sparql-header-args (url db endpoint)
-       (let ((fullurl (concat (replace-regexp-in-string "//+$" "" url) "/" db "/" endpoint "/" )))
+       (let* ((url (replace-regexp-in-string "//+$" "" url))
+              (fullurl (concat url "/" db "/" endpoint "/" )))
          ;; (message "My lovely url is %s\n" fullurl)
          (setq-local org-babel-default-header-args:sparql
-                     (cons `(:url  . ,fullurl)
-                           (assq-delete-all :url org-babel-default-header-args:sparql)))))
+                     (cons `(:server . ,url)
+                           (cons `(:url  . ,fullurl)
+                                 (assq-delete-all :url org-babel-default-header-args:sparql))))))
 
      (defun gjg/set-stardog-bash-header-args (tramp-path )
        (setq-local org-babel-default-header-args:bash
