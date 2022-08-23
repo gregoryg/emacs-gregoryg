@@ -2875,29 +2875,30 @@ Open man page in current window, rather than other window with
 **** Home based agendas
 ***** Fitness and @home
       #+begin_src emacs-lisp
-      ;; TODO Filter on fitness tag
-      (add-to-list 'org-agenda-custom-commands
-                   '("f" "Fitness"
-                     ((agenda "" (
-                                  (org-agenda-span 'day))))) t)
-      (add-to-list 'org-agenda-custom-commands
-                   '("h" "thing TODO at Home"
-                     ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
-                      (agenda "" ((org-agenda-span 'day)
-                                  (org-agenda-sorting-strategy
-                                   (quote ((agenda time-up priority-down tag-up))))
-                                  (org-deadline-warning-days 0)))
-                      (tags "reading")
-                      (tags "writing")
-                      (tags-todo "refile"))
-                     ((org-agenda-tag-filter-preset '("-project" "-@office"))
-                      )) t)
+        ;; TODO Filter on fitness tag
+        (add-to-list 'org-agenda-custom-commands
+                     '("f" "Fitness"
+                       ((agenda "" (
+                                    (org-agenda-span 'day))))) t)
+        (add-to-list 'org-agenda-custom-commands
+                     '("h" "thing TODO at Home"
+                       ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
+                        (agenda "" ((org-agenda-span 'day)
+                                    (org-agenda-sorting-strategy
+                                     (quote ((agenda time-up priority-down tag-up))))
+                                    (org-agenda-files (cons "~/projects/private-orgmode/work-habits.org" gjg/personal-org-agenda-files))
+                                    (org-deadline-warning-days 0)))
+                        (tags "reading")
+                        (tags "writing")
+                        (tags-todo "refile"))
+                       ((org-agenda-tag-filter-preset '("-project" "-@office"))
+                        )) t)
 
-      (add-to-list 'org-agenda-custom-commands
-                   '("i" "Inbox review"
-                     ((todo "TODO"
-                            ((org-agenda-overriding-header "Review and Refile")
-                             (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org"))))))) t)
+        (add-to-list 'org-agenda-custom-commands
+                     '("i" "Inbox review"
+                       ((todo "TODO"
+                              ((org-agenda-overriding-header "Review and Refile")
+                               (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org"))))))) t)
       #+end_src
 ***** Notes/Roam/Denote related tasks
       TODO: make category section of agenda the value of keywords in the front matter
