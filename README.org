@@ -1884,6 +1884,7 @@
      ;; (require 'dired)
      (with-eval-after-load 'dired)
      ;; (use-package all-the-icons-dired :straight t)
+     (use-package all-the-icons :straight t) ;; currently (<2022-08-22 Mon>) being used *only* for org-agenda-category-icon-alist
      (use-package dired-collapse :straight t)
      (use-package treemacs
        :straight t
@@ -2783,6 +2784,19 @@ Open man page in current window, rather than other window with
     ;;(setq org-agenda-skip-scheduled-if-done t)
     ;; (setq org-agenda-start-with-log-mode t)
     ;; (setq org-agenda-start-with-clockreport-mode nil)
+    (setq org-agenda-category-icon-alist
+          `(
+            ("emacs" "/usr/local/share/icons/hicolor/32x32/apps/emacs.png" nil nil :ascent center :height 24)
+            ("Stardog" "~/emacs/pixmaps/stardog-logo.png" nil nil :ascent center :height 24)
+            ("todo" ,(list (all-the-icons-material "check_box" :height 1.2)) nil nil :ascent center)
+            ("networking" "/usr/share/icons/oxygen/base/256x256/devices/network-wired.png" nil nil :ascent center :height 24)
+            ;; ("inbox" ,(list (all-the-icons-material "inbox" )) nil nil :ascent center :height 24)
+            ("languages" ,(list (all-the-icons-fileicon "moment-tz" )) nil nil :ascent center :height 24)
+            ("Chubb" "~/emacs/pixmaps/Chubb-Logo-1985.png" nil nil :ascent center :height 24)
+            ("john deere" "~/emacs/pixmaps/tractor-flat.png" nil nil :ascent center :height 24)
+            ("PicPay" "~/emacs/pixmaps/picpay-logo.png" nil nil :ascent center :height 24)
+            ("inbox" "~/emacs/pixmaps/office-inbox.png" nil nil :ascent center :height 24)
+            ))
     (setq org-agenda-sticky t
           org-agenda-hide-tags-regexp "noagenda"
           org-agenda-restore-windows-after-quit t
