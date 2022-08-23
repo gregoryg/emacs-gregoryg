@@ -3112,10 +3112,10 @@ Open man page in current window, rather than other window with
        (add-to-list 'org-capture-templates
                     '("n" "New note (with Denote)" plain
                       (file denote-last-path)
-                      #'denote-org-capture
-                      ;; #'(lambda ()
-                      ;;     (let ((denote-org-capture-specifiers (concat "* " denote-last-title  "\n" denote-org-capture-specifiers)))
-                      ;;      (denote-org-capture)))
+                      ;; #'denote-org-capture
+                      #'(lambda ()
+                          (let ((denote-org-capture-specifiers (format "#+category: %s\n\n%s" (car denote-last-keywords) denote-org-capture-specifiers)))
+                            (denote-org-capture)))
                       :no-save t
                       :immediate-finish nil
                       :kill-buffer t
