@@ -2828,22 +2828,32 @@ Open man page in current window, rather than other window with
     #+begin_src emacs-lisp
       (add-to-list 'org-agenda-custom-commands
                    '("W" "Work Agenda"
-                      ((agenda ""
-                               ((org-agenda-span 'day)
-                                (org-agenda-start-with-log-mode '(clock))
-                                (org-deadline-warning-days 2)
-                                (org-agenda-start-with-clockreport-mode t)
-                                )
+                     (
+                      ;; Work / Laptop Habits section
+                      (agenda ""
+                              ((org-agenda-files '("~/projects/private-orgmode/work-habits.org"))
+                               (org-agenda-start-with-log-mode nil)
+                               (org-agenda-start-with-clockreport-mode nil)
+                               (org-agenda-overriding-header "Work/Laptop Morning Tasks")))
+                      ;; Work agenda with clocked time
+                      (agenda ""
+                              ((org-agenda-span 'day)
+                               (org-agenda-files gjg/work-agenda-files)
+                               (org-agenda-start-with-log-mode '(clock))
+                               (org-deadline-warning-days 2)
+                               (org-agenda-start-with-clockreport-mode t)
+                               (org-agenda-start-with-log-mode t)
                                )
-                       ;; (todo "TODO"
-                       ;;         ((org-agenda-span 'day)
-                       ;;          (org-deadline-warning-days 21)
-                       ;;          ))
-                       )
-                      (
-                       (org-agenda-files gjg/work-agenda-files)
-                       )
+                              )
+                      ;; TODOs for Stardog and prospects/customers
+                      (todo ""
+                            ((org-agenda-span 'day)
+                             (org-agenda-files gjg/work-agenda-files)
+                             (org-agenda-overriding-header "Stardog and customer TODOs")
+                             (org-deadline-warning-days 21)
+                             ))
                       )
+                     )
                    t)
 
       (add-to-list 'org-agenda-custom-commands
