@@ -2796,6 +2796,7 @@ Open man page in current window, rather than other window with
             ("john deere" "~/emacs/pixmaps/tractor-flat.png" nil nil :ascent center :height 24)
             ("PicPay" "~/emacs/pixmaps/picpay-logo.png" nil nil :ascent center :height 24)
             ("inbox" "~/emacs/pixmaps/office-inbox.png" nil nil :ascent center :height 24)
+            ("social" "~/emacs/pixmaps/icon-social-events.png" nil nil :ascent center :height 24)
             ))
     (setq org-agenda-sticky t
           org-agenda-hide-tags-regexp "noagenda"
@@ -2882,12 +2883,14 @@ Open man page in current window, rather than other window with
                                     (org-agenda-span 'day))))) t)
         (add-to-list 'org-agenda-custom-commands
                      '("h" "thing TODO at Home"
-                       ((tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
+                       (
                         (agenda "" ((org-agenda-span 'day)
                                     (org-agenda-sorting-strategy
                                      (quote ((agenda time-up priority-down tag-up))))
+                                    (org-agenda-category-filter-preset (list "-habits"))
                                     (org-agenda-files (cons "~/projects/private-orgmode/work-habits.org" gjg/personal-org-agenda-files))
                                     (org-deadline-warning-days 0)))
+                        (tags-todo "+dailies+SCHEDULED<=\"<today>+1\"" ((org-agenda-files gjg/personal-org-agenda-files)))
                         (tags "reading")
                         (tags "writing")
                         (tags-todo "refile"))
@@ -2909,6 +2912,7 @@ Open man page in current window, rather than other window with
       #+end_src
       #+begin_src emacs-lisp
         ;; use just org files in the notes directory
+        (add-to-list 'org-agenda-custom-commands '("n" . "Notes prefix key")) ; describe prefix
         (add-to-list 'org-agenda-custom-commands
                      '("na" "Notes agenda"
                        ((agenda "" (
