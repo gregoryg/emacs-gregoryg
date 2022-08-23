@@ -2936,6 +2936,7 @@ Open man page in current window, rather than other window with
                   ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
                   ;;       (local-unset-key "o")
                   ;; rebind to a sweet and beautiful function
+                  (yafolding-mode 1)
                   (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
                   (local-unset-key "a") ;; don't let this accidentally archive a tree!
                   ;; "R" is used for clock report by default
