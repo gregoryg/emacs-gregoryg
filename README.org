@@ -501,6 +501,7 @@
      (global-set-key (kbd "M-[") 'previous-buffer)
      (global-set-key (kbd "C-c C-v") 'browse-url-at-point)
      ;; EXPERIMENTAL: unbind SPACE and ? in minibuffer, to allow typing in completions with those chars
+     ;; TODO: is this hook even necessary with today's completion frameworks
      (add-hook 'minibuffer-setup-hook (lambda ()
                         (define-key minibuffer-local-completion-map " " nil)
                         (define-key minibuffer-local-must-match-map " " nil)
