@@ -1036,7 +1036,7 @@
      Icon= /home/gregj/.local/share/pixmaps/stardog-doghouse-icon.png
      Terminal=false
      Type=Application
-     Categories=Community
+     Categories=Community;sm
    #+end_src
 ** Stardog Studio
    #+begin_src conf :tangle ~/.local/share/applications/stardog-studio.desktop
