@@ -2805,6 +2805,7 @@ Open man page in current window, rather than other window with
             ("social" "~/emacs/pixmaps/icon-social-events.png" nil nil :ascent center :height 24)
             ))
     (setq org-agenda-sticky t
+          org-agenda-fontify-priorities t
           org-agenda-hide-tags-regexp "noagenda"
           org-agenda-restore-windows-after-quit t
           -agenda-entry-text-maxlines 10
