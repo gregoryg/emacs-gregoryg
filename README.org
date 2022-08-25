@@ -902,12 +902,15 @@
                modus-themes-org-agenda
                '((header-block . (1.3))
                  (header-date . (bold-today 1.2))
+                 (habit . simplified)
                  )
                modus-themes-org-blocks nil
                modus-themes-vivendi-color-overrides
-               '((bg-main . "#gray10")
-                 (fg-main . "gray90"))))
-       ;; NOTE: was using gray25
+               '((bg-main . "gray10")
+                 (fg-main . "gray90")
+                 (bg-hl-line . "gray15")
+                 )))
+
      #+end_src
 **** Load default theme
      Deferred here until all theme tweaks have been applied
