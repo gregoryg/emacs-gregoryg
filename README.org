@@ -2261,6 +2261,14 @@ awesome.
 
      (defalias 'spell-buffer 'ispell-buffer)
    #+end_src
+** TTL - Ticky Tacky Lunacy
+   #+begin_src emacs-lisp
+     (use-package ttl-mode :straight t
+       :init
+       (add-to-list 'auto-mode-alist '("\\.\\(n3\\|ttl\\|trig\\)\\'" . ttl-mode))
+       :config
+       (setq ttl-indent-level 2))
+   #+end_src
 ** YAML - You A Moth Licker
    #+begin_src emacs-lisp
      (use-package yaml-mode
