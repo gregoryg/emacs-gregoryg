@@ -1221,6 +1221,7 @@
                  ;; 's-r': Reset (to line-mode).
                  ([?\s-r] . exwm-reset)
                  ([?\s-s] . save-some-buffers)
+                 ([?\s-f] . exwm-floating-toggle-floating)
                  ;; 's-w': Switch workspace.
                  ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
                  ;; 's-&': Launch application. - poor man's albert/launchy
