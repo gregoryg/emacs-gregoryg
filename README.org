@@ -2301,6 +2301,16 @@ Open man page in current window, rather than other window with
 
 * Org mode stuff
 
+** Contributions package
+   Add =ignore= tag to headlines you don't want to export
+   Refer to [[https://emacs.stackexchange.com/a/17677/418][org mode - Is it possible to export content of subtrees without their heading...]]
+   #+begin_src emacs-lisp
+     (use-package org-contrib
+       :straight t
+       :config
+       (require 'ox-extra)
+       (ox-extras-activate '(ignore-headlines)))
+   #+end_src
 ** Habits
    #+begin_src emacs-lisp
      (add-to-list 'org-modules 'org-habit t)
