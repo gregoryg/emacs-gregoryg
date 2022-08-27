@@ -2680,7 +2680,8 @@ Open man page in current window, rather than other window with
 ** Exporting
 *** General preferences
 #+begin_src emacs-lisp
-  (custom-set-variables '(org-export-with-sub-superscripts nil))
+  (custom-set-variables '(org-export-with-sub-superscripts nil)
+                        '(org-html-postamble nil))
 #+end_src
 *** Exporting Babel without evaluation
 #+begin_src emacs-lisp
