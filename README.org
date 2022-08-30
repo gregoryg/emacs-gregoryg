@@ -1244,6 +1244,7 @@
                  ([M-s-left] . windmove-delete-left)
                  ([M-s-right] . windmove-delete-right)
                  (,(kbd "M-SPC") . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
+                 (,(kbd "s-SPC") . app-launcher-run-app)
                  ;; ([s-SPC] . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
                  ([?\s-e] . gjg/ibuffer-only-exwm)
                  ([s-backspace] . bury-buffer)
