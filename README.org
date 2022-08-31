@@ -769,7 +769,6 @@
 
     #+end_src
 *** Winner-mode and Windmove
-    TODO: Verify that =org-timestamp-{up,down}= work as =S-up= and =S-down=
    #+begin_src emacs-lisp
      ;; winner
      (winner-mode 1)
@@ -784,7 +783,15 @@
      ;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
      ;; (add-hook 'org-shiftright-final-hook 'windmove-right)))
 
-
+     ;; Add advice to stop hangs on EXWM
+     ;; The problem happens with floating windows that disappear - like open file dialog or a Zoom dialog when starting a meeting
+     ;; The solution is to assure all frames in winner-modified-list pass the frame-live-p test
+     (defun gjg/winner-clean-up-modified-list ()
+       "Remove dead frames from `winner-modified-list`"
+       (dolist (frame winner-modified-list)
+         (unless (frame-live-p frame)
+           (delete frame winner-modified-list))))
+     (advice-add 'winner-save-old-configurations :before #'gjg/winner-clean-up-modified-list)
    #+end_src
 *** Ibuffer FTW
 **** View customizations
@@ -994,6 +1001,31 @@
    time I use workspaces in EXWM is when I have 2 or more monitors, where I place one
    workspace per display.
 
+** Warning about use with =winner-mode=
+   I struggled with hangs in EXWM that I of course attributed to EXWM
+   or XELB.  The typical reproducible action was to initiate a floating dialog in an X11
+   application such as Zoom, or the Open File dialog from a web browser (for example).
+   Depending on the timing, I would see a message in Emacs similar to
+   #+begin_example
+     Error in post-command-hook (winner-save-old-configurations): (wrong-type-argument frame-live-p #<dead frame Open File 0x558a5304a578>)
+   #+end_example
+
+   The problem is a failure to check for dead frames before saving window configurations.
+   The solution I use is to add advice before one function that removes dead frames from
+   the list of frames.
+
+   #+begin_src emacs-lisp :tangle no
+     ;; Add advice to stop hangs on EXWM
+     ;; The problem happens with floating windows that disappear - like open file dialog or a Zoom dialog when starting a meeting
+     ;; The solution is to assure all frames in winner-modified-list pass the frame-live-p test
+     (defun gjg/winner-clean-up-modified-list ()
+       "Remove dead frames from `winner-modified-list`"
+       (dolist (frame winner-modified-list)
+         (unless (frame-live-p frame)
+           (delete frame winner-modified-list))))
+     (advice-add 'winner-save-old-configurations :before #'gjg/winner-clean-up-modified-list)
+
+   #+end_src
 ** Recommended changes to workflow when using a tiling window manager
 *** Web browser should open new windows rather than tabs
     Doing this allows Emacs to search window/tab titles.  It's a weird change at first,
