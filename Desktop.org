@@ -1106,12 +1106,13 @@
      Categories=Office;Productivity;
    #+end_src
 ** TigerGraph GraphStudio
-   #+begin_src conf :tangle ~/.local/share/applications/tigergraph-graphstudio.desktop
+   #  ~/.local/share/applications/tigergraph-graphstudio.desktop
+   #+begin_src conf :tangle no
      [Desktop Entry]
      Name=Tigergraph GraphStudio
      Comment=
      Exec=xdg-open http://172.16.17.230:14240
-     Icon= /home/gregj/.local/share/pixmaps/tigergraph-graphstudio-logo.png
+     Icon= /home/gregj/.local/share/pixmaps/tiger-dead-expression.jpg
      Terminal=false
      Type=Application
      Categories=Office;Productivity;
