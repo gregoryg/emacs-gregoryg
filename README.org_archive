@@ -85,3 +85,200 @@ Archived entries from file /home/gregj/emacs-gregoryg/README.org
    #+end_src
 ** Visualizations of the graph
    org-roam-server only worked on v1 of org-roam.
+
+* Microsoft Windows things
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2022-09-03 Sat 10:29
+  :ARCHIVE_FILE: ~/emacs-gregoryg/README.org
+  :ARCHIVE_OLPATH: Greg's customizations!
+  :ARCHIVE_CATEGORY: README
+  :END:
+** Printing
+    #+begin_src emacs-lisp :tangle no
+;; **** Windows printing that relies on ghostscript and gsview
+
+(defcustom gjg/gsprint "c:/Program Files/Ghostgum/gsview/gsprint.exe"
+  "Path to gsprint.exe: usually in Program Files or Program Files (x86)"
+  :group 'gjg
+  :type 'string)
+
+(when (and (string= (window-system) "w32") (file-exists-p gjg/gsprint))
+  (progn
+    ;;  Windows printer
+    (setq-default ps-lpr-command (expand-file-name gjg/gsprint))
+    (setq-default ps-printer-name t)
+    (setq-default ps-printer-name-option nil)
+    (setq ps-lpr-switches '("-query")) ; show printer dialog
+    (setq ps-right-header '("/pagenumberstring load" ps-time-stamp-mon-dd-yyyy))))
+
+    #+end_src
+** Info on Windows
+   #+begin_src emacs-lisp :tangle no
+     (when  (eq window-system 'w32)
+       (progn
+         (setq Info-directory-list Info-default-directory-list)
+         (setq Info-additional-directory-list '("c:/emacs/share/info"))))
+   #+end_src
+
+** File opens
+   #+begin_src emacs-lisp :tangle no
+     (when (eq window-system 'w32)
+       (setq w32-get-true-file-attributes nil)
+       (remove-hook 'find-file-hook 'vc-find-file-hook))
+   #+end_src
+
+* Desktop save
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2022-09-03 Sat 10:30
+  :ARCHIVE_FILE: ~/emacs-gregoryg/README.org
+  :ARCHIVE_OLPATH: Greg's customizations!
+  :ARCHIVE_CATEGORY: README
+  :END:
+  TODO: Does Desktop mode really mess with themes? it seems it tries to restore pieces of previous theme
+  #+begin_src emacs-lisp :tangle no
+    (desktop-save-mode 1)
+    (setq desktop-restore-eager 0
+          desktop-lazy-idle-delay 2
+          desktop-file-name-format 'tilde
+          desktop-files-not-to-save
+          (concat "\\("
+                  "\\`/[^/:]*:\\|(ftp)\\'"
+                  "\\|~/projects/private-orgmode[.]*"
+                  "\\)"))
+
+    (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+    (add-to-list 'desktop-modes-not-to-save 'Info-mode)
+    (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
+    (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
+    (add-to-list 'desktop-modes-not-to-save 'emacs-lisp-mode)
+  #+end_src
+
+* MOOs and MUDs - NOT legacy - added 2019!
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2022-09-03 Sat 10:30
+  :ARCHIVE_FILE: ~/emacs-gregoryg/README.org
+  :ARCHIVE_OLPATH: Greg's customizations!/Weird random rarely used maybe interesting things
+  :ARCHIVE_CATEGORY: README
+  :END:
+ #+begin_src emacs-lisp :tangle no
+   ;; Moos and MUDs - NOT legacy stuff - added 2019!
+   (add-to-list 'load-path "~/projects/emacs/rmoo/")
+   (require 'rmoo-autoload)
+   (require 'moocode-mode)
+   ;; (global-set-key (kbd "C-c C-r") 'rmoo)
+   (add-to-list 'auto-mode-alist '("\\.moo$" . moocode-mode))
+   (add-hook 'rmoo-interactive-mode-hooks
+             (lambda ()
+               (linum-mode -1)                  ;; ... no line numbers
+               (goto-address-mode t)))          ;; ... clickable links
+
+
+ #+end_src
+
+* Define special logout if using LXDE
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2022-09-03 Sat 10:31
+  :ARCHIVE_FILE: ~/emacs-gregoryg/README.org
+  :ARCHIVE_OLPATH: EXWM : The Emacs X Window Manager/Let's get this show on the road - if no window manager was detected
+  :ARCHIVE_CATEGORY: README
+  :END:
+  I do not use this - but beware if using a lightweight desktop environment in
+  conjunction with EXWM, you may have to use this code or something similar to get a
+  clean user session logout
+  #+begin_src emacs-lisp :tangle no
+    (defun exwm-logout ()
+      (interactive)
+      ;; (recentf-save-list)
+      (save-some-buffers)
+      (start-process-shell-command "logout" nil "lxsession-logout"))
+  #+end_src
+
+* Company - retired?
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2022-09-03 Sat 10:31
+  :ARCHIVE_FILE: ~/emacs-gregoryg/README.org
+  :ARCHIVE_OLPATH: Commonly used modes
+  :ARCHIVE_CATEGORY: README
+  :END:
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package company-mode
+    :straight t
+    :after lsp-mode
+    :hook (lsp-mode . company-mode)
+    :bind (:map company-active-map ("<tab>" . company-complete-selection))
+          (:map lsp-mode-map ("<tab>" . company-indent-or-complete-common))
+   :config
+    (company-idle-delay 0.0)
+    (setq company-minimum-prefix-length 1))
+
+  ;; (use-package company-lsp
+  ;;   :straight t
+  ;;   :config
+  ;;  (push 'company-lsp company-backends)
+  ;; )
+#+END_SRC
+
+* Placement of new shell windows
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2022-09-03 Sat 10:35
+  :ARCHIVE_FILE: ~/emacs-gregoryg/README.org
+  :ARCHIVE_OLPATH: Commonly used modes/Shell mode
+  :ARCHIVE_CATEGORY: README
+  :END:
+  I want new shell buffers to open in the currently selected window, not replacing the
+  text I'm referencing in a different window.  This is absurdly difficult to do because
+  =shell-mode= does not offer a setting to control this behavior.  The solution I found
+  was given in an answer [[https://stackoverflow.com/a/40351851/457574][here on stackoverflow]]
+
+  #+begin_src emacs-lisp :tangle no
+    (defun shell-same-window-advice (orig-fn &optional buffer)
+      "Advice to make `shell' reuse the current window.
+
+    Intended as :around advice."
+      (let* ((buffer-regexp
+              (regexp-quote
+               (cond ((bufferp buffer)  (buffer-name buffer))
+                     ((stringp buffer)  buffer)
+                     (:else             "*shell*"))))
+             (display-buffer-alist
+              (cons `(,buffer-regexp display-buffer-same-window)
+                    display-buffer-alist)))
+        (funcall orig-fn buffer)))
+
+    (advice-add 'shell :around #'shell-same-window-advice)
+  #+end_src
+
+* Set up a way to use `find-file` without Ivy
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2022-09-03 Sat 10:59
+  :ARCHIVE_FILE: ~/emacs-gregoryg/README.org
+  :ARCHIVE_OLPATH: Commonly used modes/Ivy / Smex / Counsel
+  :ARCHIVE_CATEGORY: README
+  :END:
+  + I created this as an answer to [[https://emacs.stackexchange.com/a/58785/418][how to open a file without using Ivy - Emacs Stack Exchange]]
+  #+begin_src emacs-lisp
+    (defun gjg/find-file-no-ivy ()
+      (interactive)
+      (let ((ivy-state ivy-mode))
+        (ivy-mode -1)
+        (call-interactively 'find-file)
+        (ivy-mode ivy-state)))
+
+    (global-set-key (kbd "C-x F") 'gjg/find-file-no-ivy) ; steals the default key binding from set-fill-column
+  #+end_src
+
+* Grep
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2022-09-03 Sat 10:59
+  :ARCHIVE_FILE: ~/emacs-gregoryg/README.org
+  :ARCHIVE_OLPATH: Commonly used modes
+  :ARCHIVE_CATEGORY: README
+  :END:
+  #+begin_src emacs-lisp
+    ;; (defun advice-without-ivy (o &rest a)
+    ;;   (ivy-mode -1)
+    ;;   (prog1 (apply o a)
+    ;;     (ivy-mode 1)))
+
+    ;; (advice-add 'grep-read-files :around #'advice-without-ivy)
+  #+end_src

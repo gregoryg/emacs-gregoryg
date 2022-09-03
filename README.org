@@ -31,13 +31,13 @@
   No.
 
 * Set executable path
-#+begin_src emacs-lisp
-  (when (file-exists-p "~/bin")
-    (add-to-list 'exec-path "~/bin"))
+  #+begin_src emacs-lisp
+    (when (file-exists-p "~/bin")
+      (add-to-list 'exec-path "~/bin"))
 
-  (when (file-exists-p "/usr/local/bin")
-    (add-to-list 'exec-path "/usr/local/bin"))
-#+end_src
+    (when (file-exists-p "/usr/local/bin")
+      (add-to-list 'exec-path "/usr/local/bin"))
+  #+end_src
 
 * Deal with required packages
 
@@ -222,40 +222,6 @@
      (when (<= emacs-major-version 27)
        (remove-hook 'kill-emacs-hook #'org-babel-remove-temporary-stable-directory))
    #+end_src
-** Microsoft Windows things
-*** Printing
-   #+begin_src emacs-lisp
-;; **** Windows printing that relies on ghostscript and gsview
-
-(defcustom gjg/gsprint "c:/Program Files/Ghostgum/gsview/gsprint.exe"
-  "Path to gsprint.exe: usually in Program Files or Program Files (x86)"
-  :group 'gjg
-  :type 'string)
-
-(when (and (string= (window-system) "w32") (file-exists-p gjg/gsprint))
-  (progn
-    ;;  Windows printer
-    (setq-default ps-lpr-command (expand-file-name gjg/gsprint))
-    (setq-default ps-printer-name t)
-    (setq-default ps-printer-name-option nil)
-    (setq ps-lpr-switches '("-query")) ; show printer dialog
-    (setq ps-right-header '("/pagenumberstring load" ps-time-stamp-mon-dd-yyyy))))
-
-   #+end_src
-*** Info on Windows
-    #+begin_src emacs-lisp
-      (when  (eq window-system 'w32)
-        (progn
-          (setq Info-directory-list Info-default-directory-list)
-          (setq Info-additional-directory-list '("c:/emacs/share/info"))))
-    #+end_src
-
-*** File opens
-    #+begin_src emacs-lisp
-      (when (eq window-system 'w32)
-        (setq w32-get-true-file-attributes nil)
-        (remove-hook 'find-file-hook 'vc-find-file-hook))
-    #+end_src
 ** Linux things
    Fix to make Org export to HTML and open do the right thing: open in the preferred
    browser rather than just HTML in an Emacs buffer
@@ -331,25 +297,6 @@
 
      (global-set-key [C-kp-subtract] 'dec-font-size)
      (global-set-key [C-kp-add] 'inc-font-size)
-   #+end_src
-** Desktop save
-   TODO: Does Desktop mode really mess with themes? it seems it tries to restore pieces of previous theme
-   #+begin_src emacs-lisp :tangle no
-     (desktop-save-mode 1)
-     (setq desktop-restore-eager 0
-           desktop-lazy-idle-delay 2
-           desktop-file-name-format 'tilde
-           desktop-files-not-to-save
-           (concat "\\("
-                   "\\`/[^/:]*:\\|(ftp)\\'"
-                   "\\|~/projects/private-orgmode[.]*"
-                   "\\)"))
-
-     (add-to-list 'desktop-modes-not-to-save 'dired-mode)
-     (add-to-list 'desktop-modes-not-to-save 'Info-mode)
-     (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
-     (add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
-     (add-to-list 'desktop-modes-not-to-save 'emacs-lisp-mode)
    #+end_src
 ** Basic defaults that aren't default
    So many defaults in Emacs make no sense.  If starting out with Emacs, consider these
@@ -629,12 +576,12 @@
       (bind-key "s-q" 'bury-buffer)
       (bind-key "s-t" 'toggle-truncate-lines)
       (bind-key "s-y" 'gjg/exwm-select-or-launch-spotify)
-      (bind-key "s-c" '(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
-      (bind-key "s-." '(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
+      (bind-key "s-c" #'(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
+      (bind-key "s-." #'(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
       (bind-key "s-," 'gjg/polybar-start-or-toggle)
       (bind-key "s-]" 'ded/org-show-next-heading-tidily)
       (bind-key "s-[" 'ded/org-show-previous-heading-tidily)
-      (bind-key "M-SPC" '(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
+      (bind-key "M-SPC" #'(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
       (bind-key "s-\\" 'switch-to-buffer)
       ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
       (defun gjg/widen-ask-if-indirect ()
@@ -732,7 +679,7 @@
         (let* ((active-buffers-with-mode (mapcar #'(lambda (x) (with-current-buffer x (cons (buffer-name) (symbol-name major-mode)))) (buffer-list)))
            (distinct-modes (-distinct (mapcar #'cdr active-buffers-with-mode)))
            (selected-mode (ido-completing-read "Mode: " distinct-modes))
-           (candidate-buffers (mapcar #'car (remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
+           (candidate-buffers (mapcar #'car (cl-remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
            (selected-buffer (ido-completing-read "Buffer: " candidate-buffers)))
           (switch-to-buffer selected-buffer)))
       (global-set-key (kbd "C-c s") 'gjg/switch-buffer-by-mode)
@@ -940,11 +887,10 @@
      (when (featurep 'yow)
        (unload-feature 'yow))
      (with-eval-after-load 'cookie1
-       (setq yow-file "~/emacs/yow.lines")
        (defun yow ()
          (interactive)
          (let ((suggest-key-bindings nil))
-           (message (cookie yow-file nil nil)))))
+           (message (cookie gjg/yow-file nil nil)))))
      ;; )
      ;; almost as important: keep track of those tetris scores
      (setq tetris-score-file "~/.emacs.d/tetris.score")
@@ -952,22 +898,6 @@
 
    #+end_src
 ** Weird random rarely used maybe interesting things
-*** MOOs and MUDs - NOT legacy - added 2019!
-   #+begin_src emacs-lisp :tangle no
-     ;; Moos and MUDs - NOT legacy stuff - added 2019!
-     (add-to-list 'load-path "~/projects/emacs/rmoo/")
-     (require 'rmoo-autoload)
-     (require 'moocode-mode)
-     ;; (global-set-key (kbd "C-c C-r") 'rmoo)
-     (add-to-list 'auto-mode-alist '("\\.moo$" . moocode-mode))
-     (add-hook 'rmoo-interactive-mode-hooks
-               (lambda ()
-                 (linum-mode -1)                  ;; ... no line numbers
-                 (goto-address-mode t)))          ;; ... clickable links
-
-
-   #+end_src
-
 * Encryption
   Set value of =epg-gpg-program= to location on local system
   #+begin_src emacs-lisp
@@ -1133,7 +1063,7 @@
          "Switch to the first buffer matching SEARCHSTRING as a substring
           If no matching buffer is found, launch the APPLICATION using gtk-launch."
            (let
-             ((mybuf (car (remove-if-not (lambda (row) (search searchstring (buffer-name row))) (buffer-list)))))
+             ((mybuf (car (cl-remove-if-not (lambda (row) (cl-search searchstring (buffer-name row))) (buffer-list)))))
            (if mybuf
                (switch-to-buffer mybuf)
              (when application
@@ -1163,7 +1093,7 @@
         "When running EXWM add current song name to buffer name"
         ;; find the buffer
         (when (frame-parameter (selected-frame) 'exwm-active)
-          (dolist (mybuf (cl-remove-if-not (lambda (row) (search "Spotify" (buffer-name row))) (buffer-list)))
+          (dolist (mybuf (cl-remove-if-not (lambda (row) (cl-search "Spotify" (buffer-name row))) (buffer-list)))
             (with-current-buffer mybuf
               (when (string= "Spotify" exwm-class-name) (exwm-workspace-rename-buffer (concat exwm-class-name " - " songname)))))))
     #+end_src
@@ -1180,7 +1110,7 @@
     Set certain windows to start in char-mode, floating/tiled etc
     #+begin_src emacs-lisp
       (setq exwm-manage-configurations
-            '(((member exwm-class-name '("Emacs" "Gnome-terminal" "konsole" "libreoffice-calc" "xdg-desktop-portal-gnome"))
+            '(((member exwm-class-name '("Emacs" "Gnome-terminal" "konsole" "libreoffice-calc" "xdg-desktop-portal-gnome" "kitty"))
                char-mode t)
               ))
     #+end_src
@@ -1340,17 +1270,6 @@
          ;; (exwm-config-misc)
          )
      #+end_src
-*** Define special logout if using LXDE
-    I do not use this - but beware if using a lightweight desktop environment in
-    conjunction with EXWM, you may have to use this code or something similar to get a
-    clean user session logout
- #+begin_src emacs-lisp :tangle no
-   (defun exwm-logout ()
-     (interactive)
-     ;; (recentf-save-list)
-     (save-some-buffers)
-     (start-process-shell-command "logout" nil "lxsession-logout"))
- #+end_src
 *** Require packages and run my custom conifg
   #+begin_src emacs-lisp
     ;; (< 0 (length (with-current-buffer "*window-manager-error*" (buffer-string)))))
@@ -1433,7 +1352,7 @@
      #+begin_src emacs-lisp
        (add-hook 'exwm-exit-hook
                  (lambda ()
-                 (async-start-process "exwm-exit" "pkill -f schedule-rotate-wallpapers")))
+                   (async-start-process "exwm-exit" "pkill" nil "-f" "schedule-rotate-wallpapers.sh" )))
      #+end_src
 
 *** Start up the window manager
@@ -1594,25 +1513,6 @@
        (define-key ede-minor-mode-map (kbd "C-c .") nil))
    #+end_src
 
-** Company - retired?
- #+BEGIN_SRC emacs-lisp :tangle no
-   (use-package company-mode
-     :straight t
-     :after lsp-mode
-     :hook (lsp-mode . company-mode)
-     :bind (:map company-active-map ("<tab>" . company-complete-selection))
-           (:map lsp-mode-map ("<tab>" . company-indent-or-complete-common))
-    :config
-     (company-idle-delay 0.0)
-     (setq company-minimum-prefix-length 1))
-
-   ;; (use-package company-lsp
-   ;;   :straight t
-   ;;   :config
-   ;;  (push 'company-lsp company-backends)
-   ;; )
- #+END_SRC
-
 ** Corfu - auto-complete and more
    I want something for auto-complete that behaves more like selectrum and other such
    tools
@@ -1648,41 +1548,43 @@
 
 
      ;; Add extensions
-     (use-package cape
-       :straight t
-       ;; Bind dedicated completion commands
-       ;; Alternative prefix keys: C-c p, M-p, M-+, ...
-       :bind (("C-c p p" . completion-at-point) ;; capf
-              ("C-c p t" . complete-tag)        ;; etags
-              ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-              ("C-c p h" . cape-history)
-              ("C-c p f" . cape-file)
-              ("C-c p k" . cape-keyword)
-              ("C-c p s" . cape-symbol)
-              ("C-c p a" . cape-abbrev)
-              ("C-c p i" . cape-ispell)
-              ("C-c p l" . cape-line)
-              ("C-c p w" . cape-dict)
-              ("C-c p \\" . cape-tex)
-              ("C-c p _" . cape-tex)
-              ("C-c p ^" . cape-tex)
-              ("C-c p &" . cape-sgml)
-              ("C-c p r" . cape-rfc1345))
-       :init
-       ;; Add `completion-at-point-functions', used by `completion-at-point'.
-       (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-       (add-to-list 'completion-at-point-functions #'cape-file)
-       ;;(add-to-list 'completion-at-point-functions #'cape-history)
-       ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
-       ;;(add-to-list 'completion-at-point-functions #'cape-tex)
-       ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
-       ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
-       ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
-       ;;(add-to-list 'completion-at-point-functions #'cape-ispell)
-       ;;(add-to-list 'completion-at-point-functions #'cape-dict)
-       ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
-       ;;(add-to-list 'completion-at-point-functions #'cape-line)
-       )
+     ;; (use-package cape
+     ;;   :straight t
+     ;;   :config
+     ;;   (setq cape-dabbrev-check-other-buffers nil)
+     ;;   ;; Bind dedicated completion commands
+     ;;   ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+     ;;   :bind (("C-c p p" . completion-at-point) ;; capf
+     ;;          ("C-c p t" . complete-tag)        ;; etags
+     ;;          ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+     ;;          ("C-c p h" . cape-history)
+     ;;          ("C-c p f" . cape-file)
+     ;;          ("C-c p k" . cape-keyword)
+     ;;          ("C-c p s" . cape-symbol)
+     ;;          ("C-c p a" . cape-abbrev)
+     ;;          ("C-c p i" . cape-ispell)
+     ;;          ("C-c p l" . cape-line)
+     ;;          ("C-c p w" . cape-dict)
+     ;;          ("C-c p \\" . cape-tex)
+     ;;          ("C-c p _" . cape-tex)
+     ;;          ("C-c p ^" . cape-tex)
+     ;;          ("C-c p &" . cape-sgml)
+     ;;          ("C-c p r" . cape-rfc1345))
+     ;;   :init
+     ;;   ;; Add `completion-at-point-functions', used by `completion-at-point'.
+     ;;   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+     ;;   (add-to-list 'completion-at-point-functions #'cape-file)
+     ;;   ;;(add-to-list 'completion-at-point-functions #'cape-history)
+     ;;   ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
+     ;;   ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+     ;;   ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
+     ;;   ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
+     ;;   ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+     ;;   ;; (add-to-list 'completion-at-point-functions #'cape-ispell)
+     ;;   ;;(add-to-list 'completion-at-point-functions #'cape-dict)
+     ;;   ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
+     ;;   ;;(add-to-list 'completion-at-point-functions #'cape-line)
+     ;;   )
 
 
      (use-package orderless
@@ -1693,19 +1595,20 @@
              completion-category-overrides '((file (styles . (partial-completion))))))
 
      ;; A few more useful configurations...
-     (use-package emacs
-       :init
-       ;; TAB cycle if there are only few candidates
-       (setq completion-cycle-threshold 3)
+     ;; (use-package emacs
+     ;;   :straight t
+     ;;   :init
+     ;;   ;; TAB cycle if there are only few candidates
+     ;;   (setq completion-cycle-threshold 3)
 
-       ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
-       ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
-       ;; (setq read-extended-command-predicate
-       ;;       #'command-completion-default-include-p)
+     ;;   ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+     ;;   ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+     ;;   ;; (setq read-extended-command-predicate
+     ;;   ;;       #'command-completion-default-include-p)
 
-       ;; Enable indentation+completion using the TAB key.
-       ;; `completion-at-point' is often bound to M-TAB.
-       (setq tab-always-indent 'complete))
+     ;;   ;; Enable indentation+completion using the TAB key.
+     ;;   ;; `completion-at-point' is often bound to M-TAB.
+     ;;   (setq tab-always-indent 'complete))
    #+end_src
 ** Marginalia - crazy annotations for completions
    #+begin_src emacs-lisp
@@ -1993,20 +1896,20 @@
    #+end_src
 *** Open file in relevant OS app
 #+begin_src emacs-lisp
-;; swiped from Gilaras Drakeson <gilaras@gmail.com>
-(defcustom gjg/os-open "xdg-open"
-  "Command to open a document, e.g. 'xdg-open' on Linux, 'sensible-browser' on crostini, 'open' on OS X, 'explorer' or 'cygpath' on Windows"
-  :type 'string
-  :group 'gjg)
+  ;; swiped from Gilaras Drakeson <gilaras@gmail.com>
+  (defcustom gjg/os-open "xdg-open"
+    "Command to open a document, e.g. `xdg-open` on Linux, `sensible-browser` on crostini, `open` on OS X, `explorer` or `cygpath` on Windows"
+    :type 'string
+    :group 'gjg)
 
 
-(defun dired-open (&optional file-list)
-  (interactive
-   (list (dired-get-marked-files t current-prefix-arg)))
-  (progn
-    (message (format "Calling %s %s" gjg/os-open file-list))
-    (apply 'call-process gjg/os-open nil 0 nil file-list)))
-(define-key dired-mode-map (kbd "C-;") 'dired-open)
+  (defun dired-open (&optional file-list)
+    (interactive
+     (list (dired-get-marked-files t current-prefix-arg)))
+    (progn
+      (message (format "Calling %s %s" gjg/os-open file-list))
+      (apply 'call-process gjg/os-open nil 0 nil file-list)))
+  (define-key dired-mode-map (kbd "C-;") 'dired-open)
 #+end_src
 ** Ediff
    #+begin_src emacs-lisp
@@ -2072,19 +1975,19 @@
      (prescient-persist-mode +1)
    #+end_src
 ** Window balancing
-    Auto-zoom selected window (disabled to start)
-#+begin_src emacs-lisp :tangle no
-  ;; Resize active frame according to golden ratio
-  (use-package zoom
-    :straight t
-    :config
-    (setq
-     ;; zoom-size '(0.618 . 0.618)
-     zoom-size '(0.54 . 0.54)
-     zoom-ignored-buffer-name-regexps '("^\\*magit +.*")
-     zoom-ignored-major-modes '("dired-mode" "ediff-mode" "buffer-expose-mode"))
-    (zoom-mode -1))
-#+end_src
+   Auto-zoom selected window (disabled to start)
+   #+begin_src emacs-lisp :tangle no
+     ;; Resize active frame according to golden ratio
+     (use-package zoom
+       :straight t
+       :config
+       (setq
+        ;; zoom-size '(0.618 . 0.618)
+        zoom-size '(0.54 . 0.54)
+        zoom-ignored-buffer-name-regexps '("^\\*magit +.*")
+        zoom-ignored-major-modes '("dired-mode" "ediff-mode" "buffer-expose-mode"))
+       (zoom-mode -1))
+   #+end_src
 
 ** Ivy / Smex / Counsel
    Just starting to make use of =use-package= here.  The =:ensure= or =:straight= param will
@@ -2114,42 +2017,20 @@
        ;; (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
      #+end_src
 
-*** Set up a way to use `find-file` without Ivy
-    + I created this as an answer to [[https://emacs.stackexchange.com/a/58785/418][how to open a file without using Ivy - Emacs Stack Exchange]]
-    #+begin_src emacs-lisp
-      (defun gjg/find-file-no-ivy ()
-        (interactive)
-        (let ((ivy-state ivy-mode))
-          (ivy-mode -1)
-          (call-interactively 'find-file)
-          (ivy-mode ivy-state)))
-
-      (global-set-key (kbd "C-x F") 'gjg/find-file-no-ivy) ; steals the default key binding from set-fill-column
-    #+end_src
-** Grep
-   #+begin_src emacs-lisp
-     ;; (defun advice-without-ivy (o &rest a)
-     ;;   (ivy-mode -1)
-     ;;   (prog1 (apply o a)
-     ;;     (ivy-mode 1)))
-
-     ;; (advice-add 'grep-read-files :around #'advice-without-ivy)
-   #+end_src
 ** Occur
 *** Navigation
    #+begin_src emacs-lisp
-;;     Some simple sex-ups for occur-mode
-
-(define-key occur-mode-map "n" 'occur-next)
-(define-key occur-mode-map "p" 'occur-prev)
-(defadvice occur-next (after gjg/occur-navigation-other-window)
-  "Show match in other window as you navigate, as in rgrep"
-  (occur-mode-display-occurrence))
-(ad-activate 'occur-next)
-(defadvice occur-prev (after gjg/occur-navigation-other-window)
-  "Show match in other window as you navigate, as in rgrep"
-  (occur-mode-display-occurrence))
-(ad-activate 'occur-prev)
+     ;;     Some simple sex-ups for occur-mode
+     (define-key occur-mode-map "n" 'occur-next)
+     (define-key occur-mode-map "p" 'occur-prev)
+     (defadvice occur-next (after gjg/occur-navigation-other-window)
+       "Show match in other window as you navigate, as in rgrep"
+       (occur-mode-display-occurrence))
+     (ad-activate 'occur-next)
+     (defadvice occur-prev (after gjg/occur-navigation-other-window)
+       "Show match in other window as you navigate, as in rgrep"
+       (occur-mode-display-occurrence))
+     (ad-activate 'occur-prev)
    #+end_src
 ** Shell mode
 *** Config for comint mode
@@ -2177,45 +2058,22 @@
     :config
     (bash-completion-setup))
 #+end_src
-*** Placement of new shell windows
-I want new shell buffers to open in the currently selected window, not replacing the text
-I'm referencing in a different window.  This is absurdly difficult to do because
-=shell-mode= does not offer a setting to control this behavior.  The solution I found was
-given in an answer [[https://stackoverflow.com/a/40351851/457574][here on stackoverflow]]
-
-#+begin_src emacs-lisp :tangle no
-(defun shell-same-window-advice (orig-fn &optional buffer)
-  "Advice to make `shell' reuse the current window.
-
-Intended as :around advice."
-  (let* ((buffer-regexp
-          (regexp-quote
-           (cond ((bufferp buffer)  (buffer-name buffer))
-                 ((stringp buffer)  buffer)
-                 (:else             "*shell*"))))
-         (display-buffer-alist
-          (cons `(,buffer-regexp display-buffer-same-window)
-                display-buffer-alist)))
-    (funcall orig-fn buffer)))
-
-(advice-add 'shell :around #'shell-same-window-advice)
-#+end_src
 *** ANSI color
-The =xterm-color-filter= function is part of the =xterm-color= package.  It does the
-lawd's work in translating ANSI color codes to font properties so that things can look
-awesome.
+    The =xterm-color-filter= function is part of the =xterm-color= package.  It does the
+    Lord's work in translating ANSI color codes to font properties so that things can look
+    awesome.
 
-   #+begin_src emacs-lisp
-     (use-package xterm-color :straight t)
-     (ansi-color-for-comint-mode-on)
-     ;; try some xterm coloring in shell buffers
-     (setq comint-output-filter-functions
-           (remove 'ansi-color-process-output comint-output-filter-functions))
-     (add-hook 'shell-mode-hook
-           (lambda ()
-             (abbrev-mode 1)
-             (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))
-   #+end_src
+    #+begin_src emacs-lisp
+      (use-package xterm-color :straight t)
+      (ansi-color-for-comint-mode-on)
+      ;; try some xterm coloring in shell buffers
+      (setq comint-output-filter-functions
+            (remove 'ansi-color-process-output comint-output-filter-functions))
+      (add-hook 'shell-mode-hook
+            (lambda ()
+              (abbrev-mode 1)
+              (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))
+    #+end_src
 *** SSH Agent in subprocesses
     + Not really related to shell-mode, this assures our keychain is activated for things
       such as magit that fire off subproceess
@@ -2324,6 +2182,7 @@ Open man page in current window, rather than other window with
    Mode to help using OpenVPN
    #+begin_src emacs-lisp
      (use-package ovpn-mode
+       :straight t
        :custom
        (ovpn-mode-authinfo-path "~/.local/.authinfo.gpg")
        (ovpn-mode-base-directory "~/.config/openvpn/")
@@ -2502,6 +2361,7 @@ Open man page in current window, rather than other window with
            (lambda ()
              (auto-fill-mode 1)
              (org-superstar-mode 1)
+             (highlight-regexp ":tangle no" 'hi-pink)
              ;; (org-modern-mode 1)
              (setq org-hide-leading-stars t)
              (setq fill-column 90) ; good default for wide screens
@@ -2926,7 +2786,7 @@ Open man page in current window, rather than other window with
 
       (add-to-list 'org-agenda-custom-commands
                    '("gc" "Clock report" agenda ""
-                     ((org-agenda-files gjg/work-agenda-files)
+                     ((org-agenda-files (cons "~/projects/private-orgmode/work-habits.org" gjg/work-agenda-files))
                       (org-agenda-span 'day)
                       (org-agenda-start-with-clockreport-mode t)
                       (org-agenda-time-grid nil)
@@ -3195,7 +3055,7 @@ Open man page in current window, rather than other window with
 
 
       (defun my-denote-journal ()
-       "Create an entry tagged 'journal' with the date as its title."
+       "Create an entry tagged `journal` with the date as its title."
        (interactive)
        (denote
         (format-time-string "%A %e %B %Y")   ; format like Tuesday 14 June 2022
@@ -3227,16 +3087,16 @@ Open man page in current window, rather than other window with
           (org-clock-history-push position (find-file-noselect file)))
       ...
     #+end_src
-#+begin_src emacs-lisp
-  (setq org-clock-persist nil
-        org-clock-string-limit 60 ; truncate very long clocked tasks
-        org-clock-report-include-clocking-task t
-        org-read-date-prefer-future 'time)
-  ;; (org-clock-persistence-insinuate)
-  ;; make the clock jump key global!
-  (define-key comint-mode-map (kbd "C-c C-x") nil)
-  (global-set-key (kbd "C-c C-x j") 'org-clock-goto)
-#+end_src
+    #+begin_src emacs-lisp
+      (setq org-clock-persist nil
+            org-clock-string-limit 60 ; truncate very long clocked tasks
+            org-clock-report-include-clocking-task t
+            org-read-date-prefer-future 'time)
+      ;; (org-clock-persistence-insinuate)
+      ;; make the clock jump key global!
+      (define-key comint-mode-map (kbd "C-c C-x") nil)
+      (global-set-key (kbd "C-c C-x j") 'org-clock-goto)
+    #+end_src
 *** Clock in also to Harvest for work files
     + Goal - when clocking in on work tasks (org file is somewhere in
       ~/projects/private-orgmode/rancher), prompt for project/task to start timer for in
@@ -3305,7 +3165,7 @@ Open man page in current window, rather than other window with
 ** Org Drill flashcards
 #+begin_src emacs-lisp
 (defun gjg/org-drill-set-cloze1 ()
-  "Set current question as 'cloze1' type"
+  "Set current question as `cloze1` type"
   (interactive)
   (insert ":PROPERTIES:\n:DRILL_CARD_TYPE: hide1cloze\n:END:\n")
   )
@@ -3387,7 +3247,7 @@ Open man page in current window, rather than other window with
 ** SPARQL
    #+begin_src emacs-lisp
      (use-package sparql-mode :straight t
-       :mode "\\.sparql\\'"
+       :mode "\\.\\(sparql\\|rq\\)\\'"
        ;; :hook (sparql-mode . lsp-deferred)
        ;; :config
        ;; (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql"))
@@ -3507,7 +3367,7 @@ Open man page in current window, rather than other window with
    + [[https://robert.kra.hn/posts/2021-02-07_rust-with-emacs/][Configuring Emacs for Rust development | Robert Krahn]]
    #+begin_src emacs-lisp :tangle no
      (use-package rustic
-       :straight
+       :straight t
        :bind (:map rustic-mode-map
                    ("M-j" . lsp-ui-imenu)
                    ("M-?" . lsp-find-references)
@@ -3595,26 +3455,25 @@ Open man page in current window, rather than other window with
      + consider =(setq ob-async-no-async-languages-alist '("python" "jupyter-python"))=
    +
 
-#+begin_src emacs-lisp
-  ;; (use-package jupyter
-  ;;   :straight t
-  ;;    :hook (ein:notebook-mode . lsp-deferred)
-  ;;   )
-  ;; config from https://martinralbrecht.wordpress.com/2020/08/23/conda-jupyter-and-emacs/
-  (use-package jupyter
-    :straight t
-    :commands (jupyter-run-server-repl
-               jupyter-run-repl
-               jupyter-server-list-kernels)
-    :init (eval-after-load 'jupyter-org-extensions ; conflicts with my helm config, I use <f2 #>
-            '(unbind-key "C-c h" jupyter-org-interaction-mode-map)))
-
-  ;; (use-package ob-ipython ; abandoned project https://github.com/syl20bnr/spacemacs/issues/9941#issuecomment-543227397
-  ;;   :straight t)
-  ;; (use-package ein :straight t)
-  ;; (when (memq window-system '(mac ns x))
-  ;;   (exec-path-from-shell-initialize))
-#+end_src
+   #+begin_src emacs-lisp
+     ;; (use-package jupyter
+     ;;   :straight t
+     ;;    :hook (ein:notebook-mode . lsp-deferred)
+     ;;   )
+     ;; config from https://martinralbrecht.wordpress.com/2020/08/23/conda-jupyter-and-emacs/
+     (use-package jupyter
+       :straight t
+       :commands (jupyter-run-server-repl
+                  jupyter-run-repl
+                  jupyter-server-list-kernels)
+       :init (eval-after-load 'jupyter-org-extensions ; conflicts with my helm config, I use <f2 #>
+               '(unbind-key "C-c h" jupyter-org-interaction-mode-map)))
+     ;; (use-package ob-ipython ; abandoned project https://github.com/syl20bnr/spacemacs/issues/9941#issuecomment-543227397
+     ;;   :straight t)
+     ;; (use-package ein :straight t)
+     ;; (when (memq window-system '(mac ns x))
+     ;;   (exec-path-from-shell-initialize))
+   #+end_src
 ** R
    #+begin_src emacs-lisp
      (use-package polymode :straight t
