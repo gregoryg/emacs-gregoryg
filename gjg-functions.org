@@ -25,6 +25,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
        :type 'string
        :group 'gjg)
 
+     (defcustom gjg/blogpost-title ""
+       "Name of blogpost title used in blog capture template"
+       )
      (defcustom gjg/employer-name "Poodles R Us"
        "Name used by Gmail for use in gmail-buffer-or-launch script"
        :type 'string
@@ -61,6 +64,11 @@ A sort-of package with customization framework.  The famed =gjg= package.
        :version "0.1"
        )
 
+     (defcustom gjg/yow-file
+       "~/emacs/yow.lines"
+       "Location of Zippy-isms"
+       :type 'string
+       :group 'gjg)
    #+end_src
 * Quick theme switching
    #+begin_src emacs-lisp
