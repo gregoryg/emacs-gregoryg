@@ -1810,20 +1810,6 @@
     (find-file sudopath)))
 #+end_src
 
-** Rainbow delimiters for various programming modes
-   #+begin_src emacs-lisp
-     ;; rainbow delimiters ; make much stronger (more saturated) colors
-     (autoload 'rainbow-delimiters "rainbow-delimiters" "Highlight brackets according to their depth")
-     (with-eval-after-load 'rainbow-delimiters
-       (require 'cl-lib)
-       (require 'color)
-       (cl-loop
-        for index from 1 to rainbow-delimiters-max-face-count
-        do
-        (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
-          (cl-callf color-saturate-name (face-foreground face) 30))))
-
-   #+end_src
 ** Dired
    =dired-dwim-target= is just awesome.  Whenever you have 2 Dired
    windows in a frame, hitting Copy or Rename from one Dired buffer
