@@ -47,6 +47,9 @@
       [(meta shift -)])))
 (load "~/projects/emacs/straight.el/bootstrap")
 (straight-use-package 'use-package)
+;; require use-package for byte-compiled init files ref https://github.com/jwiegley/use-package/issues/436
+(require 'use-package)
+(use-package bind-key :straight t :defer nil)
 ;; (straight-use-package 'gcmh) ;; garbage collection magic hack
 ;; (gcmh-mode 1)
 (straight-use-package 'org)
