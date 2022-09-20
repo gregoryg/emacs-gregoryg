@@ -2235,6 +2235,19 @@ Open man page in current window, rather than other window with
        )
    #+end_src
 ** Org Babel and Source Code Blocks
+*** Time code block execution
+    + Ref: My answer on Emacs Stackexchange
+       [[https://emacs.stackexchange.com/a/61357/418][timers - How to time org-mode code block execution? - Emacs Stack Exchange]]
+    #+begin_src emacs-lisp :tangle no
+      (defun gjg/time-call (time-call &rest args)
+        (message "Ohai %s" args)
+        (let ((start-time (float-time))
+              (result (apply time-call args)))
+          (message "Function call took %f seconds" (- (float-time) start-time))
+          result))
+
+      (advice-add 'org-babel-execute-src-block :around #'gjg/time-call)
+    #+end_src
 *** Config including template shortcuts
     TODO: install ob-jupyter package on systems with Jupyter
      #+begin_src emacs-lisp
