@@ -471,406 +471,7 @@
  kept-old-versions 5
  version-control nil)
    #+end_src
-** Window/buffer management
-*** GJG full screen, movement, transparency
-    TODO: figure out global Super key chords in exwm map vs global key map
-    #+begin_src emacs-lisp
-      ;; unbind some keys in favor of my functions bound to SUPER- combinations
-      ;; the existing keys will work in Emacs buffers, but not in EXWM X buffers; the SUPER combos work everywhere
-      (global-unset-key (kbd "M-]")) ; next-buffer
-      (global-unset-key (kbd "M-[")) ; previous-buffer
 
-      (defun revert-dammit () ; revert buffer without prompting
-        (interactive)
-        ;; revert buffer, don't use auto-save, preserve modes
-        (revert-buffer t t t))
-      (defalias 'rd 'revert-dammit)
-      (defun gjg/switch-to-other-buffer ()
-        (interactive)
-        (switch-to-buffer (other-buffer))
-        (message "Switched to other-buffer"))
-      (defun gjg/split-window-below ()
-        "Split window below, switch to the new window AND switch buffer in that window"
-        (interactive)
-        (split-window-below)
-        (other-window 1)
-        (switch-to-buffer (other-buffer)))
-      (defun gjg/split-window-right ()
-        "Split window right, switch to the new window AND switch buffer in that window"
-        (interactive)
-        (split-window-right)
-        (other-window 1)
-        (switch-to-buffer (other-buffer)))
-      (bind-key "C-x 2" 'gjg/split-window-below)
-      (bind-key "C-x 3" 'gjg/split-window-right)
-
-      (use-package ace-window
-        :straight t
-        :config
-        (custom-set-faces
-         '(aw-leading-char-face
-           ((t (:foreground "deep sky blue" :height 5.0)))
-           ))
-        :bind
-         (("C-x o" . ace-window)))
-      ;; (require 'ace-window)
-      ;; (custom-set-faces
-      ;;  '(aw-leading-char-face
-      ;;    ((t (:foreground "deep sky blue" :height 5.0)))))
-      ;; (bind-key "C-x o" 'ace-window)
-      ;; (setq winum-keymap
-      ;;       (let ((map (make-sparse-keymap)))
-      ;;         (define-key map (kbd "C-`") 'winum-select-window-by-number)
-      ;;         (define-key map (kbd "M-0") 'winum-select-window-0)
-      ;;         (define-key map (kbd "M-1") 'winum-select-window-1)
-      ;;         (define-key map (kbd "M-2") 'winum-select-window-2)
-      ;;         (define-key map (kbd "M-3") 'winum-select-window-3)
-      ;;         (define-key map (kbd "M-4") 'winum-select-window-4)
-      ;;         (define-key map (kbd "M-5") 'winum-select-window-5)
-      ;;         )
-      ;;       )
-      (use-package winum
-        :straight t
-        :config
-        (setq winum-scope                       'frame-local
-              winum-auto-assign-0-to-minibuffer nil
-              winum-auto-setup-mode-line        t))
-      (winum-mode)
-      (set-face-attribute 'winum-face nil :weight 'bold)
-      (defun gjg/other-window-with-winum ()
-        "if 2 windows, jump to other-window.  Elsecase use winum"
-        (interactive)
-        (cond ((= 1 winum--window-count)
-               (gjg/switch-to-other-buffer))
-              ((= 2 winum--window-count)
-               (other-window 1))
-              ((> 10 winum--window-count)
-               ;; jump immediately to window
-               ;; (let ((jwin (read-number (format "Jump to window num[1-%d]: " winum--window-count))))
-               (let ((jwin (string-to-number (char-to-string (read-char (format "Jump to window num[1-%d]: " winum--window-count))))))
-                 (message "Jumping to %d" jwin)
-                 (winum-select-window-by-number jwin)))
-              (t
-               (let ((jwin (read-number (format "Jump to window num[1-%d]: " winum--window-count))))
-                 (message "Jumping to %d" jwin)
-                 (winum-select-window-by-number jwin)))
-               ))
-      (bind-key "C-x o" 'gjg/other-window-with-winum)
-      (bind-key "s-a" 'gjg/open-work-agenda)
-      (bind-key "s-o" 'gjg/other-window-with-winum)
-      (bind-key "s-b" 'gjg/switch-to-other-buffer)
-      (bind-key "s-<up>" 'windmove-up)
-      (bind-key "s-<down>" 'windmove-down)
-      (bind-key "s-<right>" 'windmove-right)
-      (bind-key "s-<left>" 'windmove-left)
-
-      (bind-key "s-0" 'delete-window)
-      (bind-key "s-1" 'delete-other-windows)
-      (bind-key "s-2" 'gjg/split-window-below)
-      (bind-key "s-3" 'gjg/split-window-right)
-      (bind-key "M-s-<up>" 'windmove-delete-up)
-      (bind-key "M-s-<down>" 'windmove-delete-down)
-      (bind-key "M-s-<left>" 'windmove-delete-left)
-      (bind-key "M-s-<right>" 'windmove-delete-right)
-      (bind-key "s-p" 'playerctl-play-pause-song)
-      (bind-key "s-q" 'bury-buffer)
-      (bind-key "s-t" 'toggle-truncate-lines)
-      (bind-key "s-y" 'gjg/exwm-select-or-launch-spotify)
-      (bind-key "s-c" #'(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
-      (bind-key "s-." #'(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
-      (bind-key "s-," 'gjg/polybar-start-or-toggle)
-      (bind-key "s-]" 'ded/org-show-next-heading-tidily)
-      (bind-key "s-[" 'ded/org-show-previous-heading-tidily)
-      (bind-key "M-SPC" #'(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
-      (bind-key "s-\\" 'switch-to-buffer)
-      ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
-      (defun gjg/widen-ask-if-indirect ()
-        "If buffer is indirect, ask before widening"
-        (interactive)
-        (if (buffer-base-buffer)
-            (when (yes-or-no-p "Buffer is indirect; really widen? ")
-          (widen))
-          (widen)))
-      (defun toggle-transparency (alpha-level)
-        (interactive "p")
-        (message (format "%s" alpha-level))
-        (if (< alpha-level 50) (setq alpha-level 85))
-        (let ((myalpha (frame-parameter nil 'alpha)))
-          (if (or (not myalpha)
-                  (= myalpha 100))
-          (set-frame-parameter nil 'alpha alpha-level)
-            (set-frame-parameter nil 'alpha 100))
-          )
-        (message (format "Alpha level is %d" (frame-parameter nil 'alpha)))
-        )
-
-      (defun set-transparency (alpha-level)
-        (interactive "p")
-        (message (format "Alpha level passed in: %s" alpha-level))
-        (let ((alpha-level (if (< alpha-level 2)
-                   (read-number "Opacity percentage: " 85)
-                     alpha-level))
-          (myalpha (frame-parameter nil 'alpha)))
-          (set-frame-parameter nil 'alpha alpha-level))
-        (message (format "Alpha level is %d" (frame-parameter nil 'alpha))))
-      (defalias 'set-opacity 'set-transparency )
-
-      (defun toggle-window-split ()
-        (interactive)
-        (if (= (count-windows) 2)
-            (let* ((this-win-buffer (window-buffer))
-               (next-win-buffer (window-buffer (next-window)))
-               (this-win-edges (window-edges (selected-window)))
-               (next-win-edges (window-edges (next-window)))
-               (this-win-2nd (not (and (<= (car this-win-edges)
-                           (car next-win-edges))
-                           (<= (cadr this-win-edges)
-                           (cadr next-win-edges)))))
-               (splitter
-                (if (= (car this-win-edges)
-                   (car (window-edges (next-window))))
-                'split-window-horizontally
-              'split-window-vertically)))
-          (delete-other-windows)
-          (let ((first-win (selected-window)))
-            (funcall splitter)
-            (if this-win-2nd (other-window 1))
-            (set-window-buffer (selected-window) this-win-buffer)
-            (set-window-buffer (next-window) next-win-buffer)
-            (select-window first-win)
-            (if this-win-2nd (other-window 1))))))
-
-      (define-key ctl-x-4-map "t" 'toggle-window-split)
-      ;; *** Full-screen frame defuns
-
-      (defun switch-full-screen ()
-        (interactive)
-        (shell-command (concat "/usr/bin/wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -btoggle,fullscreen")))
-
-      ;; (defun toggle-fullscreen ()
-      ;;   "toggles whether the currently selected frame consumes the entire display or is decorated with a window border"
-      ;;   (interactive)
-      ;;   (let ((f (selected-frame)))
-      ;;     (modify-frame-parameters f `((fullscreen . ,(if (eq nil (frame-parameter f 'fullscreen)) 'fullboth nil))))))
-
-      ;; (defun mac-toggle-max-window ()
-      ;;   "Toggle full-screen frame on Linux and OS X - use maxframe.el for Windows"
-      ;;   (interactive)
-      ;;   (if (frame-parameter nil 'fullscreen)
-      ;;       (set-frame-parameter nil 'fullscreen nil)
-      ;;     (set-frame-parameter nil 'fullscreen 'fullboth)))
-      ;; (defun toggle-full-screen ()
-      ;;   "Toggle between full screen and partial screen display on X11;
-      ;;     courtesy of http://www.emacswiki.org/cgi-bin/wiki/FullScreen"
-      ;;   (interactive)
-      ;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-      ;;                          '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
-
-
-      ;; ;; add toggle for maxframe.el (works on Windows)
-      (when (eq window-system 'w32)
-        (require 'maxframe)
-        (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
-      ;; (modify-frame-parameters nil '((gjg/frame-maxp . nil)))
-      ;; ;; (defvar gjg/frame-maxp nil "Store whether frame is maximized using maxframe.el")
-      (defun gjg/switch-buffer-by-mode ()
-        "Switch to a buffer after choosing a mode."
-        (interactive)
-        (let* ((active-buffers-with-mode (mapcar #'(lambda (x) (with-current-buffer x (cons (buffer-name) (symbol-name major-mode)))) (buffer-list)))
-           (distinct-modes (-distinct (mapcar #'cdr active-buffers-with-mode)))
-           (selected-mode (ido-completing-read "Mode: " distinct-modes))
-           (candidate-buffers (mapcar #'car (cl-remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
-           (selected-buffer (ido-completing-read "Buffer: " candidate-buffers)))
-          (switch-to-buffer selected-buffer)))
-      (global-set-key (kbd "C-c s") 'gjg/switch-buffer-by-mode)
-
-      (defun gjg/max-frame ()
-        "Maximize the current frame and toggle gjg/frame-maxp"
-        (interactive)
-        (cond ((eq window-system 'w32)
-           (maximize-frame))
-          ((eq window-system 'x)
-           (switch-full-screen))
-          (t
-           (mac-toggle-max-window)))
-        (modify-frame-parameters nil '((gjg/frame-maxp . t))))
-
-      (defun gjg/restore-frame ()
-        "Restore the current frame to its previous size and toggle gjg/frame-maxp"
-        (interactive)
-        (cond ((eq window-system 'w32)
-           (restore-frame))
-          ((eq window-system 'x)
-           (switch-full-screen))
-          (t
-           (mac-toggle-max-window)))
-        (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
-
-      (defun gjg/toggle-max-frame ()
-        "Check the status of gjg/max-framep and change to whichever mode we're not in now."
-        (interactive)
-        (cond ((eq window-system 'ns)
-           (toggle-frame-maximized))
-          (t
-           (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
-
-    #+end_src
-*** Winner-mode and Windmove
-   #+begin_src emacs-lisp
-     ;; winner
-     (winner-mode 1)
-     ;; windmove
-     ;; (windmove-default-keybindings)
-     ;; (with-eval-after-load 'windmove
-     ;;   (windmove-default-keybindings)
-     ;;   ;; Make windmove work in org-mode:
-     ;;   (setq org-replace-disputed-keys t))
-     ;; (add-hook 'org-shiftup-final-hook 'windmove-up)
-     ;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
-     ;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
-     ;; (add-hook 'org-shiftright-final-hook 'windmove-right)))
-
-     ;; Add advice to stop hangs on EXWM
-     ;; The problem happens with floating windows that disappear - like open file dialog or a Zoom dialog when starting a meeting
-     ;; The solution is to assure all frames in winner-modified-list pass the frame-live-p test
-     (defun gjg/winner-clean-up-modified-list ()
-       "Remove dead frames from `winner-modified-list`"
-       (dolist (frame winner-modified-list)
-         (unless (frame-live-p frame)
-           (delete frame winner-modified-list))))
-     (advice-add 'winner-save-old-configurations :before #'gjg/winner-clean-up-modified-list)
-   #+end_src
-*** Ibuffer FTW
-**** View customizations
-     #+begin_src emacs-lisp
-       (setq ibuffer-formats
-             '((mark modified read-only locked " "
-                     (name 50 50 :left :elide)  ; much wider buffer name column
-                     " "
-                     (size 9 -1 :right)
-                     " "
-                     (mode 16 16 :left :elide)
-                     " " filename-and-process)
-               (mark " "
-                     (name 16 -1)
-                     " " filename))
-             )
-     #+end_src
-**** Filter groups
-    Saved filter groups provide a nice organization.
-
-    #+begin_src emacs-lisp
-      (require 'ibuffer)
-      (global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
-      (setq ibuffer-expert t)
-      (setq ibuffer-default-sorting-mode 'alphabetic)
-      (setq ibuffer-saved-filter-groups
-            '(("home"
-               ("Org and Markdown" (or (mode . org-mode)
-                                       (mode . markdown-mode)))
-               ("Shells" (or (mode . shell-mode)
-                             (mode . eshell-mode)))
-               ("EXWM X Apps" (mode . exwm-mode))
-               ("Configs" (or (derived-mode .  conf-mode)
-                              (mode . yaml-mode)
-                              (mode . json-mode)))
-               ("Code" (derived-mode .  prog-mode))
-               ("Magit" (or (mode . magit-diff-mode)
-                            (mode . magit-status-mode)
-                            (mode . magit-process-mode)
-                            (mode . magit-revision-mode)
-                            (mode . magit-refs-mode)))
-               ("Dired" (mode . dired-mode))
-               ("Tramp sessions" (name . "\*tramp.+"))
-               ;; ("Remote" (filename . "\/.+:.+"))
-               )))
-      (add-hook 'ibuffer-mode-hook
-                #'(lambda ()
-                   (ibuffer-auto-mode 1)
-                   (auto-revert-mode 1)
-                   (ibuffer-switch-to-saved-filter-groups "home")))
-    #+end_src
-**** Preview buffer in side window
-     Preview without selecting the window - stay on current line in Ibuffer
-
-     This function should work just like =occur-mode-display-occurence= in =replace.el=
-    #+begin_src emacs-lisp
-      (defun gjg/ibuffer-only-exwm ()
-        (interactive)
-        (ibuffer nil "*EXWM Thang*" '((used-mode . exwm-mode)))
-        (gjg/ibuffer-preview))
-      (global-set-key (kbd "s-e") 'gjg/ibuffer-only-exwm)
-      (defun gjg/ibuffer-preview ()
-        "View the current file in other window but to do select"
-        (interactive)
-        (delete-other-windows)
-        (when (not (window-parent)) ;; only one window, so split
-          (split-window nil nil 'right))
-        (let ((buf (ibuffer-current-buffer t)))
-          (display-buffer buf '((display-buffer-use-some-window
-                                 display-buffer-pop-up-window)
-                                (inhibit-same-window . t))))
-        :refresh-p nil)
-
-      (define-key ibuffer-mode-map (kbd "SPC") 'gjg/ibuffer-preview)
-    #+end_src
-
-*** Uniquify
-    #+begin_src emacs-lisp
-      (autoload 'uniquify "uniquify" "unique buffer names dependent on file name")
-      (with-eval-after-load 'uniquify
-        (setq uniquify-buffer-name-style 'reverse)
-        (setq uniquify-separator "/")
-        (setq uniquify-after-kill-buffer-p t)
-        (setq uniquify-ignore-buffers-re "^\\*"))
-    #+end_src
-*** Themes
-**** My modified Brutalist theme
-    #+begin_src emacs-lisp :results none
-      (when (boundp 'custom-theme-load-path)
-        (add-to-list 'custom-theme-load-path
-                     "~/projects/emacs/brutalist-theme/")
-        (add-to-list 'load-path
-                     "~/projects/emacs/brutalist-theme/"))
-    #+end_src
-**** Modus themes
-     I want to soften the contrasts in dark mode - default is white on black.  But
-     changing the background too light throws off readability of some things - notably the
-     deliimters when using =rainbow-delimiters-mode=.  So without going down the rabbit
-     hole to modify all the rainbow-delimiters faces, I'm just nudging the background and
-     foreground colors very slightly.
-     #+begin_src emacs-lisp
-       ;; make the modus themes act more like my brutalist theme in Org
-       (use-package modus-themes
-         :straight t
-         :config
-         (setq modus-themes-headings
-               '((1 . ( semibold 1.3))
-                 (2 . ( semibold 1.1))
-                 (3 . ( semibold 1.1))
-                 (4 . ( semibold 1.1))
-                 (5 . ( semibold 1.1))
-                 (6 . ( semibold 1.1)))
-               modus-themes-syntax '(faint alt-syntax)
-               modus-themes-org-blocks nil
-               modus-themes-org-agenda
-               '((header-block . (1.3))
-                 (header-date . (bold-today 1.2))
-                 (habit . simplified)
-                 )
-               modus-themes-org-blocks nil
-               modus-themes-vivendi-color-overrides
-               '((bg-main . "gray10")
-                 (fg-main . "gray90")
-                 (bg-hl-line . "gray15")
-                 )))
-
-     #+end_src
-**** Load default theme
-     Deferred here until all theme tweaks have been applied
-     #+begin_src emacs-lisp
-      (gjg/go-light) ; start with preferred light theme
-     #+end_src
 
 ** Automatic typing - abbrevs and expansions
    #+begin_src emacs-lisp
@@ -912,6 +513,425 @@
 (org-crypt-use-before-save-magic)
 
   #+end_src
+* Window/buffer management
+** GJG full screen, movement, transparency
+   TODO: figure out global Super key chords in exwm map vs global key map
+   #+begin_src emacs-lisp
+     ;; unbind some keys in favor of my functions bound to SUPER- combinations
+     ;; the existing keys will work in Emacs buffers, but not in EXWM X buffers; the SUPER combos work everywhere
+     (global-unset-key (kbd "M-]")) ; next-buffer
+     (global-unset-key (kbd "M-[")) ; previous-buffer
+
+     (defun revert-dammit () ; revert buffer without prompting
+       (interactive)
+       ;; revert buffer, don't use auto-save, preserve modes
+       (revert-buffer t t t))
+     (defalias 'rd 'revert-dammit)
+     (defun gjg/switch-to-other-buffer ()
+       (interactive)
+       (switch-to-buffer (other-buffer))
+       (message "Switched to other-buffer"))
+     (defun gjg/split-window-below ()
+       "Split window below, switch to the new window AND switch buffer in that window"
+       (interactive)
+       (split-window-below)
+       (other-window 1)
+       (switch-to-buffer (other-buffer)))
+     (defun gjg/split-window-right ()
+       "Split window right, switch to the new window AND switch buffer in that window"
+       (interactive)
+       (split-window-right)
+       (other-window 1)
+       (switch-to-buffer (other-buffer)))
+     (bind-key "C-x 2" 'gjg/split-window-below)
+     (bind-key "C-x 3" 'gjg/split-window-right)
+
+     (use-package ace-window
+       :straight t
+       :config
+       (custom-set-faces
+        '(aw-leading-char-face
+          ((t (:foreground "deep sky blue" :height 5.0)))
+          ))
+       :bind
+        (("C-x o" . ace-window)))
+     ;; (require 'ace-window)
+     ;; (custom-set-faces
+     ;;  '(aw-leading-char-face
+     ;;    ((t (:foreground "deep sky blue" :height 5.0)))))
+     ;; (bind-key "C-x o" 'ace-window)
+     ;; (setq winum-keymap
+     ;;       (let ((map (make-sparse-keymap)))
+     ;;         (define-key map (kbd "C-`") 'winum-select-window-by-number)
+     ;;         (define-key map (kbd "M-0") 'winum-select-window-0)
+     ;;         (define-key map (kbd "M-1") 'winum-select-window-1)
+     ;;         (define-key map (kbd "M-2") 'winum-select-window-2)
+     ;;         (define-key map (kbd "M-3") 'winum-select-window-3)
+     ;;         (define-key map (kbd "M-4") 'winum-select-window-4)
+     ;;         (define-key map (kbd "M-5") 'winum-select-window-5)
+     ;;         )
+     ;;       )
+     (use-package winum
+       :straight t
+       :config
+       (setq winum-scope                       'frame-local
+             winum-auto-assign-0-to-minibuffer nil
+             winum-auto-setup-mode-line        t))
+     (winum-mode)
+     (set-face-attribute 'winum-face nil :weight 'bold)
+     (defun gjg/other-window-with-winum ()
+       "if 2 windows, jump to other-window.  Elsecase use winum"
+       (interactive)
+       (cond ((= 1 winum--window-count)
+              (gjg/switch-to-other-buffer))
+             ((= 2 winum--window-count)
+              (other-window 1))
+             ((> 10 winum--window-count)
+              ;; jump immediately to window
+              ;; (let ((jwin (read-number (format "Jump to window num[1-%d]: " winum--window-count))))
+              (let ((jwin (string-to-number (char-to-string (read-char (format "Jump to window num[1-%d]: " winum--window-count))))))
+                (message "Jumping to %d" jwin)
+                (winum-select-window-by-number jwin)))
+             (t
+              (let ((jwin (read-number (format "Jump to window num[1-%d]: " winum--window-count))))
+                (message "Jumping to %d" jwin)
+                (winum-select-window-by-number jwin)))
+              ))
+     (bind-key "C-x o" 'gjg/other-window-with-winum)
+     (bind-key "s-a" 'gjg/open-work-agenda)
+     (bind-key "s-o" 'gjg/other-window-with-winum)
+     (bind-key "s-b" 'gjg/switch-to-other-buffer)
+     (bind-key "s-<up>" 'windmove-up)
+     (bind-key "s-<down>" 'windmove-down)
+     (bind-key "s-<right>" 'windmove-right)
+     (bind-key "s-<left>" 'windmove-left)
+
+     (bind-key "s-0" 'delete-window)
+     (bind-key "s-1" 'delete-other-windows)
+     (bind-key "s-2" 'gjg/split-window-below)
+     (bind-key "s-3" 'gjg/split-window-right)
+     (bind-key "M-s-<up>" 'windmove-delete-up)
+     (bind-key "M-s-<down>" 'windmove-delete-down)
+     (bind-key "M-s-<left>" 'windmove-delete-left)
+     (bind-key "M-s-<right>" 'windmove-delete-right)
+     (bind-key "s-p" 'playerctl-play-pause-song)
+     (bind-key "s-q" 'bury-buffer)
+     (bind-key "s-t" 'toggle-truncate-lines)
+     (bind-key "s-y" 'gjg/exwm-select-or-launch-spotify)
+     (bind-key "s-c" #'(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
+     (bind-key "s-." #'(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
+     (bind-key "s-," 'gjg/polybar-start-or-toggle)
+     (bind-key "s-]" 'ded/org-show-next-heading-tidily)
+     (bind-key "s-[" 'ded/org-show-previous-heading-tidily)
+     (bind-key "M-SPC" #'(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
+     (bind-key "s-\\" 'switch-to-buffer)
+     ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
+     (defun gjg/widen-ask-if-indirect ()
+       "If buffer is indirect, ask before widening"
+       (interactive)
+       (if (buffer-base-buffer)
+           (when (yes-or-no-p "Buffer is indirect; really widen? ")
+         (widen))
+         (widen)))
+     (defun toggle-transparency (alpha-level)
+       (interactive "p")
+       (message (format "%s" alpha-level))
+       (if (< alpha-level 50) (setq alpha-level 85))
+       (let ((myalpha (frame-parameter nil 'alpha)))
+         (if (or (not myalpha)
+                 (= myalpha 100))
+         (set-frame-parameter nil 'alpha alpha-level)
+           (set-frame-parameter nil 'alpha 100))
+         )
+       (message (format "Alpha level is %d" (frame-parameter nil 'alpha)))
+       )
+
+     (defun set-transparency (alpha-level)
+       (interactive "p")
+       (message (format "Alpha level passed in: %s" alpha-level))
+       (let ((alpha-level (if (< alpha-level 2)
+                  (read-number "Opacity percentage: " 85)
+                    alpha-level))
+         (myalpha (frame-parameter nil 'alpha)))
+         (set-frame-parameter nil 'alpha alpha-level))
+       (message (format "Alpha level is %d" (frame-parameter nil 'alpha))))
+     (defalias 'set-opacity 'set-transparency )
+
+     (defun toggle-window-split ()
+       (interactive)
+       (if (= (count-windows) 2)
+           (let* ((this-win-buffer (window-buffer))
+              (next-win-buffer (window-buffer (next-window)))
+              (this-win-edges (window-edges (selected-window)))
+              (next-win-edges (window-edges (next-window)))
+              (this-win-2nd (not (and (<= (car this-win-edges)
+                          (car next-win-edges))
+                          (<= (cadr this-win-edges)
+                          (cadr next-win-edges)))))
+              (splitter
+               (if (= (car this-win-edges)
+                  (car (window-edges (next-window))))
+               'split-window-horizontally
+             'split-window-vertically)))
+         (delete-other-windows)
+         (let ((first-win (selected-window)))
+           (funcall splitter)
+           (if this-win-2nd (other-window 1))
+           (set-window-buffer (selected-window) this-win-buffer)
+           (set-window-buffer (next-window) next-win-buffer)
+           (select-window first-win)
+           (if this-win-2nd (other-window 1))))))
+
+     (define-key ctl-x-4-map "t" 'toggle-window-split)
+     ;; *** Full-screen frame defuns
+
+     (defun switch-full-screen ()
+       (interactive)
+       (shell-command (concat "/usr/bin/wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -btoggle,fullscreen")))
+
+     ;; (defun toggle-fullscreen ()
+     ;;   "toggles whether the currently selected frame consumes the entire display or is decorated with a window border"
+     ;;   (interactive)
+     ;;   (let ((f (selected-frame)))
+     ;;     (modify-frame-parameters f `((fullscreen . ,(if (eq nil (frame-parameter f 'fullscreen)) 'fullboth nil))))))
+
+     ;; (defun mac-toggle-max-window ()
+     ;;   "Toggle full-screen frame on Linux and OS X - use maxframe.el for Windows"
+     ;;   (interactive)
+     ;;   (if (frame-parameter nil 'fullscreen)
+     ;;       (set-frame-parameter nil 'fullscreen nil)
+     ;;     (set-frame-parameter nil 'fullscreen 'fullboth)))
+     ;; (defun toggle-full-screen ()
+     ;;   "Toggle between full screen and partial screen display on X11;
+     ;;     courtesy of http://www.emacswiki.org/cgi-bin/wiki/FullScreen"
+     ;;   (interactive)
+     ;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+     ;;                          '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+
+
+     ;; ;; add toggle for maxframe.el (works on Windows)
+     (when (eq window-system 'w32)
+       (require 'maxframe)
+       (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
+     ;; (modify-frame-parameters nil '((gjg/frame-maxp . nil)))
+     ;; ;; (defvar gjg/frame-maxp nil "Store whether frame is maximized using maxframe.el")
+     (defun gjg/switch-buffer-by-mode ()
+       "Switch to a buffer after choosing a mode."
+       (interactive)
+       (let* ((active-buffers-with-mode (mapcar #'(lambda (x) (with-current-buffer x (cons (buffer-name) (symbol-name major-mode)))) (buffer-list)))
+          (distinct-modes (-distinct (mapcar #'cdr active-buffers-with-mode)))
+          (selected-mode (ido-completing-read "Mode: " distinct-modes))
+          (candidate-buffers (mapcar #'car (cl-remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
+          (selected-buffer (ido-completing-read "Buffer: " candidate-buffers)))
+         (switch-to-buffer selected-buffer)))
+     (global-set-key (kbd "C-c s") 'gjg/switch-buffer-by-mode)
+
+     (defun gjg/max-frame ()
+       "Maximize the current frame and toggle gjg/frame-maxp"
+       (interactive)
+       (cond ((eq window-system 'w32)
+          (maximize-frame))
+         ((eq window-system 'x)
+          (switch-full-screen))
+         (t
+          (mac-toggle-max-window)))
+       (modify-frame-parameters nil '((gjg/frame-maxp . t))))
+
+     (defun gjg/restore-frame ()
+       "Restore the current frame to its previous size and toggle gjg/frame-maxp"
+       (interactive)
+       (cond ((eq window-system 'w32)
+          (restore-frame))
+         ((eq window-system 'x)
+          (switch-full-screen))
+         (t
+          (mac-toggle-max-window)))
+       (modify-frame-parameters nil '((gjg/frame-maxp . nil))))
+
+     (defun gjg/toggle-max-frame ()
+       "Check the status of gjg/max-framep and change to whichever mode we're not in now."
+       (interactive)
+       (cond ((eq window-system 'ns)
+          (toggle-frame-maximized))
+         (t
+          (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
+
+   #+end_src
+** Winner-mode and Windmove
+  #+begin_src emacs-lisp
+    ;; winner
+    (winner-mode 1)
+    ;; windmove
+    ;; (windmove-default-keybindings)
+    ;; (with-eval-after-load 'windmove
+    ;;   (windmove-default-keybindings)
+    ;;   ;; Make windmove work in org-mode:
+    ;;   (setq org-replace-disputed-keys t))
+    ;; (add-hook 'org-shiftup-final-hook 'windmove-up)
+    ;; (add-hook 'org-shiftleft-final-hook 'windmove-left)
+    ;; (add-hook 'org-shiftdown-final-hook 'windmove-down)
+    ;; (add-hook 'org-shiftright-final-hook 'windmove-right)))
+
+    ;; Add advice to stop hangs on EXWM
+    ;; The problem happens with floating windows that disappear - like open file dialog or a Zoom dialog when starting a meeting
+    ;; The solution is to assure all frames in winner-modified-list pass the frame-live-p test
+    (defun gjg/winner-clean-up-modified-list ()
+      "Remove dead frames from `winner-modified-list`"
+      (dolist (frame winner-modified-list)
+        (unless (frame-live-p frame)
+          (delete frame winner-modified-list))))
+    (advice-add 'winner-save-old-configurations :before #'gjg/winner-clean-up-modified-list)
+  #+end_src
+** Ibuffer FTW
+*** View customizations
+    #+begin_src emacs-lisp
+      (setq ibuffer-formats
+            '((mark modified read-only locked " "
+                    (name 50 50 :left :elide)  ; much wider buffer name column
+                    " "
+                    (size 9 -1 :right)
+                    " "
+                    (mode 16 16 :left :elide)
+                    " " filename-and-process)
+              (mark " "
+                    (name 16 -1)
+                    " " filename))
+            )
+    #+end_src
+*** Filter groups
+   Saved filter groups provide a nice organization.
+
+   #+begin_src emacs-lisp
+     (require 'ibuffer)
+     (global-set-key (kbd "C-x C-b") (lambda () (interactive) (ibuffer)))
+     (setq ibuffer-expert t)
+     (setq ibuffer-default-sorting-mode 'alphabetic)
+     (setq ibuffer-saved-filter-groups
+           '(("home"
+              ("Org and Markdown" (or (mode . org-mode)
+                                      (mode . markdown-mode)))
+              ("Shells" (or (mode . shell-mode)
+                            (mode . eshell-mode)))
+              ("EXWM X Apps" (mode . exwm-mode))
+              ("Configs" (or (derived-mode .  conf-mode)
+                             (mode . yaml-mode)
+                             (mode . json-mode)))
+              ("Code" (derived-mode .  prog-mode))
+              ("Magit" (or (mode . magit-diff-mode)
+                           (mode . magit-status-mode)
+                           (mode . magit-process-mode)
+                           (mode . magit-revision-mode)
+                           (mode . magit-refs-mode)))
+              ("Dired" (mode . dired-mode))
+              ("Tramp sessions" (name . "\*tramp.+"))
+              ;; ("Remote" (filename . "\/.+:.+"))
+              )))
+     (add-hook 'ibuffer-mode-hook
+               #'(lambda ()
+                  (ibuffer-auto-mode 1)
+                  (auto-revert-mode 1)
+                  (ibuffer-switch-to-saved-filter-groups "home")))
+   #+end_src
+*** Preview buffer in side window
+    Preview without selecting the window - stay on current line in Ibuffer
+
+    This function should work just like =occur-mode-display-occurence= in =replace.el=
+   #+begin_src emacs-lisp
+     (defun gjg/ibuffer-only-exwm ()
+       (interactive)
+       (ibuffer nil "*EXWM Thang*" '((used-mode . exwm-mode)))
+       (gjg/ibuffer-preview))
+     (global-set-key (kbd "s-e") 'gjg/ibuffer-only-exwm)
+     (defun gjg/ibuffer-preview ()
+       "View the current file in other window but to do select"
+       (interactive)
+       (delete-other-windows)
+       (when (not (window-parent)) ;; only one window, so split
+         (split-window nil nil 'right))
+       (let ((buf (ibuffer-current-buffer t)))
+         (display-buffer buf '((display-buffer-use-some-window
+                                display-buffer-pop-up-window)
+                               (inhibit-same-window . t))))
+       :refresh-p nil)
+
+     (define-key ibuffer-mode-map (kbd "SPC") 'gjg/ibuffer-preview)
+   #+end_src
+
+** Uniquify
+   #+begin_src emacs-lisp
+     (autoload 'uniquify "uniquify" "unique buffer names dependent on file name")
+     (with-eval-after-load 'uniquify
+       (setq uniquify-buffer-name-style 'reverse)
+       (setq uniquify-separator "/")
+       (setq uniquify-after-kill-buffer-p t)
+       (setq uniquify-ignore-buffers-re "^\\*"))
+   #+end_src
+** Themes
+*** My modified Brutalist theme
+   #+begin_src emacs-lisp :results none
+     (when (boundp 'custom-theme-load-path)
+       (add-to-list 'custom-theme-load-path
+                    "~/projects/emacs/brutalist-theme/")
+       (add-to-list 'load-path
+                    "~/projects/emacs/brutalist-theme/"))
+   #+end_src
+*** Modus themes
+    I want to soften the contrasts in dark mode - default is white on black.  But
+    changing the background too light throws off readability of some things - notably the
+    deliimters when using =rainbow-delimiters-mode=.  So without going down the rabbit
+    hole to modify all the rainbow-delimiters faces, I'm just nudging the background and
+    foreground colors very slightly.
+    #+begin_src emacs-lisp
+      ;; make the modus themes act more like my brutalist theme in Org
+      (use-package modus-themes
+        :straight t
+        :config
+        (setq modus-themes-headings
+              '((1 . ( semibold 1.3))
+                (2 . ( semibold 1.1))
+                (3 . ( semibold 1.1))
+                (4 . ( semibold 1.1))
+                (5 . ( semibold 1.1))
+                (6 . ( semibold 1.1)))
+              modus-themes-syntax '(faint alt-syntax)
+              modus-themes-org-blocks nil
+              modus-themes-org-agenda
+              '((header-block . (1.3))
+                (header-date . (bold-today 1.2))
+                (habit . simplified)
+                )
+              modus-themes-org-blocks nil
+              modus-themes-vivendi-color-overrides
+              '((bg-main . "gray10")
+                (fg-main . "gray90")
+                (bg-hl-line . "gray15")
+                )))
+
+    #+end_src
+*** Load default theme
+    Deferred here until all theme tweaks have been applied
+    #+begin_src emacs-lisp
+     (gjg/go-light) ; start with preferred light theme
+    #+end_src
+** Make things open up in current window
+   There's a standard way to force niceness from packages that open buffers in random
+   windows just to be annoying.  Here's where those packages are corralled
+   #+begin_src emacs-lisp
+     ;; Org capture
+     (add-to-list 'display-buffer-alist '("^\\*Capture\\*" display-buffer-reuse-window display-buffer-same-window))
+     ;; R
+     (add-to-list 'display-buffer-alist '("^\\*R" display-buffer-same-window))
+     ;; Helpful
+     (add-to-list 'display-buffer-alist '("^\\*helpful" display-buffer-same-window))
+     ;; Change behavior of Magit status (status only, not magit-diff, magit-process etc)
+     (add-to-list 'display-buffer-alist '("^magit:" display-buffer-same-window))
+     ;; All interactive SQL modes
+     (add-to-list 'display-buffer-alist
+                  '((lambda (buffer action)
+                      (with-current-buffer buffer
+                        (derived-mode-p 'sql-interactive-mode)))
+                    display-buffer-same-window))
+   #+end_src
 * EXWM : The Emacs X Window Manager
    This crazy idea is better than I thought it could be!
 
@@ -2087,31 +2107,6 @@
                   (magit-todos-mode 1)
                   ))
     #+end_src
-*** Open Status in current window
-    Oh how I hate other-window for this!
-    Ref: https://github.com/magit/magit/issues/2541
-
-    Intent is to open only the Status buffer in the current window - other windows (diff,
-    push etc) will behave as they do by default.
-
-    #+begin_src emacs-lisp
-      (setq magit-display-buffer-function
-            (lambda (buffer)
-              (display-buffer
-               buffer
-               (cond ((and (derived-mode-p 'magit-mode)
-                           (eq (with-current-buffer buffer major-mode)
-                               'magit-status-mode))
-                      nil)
-                     ((memq (with-current-buffer buffer major-mode)
-                            '(magit-process-mode
-                              magit-revision-mode
-                              magit-diff-mode
-                              magit-stash-mode))
-                      nil)
-                     (t
-                      '(display-buffer-same-window))))))
-    #+end_src
 
 ** Smartparens
    #+begin_src emacs-lisp
@@ -2493,7 +2488,6 @@ Open man page in current window, rather than other window with
                         (define-key org-capture-mode-map (kbd "C-c C-c") 'org-capture-finalize))))))
       (define-key global-map "\C-cc" 'org-capture)
       (setq org-capture-templates nil) ; initialize to nil prior to grand setup below
-      (add-to-list 'display-buffer-alist '("^\\*Capture\\*" display-buffer-reuse-window display-buffer-same-window))
     #+end_src
 
 *** Template definitions
@@ -3491,8 +3485,6 @@ Open man page in current window, rather than other window with
      (use-package ess :straight t
        :config
        (setq ess-sas-edit-keys-toggle nil)
-       (add-to-list 'display-buffer-alist
-                    '("^\\*R" display-buffer-reuse-window display-buffer-same-window))
        :init (require 'ess-site))
    #+end_src
 ** Scheme
@@ -3508,18 +3500,6 @@ Open man page in current window, rather than other window with
      (use-package geiser-guile :straight t)
    #+end_src
 ** SQL and even GSQL
-*** Display SQL Interactive buffer in selected (same) window
-    + Tip of the hat to [[https://emacs.stackexchange.com/questions/54988/how-to-make-emacs-to-launch-sql-modes-runtime-window-always-at-the-bottom][config - How to make emacs to launch sql modes runtime window always at the b...]]
-      #+begin_src emacs-lisp
-        (add-to-list 'display-buffer-alist
-                     '((lambda (buffer action)
-                         (with-current-buffer buffer
-                           (derived-mode-p 'sql-interactive-mode)
-                           )
-                         )
-                       display-buffer-same-window)
-                     )
-      #+end_src
 *** Format SQL
     Emacs doesn't come out of the box with a useful SQL formatter, so go ahead and use an
     external process
