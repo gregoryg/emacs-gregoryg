@@ -78,7 +78,6 @@
       rainbow-delimiters
       selectrum
       selectrum-prescient
-      smartparens
       use-package
       xterm-color
       ;; language modes
@@ -135,6 +134,7 @@
    Fastest searcher in the West - need to install it on the OS as package
    =the_silver_searcher= or =silversearcher-ag=
    #+begin_src emacs-lisp
+     (use-package f :straight t)
      (use-package exec-path-from-shell :straight t)
      (use-package exwm :straight t)
      ;; (use-package buffer-expose :straight t)
@@ -171,7 +171,6 @@
      (use-package selectrum :straight t)
      (use-package selectrum-prescient :straight t)
      (use-package rainbow-delimiters :straight t)
-     (use-package smartparens :straight t)
      (use-package uuid
        :straight t)
      (use-package playerctl :straight t)
@@ -2108,31 +2107,6 @@
                   ))
     #+end_src
 
-** Smartparens
-   #+begin_src emacs-lisp
-     (autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
-     (defun my-create-newline-and-enter-sexp (&rest _ignored)
-       "Open a new brace or bracket expression, with relevant newlines and indent. "
-       (newline)
-       (indent-according-to-mode)
-       (forward-line -1)
-       (indent-according-to-mode))
-
-
-     ;; (with-eval-after-load 'smartparens
-     ;;   (sp-with-modes
-     ;;       '(c++-mode objc-mode c-mode js2-mode clojure-mode clojurescript-mode)
-     ;;     (sp-local-pair "{" nil :post-handlers '(:add ("||\n[i]" "RET")))))
-
-     ;; (eval-after-load "smartparens-config"
-     ;;   '(progn
-     ;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-     ;; (sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-     ;; (sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-     ;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
-     ;; ))
-
-   #+end_src
 ** Spelling
    #+begin_src emacs-lisp
      ;; don't try to spell things in Org property drawers and code blocks
@@ -3182,8 +3156,7 @@ Open man page in current window, rather than other window with
                       (rainbow-delimiters-mode 1)
                  (corfu-mode 1)
                  (yafolding-mode 1)
-                 (electric-pair-local-mode 1)
-                 (smartparens-mode 1)))
+                 (electric-pair-local-mode 1)))
    #+end_src
 
    Let's throw in IELM =inferior-emacs-lisp-mode=, which derives from =comint-mode=
@@ -3192,8 +3165,8 @@ Open man page in current window, rather than other window with
                (lambda ()
                  (rainbow-delimiters-mode 1)
                  (corfu-mode 1)
-                 (electric-pair-local-mode 1)
-                 (smartparens-mode 1)))
+                 (electric-pair-local-mode 1)))
+
    #+end_src
 ** Language Servers and setup for LSP
 *** Language Servers
@@ -3284,7 +3257,6 @@ Open man page in current window, rather than other window with
        :straight t
        :mode "\\.clj[sc]?\\'"
        :config
-       ;; (add-hook 'clojure-mode-hook #'smartparens-strict-mode)
        (add-hook 'clojure-mode-hook #'lispy-mode)
        (add-hook 'clojure-mode-hook #'aggressive-indent-mode))
 

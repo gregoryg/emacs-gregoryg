@@ -303,3 +303,37 @@ Archived entries from file /home/gregj/emacs-gregoryg/README.org
          (cl-callf color-saturate-name (face-foreground face) 30))))
 
   #+end_src
+
+* Smartparens
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2022-09-23 Fri 14:08
+  :ARCHIVE_FILE: ~/emacs-gregoryg/README.org
+  :ARCHIVE_OLPATH: Commonly used modes
+  :ARCHIVE_CATEGORY: README
+  :END:
+  # TODO: determine whether this is still needed - in v29, seems to be conflicting with a
+  # built-in function
+  #+begin_src emacs-lisp :tangle no
+    (autoload 'smartparens-config "smartparens-config" "Default configuration for smartparens package")
+    (defun my-create-newline-and-enter-sexp (&rest _ignored)
+      "Open a new brace or bracket expression, with relevant newlines and indent. "
+      (newline)
+      (indent-according-to-mode)
+      (forward-line -1)
+      (indent-according-to-mode))
+
+
+    ;; (with-eval-after-load 'smartparens
+    ;;   (sp-with-modes
+    ;;       '(c++-mode objc-mode c-mode js2-mode clojure-mode clojurescript-mode)
+    ;;     (sp-local-pair "{" nil :post-handlers '(:add ("||\n[i]" "RET")))))
+
+    ;; (eval-after-load "smartparens-config"
+    ;;   '(progn
+    ;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+    ;; (sp-local-pair 'js2-mode        "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+    ;; (sp-local-pair 'js2-mode        "[" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+    ;; (sp-local-pair 'javascript-mode "{" nil :post-handlers '((my-create-newline-and-enter-sexp "RET")))
+    ;; ))
+
+  #+end_src
