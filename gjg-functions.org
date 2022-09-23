@@ -129,22 +129,25 @@ A sort-of package with customization framework.  The famed =gjg= package.
          (error "URL '%s' is not accessible" (url-recreate-url url-current-object)))
        (let ((results-buffer (current-buffer))
              (response (url-http-parse-response)))
-n         ;; (with-current-buffer (get-buffer-create "zgrego")
-         (with-temp-buffer
-           (erase-buffer)
-           (if (and (<= 200 response) (<= response 299))
-               (url-insert results-buffer)
-             (insert-buffer-substring results-buffer))
+         ;; (with-current-buffer (get-buffer-create "zgrego")
+         ;; (with-temp-buffer
+         (with-current-buffer output-buffer
+           (let ((buffer-read-only nill))
+             (erase-buffer)
+             (if (and (<= 200 response) (<= response 299))
+                 (url-insert results-buffer)
+               (insert-buffer-substring results-buffer))
              ;; (message "I got these databases %s" response ))
-           (goto-char 0)
-           (completing-read "Ohai: "
-                            (append (cdr (assq 'databases (json-read))) nil)
-                            )
-             )))
+             (goto-char 0)
+             (completing-read "Ohai: "
+                              (append (cdr (assq 'databases (json-read))) nil)
+                              )
+           )
+         )))
      (defun gjg/stardog-get-databases (server)
        "Get list of databases from the Stardog server - will work for users with admin rights"
        ;; (url-retrieve (concat server "/admin/databases") #'gjg/handle-stardog-result )
-       (url-retrieve (concat (replace-regexp-in-string "/+$" "" server) "/admin/databases") #'gjg/handle-stardog-result )
+       (url-retrieve (concat (replace-regexp-in-string "/+$" "" server) "/admin/databases") #'gjg/handle-stardog-result (list (current-buffer)))
          )
 
      (defun gjg/stardog-build-url (arg &optional server database api-endpoint reasoning  )
@@ -310,14 +313,10 @@ n         ;; (with-current-buffer (get-buffer-create "zgrego")
                                  ("\227" . "--")
                                  )
                                nil beg end))
-
-     ;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
-     (defun gjg/unfill-paragraph ()
-       "Takes a multi-line paragraph and makes it into a single line of text."
-       (interactive)
-       (let ((fill-column (point-max)))
-         (fill-paragraph nil)))
-
+   #+end_src
+** Make acronyms of text
+   Great World Blunders -> gwb
+     #+begin_src emacs-lisp
      (defun gjg/acronyminize (text &optional do-capitalize)
        "Make an acronym from the text
      do-capitalize: t means run text through capitalize function, nil will respect CamelCase
@@ -329,7 +328,9 @@ n         ;; (with-current-buffer (get-buffer-create "zgrego")
            "[^A-Z]" ""
            (if do-capitalize (capitalize text) text) nil t))
          ))
-
+     #+end_src
+** Add unique IDs to Org Mode headers
+     #+begin_src emacs-lisp
      (defun gjg/add-ids-to-headers ()
        "Add unique IDs to all headers in a buffer from current point; for use with org-mobile"
        (interactive)
@@ -338,7 +339,10 @@ n         ;; (with-current-buffer (get-buffer-create "zgrego")
          (while (not (eobp))
            (org-id-get-create) ;; only creates an ID property if none exists
            (outline-next-heading))))
-
+     #+end_src
+** Move next s-expression past current scope
+   TODO this is a good candidate for the trash bin
+     #+begin_src emacs-lisp
      (defun gjg/move-next-sexp-past-current-scope ()
        "kill sexp following point, move past current scope/sexp/function, yank"
        (beginning-of-line)
@@ -350,54 +354,7 @@ n         ;; (with-current-buffer (get-buffer-create "zgrego")
        (forward-line)
        (yank)
        (indent-region (mark) (point)))
-
-
-     ;; TODO: integrate lsp-mode maybe someday
-
-     ;; ** LSP-Mode
-     ;; #+begin_src emacs-lisp :tangle no
-     ;; (use-package lsp-mode
-     ;;   :ensure t
-     ;;   :commands lsp
-     ;;   :custom
-     ;;   (lsp-auto-guess-root nil)
-     ;;   (lsp-prefer-flymake nil) ; Use flycheck instead of flymake
-     ;;   :bind (:map lsp-mode-map ("C-c C-f" . lsp-format-buffer))
-     ;;   :hook ((python-mode c-mode c++-mode) . lsp))
-
-
-     ;; (use-package lsp-ui
-     ;;   :after lsp-mode
-     ;;   :ensure t
-     ;;   :diminish
-     ;;   :commands lsp-ui-mode
-     ;;   :custom-face
-     ;;   (lsp-ui-doc-background ((t (:background nil))))
-     ;;   (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
-     ;;   :bind (:map lsp-ui-mode-map
-     ;;               ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
-     ;;               ([remap xref-find-references] . lsp-ui-peek-find-references)
-     ;;               ("C-c u" . lsp-ui-imenu))
-     ;;   :custom
-     ;;   (lsp-ui-doc-enable t)
-     ;;   (lsp-ui-doc-header t)
-     ;;   (lsp-ui-doc-include-signature t)
-     ;;   (lsp-ui-doc-position 'top)
-     ;;   (lsp-ui-doc-border (face-foreground 'default))
-     ;;   (lsp-ui-sideline-enable nil)
-     ;;   (lsp-ui-sideline-ignore-duplicate t)
-     ;;   (lsp-ui-sideline-show-code-actions nil)
-     ;;   :config
-     ;;   ;; Use lsp-ui-doc-webkit only in GUI
-     ;;   (setq lsp-ui-doc-use-webkit t)
-     ;;   ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
-     ;;   ;; https://github.com/emacs-lsp/lsp-ui/issues/243
-     ;;   (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
-     ;;     (setq mode-line-format nil)))
-     ;; #+end_src
-
-
-   #+end_src
+     #+end_src
 * Provide the library - we're done!
    #+begin_src emacs-lisp
     (provide 'gjg-functions)
