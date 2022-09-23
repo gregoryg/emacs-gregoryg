@@ -20,6 +20,18 @@ A sort-of package with customization framework.  The famed =gjg= package.
 
 * Variables with =defcustom=
    #+begin_src emacs-lisp
+     (defcustom gjg/current-agenda-context 'work
+       "Context for Org Agenda that determines global value of `org-agenda-files`"
+       :type 'symbol
+       :group 'gjg)
+
+     (defcustom gjg/agenda-contexts-alist nil
+       "List of all agenda contexts with list of Org files for each."
+       :type '(alist :key-type (symbol :tag "Agenda context name")
+                     :value-type (repeat :tag "Path" string)
+                     )
+       :group 'gjg)
+
      (defcustom gjg/audioplayer "mplayer"
        "Audio player for this machine"
        :type 'string
@@ -225,6 +237,63 @@ n         ;; (with-current-buffer (get-buffer-create "zgrego")
 
   #+end_src
 * Odds and ends
+** Try harebrained idea for Org Agenda usage []
+   TODO come up with a better / less ambiguous term for =context=
+
+   The idea is to have a smaller set of custom agenda commands that will depend on setting a
+   =context= such as work, health, notes, social.  Setting that context will determine the
+   value of the global =org-agenda-files= from a list of lists of Org files related to
+   each context.
+
+   That way I don't have to create separate agendas that are the same in all ways but the
+   list of agenda files they use.
+
+   Var used is =gjg/current-agenda-context=
+*** DONE Add indication of context to the Agenda Dispatcher
+    :LOGBOOK:
+    - State "DONE"       from              [2022-09-20 Tue 15:26]
+    :END:
+    + Ref: [[https://emacs.stackexchange.com/a/69537/418][Is there a "switch to buffer" hook? - Emacs Stack Exchange]]
+    #+begin_src emacs-lisp
+      (defun gjg/display-agenda-context (w)
+        "Used in hook to modify ?? when ` *Agenda Commands*` buffer is activated."
+        ;; very generic hook by necessity, so we must discover which buffer we have
+        (when (string= (buffer-name) " *Agenda Commands*")
+          (setq mode-name
+                (concat "Fundamental[" (symbol-name gjg/current-agenda-context) "]"))))
+
+      ;; (add-hook 'org-agenda-mode-hook ...
+      (add-hook 'window-selection-change-functions
+                'gjg/display-agenda-context nil t)
+
+      ;; (remove-hook 'window-selection-change-functions 'gjg/display-agenda-context)
+    #+end_src
+*** Create a context switcher
+    #+begin_src emacs-lisp
+      (defun gjg/select-agenda-context ()
+        "Set current Org Agenda context (work/home etc)."
+        (interactive)
+
+        (setq org-agenda-files
+              (cadr (assoc (intern
+                            (completing-read "Ohai: " gjg/agenda-contexts-alist )
+                            )
+                           gjg/agenda-contexts-alist
+                           ))
+              ))
+    #+end_src
+** Unfill paragraph
+   Very useful - recognize paragraphs in text with line endings made just for display
+   #+begin_src emacs-lisp
+     ;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
+     (defun gjg/unfill-paragraph ()
+       "Takes a multi-line paragraph and makes it into a single line of text."
+       (interactive)
+       (let ((fill-column (point-max)))
+         (fill-paragraph nil)))
+
+   #+end_src
+** Replace fancy quotes/dashes with plain old quotes/dashes
    #+begin_src emacs-lisp
      (defun replace-smart-quotes (beg end)
        "Replace 'smart quotes' in buffer or region with ascii quotes."

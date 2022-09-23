@@ -2666,7 +2666,6 @@ Open man page in current window, rather than other window with
                                           "~/projects/private-orgmode/someday.org"
                                           "~/projects/private-orgmode/projects.org"
                                           "~/projects/private-orgmode/next.org"
-                                          "~/projects/private-orgmode/fit.org"
                                           "~/projects/private-orgmode/habits.org"))
     (defun gjg/get-work-agenda-files ()
       "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
@@ -2675,6 +2674,13 @@ Open man page in current window, rather than other window with
         (add-to-list 'engagement-files gjg/employer-org-file t)
         (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)))
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
+    (add-to-list 'gjg/agenda-contexts-alist `(work ,(gjg/get-work-agenda-files)))
+    (add-to-list 'gjg/agenda-contexts-alist `(home ,gjg/personal-org-agenda-files))
+    (add-to-list 'gjg/agenda-contexts-alist `(fitness ,(list "~/projects/private-orgmode/fitness.org")))
+    (add-to-list 'gjg/agenda-contexts-alist `(notes ,(list "~/gregj-notes/")))
+
+
+
     (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
     ;; Set agenda files to personal, override in work-related templates
     (setq org-agenda-files gjg/personal-org-agenda-files)
@@ -2757,25 +2763,8 @@ Open man page in current window, rather than other window with
                              (org-agenda-overriding-header "Stardog and customer TODOs")
                              (org-deadline-warning-days 21)
                              ))
-                      )
-                     )
+                      ))
                    t)
-
-      (add-to-list 'org-agenda-custom-commands
-                   '("gc" "Clock report" agenda ""
-                     ((org-agenda-files (cons "~/projects/private-orgmode/work-habits.org" gjg/work-agenda-files))
-                      (org-agenda-span 'day)
-                      (org-agenda-start-with-clockreport-mode t)
-                      (org-agenda-time-grid nil)
-                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'notscheduled 'deadline 'scheduled)))) t)
-
-      (add-to-list 'org-agenda-custom-commands
-                   '("gt" "Work TODOs" alltodo ""
-                     ((org-agenda-files gjg/work-agenda-files)
-                      (org-agenda-span 'day)
-                      (org-agenda-tag-filter-preset '("-habit"))
-                      )) t)
-
     #+end_src
 **** Home based agendas
 ***** Fitness and @home
@@ -2784,7 +2773,8 @@ Open man page in current window, rather than other window with
         (add-to-list 'org-agenda-custom-commands
                      '("f" "Fitness"
                        ((agenda "" (
-                                    (org-agenda-span 'day))))) t)
+                                    (org-agenda-span 'day)
+                                    (org-agenda-files "~/projects/private-orgmode/fitness.org"))))) t)
         (add-to-list 'org-agenda-custom-commands
                      '("h" "thing TODO at Home"
                        (
