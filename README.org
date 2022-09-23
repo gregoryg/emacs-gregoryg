@@ -910,7 +910,9 @@
 *** Load default theme
     Deferred here until all theme tweaks have been applied
     #+begin_src emacs-lisp
-     (gjg/go-light) ; start with preferred light theme
+      (if (>  (third (decode-time )) 16)
+          (gjg/go-dark)
+        (gjg/go-light))
     #+end_src
 ** Make things open up in current window
    There's a standard way to force niceness from packages that open buffers in random
