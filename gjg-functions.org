@@ -265,10 +265,7 @@ A sort-of package with customization framework.  The famed =gjg= package.
           (setq mode-name
                 (concat "Fundamental[" (symbol-name gjg/current-agenda-context) "]"))))
 
-      ;; (add-hook 'org-agenda-mode-hook ...
-      (add-hook 'window-selection-change-functions
-                'gjg/display-agenda-context nil t)
-
+      (add-hook 'window-selection-change-functions 'gjg/display-agenda-context)
       ;; (remove-hook 'window-selection-change-functions 'gjg/display-agenda-context)
     #+end_src
 *** Create a context switcher
