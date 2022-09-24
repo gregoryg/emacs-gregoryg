@@ -2670,7 +2670,8 @@ Open man page in current window, rather than other window with
                                           "~/projects/private-orgmode/someday.org"
                                           "~/projects/private-orgmode/projects.org"
                                           "~/projects/private-orgmode/next.org"
-                                          "~/projects/private-orgmode/habits.org"))
+                                          "~/projects/private-orgmode/habits.org"
+                                          "~/projects/private-orgmode/work-habits.org"))
     (defun gjg/get-work-agenda-files ()
       "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
       (let ((engagement-files (directory-files-recursively (concat (f-dirname gjg/employer-org-file) "/engagements/")
