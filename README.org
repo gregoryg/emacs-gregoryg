@@ -1861,7 +1861,12 @@
            (`(t . t)
             (treemacs-git-mode 'deferred))
            (`(t . _)
-            (treemacs-git-mode 'simple))))
+            (treemacs-git-mode 'simple)))
+         (treemacs-modify-theme "Default"
+           :icon-directory "~/emacs/pixmaps/"
+           :config
+           (progn
+             (treemacs-create-icon :file "sparql-rdf.png" :extensions ("sparql" "rq" "ttl" "trig")))))
        :bind
        (:map treemacs-mode-map
              ("C-o" . treemacs-visit-node-no-split))
