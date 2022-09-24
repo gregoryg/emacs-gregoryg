@@ -263,7 +263,7 @@ A sort-of package with customization framework.  The famed =gjg= package.
         ;; very generic hook by necessity, so we must discover which buffer we have
         (when (string= (buffer-name) " *Agenda Commands*")
           (setq mode-name
-                (concat "Fundamental[" (symbol-name gjg/current-agenda-context) "]"))))
+                (concat "Fundamental[" gjg/current-agenda-context "]"))))
 
       (add-hook 'window-selection-change-functions 'gjg/display-agenda-context)
       ;; (remove-hook 'window-selection-change-functions 'gjg/display-agenda-context)
@@ -274,13 +274,11 @@ A sort-of package with customization framework.  The famed =gjg= package.
         "Set current Org Agenda context (work/home etc)."
         (interactive)
 
+        (let ((selection (completing-read "Ohai: " gjg/agenda-contexts-alist )))
+          (setq gjg/current-agenda-context selection)
         (setq org-agenda-files
-              (cadr (assoc (intern
-                            (completing-read "Ohai: " gjg/agenda-contexts-alist )
-                            )
-                           gjg/agenda-contexts-alist
-                           ))
-              ))
+              (cadr (assoc (intern selection) gjg/agenda-contexts-alist)))))
+      (global-set-key (kbd "C-c b") 'gjg/select-agenda-context)
     #+end_src
 ** Unfill paragraph
    Very useful - recognize paragraphs in text with line endings made just for display
