@@ -2711,6 +2711,9 @@ Open man page in current window, rather than other window with
             ("PicPay" "~/emacs/pixmaps/picpay-logo.png" nil nil :ascent center :height 24)
             ("inbox" "~/emacs/pixmaps/office-inbox.png" nil nil :ascent center :height 24)
             ("social" "~/emacs/pixmaps/icon-social-events.png" nil nil :ascent center :height 24)
+            ("fitness" "~/emacs/pixmaps/fitness-heart.png" nil nil :ascent center :height 24)
+            ("gwennie" "~/emacs/pixmaps/loon.png" nil nil :ascent center :height 24)
+            ("finances" "~/emacs/pixmaps/finances.png" nil nil :ascent center :height 24)
             ))
     (setq org-agenda-sticky t
           org-agenda-fontify-priorities t
