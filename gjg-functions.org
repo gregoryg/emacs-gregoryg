@@ -132,7 +132,7 @@ A sort-of package with customization framework.  The famed =gjg= package.
          ;; (with-current-buffer (get-buffer-create "zgrego")
          ;; (with-temp-buffer
          (with-current-buffer output-buffer
-           (let ((buffer-read-only nill))
+           (let ((buffer-read-only nil))
              (erase-buffer)
              (if (and (<= 200 response) (<= response 299))
                  (url-insert results-buffer)
@@ -148,6 +148,7 @@ A sort-of package with customization framework.  The famed =gjg= package.
        "Get list of databases from the Stardog server - will work for users with admin rights"
        ;; (url-retrieve (concat server "/admin/databases") #'gjg/handle-stardog-result )
        (url-retrieve (concat (replace-regexp-in-string "/+$" "" server) "/admin/databases") #'gjg/handle-stardog-result (list (current-buffer)))
+       (url-retrieve (concat (replace-regexp-in-string "/+$" "" server) "/admin/databases") #'gjg/handle-stardog-result)
          )
 
      (defun gjg/stardog-build-url (arg &optional server database api-endpoint reasoning  )
