@@ -3221,7 +3221,7 @@ Open man page in current window, rather than other window with
 ** SPARQL
    #+begin_src emacs-lisp
      (use-package sparql-mode :straight t
-       :mode "\\.\\(sparql\\|rq\\)\\'"
+       :mode "\\.\\(sparql\\|rq\\|sms\\|sms2\\)\\'"
        ;; :hook (sparql-mode . lsp-deferred)
        ;; :config
        ;; (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql"))
