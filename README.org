@@ -418,6 +418,8 @@
      (global-unset-key (kbd "M-]")) ; unset one next-buffer binding
      (global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
      (global-set-key (kbd "s-y") 'gjg/exwm-select-or-launch-spotify)
+     (global-set-key (kbd "s--")  'gjg/exwm-select-zoom-meeting)
+
      (global-set-key [f1] 'delete-other-windows)
      (global-set-key [f2] 'gjg/switch-to-other-buffer)
      (global-set-key [f3] 'gjg/other-window-or-split)
@@ -1107,6 +1109,15 @@
          (gjg/exwm-switch-to-buffer-or-launch "Spotify" "spotify"))
      #+end_src
 
+**** Function to switch quickly to Zoom Meeting
+     #+begin_src emacs-lisp
+       (defun gjg/exwm-select-zoom-meeting ()
+         "Select the running Zoom Meeting window if it's running."
+         (interactive)
+         (gjg/exwm-switch-to-buffer-or-launch "Zoom Meeting"))
+     #+end_src
+
+
 *** Update Spotify's buffer name when song changes
     If running EXWM, let's keep Spotify's buffer name hip
     #+begin_src emacs-lisp
@@ -1249,6 +1260,7 @@
                  (,(kbd "<XF86AudioLowerVolume>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados down")))
                  (,(kbd "<XF86AudioMute>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados togmute")))
                  (,(kbd "<XF86AudioPlay>") . playerctl-play-pause-song)
+                 ([?\s--] . gjg/exwm-select-zoom-meeting)
                  ([?\s-.] . (lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
                  ([?\s-,] . gjg/polybar-start-or-toggle)
 
