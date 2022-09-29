@@ -1085,12 +1085,13 @@
        (defun gjg/exwm-switch-to-buffer-or-launch (searchstring &optional application)
          "Switch to the first buffer matching SEARCHSTRING as a substring
           If no matching buffer is found, launch the APPLICATION using gtk-launch."
-           (let
+         (let
              ((mybuf (car (cl-remove-if-not (lambda (row) (cl-search searchstring (buffer-name row))) (buffer-list)))))
            (if mybuf
                (switch-to-buffer mybuf)
-             (when application
-                 (call-process-shell-command (concat "gtk-launch " application))))))
+             (if application
+                 (call-process-shell-command (concat "gtk-launch " application))
+               (message "No \"%s\" window is running." searchstring)))))
      #+end_src
 
 **** Shell script to select corporate Gmail window with unread threads
