@@ -264,21 +264,23 @@ A sort-of package with customization framework.  The famed =gjg= package.
         ;; very generic hook by necessity, so we must discover which buffer we have
         (when (string= (buffer-name) " *Agenda Commands*")
           (setq mode-name
-                (concat "Fundamental[" gjg/current-agenda-context "]"))))
+                (concat "Fundamental[" (symbol-name gjg/current-agenda-context) "]"))))
 
       (add-hook 'window-selection-change-functions 'gjg/display-agenda-context)
       ;; (remove-hook 'window-selection-change-functions 'gjg/display-agenda-context)
     #+end_src
 *** Create a context switcher
     #+begin_src emacs-lisp
-      (defun gjg/select-agenda-context ()
+      (defun gjg/select-agenda-context (&optional context)
         "Set current Org Agenda context (work/home etc)."
         (interactive)
 
-        (let ((selection (completing-read "Ohai: " gjg/agenda-contexts-alist )))
-          (setq gjg/current-agenda-context selection)
+        (if context
+            (setq gjg/current-agenda-context context)
+          (let ((selection (intern (completing-read "Ohai: " gjg/agenda-contexts-alist ))))
+            (setq gjg/current-agenda-context selection)))
         (setq org-agenda-files
-              (cadr (assoc (intern selection) gjg/agenda-contexts-alist)))))
+              (cadr (assoc gjg/current-agenda-context gjg/agenda-contexts-alist))))
       (global-set-key (kbd "C-c b") 'gjg/select-agenda-context)
     #+end_src
 ** Unfill paragraph
