@@ -2379,14 +2379,7 @@ Open man page in current window, rather than other window with
              ;; 	    (abbrev-mode 1)
              ;; 	    ;; set sub/superscript interpretation OFFFFFFOOOFFF
              ;; 	    (setq org-use-sub-superscripts nil)
-             (setq org-catch-invisible-edits 'show-and-error )
-             (let* ((thetime (decode-time))
-                    (dow (nth 6 thetime))
-                    (hour (third thetime))
-                    )
-               (if (and (< dow 6) (> hour 7) (< hour 18))
-                   (gjg/select-agenda-context 'work)
-                 (gjg/select-agenda-context 'home)))))
+             (setq org-catch-invisible-edits 'show-and-error )))
    #+end_src
 ** Org tree to indirect
    This useful feature is hampered by poor naming of the resulting buffer, making it very
@@ -2932,6 +2925,20 @@ Open man page in current window, rather than other window with
                  :formatter nil)
             )
     #+end_src
+*** Agenda context
+    This is something to help separate work time.
+
+    No dependency on Org or Org Agenda being loaded
+
+    #+begin_src emacs-lisp
+      (let* ((thetime (decode-time))
+             (dow (nth 6 thetime))
+             (hour (third thetime)))
+        (if (and (< dow 6) (> hour 7) (< hour 18))
+            (gjg/select-agenda-context 'work)
+          (gjg/select-agenda-context 'home)))
+    #+end_src
+
 ** Tags/TODOs/Projects Oh My
    #+begin_src emacs-lisp
      (setq org-tag-persistent-alist
