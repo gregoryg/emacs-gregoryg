@@ -801,6 +801,7 @@
      (setq ibuffer-saved-filter-groups
            '(("home"
               ("Org and Markdown" (or (mode . org-mode)
+                                      (mode . org-agenda-mode)
                                       (mode . markdown-mode)))
               ("Shells" (or (mode . shell-mode)
                             (mode . eshell-mode)))
