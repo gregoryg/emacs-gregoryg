@@ -1550,8 +1550,8 @@
    #+begin_src emacs-lisp
      (with-eval-after-load 'ede
        (define-key ede-minor-mode-map (kbd "C-c e")
-         (lookup-key ede-minor-mode-map (kbd "C-c .")))
-       (define-key ede-minor-mode-map (kbd "C-c .") nil))
+                   (lookup-key ede-minor-mode-map (kbd "C-c .")))
+       (unbind-key (kbd "C-c .") org-mode-map))
    #+end_src
 
 ** Corfu - auto-complete and more
@@ -2182,7 +2182,6 @@ Open man page in current window, rather than other window with
                    ("p" . previous-line)
                    ("m" . ovpn-mode-start-vpn-with-namespace))))
    #+end_src
-
 * Org mode stuff
 
 ** Contributions package
@@ -2214,20 +2213,21 @@ Open man page in current window, rather than other window with
    #+begin_src emacs-lisp
      (with-eval-after-load 'org
        ;; little use for header COMMENT keyword
-       (define-key org-mode-map (kbd "C-c ;") nil)       ; org-toggle-comment
+       (unbind-key (kbd "C-c ;") org-mode-map)       ; org-toggle-comment
+       (unbind-key (kbd "C-c ;") org-mode-map)
        ;; don't accidentally archive things
-       (define-key org-mode-map (kbd "C-c C-x C-a") nil) ; org-archive-subtree-default
-       (define-key org-mode-map (kbd "C-c C-x C-s") nil) ; org-archive-to-subtree
-       (define-key org-mode-map (kbd "C-c C-x A") nil)   ; org-archive-to-archive-sibling
-       (define-key org-mode-map (kbd "C-c C-x a") nil)   ; org-toggle-archive-tag
+       (unbind-key (kbd "C-c C-x C-a") org-mode-map) ; org-archive-subtree-default
+       (unbind-key (kbd "C-c C-x C-s") org-mode-map) ; org-archive-to-subtree
+       (unbind-key (kbd "C-c C-x A") org-mode-map)   ; org-archive-to-archive-sibling
+       (unbind-key (kbd "C-c C-x a") org-mode-map)   ; org-toggle-archive-tag
        ;; keys that conflict with buffer movement
-       (define-key org-mode-map (kbd "<M-right>") nil)     ; org-metaright
-       (define-key org-mode-map (kbd "<M-left>") nil)     ; org-metaleft
+       (unbind-key (kbd "<M-right>") org-mode-map)   ; org-metaright
+       (unbind-key (kbd "<M-left>") org-mode-map)    ; org-metaleft
        ;; keys that conflict with windmove package
-       ;; (define-key org-mode-map (kbd "<S-up>") nil)       ; org-shiftup
-       ;; (define-key org-mode-map (kbd "<S-down>") nil)     ; org-shiftdown
-       ;; (define-key org-mode-map (kbd "<S-left>") nil)     ; org-shiftleft
-       ;; (define-key org-mode-map (kbd "<S-right>") nil)    ; org-shiftright
+       ;; (unbind-key (kbd "<S-up>") org-mode-map)       ; org-shiftup
+       ;; (unbind-key (kbd "<S-down>") org-mode-map)     ; org-shiftdown
+       ;; (unbind-key (kbd "<S-left>") org-mode-map)     ; org-shiftleft
+       ;; (unbind-key (kbd "<S-right>") org-mode-map)    ; org-shiftright
        )
    #+end_src
 ** Org Babel and Source Code Blocks
@@ -3096,7 +3096,7 @@ Open man page in current window, rather than other window with
             org-read-date-prefer-future 'time)
       ;; (org-clock-persistence-insinuate)
       ;; make the clock jump key global!
-      (define-key comint-mode-map (kbd "C-c C-x") nil)
+      (unbind-key (kbd "C-c C-x") org-mode-map)
       (global-set-key (kbd "C-c C-x j") 'org-clock-goto)
     #+end_src
 *** Clock in also to Harvest for work files
