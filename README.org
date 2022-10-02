@@ -178,8 +178,6 @@
      (use-package terraform-mode
        :straight t)
      (use-package vterm :straight t)
-     (use-package yafolding
-       :straight t)
    #+end_src
 
 * Greg's customizations!
@@ -1486,6 +1484,22 @@
 ** Start emacs server
    #+begin_src emacs-lisp
 (server-start)
+   #+end_src
+** Yafolding Mode
+   Yafolding mode is useful in code and (maybe even but probably not in) Org.  Let's keep
+   Org mode's keys unmolested, and use an additional modifier to toggle hide/show
+   #+begin_src emacs-lisp
+     (use-package yafolding
+       :straight t
+       :init
+       (unbind-key (kbd "<C-return>") yafolding-mode-map)
+       (unbind-key (kbd "<C-S-return>") yafolding-mode-map)
+       (unbind-key (kbd "<C-M-return>") yafolding-mode-map)
+
+       (define-key yafolding-mode-map (kbd "C-'") #'yafolding-toggle-element)
+       (define-key yafolding-mode-map (kbd "C-M-'") #'yafolding-toggle-all))
+       ;; (define-key yafolding-mode-map (kbd "<C-S-return>") #'yafolding-toggle-all)
+       ;; (define-key yafolding-mode-map (kbd "<C-M-return>") #'yafolding-toggle-element))
    #+end_src
 ** Eshell
    Okay, not yet "commonly used" (as of [2020-09-23 Wed]) ... but it appears to be
