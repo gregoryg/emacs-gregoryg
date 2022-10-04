@@ -3260,10 +3260,14 @@ Open man page in current window, rather than other window with
      #+begin_src bash
        sudo npm install --save-dev yaml-language-server
      #+end_src
+*** Eglot
+    #+begin_src emacs-lisp
+      (use-package eglot :straight t)
+    #+end_src
 *** LSP Package configuration
    + [[https://www.youtube.com/watch?v=EmLCTPwhC4I][System Crafters Live! - Emacs Package Potluck (Trying Your Suggestions!) - Yo...]]
 
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle no
        (use-package lsp-mode
          :straight t
          :commands (lsp lsp-deferred)
