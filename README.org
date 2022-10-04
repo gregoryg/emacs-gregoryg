@@ -3639,9 +3639,31 @@ Open man page in current window, rather than other window with
       (highlight-regexp "/[^/]+\.deb" 'hi-black-b))
   #+end_src
 
-* Modeline and Title
+* Parade of Modelines
+ The mode line is the most tweaky damn part of Emacs.  I can't get my head around the
+ format mechanism, hence all packages must be tried.
+
  Fancy icons may require fonts (like =texlive-fonts-extra=)
 
+** Frame title and mode line tweaks
+  #+begin_src emacs-lisp
+    ;; (require 'spaceline-config)
+    ;; (setq spaceline-always-show-segments t)
+    ;; (spaceline-spacemacs-theme)
+    ;; show column number in modeline - in addition to line number
+    (line-number-mode 1)
+    (column-number-mode 1)
+    ;; do not show load average
+    (setq display-time-default-load-average nil)
+
+    (setq frame-title-format (concat "emacs@" (system-name) " - %f; %b"))
+    ;; fancy git icon
+    (defadvice vc-mode-line (after strip-backend () activate)
+      (when (stringp vc-mode)
+        (let ((gitlogo (replace-regexp-in-string "^ Git." "  " vc-mode))) ;; symbol from fonts-font-awesome
+          (setq vc-mode gitlogo))))
+
+  #+end_src
 ** Awesome Tray
    #+begin_src emacs-lisp :tangle no
      (use-package awesome-tray
@@ -3653,8 +3675,55 @@ Open man page in current window, rather than other window with
              awesome-tray-buffer-read-only-style "%")
        (awesome-tray-mode 0))
    #+end_src
-** Moodline
+** Doom modeline
    #+begin_src emacs-lisp
+     (use-package minions
+       :straight t
+       :hook (doom-modeline-mode . minions-mode)
+       :custom
+       (minions-mode-line-lighter ""))
+
+     (use-package doom-modeline
+       :straight t
+       :after eshell     ;; Make sure it gets hooked after eshell
+       :hook (after-init . doom-modeline-init)
+       ;; :custom-face
+       ;; ;; (mode-line ((t (:height 0.85))))
+       ;; (mode-line-inactive ((t (:height 0.95))))
+       :custom
+       ;; (doom-modeline-height 15)
+       ;; (doom-modeline-bar-width 6)
+       (doom-modeline-lsp t)
+       (doom-modeline-github nil)
+       ;; (doom-modeline-mu4e nil)
+       ;; (doom-modeline-irc nil)
+       (doom-modeline-minor-modes t)
+       ;; (doom-modeline-persp-name nil)
+       (doom-modeline-buffer-file-name-style 'truncate-except-project)
+       (doom-modeline-major-mode-icon nil)
+       :config
+       ; remove selection-info segment from default
+       (doom-modeline-def-modeline 'main
+         '(bar workspace-name window-number modals matches follow buffer-info remote-host buffer-position word-count parrot )
+         '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker time))
+       (doom-modeline-mode 1)
+       ;; (doom-modeline-add-variable-watcher
+       ;;  'doom-modeline--buffer-file-state-icon
+       ;;  (lambda (_sym val op _where)
+       ;;    (when (string= (buffer-name _where) "tryit.el")
+       ;;      (message "DEBUG: %s %s %s %s" _sym val op _where))
+       ;;    (when (eq op 'set)
+       ;;      ;; (when (and val (not (string-empty-p val)))
+       ;;        (setq doom-modeline--buffer-file-state-icon
+       ;;              "🚫"
+       ;;              ;; (string-replace "" "OHAI" val)
+       ;;              )
+       ;;      ;; )
+       ;;  )))
+       )
+   #+end_src
+** Moodline
+   #+begin_src emacs-lisp :tangle no
      (use-package mood-line
        :straight t
        :config
@@ -3691,24 +3760,6 @@ Open man page in current window, rather than other window with
        (global-hide-mode-line-mode 0)
        (bind-key "s-m" 'mood-line-mode))
    #+end_src
-** Frame title and mode line tweaks
-  #+begin_src emacs-lisp :tangle no
-    ;; (require 'spaceline-config)
-    ;; (setq spaceline-always-show-segments t)
-    ;; (spaceline-spacemacs-theme)
-    ;; show column number in modeline - in addition to line number
-    (column-number-mode t)
-    ;; do not show load average
-    (setq display-time-default-load-average nil)
-
-    (setq frame-title-format (concat "emacs@" (system-name) " - %f; %b"))
-    ;; fancy git icon
-    (defadvice vc-mode-line (after strip-backend () activate)
-      (when (stringp vc-mode)
-        (let ((gitlogo (replace-regexp-in-string "^ Git." "  " vc-mode))) ;; symbol from fonts-font-awesome
-          (setq vc-mode gitlogo))))
-
-  #+end_src
 * Final steps
 #+begin_src emacs-lisp
 (shell (get-buffer-create "sh1"))
