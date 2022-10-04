@@ -2702,6 +2702,7 @@ Open man page in current window, rather than other window with
       (let ((engagement-files (directory-files-recursively (concat (f-dirname gjg/employer-org-file) "/engagements/")
                                                            "\\`[^.].*\\.org\\(\\.gpg\\)?\\'")))
         (add-to-list 'engagement-files gjg/employer-org-file t)
+        (add-to-list 'engagement-files "~/projects/private-orgmode/work-habits.org")
         (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)))
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
     (add-to-list 'gjg/agenda-contexts-alist `(work ,(gjg/get-work-agenda-files)))
@@ -2764,41 +2765,58 @@ Open man page in current window, rather than other window with
      (setq org-agenda-custom-commands nil)
    #+end_src
 *** Custom Agenda definitions
-**** (W)ork agenda
-     These views use the work files
+**** Work agendas
+***** The big (W)ork agenda
+       These views use the work files
 
-     TODO  why does starting with clocktable and/or log-mode not work??
+       TODO  why does starting with clocktable and/or log-mode not work??
+       #+begin_src emacs-lisp
+         (add-to-list 'org-agenda-custom-commands
+                      '("W" "Work Agenda"
+                        (
+                         ;; Work / Laptop Habits section
+                         (agenda ""
+                                 ((org-agenda-files '("~/projects/private-orgmode/work-habits.org"))
+                                  (org-agenda-start-with-log-mode nil)
+                                  (org-agenda-start-with-clockreport-mode nil)
+                                  (org-agenda-overriding-header "Work/Laptop Morning Tasks")))
+                         ;; Work agenda with clocked time
+                         (agenda ""
+                                 ((org-agenda-span 'day)
+                                  (org-agenda-files gjg/work-agenda-files)
+                                  (org-agenda-start-with-log-mode '(clock))
+                                  (org-deadline-warning-days 2)
+                                  (org-agenda-start-with-clockreport-mode t)
+                                  (org-agenda-start-with-log-mode t)
+                                  )
+                                 )
+                         ;; TODOs for Stardog and prospects/customers
+                         (todo ""
+                               ((org-agenda-span 'day)
+                                (org-agenda-files gjg/work-agenda-files)
+                                (org-agenda-overriding-header "Stardog and customer TODOs")
+                                (org-deadline-warning-days 21)
+                                ))
+                         ))
+                      t)
+       #+end_src
+***** special filtering
+      #+begin_src emacs-lisp
+        (add-to-list 'org-agenda-custom-commands '("p" . "Priority filtered TODO"))
+        (add-to-list 'org-agenda-custom-commands
+                 '("pa" "#A Priority" todo ""
+                ((org-agenda-entry-types '(:scheduled))
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "\\[#A\\]")))))
+        (add-to-list 'org-agenda-custom-commands
+                 '("pb" "#B Priority" todo ""
+                ((org-agenda-entry-types '(:scheduled))
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "\\[#B\\]")))))
+        (add-to-list 'org-agenda-custom-commands
+                 '("pc" "#C Priority" todo ""
+                ((org-agenda-entry-types '(:scheduled))
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "\\[#C\\]")))))
 
-    #+begin_src emacs-lisp
-      (add-to-list 'org-agenda-custom-commands
-                   '("W" "Work Agenda"
-                     (
-                      ;; Work / Laptop Habits section
-                      (agenda ""
-                              ((org-agenda-files '("~/projects/private-orgmode/work-habits.org"))
-                               (org-agenda-start-with-log-mode nil)
-                               (org-agenda-start-with-clockreport-mode nil)
-                               (org-agenda-overriding-header "Work/Laptop Morning Tasks")))
-                      ;; Work agenda with clocked time
-                      (agenda ""
-                              ((org-agenda-span 'day)
-                               (org-agenda-files gjg/work-agenda-files)
-                               (org-agenda-start-with-log-mode '(clock))
-                               (org-deadline-warning-days 2)
-                               (org-agenda-start-with-clockreport-mode t)
-                               (org-agenda-start-with-log-mode t)
-                               )
-                              )
-                      ;; TODOs for Stardog and prospects/customers
-                      (todo ""
-                            ((org-agenda-span 'day)
-                             (org-agenda-files gjg/work-agenda-files)
-                             (org-agenda-overriding-header "Stardog and customer TODOs")
-                             (org-deadline-warning-days 21)
-                             ))
-                      ))
-                   t)
-    #+end_src
+      #+end_src
 **** Home based agendas
 ***** Fitness and @home
       #+begin_src emacs-lisp
