@@ -479,11 +479,11 @@
      ;;   in emacs 24.4 yow.el is obsolete; use cookie instead
      (when (featurep 'yow)
        (unload-feature 'yow))
-     (with-eval-after-load 'cookie1
-       (defun yow ()
-         (interactive)
-         (let ((suggest-key-bindings nil))
-           (message (cookie gjg/yow-file nil nil)))))
+     ;; (with-eval-after-load 'cookie
+     (defun yow ()
+       (interactive)
+       (let ((suggest-key-bindings nil))
+         (message (cookie gjg/yow-file nil nil))))
      ;; )
      ;; almost as important: keep track of those tetris scores
      (setq tetris-score-file "~/.emacs.d/tetris.score")
