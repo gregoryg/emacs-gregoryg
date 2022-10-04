@@ -2073,6 +2073,11 @@
      (ad-activate 'occur-prev)
    #+end_src
 ** Shell mode
+*** Shell mode config
+    #+begin_src emacs-lisp
+      (custom-set-variables '(shell-kill-buffer-on-exit t)
+                            '(shell-command-prompt-show-cwd t))
+    #+end_src
 *** Config for comint mode
     #+begin_src emacs-lisp
       (defun gjg/turn-on-comint-history (history-file)
