@@ -3225,7 +3225,7 @@ Open man page in current window, rather than other window with
                  (electric-pair-local-mode 1)))
 
    #+end_src
-** Language Servers and setup for LSP
+** Language Servers and setup for LSP / Eglot
 *** Language Servers
 **** Bash
      #+begin_src bash
