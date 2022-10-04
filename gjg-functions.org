@@ -32,14 +32,13 @@ A sort-of package with customization framework.  The famed =gjg= package.
                      )
        :group 'gjg)
 
-     (defcustom gjg/audioplayer "mplayer"
-       "Audio player for this machine"
-       :type 'string
-       :group 'gjg)
+     (defcustom gjg/max-buffer-name-in-modeline 80
+       "Maximum width of buffer name segment in modeline - EXWM buffer names can be REALLY LONG."
+       :type 'number)
 
      (defcustom gjg/blogpost-title ""
-       "Name of blogpost title used in blog capture template"
-       )
+       "Name of blogpost title used in blog capture template")
+
      (defcustom gjg/employer-name "Poodles R Us"
        "Name used by Gmail for use in gmail-buffer-or-launch script"
        :type 'string
@@ -55,12 +54,12 @@ A sort-of package with customization framework.  The famed =gjg= package.
        :type 'string
        :group 'gjg)
 
-     (defcustom gjg/preferred-light-theme "brutalist"
+     (defcustom gjg/preferred-light-theme "modus-operandi"
        "Current preferred light theme"
        :type 'string
        :group 'gjg)
 
-     (defcustom gjg/preferred-dark-theme "brutalist-dark"
+     (defcustom gjg/preferred-dark-theme "modus-vivendi"
        "Current preferred dark theme"
        :type 'string
        :group 'gjg)
@@ -96,6 +95,16 @@ A sort-of package with customization framework.  The famed =gjg= package.
       (disable-theme (intern gjg/preferred-dark-theme)))
 
    #+end_src
+* Register buffer name modeline segment for use in various modeline packages
+  #+begin_src emacs-lisp :tangle no
+    (defun gjg/moodline-buffer-name-segment
+        "Displays the name of the current buffer in the mode-line - truncated to gjg/max-buffer-name-in-modeline if set"
+      (if (and (boundp 'gjg/max-buffer-name-in-modeline) (numberp gjg/max-buffer-name-in-modeline))
+          (propertize "%b " 'face )
+
+            )
+        )
+  #+end_src
 * Work/Job/Consulting/Employer functions
    #+begin_src emacs-lisp
      (defun gjg/nag-timer () "Nag me when there isn't a clock running"
@@ -278,7 +287,7 @@ A sort-of package with customization framework.  The famed =gjg= package.
 
         (if context
             (setq gjg/current-agenda-context context)
-          (let ((selection (intern (completing-read "Ohai: " gjg/agenda-contexts-alist ))))
+          (let ((selection (intern (completing-read (format "Set Org Agenda context[%s]: " gjg/current-agenda-context) gjg/agenda-contexts-alist ))))
             (setq gjg/current-agenda-context selection)))
         (setq org-agenda-files
               (cadr (assoc gjg/current-agenda-context gjg/agenda-contexts-alist))))
