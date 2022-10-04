@@ -2097,12 +2097,12 @@
                     (with-current-buffer it (comint-write-input-ring)))))
     #+end_src
 *** Bash completions
-#+begin_src emacs-lisp
-  (use-package bash-completion
-    :straight t
-    :config
-    (bash-completion-setup))
-#+end_src
+    #+begin_src emacs-lisp
+      (use-package bash-completion
+        :straight t
+        :config
+        (bash-completion-setup))
+    #+end_src
 *** ANSI color
     The =xterm-color-filter= function is part of the =xterm-color= package.  It does the
     Lord's work in translating ANSI color codes to font properties so that things can look
