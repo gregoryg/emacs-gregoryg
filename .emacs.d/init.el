@@ -20,9 +20,8 @@
   (push '(menu-bar-lines . 0) default-frame-alist))
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
-(defvar better-gc-cons-threshold 134217728 ; 128mb
+(defvar better-gc-cons-threshold 335544320 ; 512MB
   "The default value to use for `gc-cons-threshold'.
-
 ;; If you experience freezing, decrease this.  If you experience stuttering, increase this.")
 
 (add-hook 'emacs-startup-hook
@@ -65,5 +64,5 @@
 ;; set memory usage for interactive use
 ;; (setq gc-cons-threshold 20000000) ; ref https://github.com/lewang/flx#gc-optimization
 ;;(setq gc-cons-threshold 134217728)
-   (setq gc-cons-threshold 33554432)
+;;   (setq gc-cons-threshold 33554432)
 (setq file-name-handler-alist file-name-handler-alist-original)
