@@ -3047,6 +3047,7 @@ Open man page in current window, rather than other window with
    #+begin_src emacs-lisp
      (use-package denote
        :straight t
+       :defer nil
        :init
        (defun gjg/denote-project () (interactive) (project-switch-project "~/gregj-notes"))
        :bind
@@ -3057,26 +3058,20 @@ Open man page in current window, rather than other window with
        ;; (setq denote-prompts '(title subdirectory))
        )
 
-     (require 'denote-dired)
+     ;;(setq denote-dired-directories '("~/gregj-notes/"))
+     ;; (add-to-list 'denote-dired-directories "~/gregj-notes/")
      (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories)
-     (add-to-list 'denote-dired-directories (expand-file-name "~/gregj-notes/"))
+     ;; (add-to-list 'denote-dired-directories (expand-file-name "~/gregj-notes/"))
      (custom-set-faces
       '(denote-faces-title
         ((t
           (:height 1.1 :weight semibold)))))
 
-     ;;(setq denote-dired-directories '("~/gregj-notes/"))
-     ;; (add-hook 'dired-mode-hook #'denote-dired-mode)
-
      (with-eval-after-load 'org-capture
-       (require 'denote-org-capture)
        (add-to-list 'org-capture-templates
                     '("n" "New note (with Denote)" plain
                       (file denote-last-path)
-                      ;; #'denote-org-capture
-                      #'(lambda ()
-                          (let ((denote-org-capture-specifiers (format "#+category: %s\n\n%s" (car denote-last-keywords) denote-org-capture-specifiers)))
-                            (denote-org-capture)))
+                      #'denote-org-capture
                       :no-save t
                       :immediate-finish nil
                       :kill-buffer t
