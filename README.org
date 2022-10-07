@@ -2804,17 +2804,17 @@ Open man page in current window, rather than other window with
       #+begin_src emacs-lisp
         (add-to-list 'org-agenda-custom-commands '("p" . "Priority filtered TODO"))
         (add-to-list 'org-agenda-custom-commands
-                 '("pa" "#A Priority" todo ""
-                ((org-agenda-entry-types '(:scheduled))
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "\\[#A\\]")))))
+                     '("pa" "#A Priority" todo ""
+                       ((org-agenda-entry-types '(:scheduled))
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "\\[#A\\]")))))
         (add-to-list 'org-agenda-custom-commands
-                 '("pb" "#B Priority" todo ""
-                ((org-agenda-entry-types '(:scheduled))
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "\\[#B\\]")))))
+                     '("pb" "#B Priority" todo ""
+                       ((org-agenda-entry-types '(:scheduled))
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "\\[#B\\]")))))
         (add-to-list 'org-agenda-custom-commands
-                 '("pc" "#C Priority" todo ""
-                ((org-agenda-entry-types '(:scheduled))
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "\\[#C\\]")))))
+                     '("pc" "#C Priority" todo ""
+                       ((org-agenda-entry-types '(:scheduled))
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "\\[#C\\]")))))
 
       #+end_src
 **** Home based agendas
@@ -2854,8 +2854,6 @@ Open man page in current window, rather than other window with
         ;; for example, category would be "linus-steam-deck"
         (mapconcat 'identity (mapcar #'substring-no-properties org-file-tags) "-")
         (string-join (mapcar #'substring-no-properties org-file-tags) "-")
-      #+end_src
-      #+begin_src emacs-lisp
         ;; use just org files in the notes directory
         (add-to-list 'org-agenda-custom-commands '("n" . "Notes prefix key")) ; describe prefix
         (add-to-list 'org-agenda-custom-commands
