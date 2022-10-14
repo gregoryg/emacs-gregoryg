@@ -11,7 +11,7 @@
 (load custom-file)
 
 ;; keep Emacs from garbage collection during init + other helpers
-(setq gc-cons-threshold 1000000000) ;; ref https://github.com/MatthewZMD/.emacs.d#defer-garbage-collection (x 10)
+;; (setq gc-cons-threshold 1000000000) ;; ref https://github.com/MatthewZMD/.emacs.d#defer-garbage-collection (x 10)
 (defvar file-name-handler-alist-original file-name-handler-alist)
 (setq file-name-handler-alist nil)
 (setq site-run-file nil)
@@ -26,7 +26,7 @@
 
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq gc-cons-threshold better-gc-cons-threshold)
+            ;; (setq gc-cons-threshold better-gc-cons-threshold)
             (setq file-name-handler-alist file-name-handler-alist-original)
             (makunbound 'file-name-handler-alist-original)))
 
@@ -46,11 +46,11 @@
       [(meta shift -)])))
 (load "~/projects/emacs/straight.el/bootstrap")
 (straight-use-package 'use-package)
+(use-package bind-key :straight t :defer nil)
+(straight-use-package 'gcmh) ;; garbage collection magic hack
+(gcmh-mode 1)
 ;; require use-package for byte-compiled init files ref https://github.com/jwiegley/use-package/issues/436
 (require 'use-package)
-(use-package bind-key :straight t :defer nil)
-;; (straight-use-package 'gcmh) ;; garbage collection magic hack
-;; (gcmh-mode 1)
 (straight-use-package 'org)
 (require 'org)
 ;(org-babel-tangle-file "~/emacs-gregoryg/README.org")
