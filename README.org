@@ -2695,14 +2695,12 @@ Open man page in current window, rather than other window with
                                           "~/projects/private-orgmode/someday.org"
                                           "~/projects/private-orgmode/projects.org"
                                           "~/projects/private-orgmode/next.org"
-                                          "~/projects/private-orgmode/habits.org"
-                                          "~/projects/private-orgmode/work-habits.org"))
+                                          "~/projects/private-orgmode/habits.org"))
     (defun gjg/get-work-agenda-files ()
       "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
       (let ((engagement-files (directory-files-recursively (concat (f-dirname gjg/employer-org-file) "/engagements/")
                                                            "\\`[^.].*\\.org\\(\\.gpg\\)?\\'")))
         (add-to-list 'engagement-files gjg/employer-org-file t)
-        (add-to-list 'engagement-files "~/projects/private-orgmode/work-habits.org")
         (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)))
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
     (add-to-list 'gjg/agenda-contexts-alist `(work ,(gjg/get-work-agenda-files)))
@@ -2765,6 +2763,43 @@ Open man page in current window, rather than other window with
      (setq org-agenda-custom-commands nil)
    #+end_src
 *** Custom Agenda definitions
+**** Cross-context agendas
+***** Basic Agenda with work habits added
+     #+begin_src emacs-lisp
+       (add-to-list 'org-agenda-custom-commands
+                    '("A" "Agenda + work habits"
+                      (
+                       (agenda "" ((org-agenda-span 'day)
+                                   (org-agenda-sorting-strategy
+                                    (quote ((agenda time-up priority-down tag-up))))
+                                   ;; (org-agenda-category-filter-preset (list "-work-habit"))
+                                   (org-agenda-files (cons "~/projects/private-orgmode/work-habits.org" gjg/personal-org-agenda-files))
+                                   (org-deadline-warning-days 0)))
+                       )) t)
+     #+end_src
+***** Notes/Roam/Denote TODOs
+      TODO: make category section of agenda the value of keywords in the front matter
+      #+begin_src emacs-lisp
+        ;; for example, category would be "linus-steam-deck"
+        (mapconcat 'identity (mapcar #'substring-no-properties org-file-tags) "-")
+        (string-join (mapcar #'substring-no-properties org-file-tags) "-")
+        ;; use just org files in the notes directory
+        (add-to-list 'org-agenda-custom-commands '("n" . "Notes prefix key")) ; describe prefix
+        (add-to-list 'org-agenda-custom-commands
+                     '("na" "Notes agenda"
+                       ((agenda "" (
+                                    (org-agenda-files '("/home/gregj/gregj-notes/"))
+                                    (org-agenda-span 'week)
+                                    )
+                                ))
+                       ) t)
+        (add-to-list 'org-agenda-custom-commands
+                     '("nt" "Zettelkastenistische Note TODOs" todo ""
+                       ((org-agenda-files '("/home/gregj/gregj-notes/"))
+                        (org-agenda-overriding-header "TODO items from Zettelkasten/Denote/Roam notes")
+                        ;; (org-agenda-prefix-format "")
+                        )))
+      #+end_src
 **** Work agendas
 ***** The big (W)ork agenda
        These views use the work files
@@ -2847,29 +2882,6 @@ Open man page in current window, rather than other window with
                        ((todo "TODO"
                               ((org-agenda-overriding-header "Review and Refile")
                                (org-agenda-files '(,(concat gjg/org-agenda-directory "inbox.org"))))))) t)
-      #+end_src
-***** Notes/Roam/Denote related tasks
-      TODO: make category section of agenda the value of keywords in the front matter
-      #+begin_src emacs-lisp :tangle no
-        ;; for example, category would be "linus-steam-deck"
-        (mapconcat 'identity (mapcar #'substring-no-properties org-file-tags) "-")
-        (string-join (mapcar #'substring-no-properties org-file-tags) "-")
-        ;; use just org files in the notes directory
-        (add-to-list 'org-agenda-custom-commands '("n" . "Notes prefix key")) ; describe prefix
-        (add-to-list 'org-agenda-custom-commands
-                     '("na" "Notes agenda"
-                       ((agenda "" (
-                                    (org-agenda-files '("/home/gregj/gregj-notes/"))
-                                    (org-agenda-span 'week)
-                                    )
-                                ))
-                       ) t)
-        (add-to-list 'org-agenda-custom-commands
-                     '("nt" "Zettelkastenistische Note TODOs" todo ""
-                       ((org-agenda-files '("/home/gregj/gregj-notes/"))
-                        (org-agenda-overriding-header "TODO items from Zettelkasten/Denote/Roam notes")
-                        ;; (org-agenda-prefix-format "")
-                        )))
       #+end_src
 ***** Started/Paused/Waiting personal tasks
       #+begin_src emacs-lisp
