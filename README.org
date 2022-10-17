@@ -2182,52 +2182,11 @@
      (selectrum-prescient-mode +1)
      (prescient-persist-mode +1)
    #+end_src
-** Window balancing
-   Auto-zoom selected window (disabled to start)
-   #+begin_src emacs-lisp :tangle no
-     ;; Resize active frame according to golden ratio
-     (use-package zoom
-       :straight t
-       :config
-       (setq
-        ;; zoom-size '(0.618 . 0.618)
-        zoom-size '(0.54 . 0.54)
-        zoom-ignored-buffer-name-regexps '("^\\*magit +.*")
-        zoom-ignored-major-modes '("dired-mode" "ediff-mode" "buffer-expose-mode"))
-       (zoom-mode -1))
-   #+end_src
 
-** Ivy / Smex / Counsel
-   Just starting to make use of =use-package= here.  The =:ensure= or =:straight= param will
-   automagically install the package if it is not already installed.
-
-*** Set up Ivy basics
-    This setup includes reliance on other packages such as Swiper for incremental search,
-    and Counsel for symbol completion and selection.
-
-	Smex helps sort commands by most-used
-
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-      ;; (use-package counsel
-      ;;   :config (counsel-mode))
-   #+end_src
-
-**** Make some keybindings for these crazy packages
-     Use =M-j= during a Swiper search to add the sub-word at point to
-     the search - similar to =C-s C-w= in built-in isearch.
-
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-       ;; ;; (global-set-key (kbd "C-s") 'swiper)
-       ;; ;; (global-set-key (kbd "C-M-s") 'swiper-isearch)
-       ;; ;; (global-set-key (kbd "C-M-r") 'swiper-isearch-backward)
-       ;; (global-set-key (kbd "M-x") 'counsel-M-x)
-       ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-       ;; (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
-     #+end_src
 
 ** Occur
 *** Navigation
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      ;;     Some simple sex-ups for occur-mode
      (define-key occur-mode-map "n" 'occur-next)
      (define-key occur-mode-map "p" 'occur-prev)
