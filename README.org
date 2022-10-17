@@ -2532,17 +2532,13 @@ Open man page in current window, rather than other window with
      #+end_src
 
 **** Phone/meeting/task - the heart of it all
+     TODO: Fix the disappearing clock in the original template definition
+
      #+begin_src emacs-lisp
        (push
         '("p" "Phone/Meeting" entry
           (file+headline gjg/employer-org-file "Calls and Meetings")
           "* %t %^{type|Call|Meeting|Task} with %^{with|Solutions Team|SE Team|Steven|Marketing|Sales|Engineering|South Sales Team|Central Sales Team}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro|Weekly cadence|Learning Update|Working session|Status update}
-         :PROPERTIES:
-         :NOBLOCKING: t
-         :END:
-         :LOGBOOK:
-         CREATED: %U
-         :END:
          %i
          + Team: GG and %?
            \#+begin_src emacs-lisp :var table=people :results append raw :exports results :eval never-export
