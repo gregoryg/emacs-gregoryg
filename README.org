@@ -67,7 +67,6 @@
       ;; org-modern-mode
       ;; org-plus-contrib
       ob-async
-      ob-http
       pyvenv
       prettify-greek
       rainbow-delimiters
@@ -148,8 +147,6 @@
      ;; (use-package counsel-projectile
      ;;   :straight nil)
      (use-package htmlize
-       :straight t)
-     (use-package keychain-environment
        :straight t)
      (use-package material-theme
        :straight t)
@@ -2098,7 +2095,7 @@
 
    #+end_src
 *** Open file in relevant OS app
-#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+#+begin_src emacs-lisp
   ;; swiped from Gilaras Drakeson <gilaras@gmail.com>
   (defcustom gjg/os-open "xdg-open"
     "Command to open a document, e.g. `xdg-open` on Linux, `sensible-browser` on crostini, `open` on OS X, `explorer` or `cygpath` on Windows"
@@ -2115,7 +2112,7 @@
   (define-key dired-mode-map (kbd "C-;") 'dired-open)
 #+end_src
 ** Ediff
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      (setq ediff-split-window-function 'split-window-horizontally)
      (setq ediff-window-setup-function 'ediff-setup-windows-plain)
    #+end_src
@@ -2171,9 +2168,7 @@
      ;;     (setq counsel-describe-function-function #'helpful-callable)
      ;;     (setq counsel-describe-variable-function #'helpful-variable)))
    #+end_src
-** Tab Completion
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-   #+end_src
+
 ** Selectrum (will it replace Ivy which replaced Ido?)
    #+begin_src emacs-lisp
      (use-package selectrum :straight t)
@@ -2201,19 +2196,19 @@
    #+end_src
 ** Shell mode
 *** Shell mode config
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       (custom-set-variables '(shell-kill-buffer-on-exit t)
                             '(shell-command-prompt-show-cwd t))
     #+end_src
 *** Config for comint mode
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       (defun gjg/turn-on-comint-history (history-file)
         (setq comint-input-ring-file-name history-file)
         (comint-read-input-ring 'silent))
       (setq comint-input-ring-size 5000)
     #+end_src
 *** Hook in shell history
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       (add-hook 'shell-mode-hook
                 (lambda ()
                   (gjg/turn-on-comint-history (getenv "HISFILE"))))
@@ -2224,7 +2219,7 @@
                     (with-current-buffer it (comint-write-input-ring)))))
     #+end_src
 *** Bash completions
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       (use-package bash-completion
         :straight t
         :config
@@ -2235,7 +2230,7 @@
     Lord's work in translating ANSI color codes to font properties so that things can look
     awesome.
 
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       (use-package xterm-color :straight t)
       (ansi-color-for-comint-mode-on)
       ;; try some xterm coloring in shell buffers
@@ -2249,7 +2244,8 @@
 *** SSH Agent in subprocesses
     + Not really related to shell-mode, this assures our keychain is activated for things
       such as magit that fire off subproceess
-      #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+      #+begin_src emacs-lisp
+        (use-package keychain-environment :straight t)
         (keychain-refresh-environment)
       #+end_src
 
@@ -3344,7 +3340,7 @@ Open man page in current window, rather than other window with
 * Programming language modes
 
 ** All modes derived from =prog-mode=
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      (add-hook 'prog-mode-hook
                (lambda ()
                       (rainbow-delimiters-mode 1)
@@ -3354,7 +3350,7 @@ Open man page in current window, rather than other window with
    #+end_src
 
    Let's throw in IELM =inferior-emacs-lisp-mode=, which derives from =comint-mode=
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      (add-hook 'inferior-emacs-lisp-mode-hook
                (lambda ()
                  (rainbow-delimiters-mode 1)
@@ -3398,7 +3394,7 @@ Open man page in current window, rather than other window with
        sudo npm install --save-dev yaml-language-server
      #+end_src
 *** Eglot
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       (use-package eglot :straight t)
     #+end_src
 *** LSP Package configuration
@@ -3417,7 +3413,7 @@ Open man page in current window, rather than other window with
          :hook (lsp-mode . lsp-ui-mode))
      #+end_src
 ** SPARQL
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      (use-package sparql-mode :straight t
        :mode "\\.\\(sparql\\|rq\\|sms\\|sms2\\)\\'"
        ;; :hook (sparql-mode . lsp-deferred)
@@ -3427,7 +3423,7 @@ Open man page in current window, rather than other window with
        ;; (sparql-language-server)
        )
    #+end_src
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      ;; (add-to-list 'lsp-language-id-configuration '(".*\\.sparql" . "sparql"))
 ;;     (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql"))
    #+end_src
@@ -3559,7 +3555,7 @@ Open man page in current window, rather than other window with
       pip install python-lsp-server[all]
     #+end_src
 *** Python mode setup
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      ;; Python
 
      (use-package python
@@ -3670,7 +3666,7 @@ Open man page in current window, rather than other window with
 *** MySQL / MariaDB
 
     + Assure that client prompt is recognized for both products
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      ;; (add-hook 'sql-interactive-mode-hook (lambda ()
      ;;                                        (setq sql-prompt-regexp "\\(Maria[BD]*\\|MySQL\\) [^\\>]+\\>")
      ;;                                        ))
@@ -3684,7 +3680,7 @@ Open man page in current window, rather than other window with
        )
    #+end_src
    + Allow for alternative port
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+     #+begin_src emacs-lisp
        (setq sql-mysql-login-params '(user password server database port))
        (setq sql-port 3306)
      #+end_src
@@ -3714,23 +3710,24 @@ Open man page in current window, rather than other window with
      (setq LilyPond-mode-hook prog-mode-hook)
    #+end_src
 ** FINAL step after all language modes have been configured
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-          (org-babel-do-load-languages
-           'org-babel-load-languages
-           (append org-babel-load-languages
-                   '(
-                     (sparql . t)
-                     (clojure . t)
-                     (http . t) ;; curl
-                     (js . t)
-                     (latex . t)
-     ;;                (jupyter . t) ;; makes Emacs core dump??? (related to compiled zmq)
-                     (plantuml . t)
-                     (lilypond . t)
-                     (python . t)
-                     (shell  . t)
-                     (sql . t)
-                     )))
+   #+begin_src emacs-lisp
+     (use-package ob-http :straight t)
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      (append org-babel-load-languages
+              '(
+                (sparql . t)
+                (clojure . t)
+                (http . t) ;; curl
+                (js . t)
+                (latex . t)
+                ;;                (jupyter . t) ;; makes Emacs core dump??? (related to compiled zmq)
+                (plantuml . t)
+                (lilypond . t)
+                (python . t)
+                (shell  . t)
+                (sql . t)
+                )))
    #+end_src
 * Devops
 ** Working with containers
@@ -3748,7 +3745,7 @@ Open man page in current window, rather than other window with
    + Ansible (RUNNING/STAGE/TASK/PLAY)
    + Docker build (Step n/n)
 
-  #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+  #+begin_src emacs-lisp
     (defun gjg/highlight-terraform-stuff ()
       (interactive)
       ; Terraform patterns
@@ -3783,7 +3780,7 @@ Open man page in current window, rather than other window with
  Fancy icons may require fonts (like =texlive-fonts-extra=)
 
 ** Frame title and mode line tweaks
-  #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+  #+begin_src emacs-lisp
     ;; (require 'spaceline-config)
     ;; (setq spaceline-always-show-segments t)
     ;; (spaceline-spacemacs-theme)
