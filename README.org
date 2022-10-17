@@ -1648,13 +1648,6 @@
           (setq window-divider-default-right-width 1)
           (window-divider-mode 1)
         #+end_src
-*** Changes to modeline
-    Now that I don't have the typical DE panels, I want to show clock and battery in the modeline
-        #+begin_src emacs-lisp
-          ;; TODO: find a system-tray/panel solution to showing clock and battery - modeline is so crowded already
-          ;; (display-time)
-          ;; (display-battery-mode 1)
-        #+end_src
 *** Start the OS processes
     #+begin_src emacs-lisp
       (call-process-shell-command "~/bin/emacswm.sh")
