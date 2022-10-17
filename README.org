@@ -358,6 +358,7 @@
   ;; remember minibuffer history between sessions
   (savehist-mode t)
   ;; https://emacs.stackexchange.com/a/9952/418
+  (use-package exec-path-from-shell :straight t)
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-env "HISTFILE")
   ;; if point is at end of line, keep it there for vertical movement
@@ -1993,11 +1994,13 @@
      ;;     (setq counsel-describe-variable-function #'helpful-variable)))
    #+end_src
 ** Tab Completion
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
    #+end_src
 ** Selectrum (will it replace Ivy which replaced Ido?)
    #+begin_src emacs-lisp
+     (use-package selectrum :straight t)
      (selectrum-mode +1)
+     (use-package selectrum-prescient :straight t)
      (selectrum-prescient-mode +1)
      (prescient-persist-mode +1)
    #+end_src
@@ -2345,6 +2348,12 @@ Open man page in current window, rather than other window with
        (concat (mapconcat #'number-to-string (cdr numbering) ".") " "))
      (setq org-num-format-function 'org-num-skip-top-level-format)
    #+end_src
+** Org Superstar - appearance of headers
+   #+begin_src emacs-lisp :tangle no
+     (use-package org-superstar :straight t
+       :config
+       (org-superstar-mode 1))
+   #+end_src
 ** Org-mode hook
    On =auto-fill-mode=: I prefer to have it on, but hate when
    creating links and having it wrap while typing the description.
@@ -2395,8 +2404,8 @@ Open man page in current window, rather than other window with
    For blogging especially, we want to quickly add web links and images.  2 packages from
    m?elpa help here
    #+begin_src emacs-lisp
-(use-package org-cliplink :straight t)
-(use-package org-download :straight t)
+     (use-package org-cliplink :straight t)
+     (use-package org-download :straight t)
    #+end_src
 
    And here's a handy keyboard macro =gjg/url-grab-cliplink=
