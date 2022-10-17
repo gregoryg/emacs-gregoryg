@@ -50,7 +50,7 @@
   Debian and other distros place important files from their packages in that path
 
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
   (defvar gjg/check-packages-on-startup nil) ; should be nil in repo
 
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/")
@@ -100,13 +100,13 @@
   ;;   (when (not (package-installed-p p))
   ;;     (package-install p)))))
 
-#+END_SRC
+#+end_src
 ** straight.el: use-package without package.el
    + [[https://github.com/raxod502/straight.el][Next-generation, purely functional package manager using Git]]
    + [[https://shivjm.blog/switching-to-straight-el/][Switching to straight.el]]
 
    I had to move this into =init.el= due to a compatibility package required for Org
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      ;; (defvar bootstrap-version)
      ;; (load "~/projects/emacs/straight.el/bootstrap.el")
      ;; (straight-use-package 'use-package)
@@ -167,7 +167,7 @@
 
 * Greg's customizations!
 ** Use Emacs as app launcher (with completions)
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (use-package app-launcher
        :straight '(app-launcher :host github :repo "SebastienWae/app-launcher"))
      (global-set-key (kbd "s-SPC") 'app-launcher-run-app)
@@ -175,7 +175,7 @@
 ** Cleanup on file save
    Tip o' the hat to [[https://github.com/mitchty][@mitchty]]
    Remove trailing whitespace when saving files
-    #+BEGIN_SRC emacs-lisp
+    #+begin_src emacs-lisp
       ;; from https://stackoverflow.com/a/3533933/457574
       (defun delete-trailing-whitespace-except-current-line ()
         "do delete-trailing-whitespace, except preserve whitespace of current line"
@@ -200,7 +200,7 @@
    #+end_src
 
 ** Emacs version things
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (when (<= emacs-major-version 27)
        (remove-hook 'kill-emacs-hook #'org-babel-remove-temporary-stable-directory))
    #+end_src
@@ -221,7 +221,7 @@
 
    As of [2020-07-31 Fri] I don't know how to determine I'm running in a Crostini
    container, so we set this only if =sensible-browser= is found on the path
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (when (executable-find "sensible-browser")
        (setq browse-url-browser-function 'browse-url-generic)
        (setq browse-url-generic-program "sensible-browser"))
@@ -318,7 +318,7 @@
   (show-paren-mode 1)
   ;; ** Global identity (ie, same on all machines) - Emacs does not make good guesses here
   (setq user-full-name "Gregory Grubbs"
-        user-mail-address "gregory.grubbs@gmail.com")
+	user-mail-address "gregory.grubbs@gmail.com")
 
   (setq confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
 
@@ -381,7 +381,7 @@
    #+end_src
 ** Key bindings
 *** Audio and media
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       (bind-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados down"))))
       (bind-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados up"))))
       (bind-key (kbd "<XF86AudioMute>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados togmute"))))
@@ -438,7 +438,7 @@
 
    #+end_src
 ** Backup files
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
 ;; backup files
 (setq
  backup-by-copying t      ; don't clobber symlinks
@@ -452,7 +452,7 @@
 
 
 ** Automatic typing - abbrevs and expansions
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
 ;; Dynamic abbrevs should expand both words and symbols
 (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
 ;; and now set up hippie-expand
@@ -460,7 +460,7 @@
 
    #+end_src
 ** Games and silliness
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      ;; very important: keep a long list of yow lines
      ;;   in emacs 24.4 yow.el is obsolete; use cookie instead
      (when (featurep 'yow)
@@ -479,7 +479,7 @@
 ** Weird random rarely used maybe interesting things
 * Encryption
   Set value of =epg-gpg-program= to location on local system
-  #+begin_src emacs-lisp
+  #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
 ;; let's get encryption established
 ;; For gpg, disable external pinentry - let emacs handle pass phrase
 ;; (setenv "GPG_AGENT_INFO" nil)
@@ -736,7 +736,7 @@
 
    #+end_src
 ** Winner-mode and Windmove
-  #+begin_src emacs-lisp
+  #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
     ;; winner
     (winner-mode 1)
     ;; windmove
@@ -847,7 +847,7 @@
    #+end_src
 ** Themes
 *** My modified Brutalist theme
-   #+begin_src emacs-lisp :results none
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (when (boundp 'custom-theme-load-path)
        (add-to-list 'custom-theme-load-path
                     "~/projects/emacs/brutalist-theme/")
@@ -890,7 +890,7 @@
 *** Load default theme
     Deferred here until all theme tweaks have been applied
     #+begin_src emacs-lisp
-      (if (>  (third (decode-time )) 16)
+      (if (>  (nth 2 (decode-time )) 16)
           (gjg/go-dark)
         (gjg/go-light))
     #+end_src
@@ -1249,7 +1249,7 @@
 
 **** Function =gjg/exwm-switch-to-buffer-or-launch=
 
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        (defun gjg/exwm-switch-to-buffer-or-launch (searchstring &optional application)
          "Switch to the first buffer matching SEARCHSTRING as a substring
           If no matching buffer is found, launch the APPLICATION using gtk-launch."
@@ -1271,7 +1271,7 @@
     #+end_src
 
 **** Function to select or launch Spotify
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        (defun gjg/exwm-select-or-launch-spotify ()
          "Select the running Spotify window in EXWM, or launch the app"
          (interactive)
@@ -1279,7 +1279,7 @@
      #+end_src
 
 **** Function to switch quickly to Zoom Meeting
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        (defun gjg/exwm-select-zoom-meeting ()
          "Select the running Zoom Meeting window if it's running."
          (interactive)
@@ -1289,7 +1289,7 @@
 
 *** Update Spotify's buffer name when song changes
     If running EXWM, let's keep Spotify's buffer name hip
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       (defun gjg/update-spotify-exwm-window (songname)
         "When running EXWM add current song name to buffer name"
         ;; find the buffer
@@ -1340,7 +1340,7 @@
  #+end_src
 *** Start wallpaper with transparency first for aesthetics
     Script below is generated with the [[file:Desktop.org][Org file referenced above]]
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       (set-opacity 95)
       (async-start-process "wallpaper-thang"  "nohup" nil (expand-file-name "~/bin/schedule-rotate-wallpapers.sh") "&")
     #+end_src
@@ -1369,108 +1369,108 @@
     TODO: Define simulation key for "Print"
      #+begin_src emacs-lisp
        (defun gjg/exwm-config ()
-         "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
-         ;; Set the initial workspace number.
-         (unless (get 'exwm-workspace-number 'saved-value)
-           (setq exwm-workspace-number 2)) ; GJG changed from default
-         ;; Global keybindings.
-         ;; (unless (get 'exwm-input-global-keys 'saved-value)
-         (message "Setting exwm-input-global-keys")
-         (setq exwm-input-global-keys
-               `(
-                 ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
-                 ([?\s-l] .   ;; super/windows l
-                  (lambda ()
-                    (interactive)
-                    (call-process-shell-command "xfce4-screensaver-command -l")))
-                 ;; 's-r': Reset (to line-mode).
-                 ([?\s-r] . exwm-reset)
-                 ([?\s-s] . save-some-buffers)
-                 ([?\s-f] . exwm-floating-toggle-floating)
-                 ;; 's-w': Switch workspace.
-                 ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
-                 ;; 's-&': Launch application. - poor man's albert/launchy
-                 ([?\s-&] . (lambda (command)
-                              (interactive (list (read-shell-command "$ ")))
-                              (start-process-shell-command command nil command)))
-                 ;; 's-&': Launch application. - poor man's albert/launchy
-                 ([?\s-7] . (lambda (command)
-                              (interactive (list (read-shell-command "$ ")))
-                              (start-process-shell-command command nil command)))
-                 ([?\s-o] .  gjg/other-window-with-winum)
-                 ([s-left] . windmove-left)
-                 ([s-right] . windmove-right)
-                 ([s-up] . windmove-up)
-                 ([s-down] . windmove-down)
-                 ([M-s-up] . windmove-delete-up)
-                 ([M-s-down] . windmove-delete-down)
-                 ([M-s-left] . windmove-delete-left)
-                 ([M-s-right] . windmove-delete-right)
-                 (,(kbd "M-SPC") . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
-                 (,(kbd "s-SPC") . app-launcher-run-app)
-                 ;; ([s-SPC] . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
-                 ([?\s-e] . gjg/ibuffer-only-exwm)
-                 ([s-backspace] . bury-buffer)
-                 ([?\s-q] . bury-buffer)
-                 ([?\s-\\] . switch-to-buffer )
-                 ([?\s-a] . gjg/open-work-agenda)
-                 ([?\s-b] . gjg/switch-to-other-buffer)
-                 ([?\s-0] . delete-window)
-                 ([?\s-1] . delete-other-windows)
-                 ([?\s-2] . gjg/split-window-below)
-                 ([?\s-3] . gjg/split-window-right)
-                 ([?\s-c] . (lambda () (interactive) (call-process-shell-command "invert-color.sh")))
-                 ([?\s-p] . playerctl-play-pause-song)
-                 ([?\s-t] . toggle-truncate-lines)
-                 ([?\s-y] . gjg/exwm-select-or-launch-spotify)
-                 (,(kbd "<XF86MonBrightnessUp>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh +5")))
-                 (,(kbd "<XF86MonBrightnessDown>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh -5")))
-                 (,(kbd "<XF86AudioRaiseVolume>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados up")))
-                 (,(kbd "<XF86AudioLowerVolume>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados down")))
-                 (,(kbd "<XF86AudioMute>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados togmute")))
-                 (,(kbd "<XF86AudioPlay>") . playerctl-play-pause-song)
-                 ([?\s--] . gjg/exwm-select-zoom-meeting)
-                 ([?\s-.] . (lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
-                 ([?\s-,] . gjg/polybar-start-or-toggle)
+	 "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
+	 ;; Set the initial workspace number.
+	 ;; (unless (get 'exwm-workspace-number 'saved-value)
+	 ;;   (setq exwm-workspace-number 2)) ; GJG changed from default
+	 ;; Global keybindings.
+	 ;; (unless (get 'exwm-input-global-keys 'saved-value)
+	 (message "Setting exwm-input-global-keys")
+	 (setq exwm-input-global-keys
+	       `(
+		 ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
+		 ([?\s-l] .   ;; super/windows l
+		  (lambda ()
+		    (interactive)
+		    (call-process-shell-command "xfce4-screensaver-command -l")))
+		 ;; 's-r': Reset (to line-mode).
+		 ([?\s-r] . exwm-reset)
+		 ([?\s-s] . save-some-buffers)
+		 ([?\s-f] . exwm-floating-toggle-floating)
+		 ;; 's-w': Switch workspace.
+		 ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
+		 ;; 's-&': Launch application. - poor man's albert/launchy
+		 ([?\s-&] . (lambda (command)
+			      (interactive (list (read-shell-command "$ ")))
+			      (start-process-shell-command command nil command)))
+		 ;; 's-&': Launch application. - poor man's albert/launchy
+		 ([?\s-7] . (lambda (command)
+			      (interactive (list (read-shell-command "$ ")))
+			      (start-process-shell-command command nil command)))
+		 ([?\s-o] .  gjg/other-window-with-winum)
+		 ([s-left] . windmove-left)
+		 ([s-right] . windmove-right)
+		 ([s-up] . windmove-up)
+		 ([s-down] . windmove-down)
+		 ([M-s-up] . windmove-delete-up)
+		 ([M-s-down] . windmove-delete-down)
+		 ([M-s-left] . windmove-delete-left)
+		 ([M-s-right] . windmove-delete-right)
+		 (,(kbd "M-SPC") . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
+		 (,(kbd "s-SPC") . app-launcher-run-app)
+		 ;; ([s-SPC] . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
+		 ([?\s-e] . gjg/ibuffer-only-exwm)
+		 ([s-backspace] . bury-buffer)
+		 ([?\s-q] . bury-buffer)
+		 ([?\s-\\] . switch-to-buffer )
+		 ([?\s-a] . gjg/open-work-agenda)
+		 ([?\s-b] . gjg/switch-to-other-buffer)
+		 ([?\s-0] . delete-window)
+		 ([?\s-1] . delete-other-windows)
+		 ([?\s-2] . gjg/split-window-below)
+		 ([?\s-3] . gjg/split-window-right)
+		 ([?\s-c] . (lambda () (interactive) (call-process-shell-command "invert-color.sh")))
+		 ([?\s-p] . playerctl-play-pause-song)
+		 ([?\s-t] . toggle-truncate-lines)
+		 ([?\s-y] . gjg/exwm-select-or-launch-spotify)
+		 (,(kbd "<XF86MonBrightnessUp>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh +5")))
+		 (,(kbd "<XF86MonBrightnessDown>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh -5")))
+		 (,(kbd "<XF86AudioRaiseVolume>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados up")))
+		 (,(kbd "<XF86AudioLowerVolume>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados down")))
+		 (,(kbd "<XF86AudioMute>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados togmute")))
+		 (,(kbd "<XF86AudioPlay>") . playerctl-play-pause-song)
+		 ([?\s--] . gjg/exwm-select-zoom-meeting)
+		 ([?\s-.] . (lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
+		 ([?\s-,] . gjg/polybar-start-or-toggle)
 
-                 ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
-                 ;; 's-N': Switch to certain workspace.
-                 ;; ,@(mapcar (lambda (i)
-                 ;;             `(,(kbd (format "s-%d" i)) .
-                 ;;               (lambda ()
-                 ;;                 (interactive)
-                 ;;                 (exwm-workspace-switch-create ,i))))
-                 ;;           (number-sequence 4 9))
-                 ))
-         ;; )
-         ;; Line-editing shortcuts
-         (unless (get 'exwm-input-simulation-keys 'saved-value)
-           (setq exwm-input-simulation-keys
-                 '(([?\C-b] . left)
-                   ([?\C-f] . [right])
-                   ([?\C-p] . [up])
-                   ;; ([?\C-P] . [?\C-p]) ; Print
-                   ([?\C-n] . [down])
-                   ([?\C-a] . [home])
-                   ([?\C-e] . [end])
-                   ([?\M-v] . [prior])
-                   ([?\C-v] . [next])
-                   ([?\C-d] . [delete])
-                   ([?\C-k] . [S-end delete])
-                   ([?\C-l] . [?\C-l])
-                   ([?\C-t] . [?\C-t])
-                   ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way
-                   ([?\M-w] . [?\C-c]) ; Copy that!
-                   ;; ([?\S-p] . [?\C-p]) ; TODO Print - not working
-                   ([?\C-y] . [?\C-v]) ; yank/paste
-                   )))
-         ;; Enable EXWM
-         (exwm-enable)
-         ;; ;; Configure Ido
-         ;; (exwm-config-ido)
-         ;; Other configurations
-         ;; (exwm-config-misc)
-         )
+		 ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
+		 ;; 's-N': Switch to certain workspace.
+		 ;; ,@(mapcar (lambda (i)
+		 ;;             `(,(kbd (format "s-%d" i)) .
+		 ;;               (lambda ()
+		 ;;                 (interactive)
+		 ;;                 (exwm-workspace-switch-create ,i))))
+		 ;;           (number-sequence 4 9))
+		 ))
+	 ;; )
+	 ;; Line-editing shortcuts
+	 (unless (get 'exwm-input-simulation-keys 'saved-value)
+	   (setq exwm-input-simulation-keys
+		 '(([?\C-b] . left)
+		   ([?\C-f] . [right])
+		   ([?\C-p] . [up])
+		   ;; ([?\C-P] . [?\C-p]) ; Print
+		   ([?\C-n] . [down])
+		   ([?\C-a] . [home])
+		   ([?\C-e] . [end])
+		   ([?\M-v] . [prior])
+		   ([?\C-v] . [next])
+		   ([?\C-d] . [delete])
+		   ([?\C-k] . [S-end delete])
+		   ([?\C-l] . [?\C-l])
+		   ([?\C-t] . [?\C-t])
+		   ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way
+		   ([?\M-w] . [?\C-c]) ; Copy that!
+		   ;; ([?\S-p] . [?\C-p]) ; TODO Print - not working
+		   ([?\C-y] . [?\C-v]) ; yank/paste
+		   )))
+	 ;; Enable EXWM
+	 (exwm-enable)
+	 ;; ;; Configure Ido
+	 ;; (exwm-config-ido)
+	 ;; Other configurations
+	 ;; (exwm-config-misc)
+	 )
      #+end_src
 *** Require packages and run my custom conifg
   #+begin_src emacs-lisp
@@ -1553,7 +1553,7 @@
                                (s-replace-all browsers exwm-title)))))))
         #+end_src
 **** Clean up on exit
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        (add-hook 'exwm-exit-hook
                  (lambda ()
                    (async-start-process "exwm-exit" "pkill" nil "-f" "schedule-rotate-wallpapers.sh" )))
@@ -1562,11 +1562,15 @@
 *** Start up the window manager
     As noted above, I do not use the EXWM system tray.
         #+begin_src emacs-lisp
-        (exwm-enable)
-        (exwm-randr-enable)
-        ;; (require 'exwm-systemtray)
-        ;; (exwm-systemtray-enable)
+	  (exwm-enable)
+	  ;; (require 'exwm-systemtray)
+	  ;; (exwm-systemtray-enable)
         #+end_src
+*** Start up xrandr to react to display changes
+        #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+	  (exwm-randr-enable)
+        #+end_src
+
 *** Deal with brightness and volume, since we don't have a DE
     There is a =desktop-environment= package on Melpa, but it's overkill for what I need.
     TODO: Figure out how to specify these keys and modify =exwm-input-global-keys=
@@ -1625,7 +1629,7 @@
 
     =zoom-mode= is also quite useful to avoid having to manually resize horizontal and
     vertical splits - so useful I have added it in as part of my normal Emacs config
-        #+begin_src emacs-lisp
+        #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
           ;; (require 'buffer-expose)
           ;; (buffer-expose-mode 1)
           (require 'magit) ; to make magit-mode-map available
@@ -1683,7 +1687,7 @@
    + Eshell uses =term= when a non-line-mode command is invoked.  Set it so that the
      =term= window goes away when the process ends.  Also make various =git= things work
      nicely.
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
      (setq eshell-destroy-buffer-when-process-dies t)
    #+end_src
@@ -1731,7 +1735,7 @@
    tools
 
    + [[https://github.com/minad/corfu][GitHub - minad/corfu: corfu.el - Completion Overlay Region FUnction]]
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (use-package corfu
        :straight t
        ;; Optional customizations
@@ -1804,8 +1808,8 @@
        :straight t
        :init
        (setq completion-styles '(orderless basic)
-             completion-category-defaults nil
-             completion-category-overrides '((file (styles . (partial-completion))))))
+	     completion-category-defaults nil
+	     completion-category-overrides '((file (styles . (partial-completion))))))
 
      ;; A few more useful configurations...
      ;; (use-package emacs
@@ -1845,9 +1849,6 @@
      )
    #+end_src
 ** TRAMP
-   #+begin_src emacs-lisp
-;;(require 'tramp)
-   #+end_src
 *** Tweak remote bash shell prompt PS1
     #+begin_src bash :tangle ~/.emacs.d/init_bash.sh
       # Reset the prompt for remote TRAMP shells.
@@ -1967,7 +1968,7 @@
     #+end_src
 *** Shell sugar
 **** Open remote shell in current remote directory
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
   (defun gjg/open-shell-prompted (newdir)
     "Directly open shell local or TRAMP remote"
     (interactive "D")
@@ -1999,7 +2000,7 @@
            default-directory))) "-sh"))))
 #+end_src
 **** Open SUDO at current remote directory
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
 (defun gjg/tramp-sudo-to-etc ()
   "Dired browse as root (sudo) to /etc on current machine"
   (interactive)
@@ -2097,7 +2098,7 @@
 
    #+end_src
 *** Open file in relevant OS app
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
   ;; swiped from Gilaras Drakeson <gilaras@gmail.com>
   (defcustom gjg/os-open "xdg-open"
     "Command to open a document, e.g. `xdg-open` on Linux, `sensible-browser` on crostini, `open` on OS X, `explorer` or `cygpath` on Windows"
@@ -2114,7 +2115,7 @@
   (define-key dired-mode-map (kbd "C-;") 'dired-open)
 #+end_src
 ** Ediff
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (setq ediff-split-window-function 'split-window-horizontally)
      (setq ediff-window-setup-function 'ediff-setup-windows-plain)
    #+end_src
@@ -2135,6 +2136,7 @@
                    ))
     #+end_src
 ** Help and helpful modes
+*** Add navigation to Help buffer
    #+begin_src emacs-lisp
      (setq help-window-select t)
      (add-hook 'help-mode-hook
@@ -2142,7 +2144,9 @@
                  (local-set-key (kbd "M-p") 'help-go-back)
                  (local-set-key (kbd "M-n") 'help-go-forward)
                  ))
-
+   #+end_src
+*** Use the Helpful package
+   #+begin_src emacs-lisp
      (use-package helpful
        :straight t
        :config
@@ -2203,7 +2207,7 @@
 
 	Smex helps sort commands by most-used
 
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       ;; (use-package counsel
       ;;   :config (counsel-mode))
    #+end_src
@@ -2212,7 +2216,7 @@
      Use =M-j= during a Swiper search to add the sub-word at point to
      the search - similar to =C-s C-w= in built-in isearch.
 
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        ;; ;; (global-set-key (kbd "C-s") 'swiper)
        ;; ;; (global-set-key (kbd "C-M-s") 'swiper-isearch)
        ;; ;; (global-set-key (kbd "C-M-r") 'swiper-isearch-backward)
@@ -2223,7 +2227,7 @@
 
 ** Occur
 *** Navigation
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      ;;     Some simple sex-ups for occur-mode
      (define-key occur-mode-map "n" 'occur-next)
      (define-key occur-mode-map "p" 'occur-prev)
@@ -2238,19 +2242,19 @@
    #+end_src
 ** Shell mode
 *** Shell mode config
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       (custom-set-variables '(shell-kill-buffer-on-exit t)
                             '(shell-command-prompt-show-cwd t))
     #+end_src
 *** Config for comint mode
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       (defun gjg/turn-on-comint-history (history-file)
         (setq comint-input-ring-file-name history-file)
         (comint-read-input-ring 'silent))
       (setq comint-input-ring-size 5000)
     #+end_src
 *** Hook in shell history
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       (add-hook 'shell-mode-hook
                 (lambda ()
                   (gjg/turn-on-comint-history (getenv "HISFILE"))))
@@ -2261,7 +2265,7 @@
                     (with-current-buffer it (comint-write-input-ring)))))
     #+end_src
 *** Bash completions
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       (use-package bash-completion
         :straight t
         :config
@@ -2272,7 +2276,7 @@
     Lord's work in translating ANSI color codes to font properties so that things can look
     awesome.
 
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       (use-package xterm-color :straight t)
       (ansi-color-for-comint-mode-on)
       ;; try some xterm coloring in shell buffers
@@ -2286,17 +2290,21 @@
 *** SSH Agent in subprocesses
     + Not really related to shell-mode, this assures our keychain is activated for things
       such as magit that fire off subproceess
-      #+begin_src emacs-lisp
+      #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
         (keychain-refresh-environment)
       #+end_src
 
 ** Magit
 *** Behavior
     #+begin_src emacs-lisp
-      (setq magit-clone-set-remote.pushDefault t)
+           (use-package magit-todos :straight t)
+      (use-package magit :straight t
+        :config
+        (setq magit-clone-set-remote.pushDefault t))
     #+end_src
 *** Initiate =magit-todos= only on =magit= invocation, since it loads slowly
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+      (use-package magit-todos :straight t)
       (add-hook 'magit-status-mode-hook
                 (lambda ()
                   (magit-todos-mode 1)
@@ -2306,8 +2314,8 @@
 ** Spelling
    #+begin_src emacs-lisp
      ;; don't try to spell things in Org property drawers and code blocks
-     (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
-     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
+     ;; (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
+     ;; (add-to-list 'ispell-skip-region-alist '("#\\+begin_src" . "#\\+end_src"))
      ;; redefine the obsolete spell-word
      (defalias 'spell-word  'ispell-word)
 
@@ -2339,7 +2347,7 @@ Open man page in current window, rather than other window with
 #+end_src
 ** OpenVPN
    Mode to help using OpenVPN
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (use-package ovpn-mode
        :straight t
        :custom
@@ -2356,7 +2364,7 @@ Open man page in current window, rather than other window with
 ** Contributions package
    Add =ignore= tag to headlines you don't want to export
    Refer to [[https://emacs.stackexchange.com/a/17677/418][org mode - Is it possible to export content of subtrees without their heading...]]
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (use-package org-contrib
        :straight t
        :config
@@ -2400,7 +2408,7 @@ Open man page in current window, rather than other window with
        )
    #+end_src
 ** Org Babel and Source Code Blocks
-*** Time code block execution
+*** Report time for code block execution
     + Ref: My answer on Emacs Stackexchange
        [[https://emacs.stackexchange.com/a/61357/418][timers - How to time org-mode code block execution? - Emacs Stack Exchange]]
     #+begin_src emacs-lisp :tangle no
@@ -2456,7 +2464,7 @@ Open man page in current window, rather than other window with
 
     Simply add the new block param =:keep-windows= to use this functionality
 
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       (when nil
       (defun transform-tree (tree trafo)
         "Transform TREE by TRAFO."
@@ -2514,7 +2522,7 @@ Open man page in current window, rather than other window with
     #+end_src
 
 ** Org num mode
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      ;; for use with org-num-mode
      (defun org-num-skip-top-level-format (numbering)
        "Number from subtree display function.
@@ -2538,10 +2546,10 @@ Open man page in current window, rather than other window with
      (add-hook 'org-mode-hook
            (lambda ()
              (auto-fill-mode 1)
-             (org-superstar-mode 1)
              (highlight-regexp ":tangle no" 'hi-pink)
+             (highlight-regexp ":tangle /tmp/intothevoid.el" 'hi-aquamarine)
              ;; (org-modern-mode 1)
-             (setq org-hide-leading-stars t)
+             (setq org-hide-leading-stars nil)
              (setq fill-column 90) ; good default for wide screens
              (setq org-use-property-inheritance t)
              (setq org-link-search-must-match-exact-headline nil)
@@ -2566,7 +2574,7 @@ Open man page in current window, rather than other window with
 
    It therefore seems the only way to affect it is to advise a function.
 
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (defun gjg/rename-org-indirect-buffer (orig-fun &rest arg)
        (rename-buffer (concat "INDIRECT-" (buffer-name))))
 
@@ -2588,7 +2596,7 @@ Open man page in current window, rather than other window with
    the other window is a Web browser (this only works in EXWM!).  Go to the browser
    window, copy the URL, then use =org-cliplink= at the starting point in the original Org window.
 
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
    (fset 'gjg/url-grab-cliplink
    (kmacro-lambda-form [?\C-x ?o ?\C-l ?\M-w tab ?\C-x ?o ?\M-x ?o ?r ?g ?- ?c ?l ?i ?p ?l ?i ?n ?k return] 0 "%d"))
    #+end_src
@@ -2631,7 +2639,7 @@ Open man page in current window, rather than other window with
                     location)))
       #+end_src
 **** Create new blog post file for blog capture
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       ;; *** Org capture
       ;; taken from StackOverflow answer https://stackoverflow.com/questions/11902620/org-mode-how-do-i-create-a-new-file-with-org-capture
       ;; (defun capture-blog-filename (path)
@@ -2653,14 +2661,14 @@ Open man page in current window, rather than other window with
     for only that capture template.
     #+begin_src emacs-lisp
       (setq org-default-notes-file "~/projects/notes.org")
-      (with-eval-after-load 'org-capture
-        ;; (add-hook 'org-capture-mode-hook 'turn-on-auto-fill)
-        (add-hook 'org-capture-mode-hook
-                  (lambda ()
-                    (let ((mykey (plist-get org-capture-plist :key)))
-                      (if (string= "p" mykey )
-                          (define-key org-capture-mode-map (kbd "C-c C-c") 'org-capture-refile)
-                        (define-key org-capture-mode-map (kbd "C-c C-c") 'org-capture-finalize))))))
+      ;; (with-eval-after-load 'org-capture
+      ;;   ;; (add-hook 'org-capture-mode-hook 'turn-on-auto-fill)
+      ;;   (add-hook 'org-capture-mode-hook
+      ;;             (lambda ()
+      ;;               (let ((mykey (plist-get org-capture-plist :key)))
+      ;;                 (if (string= "p" mykey )
+      ;;                     (define-key org-capture-mode-map (kbd "C-c C-c") 'org-capture-refile)
+      ;;                   (define-key org-capture-mode-map (kbd "C-c C-c") 'org-capture-finalize))))))
       (define-key global-map "\C-cc" 'org-capture)
       (setq org-capture-templates nil) ; initialize to nil prior to grand setup below
     #+end_src
@@ -2673,7 +2681,7 @@ Open man page in current window, rather than other window with
 
 **** Blog post
      Start a new blog post for hypecyclist.org using my default Hugo template
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        (push
         '("b" "Blog post" plain
                      (file safe-blog-filename)
@@ -2683,14 +2691,14 @@ Open man page in current window, rather than other window with
      #+end_src
 
 **** org-protocol capture - will I ever ever ever use this again??
-     #+begin_src emacs-lisp :results none
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        (push '("c" "org-protocol-capture" entry "~/projects/private-orgmode/inbox.org"
                "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish nil)
              org-capture-templates)
      #+end_src
 
 **** Add items to a/the inbox - GTD style
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        (push
         '("i" "inbox" entry
           (file "~/projects/private-orgmode/inbox.org")
@@ -2719,7 +2727,7 @@ Open man page in current window, rather than other window with
      #+end_src
 
 **** Clock in to a new work "t"ask
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        (push
         '             ("t" "Task - clock in using work file" entry
                        (file+headline gjg/employer-org-file "Tasks")
@@ -2729,7 +2737,7 @@ Open man page in current window, rather than other window with
      #+end_src
 
 **** Regular TODO
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        (push
         '             ("r" "Regular todo" entry
                        (file "~/projects/private-orgmode/inbox.org")
@@ -2737,7 +2745,7 @@ Open man page in current window, rather than other window with
         org-capture-templates)
      #+end_src
 **** Web page entry - what is this for exactly?
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        (push
         '             ("w" "Web page to read from copied URL" entry (file "~/projects/private-orgmode/inbox.org")
                        "* TODO Read %(org-cliplink-capture)
@@ -2746,12 +2754,12 @@ Open man page in current window, rather than other window with
      #+end_src
 ** Exporting
 *** General preferences
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
   (custom-set-variables '(org-export-with-sub-superscripts nil)
                         '(org-html-postamble nil))
 #+end_src
 *** Exporting Babel without evaluation
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
 (custom-set-variables '(org-export-use-babel nil))
 #+end_src
 *** Export without theme interference
@@ -2761,7 +2769,7 @@ Open man page in current window, rather than other window with
 	- State "STARTED"    from "TODO"       [2019-09-17 Tue 19:37]
 	:END:
 	Wrap advice around any means of exporting HTML, including export-and-open
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
   ;; export to html - use light theme for export
   ;; tip o' the hat to legoscia https://github.com/legoscia/dotemacs/blob/master/dotemacs.org#theme-for-org-html-export
   (defvar my-org-html-export-theme 'material-light)
@@ -2792,42 +2800,42 @@ Open man page in current window, rather than other window with
        (interactive)
        (widen)
        (if (save-excursion (end-of-line) (outline-invisible-p))
-           (progn (org-show-entry) (outline-show-children))
-         (outline-next-heading)
-         (unless (and (bolp) (org-at-heading-p))
-           (org-up-heading-safe)
-           (outline-hide-subtree)
-           (error "Boundary reached"))
-         (org-overview)
-         (org-reveal t)
-         (org-show-entry)
-         (outline-show-children)
-         (org-narrow-to-subtree)))
+	   (progn (org-show-entry) (outline-show-children))
+	 (outline-next-heading)
+	 (unless (and (bolp) (org-at-heading-p))
+	   (org-up-heading-safe)
+	   (outline-hide-subtree)
+	   (error "Boundary reached"))
+	 (org-overview)
+	 (org-reveal t)
+	 (org-show-entry)
+	 (outline-show-children)
+	 (org-narrow-to-subtree)))
 
      (defun ded/org-show-previous-heading-tidily ()
        "Show previous entry, keeping other entries closed."
        (interactive)
        (widen)
        (let ((pos (point)))
-         (outline-previous-heading)
-         (unless (and (< (point) pos) (bolp) (org-at-heading-p))
-           (goto-char pos)
-           (outline-hide-subtree)
-           (error "Boundary reached"))
-         (org-overview)
-         (org-reveal t)
-         (org-show-entry)
-         (outline-show-children)
-         (org-narrow-to-subtree)))
+	 (outline-previous-heading)
+	 (unless (and (< (point) pos) (bolp) (org-at-heading-p))
+	   (goto-char pos)
+	   (outline-hide-subtree)
+	   (error "Boundary reached"))
+	 (org-overview)
+	 (org-reveal t)
+	 (org-show-entry)
+	 (outline-show-children)
+	 (org-narrow-to-subtree)))
 
      (add-to-list 'org-speed-commands
-              '("]" ded/org-show-next-heading-tidily))
+	      '("]" ded/org-show-next-heading-tidily))
      (add-to-list 'org-speed-commands
-              '("[" ded/org-show-previous-heading-tidily))
+	      '("[" ded/org-show-previous-heading-tidily))
      (add-to-list 'org-speed-commands
-                  '("s" save-buffer))
+		  '("s" save-buffer))
      (add-to-list 'org-speed-commands
-                  '("d" org-toggle-narrow-to-subtree))
+		  '("d" org-toggle-narrow-to-subtree))
 
 
 
@@ -2926,7 +2934,7 @@ Open man page in current window, rather than other window with
    #+end_src
 *** Initialize for all agendas
    #+begin_src emacs-lisp
-     (setq org-agenda-custom-commands nil)
+     (require 'org-agenda)
    #+end_src
 *** Custom Agenda definitions
 **** Cross-context agendas
@@ -2946,9 +2954,9 @@ Open man page in current window, rather than other window with
 ***** Notes/Roam/Denote TODOs
       TODO: make category section of agenda the value of keywords in the front matter
       #+begin_src emacs-lisp
-        ;; for example, category would be "linus-steam-deck"
-        (mapconcat 'identity (mapcar #'substring-no-properties org-file-tags) "-")
-        (string-join (mapcar #'substring-no-properties org-file-tags) "-")
+        ;; for example, category would be "linux-steam-deck"
+        ;; (mapconcat 'identity (mapcar #'substring-no-properties org-file-tags) "-")
+        ;; (string-join (mapcar #'substring-no-properties org-file-tags) "-")
         ;; use just org files in the notes directory
         (add-to-list 'org-agenda-custom-commands '("n" . "Notes prefix key")) ; describe prefix
         (add-to-list 'org-agenda-custom-commands
@@ -3062,7 +3070,7 @@ Open man page in current window, rather than other window with
 
       #+end_src
 *** Agenda hooks setup
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       ;; org-agenda: some handy keys
       ;; you might also want to set:
       (setq org-agenda-skip-unavailable-files t)
@@ -3093,7 +3101,7 @@ Open man page in current window, rather than other window with
 
    #+end_src
 *** Clock table
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       ;; First set clock summary to *not* show hours as days
       ;; ref: https://stackoverflow.com/a/54376827/457574
       (setq org-duration-format (quote h:mm))
@@ -3132,7 +3140,7 @@ Open man page in current window, rather than other window with
     #+begin_src emacs-lisp
       (let* ((thetime (decode-time))
              (dow (nth 6 thetime))
-             (hour (third thetime)))
+             (hour (nth 2 thetime)))
         (if (and (< dow 6) (> hour 7) (< hour 18))
             (gjg/select-agenda-context 'work)
           (gjg/select-agenda-context 'home)))
@@ -3141,36 +3149,36 @@ Open man page in current window, rather than other window with
 ** Tags/TODOs/Projects Oh My
    #+begin_src emacs-lisp
      (setq org-tag-persistent-alist
-           '(("habit")
-             ("billable")
-             ("noexport" . ?x)
-             ))
+	   '(("habit")
+	     ("billable")
+	     ("noexport" . ?x)
+	     ))
      (setq org-tag-alist '(("project" . ?p)
-                           ("NEXT" . ?n)
-                           ("noexport" . ?x)
-                           ("cloud" . ?c)
-                           (:startgroup . nil)
-                           ("@customer")
-                           ("@office" . ?o)
-                           ("@home" . ?h)
-                           ("@errands" . ?e)
-                           ("@happy-hour")
-                           (:endgroup . nil)
-                           ("maybe-someday" . ?m)
-                           ("writing" . ?w)
-                           ))
+			   ("NEXT" . ?n)
+			   ("noexport" . ?x)
+			   ("cloud" . ?c)
+			   (:startgroup . nil)
+			   ("@customer")
+			   ("@office" . ?o)
+			   ("@home" . ?h)
+			   ("@errands" . ?e)
+			   ("@happy-hour")
+			   (:endgroup . nil)
+			   ("maybe-someday" . ?m)
+			   ("writing" . ?w)
+			   ))
      ;; Projects are identified by a :Project: tag unless they are marked DONE;
      ;;   Any project must have one sub-task identified by :NEXT: to be considered un-stuck
      ;;   MAYBE: exclude special tags like Someday/Maybe
      (setq org-stuck-projects '("Project|project/-DONE"
-                                nil
-                                ("NEXT")
-                                ""))
+				nil
+				("NEXT")
+				""))
      (setq org-columns-default-format "%TODO %CATEGORY %60ITEM(Task)%5Effort(Estim){:} %5CLOCKSUM(Clock) %SCHEDULED(Time) %DEADLINE")
      (setq org-todo-keywords (quote ((sequence "TODO(t)" "STARTED(s!)" "PAUSED(p!)" "|" "DONE(d!)")      ;; ordinary sequence is Todo -> Started -> Done
-                                     (sequence "WAITING(w@/!)" "MAYBE(m!)" "NEXT(n!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
-                                     ;; (sequence "QUOTE(q!)" "QUOTED(Q!)" "|" "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")     ;; sequence for quotes
-                                     )))
+				     (sequence "WAITING(w@/!)" "MAYBE(m!)" "NEXT(n!)" "OPEN(O@)" "|" "CANCELLED(c@/!)" "SUBMITTED(S)") ;; "oddball" states that any task may be set to
+				     ;; (sequence "QUOTE(q!)" "QUOTED(Q!)" "|" "APPROVED(A@)" "EXPIRED(E@)" "REJECTED(R@)")     ;; sequence for quotes
+				     )))
      ;; (setq org-todo-keyword-faces
      ;;       '(("TODO"
      ;;          (:foreground "#ff39a3" :weight bold))
@@ -3191,7 +3199,7 @@ Open man page in current window, rather than other window with
      (setq org-clock-in-switch-to-state "STARTED")
 
      (setq org-tags-exclude-from-inheritance '("Project" "project" "interview2"))
-                                             ;(setq org-tag-alist '(("project" . ?p)("car" . ?c)))
+					     ;(setq org-tag-alist '(("project" . ?p)("car" . ?c)))
    #+end_src
 ** Refile
    I think the best approach here is to use =org-agenda-files= as the source for refile
@@ -3200,7 +3208,7 @@ Open man page in current window, rather than other window with
 
    #+begin_src emacs-lisp
      ;; navigate to files using org-refile; use C-u C-c C-w
-     (setq org-outline-path-complete-in-steps nil) ; use ivy for quicker completion
+     (setq org-outline-path-complete-in-steps nil) ; use ivy/selectrum for quicker completion
      (setq gjg/refile-targets (seq-remove (lambda (elt) (string= "~/projects/private-orgmode/inbox.org" elt)) (append gjg/personal-org-agenda-files gjg/work-agenda-files)))
      (setq org-refile-targets '((
                                  gjg/refile-targets :maxlevel . 2))
@@ -3222,7 +3230,7 @@ Open man page in current window, rather than other window with
    #+end_src
 ** Denote - note taking
    + Prot's denote - on System Crafters [[https://systemcrafters.net/live-streams/july-15-2022/][System Crafters Live! - July 15, 2022 - System Crafters]]
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (use-package denote
        :straight t
        :defer nil
@@ -3290,14 +3298,13 @@ Open man page in current window, rather than other window with
           (org-clock-history-push position (find-file-noselect file)))
       ...
     #+end_src
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       (setq org-clock-persist nil
             org-clock-string-limit 60 ; truncate very long clocked tasks
             org-clock-report-include-clocking-task t
             org-read-date-prefer-future 'time)
       ;; (org-clock-persistence-insinuate)
       ;; make the clock jump key global!
-      (unbind-key (kbd "C-c C-x") org-mode-map)
       (global-set-key (kbd "C-c C-x j") 'org-clock-goto)
     #+end_src
 *** Clock in also to Harvest for work files
@@ -3306,7 +3313,7 @@ Open man page in current window, rather than other window with
       Harvest also.
 
       TODO: Make =hcl= commands async
-      #+begin_src emacs-lisp
+      #+begin_src emacs-lisp :tangle no
         (defun gjg/start-harvest-timer ()
           (interactive)
           (let ((harvest-alias
@@ -3342,7 +3349,7 @@ Open man page in current window, rather than other window with
                   ;; (message (format "Selected task is %s" org-clock-heading) )))
       #+end_src
 ** Behavior
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
   (setq org-adapt-indentation t
         org-agenda-window-setup 'current-window ; make c-y pay attention to current level
         org-yank-adjusted-subtrees t
@@ -3366,7 +3373,7 @@ Open man page in current window, rather than other window with
   (setq org-loop-over-headlines-in-active-region t)
 #+end_src
 ** Org Drill flashcards
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defun gjg/org-drill-set-cloze1 ()
   "Set current question as `cloze1` type"
   (interactive)
@@ -3378,7 +3385,7 @@ Open man page in current window, rather than other window with
 * Programming language modes
 
 ** All modes derived from =prog-mode=
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (add-hook 'prog-mode-hook
                (lambda ()
                       (rainbow-delimiters-mode 1)
@@ -3388,7 +3395,7 @@ Open man page in current window, rather than other window with
    #+end_src
 
    Let's throw in IELM =inferior-emacs-lisp-mode=, which derives from =comint-mode=
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (add-hook 'inferior-emacs-lisp-mode-hook
                (lambda ()
                  (rainbow-delimiters-mode 1)
@@ -3432,7 +3439,7 @@ Open man page in current window, rather than other window with
        sudo npm install --save-dev yaml-language-server
      #+end_src
 *** Eglot
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       (use-package eglot :straight t)
     #+end_src
 *** LSP Package configuration
@@ -3451,7 +3458,7 @@ Open man page in current window, rather than other window with
          :hook (lsp-mode . lsp-ui-mode))
      #+end_src
 ** SPARQL
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (use-package sparql-mode :straight t
        :mode "\\.\\(sparql\\|rq\\|sms\\|sms2\\)\\'"
        ;; :hook (sparql-mode . lsp-deferred)
@@ -3461,7 +3468,7 @@ Open man page in current window, rather than other window with
        ;; (sparql-language-server)
        )
    #+end_src
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      ;; (add-to-list 'lsp-language-id-configuration '(".*\\.sparql" . "sparql"))
 ;;     (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql"))
    #+end_src
@@ -3474,7 +3481,7 @@ Open man page in current window, rather than other window with
    #+begin_src bash
      npm i -g typescript-language-server ; npm i -g typescript
    #+end_src
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (use-package typescript-mode
        :straight t
        :mode "\\.ts\\'"
@@ -3483,7 +3490,7 @@ Open man page in current window, rather than other window with
        (setq typescript-indent-level 2))
    #+end_src
 ** Clojure
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      ;; (add-hook 'cider-repl-mode-hook #'company-
      (use-package clojure-mode
        :straight t
@@ -3527,7 +3534,7 @@ Open man page in current window, rather than other window with
    Initial configuration was nabbed from a 2-parter by @tleydn
    [[http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch/][Configure Emacs as a Go Editor From Scratch]]
 
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (use-package go-mode
        :defer t
        :straight t
@@ -3570,21 +3577,21 @@ Open man page in current window, rather than other window with
 
 ** Rust
    + [[https://robert.kra.hn/posts/2021-02-07_rust-with-emacs/][Configuring Emacs for Rust development | Robert Krahn]]
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (use-package rust-mode
        :straight t)
    #+end_src
 
 ** Javascript
 *** Prefer =js2= mode
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
    #+end_src
 *** Treat =.cue= as JSON or Bazel
-	#+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
 (add-to-list 'auto-mode-alist '("\\.cue$" . bazel-mode))
 
-	#+end_src
+    #+end_src
 ** Python
 *** LSP Language Server
     Just make sure the language server is installed before using LSP with Python
@@ -3593,7 +3600,7 @@ Open man page in current window, rather than other window with
       pip install python-lsp-server[all]
     #+end_src
 *** Python mode setup
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      ;; Python
 
      (use-package python
@@ -3629,16 +3636,16 @@ Open man page in current window, rather than other window with
 
    #+end_src
 *** Treat Bazel/Starlark files as Python
-	#+begin_src emacs-lisp
-	  (add-to-list 'auto-mode-alist '("\\.starlark$" . python-mode))
-	#+end_src
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+      (add-to-list 'auto-mode-alist '("\\.starlark$" . python-mode))
+    #+end_src
 ** Jupyter
    + Interesting blog post: [[https://sqrtminusone.xyz/posts/2021-05-01-org-python/][Replacing Jupyter Notebook with Org Mode]]
      + consider setting =(org-babel-jupyter-override-src-block "python")=
      + consider =(setq ob-async-no-async-languages-alist '("python" "jupyter-python"))=
    +
 
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      ;; (use-package jupyter
      ;;   :straight t
      ;;    :hook (ein:notebook-mode . lsp-deferred)
@@ -3658,7 +3665,7 @@ Open man page in current window, rather than other window with
      ;;   (exec-path-from-shell-initialize))
    #+end_src
 ** R
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (use-package polymode :straight t
        :config
        (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
@@ -3692,7 +3699,7 @@ Open man page in current window, rather than other window with
       pip3 install sqlparse
     #+end_src
 
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
       (defun gjg/sqlparse-region (beg end)
         (interactive "r")
         (shell-command-on-region
@@ -3704,7 +3711,7 @@ Open man page in current window, rather than other window with
 *** MySQL / MariaDB
 
     + Assure that client prompt is recognized for both products
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      ;; (add-hook 'sql-interactive-mode-hook (lambda ()
      ;;                                        (setq sql-prompt-regexp "\\(Maria[BD]*\\|MySQL\\) [^\\>]+\\>")
      ;;                                        ))
@@ -3718,14 +3725,14 @@ Open man page in current window, rather than other window with
        )
    #+end_src
    + Allow for alternative port
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        (setq sql-mysql-login-params '(user password server database port))
        (setq sql-port 3306)
      #+end_src
 
 *** Postgresql
     + Allow for alternative port
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
        (setq sql-postgres-login-params '(user password server database port))
        ;; (setq sql-port 3306)
      #+end_src
@@ -3744,11 +3751,11 @@ Open man page in current window, rather than other window with
    #+end_src
 
    =lilypond-mode= is not derived from =prog-mode= but we want the same hooks
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (setq LilyPond-mode-hook prog-mode-hook)
    #+end_src
 ** FINAL step after all language modes have been configured
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
           (org-babel-do-load-languages
            'org-babel-load-languages
            (append org-babel-load-languages
@@ -3782,7 +3789,7 @@ Open man page in current window, rather than other window with
    + Ansible (RUNNING/STAGE/TASK/PLAY)
    + Docker build (Step n/n)
 
-  #+begin_src emacs-lisp
+  #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
     (defun gjg/highlight-terraform-stuff ()
       (interactive)
       ; Terraform patterns
@@ -3817,7 +3824,7 @@ Open man page in current window, rather than other window with
  Fancy icons may require fonts (like =texlive-fonts-extra=)
 
 ** Frame title and mode line tweaks
-  #+begin_src emacs-lisp
+  #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
     ;; (require 'spaceline-config)
     ;; (setq spaceline-always-show-segments t)
     ;; (spaceline-spacemacs-theme)
@@ -3924,7 +3931,7 @@ Open man page in current window, rather than other window with
 ** Hide the little bleeder altogether
    Set to hide globally, then bind a Super key to toggle only the current buffer. Super
    nice to use when screen sharing
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (use-package hide-mode-line
        :straight t
        :config
