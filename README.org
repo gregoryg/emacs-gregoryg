@@ -1354,6 +1354,7 @@
                                         ("Google Chrome" . "chrome")
                                         ("Chromium" . "chromium"))))
                             (cond
+                             ;; Browser titles
                              ((s-starts-with-p "Mail - Greg Grubbs - Outlook - " exwm-title)
                               (exwm-workspace-rename-buffer "email - outlook"))
                              ((s-starts-with-p "Calendar - Greg Grubbs - Outlook" exwm-title)
@@ -1362,14 +1363,15 @@
                               (exwm-workspace-rename-buffer "hangouts"))
                              ((s-starts-with-p "Chat - " exwm-title)
                               (exwm-workspace-rename-buffer "chat"))
+                             ;; standalone apps
                              ((s-starts-with-p "Slack" exwm-title)
                               (exwm-workspace-rename-buffer "slack"))
                              ((string= "zoom" exwm-class-name)
-                              (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
-                             ;; ((s-starts-with-p "Dashboard - " exwm-title)
-                             ;;  (exwm-workspace-rename-buffer "Rancher UI - Dashboard"))
+                              (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
+                             ((string= "Logseq" exwm-class-name)
+                              (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
                              ((string= "Spotify" exwm-class-name)
-                              (exwm-workspace-rename-buffer (concat exwm-class-name " - " exwm-title)))
+                              (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
                              (:else
                               (exwm-workspace-rename-buffer
                                (s-replace-all browsers exwm-title)))))))
