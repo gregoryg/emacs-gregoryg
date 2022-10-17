@@ -63,12 +63,7 @@
     '(bind-key
       buffer-expose
       cider
-      exec-path-from-shell
-      exwm
-      magit
-      magit-todos
       org
-      org-superstar
       ;; org-modern-mode
       ;; org-plus-contrib
       ob-async
@@ -77,7 +72,6 @@
       prettify-greek
       rainbow-delimiters
       selectrum
-      selectrum-prescient
       use-package
       xterm-color
       ;; language modes
@@ -133,18 +127,12 @@
 ** Packages with no configuration
    Fastest searcher in the West - need to install it on the OS as package
    =the_silver_searcher= or =silversearcher-ag=
-   #+begin_src emacs-lisp
-     (use-package f :straight t)
+   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      (use-package exec-path-from-shell :straight t)
-     (use-package exwm :straight t)
      ;; (use-package buffer-expose :straight t)
      (use-package font-lock+ :straight t)
      (use-package hl-line+ :straight t)
-     (use-package magit :straight t)
-     (use-package magit-todos :straight t)
      (use-package csv-mode :straight t)
-     (use-package s
-       :straight t)
      (use-package ssh-config-mode :straight t)
      (use-package ag
        :straight t)
@@ -166,10 +154,7 @@
      (use-package material-theme
        :straight t)
      (use-package ob-http :straight t)
-     (use-package org-superstar :straight t)
      ;; (use-package org-modern :straight t)
-     (use-package selectrum :straight t)
-     (use-package selectrum-prescient :straight t)
      (use-package rainbow-delimiters :straight t)
      (use-package uuid
        :straight t)
