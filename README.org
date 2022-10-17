@@ -1225,14 +1225,7 @@
    following config integrates =emacsclient= and Polybar with =polybar-msg= to enable you
    to gather *any* information from Emacs and display it in the panel!
 
-   Functions defined in [[file:gjg-functions.org::*Polybar for use with Linux EXWM and desktop environments][Polybar for use with Linux EXWM and desktop environments]]
-   #+begin_src emacs-lisp
-     ;; Make sure the server is started
-     (unless (server-running-p)
-       (server-start))
-
-     ;; polybar functions are defined in gjg-functions library
-   #+end_src
+   Functions are defined in [[file:gjg-functions.org::*Polybar for use with Linux EXWM and desktop environments][Polybar for use with Linux EXWM and desktop environments]]
 
 *** Panel configuration
     Configurations and script for Polybar are kept in gregoryg/homelab/README-dotfiles
@@ -1662,7 +1655,8 @@
 * Commonly used modes
 ** Start emacs server
    #+begin_src emacs-lisp
-(server-start)
+     (unless (server-running-p)
+       (server-start))
    #+end_src
 ** Yafolding Mode
    Yafolding mode is useful in code and (maybe even but probably not in) Org.  Let's keep
