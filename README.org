@@ -1911,16 +1911,6 @@
                        (tramp-login-args         (nil ("exec" "-it") ("-u" "%u") ("%h") ("sh")))
                        (tramp-remote-shell       "/bin/sh")
                        (tramp-remote-shell-args  ("-i" "-c"))))
-        (add-to-list 'tramp-methods
-                     '("dcos"
-                       (tramp-login-program "dcos")
-                       (tramp-login-args
-                        (nil
-                         ("task" "exec" "-it")
-                         ("%h")
-                         ("bash")))
-                       (tramp-remote-shell "/bin/sh")
-                       (tramp-remote-shell-args ("-i" "-c"))))
         ;; Add method to connect to Kubernetes pods
         ;; we need to execute a command like the following
         ;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
