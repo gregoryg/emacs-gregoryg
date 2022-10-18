@@ -146,7 +146,7 @@
 
 * Greg's customizations!
 ** Use Emacs as app launcher (with completions)
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      (use-package app-launcher
        :straight '(app-launcher :host github :repo "SebastienWae/app-launcher"))
      (global-set-key (kbd "s-SPC") 'app-launcher-run-app)
@@ -360,7 +360,7 @@
    #+end_src
 ** Key bindings
 *** Audio and media
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       (bind-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados down"))))
       (bind-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados up"))))
       (bind-key (kbd "<XF86AudioMute>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados togmute"))))
@@ -417,16 +417,16 @@
 
    #+end_src
 ** Backup files
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-;; backup files
-(setq
- backup-by-copying t      ; don't clobber symlinks
- backup-directory-alist
- '(("." . "~/.emacs.d/backups"))    ; don't litter my fs tree
- delete-old-versions t
- kept-new-versions 5
- kept-old-versions 5
- version-control nil)
+   #+begin_src emacs-lisp
+     ;; backup files
+     (setq
+      backup-by-copying t      ; don't clobber symlinks
+      backup-directory-alist
+      '(("." . "~/.emacs.d/backups"))    ; don't litter my fs tree
+      delete-old-versions t
+      kept-new-versions 5
+      kept-old-versions 5
+      version-control nil)
    #+end_src
 
 
@@ -439,7 +439,7 @@
 
    #+end_src
 ** Games and silliness
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      ;; very important: keep a long list of yow lines
      ;;   in emacs 24.4 yow.el is obsolete; use cookie instead
      (when (featurep 'yow)
@@ -461,8 +461,10 @@
    #+end_src
 ** Weird random rarely used maybe interesting things
 * Encryption
+  =epa-file= is a built-in
+
   Set value of =epg-gpg-program= to location on local system
-  #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+  #+begin_src emacs-lisp
 ;; let's get encryption established
 ;; For gpg, disable external pinentry - let emacs handle pass phrase
 ;; (setenv "GPG_AGENT_INFO" nil)
@@ -1655,7 +1657,7 @@
    + Eshell uses =term= when a non-line-mode command is invoked.  Set it so that the
      =term= window goes away when the process ends.  Also make various =git= things work
      nicely.
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp :tangle no
      (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
      (setq eshell-destroy-buffer-when-process-dies t)
    #+end_src
@@ -2290,7 +2292,7 @@ Open man page in current window, rather than other window with
 ** Contributions package
    Add =ignore= tag to headlines you don't want to export
    Refer to [[https://emacs.stackexchange.com/a/17677/418][org mode - Is it possible to export content of subtrees without their heading...]]
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      (use-package org-contrib
        :straight t
        :config
@@ -2565,7 +2567,7 @@ Open man page in current window, rather than other window with
                     location)))
       #+end_src
 **** Create new blog post file for blog capture
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       ;; *** Org capture
       ;; taken from StackOverflow answer https://stackoverflow.com/questions/11902620/org-mode-how-do-i-create-a-new-file-with-org-capture
       ;; (defun capture-blog-filename (path)
@@ -2653,7 +2655,7 @@ Open man page in current window, rather than other window with
      #+end_src
 
 **** Clock in to a new work "t"ask
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+     #+begin_src emacs-lisp
        (push
         '             ("t" "Task - clock in using work file" entry
                        (file+headline gjg/employer-org-file "Tasks")
@@ -2663,7 +2665,7 @@ Open man page in current window, rather than other window with
      #+end_src
 
 **** Regular TODO
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+     #+begin_src emacs-lisp
        (push
         '             ("r" "Regular todo" entry
                        (file "~/projects/private-orgmode/inbox.org")
@@ -2680,7 +2682,7 @@ Open man page in current window, rather than other window with
      #+end_src
 ** Exporting
 *** General preferences
-#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+#+begin_src emacs-lisp
   (custom-set-variables '(org-export-with-sub-superscripts nil)
                         '(org-html-postamble nil))
 #+end_src
@@ -2996,21 +2998,20 @@ Open man page in current window, rather than other window with
 
       #+end_src
 *** Agenda hooks setup
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       ;; org-agenda: some handy keys
       ;; you might also want to set:
       (setq org-agenda-skip-unavailable-files t)
       (add-hook 'org-agenda-mode-hook
                 (lambda ()
-                  (hl-line-mode 1)
                   ;; undo the horrendous "o" key binding (bound to 'delete-other-windows)
                   ;;       (local-unset-key "o")
                   ;; rebind to a sweet and beautiful function
-                  (yafolding-mode 1)
                   (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
+                  (yafolding-mode 1)
                   (local-unset-key "a") ;; don't let this accidentally archive a tree!
                   ;; "R" is used for clock report by default
-                  (define-key org-agenda-mode-map "R" 'org-agenda-refile)
+                  ;; (define-key org-agenda-mode-map "R" 'org-agenda-refile)
                   (define-key org-agenda-mode-map "'" 'org-agenda-clockreport-mode)
                   (define-key org-agenda-mode-map  "g" 'org-agenda-redo) ;; instead of org-agenda-redo-all
                   ;; (define-key org-agenda-mode-map "h" 'org-habit-toggle-display-in-agenda)
@@ -3156,7 +3157,7 @@ Open man page in current window, rather than other window with
    #+end_src
 ** Denote - note taking
    + Prot's denote - on System Crafters [[https://systemcrafters.net/live-streams/july-15-2022/][System Crafters Live! - July 15, 2022 - System Crafters]]
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      (use-package denote
        :straight t
        :defer nil
@@ -3224,7 +3225,7 @@ Open man page in current window, rather than other window with
           (org-clock-history-push position (find-file-noselect file)))
       ...
     #+end_src
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       (setq org-clock-persist nil
             org-clock-string-limit 60 ; truncate very long clocked tasks
             org-clock-report-include-clocking-task t
@@ -3275,7 +3276,7 @@ Open man page in current window, rather than other window with
                   ;; (message (format "Selected task is %s" org-clock-heading) )))
       #+end_src
 ** Behavior
-#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+#+begin_src emacs-lisp
   (setq org-adapt-indentation t
         org-agenda-window-setup 'current-window ; make c-y pay attention to current level
         org-yank-adjusted-subtrees t
@@ -3416,7 +3417,7 @@ Open man page in current window, rather than other window with
        (setq typescript-indent-level 2))
    #+end_src
 ** Clojure
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      ;; (add-hook 'cider-repl-mode-hook #'company-
      (use-package clojure-mode
        :straight t
@@ -3511,10 +3512,13 @@ Open man page in current window, rather than other window with
 ** Javascript
 *** Prefer =js2= mode
    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+     (use-package js2-mode
+       :straight t
+       :config
+       (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
    #+end_src
 *** Treat =.cue= as JSON or Bazel
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.cue$" . bazel-mode))
 
     #+end_src
@@ -3562,7 +3566,7 @@ Open man page in current window, rather than other window with
 
    #+end_src
 *** Treat Bazel/Starlark files as Python
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       (add-to-list 'auto-mode-alist '("\\.starlark$" . python-mode))
     #+end_src
 ** Jupyter
@@ -3858,7 +3862,7 @@ Open man page in current window, rather than other window with
 ** Hide the little bleeder altogether
    Set to hide globally, then bind a Super key to toggle only the current buffer. Super
    nice to use when screen sharing
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      (use-package hide-mode-line
        :straight t
        :config
