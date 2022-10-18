@@ -75,7 +75,6 @@
       xterm-color
       ;; language modes
       ;; csv-mode
-      js2-mode
       json-mode
       ;; scala-mode
       ssh-config-mode
@@ -105,23 +104,7 @@
    + [[https://shivjm.blog/switching-to-straight-el/][Switching to straight.el]]
 
    I had to move this into =init.el= due to a compatibility package required for Org
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-     ;; (defvar bootstrap-version)
-     ;; (load "~/projects/emacs/straight.el/bootstrap.el")
-     ;; (straight-use-package 'use-package)
-     ;;  (straight-use-package 'org)
-     ;; (let ((bootstrap-file "~/projects/emacs/straight.el/bootstrap.el")
-
-     ;;       (bootstrap-version 5))
-     ;;   (unless (file-exists-p bootstrap-file)
-     ;;     (with-current-buffer
-     ;;         (url-retrieve-synchronously
-     ;;          "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-     ;;          'silent 'inhibit-cookies)
-     ;;       (goto-char (point-max))
-     ;;       (eval-print-last-sexp)))
-     ;;   (load bootstrap-file nil 'nomessage))
-   #+end_src
+   Initial loading for Straight.el is now in [[file:.emacs.d/init.el][init.el]]
 
 ** Packages with no configuration
    Fastest searcher in the West - need to install it on the OS as package
@@ -155,7 +138,6 @@
      (use-package rainbow-delimiters :straight t)
      (use-package uuid
        :straight t)
-     (use-package playerctl :straight t)
      (use-package which-key :straight t)
      (use-package terraform-mode
        :straight t)
@@ -737,8 +719,11 @@
 
    #+end_src
 ** Winner-mode and Windmove
-  #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+  winner-mode is a built-in
+
+  #+begin_src emacs-lisp
     ;; winner
+    (require 'winner)
     (winner-mode 1)
     ;; windmove
     ;; (windmove-default-keybindings)
@@ -1546,7 +1531,7 @@
                              ((string= "zoom" exwm-class-name)
                               (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
                              ((string= "Logseq" exwm-class-name)
-                              (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
+                              (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name " App")))
                              ((string= "Spotify" exwm-class-name)
                               (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
                              (:else
@@ -1628,24 +1613,6 @@
     =window-divider-mode= makes it easy to  resize vertically split windows with the mouse - EXWM
     makes it nearly impossible to select the vertical margin without this!
 
-    =zoom-mode= is also quite useful to avoid having to manually resize horizontal and
-    vertical splits - so useful I have added it in as part of my normal Emacs config
-        #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-          ;; (require 'buffer-expose)
-          ;; (buffer-expose-mode 1)
-          (require 'magit) ; to make magit-mode-map available
-
-          ;; https://github.com/ch11ng/exwm/wiki#unable-to-resize-an-x-window-by-dragging-its-right-edge
-          (global-unset-key (kbd "M-<tab>"))
-          (unbind-key (kbd "M-<tab>") magit-mode-map)
-          ;; (global-set-key (kbd "M-<tab>") (lambda () (buffer-expose-major-mode nil 'exwm-mode))); now we have alt-tab in EXWM!
-          ;; (unbind-key (kbd "C-c C-<tab>") org-mode-map)
-          ;; (global-set-key (kbd "C-c C-<tab>") (lambda () (interactive) (buffer-expose-major-mode nil 'exwm-mode)))
-          ;; (unbind-key (kbd "C-c C-d") buffer-expose-mode-map) ; unsteal key from Org Mode: org-deadline
-          ;; (unbind-key (kbd "C-c C-<tab>") buffer-expose-mode-map)
-          (setq window-divider-default-right-width 1)
-          (window-divider-mode 1)
-        #+end_src
 *** Start the OS processes
     #+begin_src emacs-lisp
       (call-process-shell-command "~/bin/emacswm.sh")
