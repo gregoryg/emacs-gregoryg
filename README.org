@@ -473,6 +473,10 @@
 
 
    #+end_src
+** Multimedia
+   #+begin_src emacs-lisp
+     (use-package playerctl :straight t)
+   #+end_src
 ** Weird random rarely used maybe interesting things
 * Encryption
   Set value of =epg-gpg-program= to location on local system
