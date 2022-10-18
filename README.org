@@ -1246,7 +1246,7 @@
 
 **** Function =gjg/exwm-switch-to-buffer-or-launch=
 
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+     #+begin_src emacs-lisp
        (defun gjg/exwm-switch-to-buffer-or-launch (searchstring &optional application)
          "Switch to the first buffer matching SEARCHSTRING as a substring
           If no matching buffer is found, launch the APPLICATION using gtk-launch."
@@ -1268,7 +1268,7 @@
     #+end_src
 
 **** Function to select or launch Spotify
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+     #+begin_src emacs-lisp
        (defun gjg/exwm-select-or-launch-spotify ()
          "Select the running Spotify window in EXWM, or launch the app"
          (interactive)
@@ -1276,7 +1276,7 @@
      #+end_src
 
 **** Function to switch quickly to Zoom Meeting
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+     #+begin_src emacs-lisp
        (defun gjg/exwm-select-zoom-meeting ()
          "Select the running Zoom Meeting window if it's running."
          (interactive)
@@ -1286,7 +1286,7 @@
 
 *** Update Spotify's buffer name when song changes
     If running EXWM, let's keep Spotify's buffer name hip
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       (defun gjg/update-spotify-exwm-window (songname)
         "When running EXWM add current song name to buffer name"
         ;; find the buffer
@@ -1965,7 +1965,7 @@
     #+end_src
 *** Shell sugar
 **** Open remote shell in current remote directory
-#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+#+begin_src emacs-lisp
   (defun gjg/open-shell-prompted (newdir)
     "Directly open shell local or TRAMP remote"
     (interactive "D")
