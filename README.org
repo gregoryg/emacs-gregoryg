@@ -687,7 +687,6 @@
           (candidate-buffers (mapcar #'car (cl-remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
           (selected-buffer (ido-completing-read "Buffer: " candidate-buffers)))
          (switch-to-buffer selected-buffer)))
-     (global-set-key (kbd "C-c s") 'gjg/switch-buffer-by-mode)
 
      (defun gjg/max-frame ()
        "Maximize the current frame and toggle gjg/frame-maxp"
