@@ -69,7 +69,6 @@
       ob-async
       pyvenv
       prettify-greek
-      rainbow-delimiters
       selectrum
       use-package
       xterm-color
@@ -135,7 +134,6 @@
        :straight t)
      (use-package ob-http :straight t)
      ;; (use-package org-modern :straight t)
-     (use-package rainbow-delimiters :straight t)
      (use-package uuid
        :straight t)
      (use-package which-key :straight t)
@@ -460,6 +458,10 @@
      (use-package playerctl :straight t)
    #+end_src
 ** Weird random rarely used maybe interesting things
+** Rainbow delimiters
+   #+begin_src emacs-lisp
+     (use-package rainbow-delimiters :straight t)
+   #+end_src
 * Encryption
   =epa-file= is a built-in
 
