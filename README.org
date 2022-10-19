@@ -2462,7 +2462,7 @@ Open man page in current window, rather than other window with
      (setq org-num-format-function 'org-num-skip-top-level-format)
    #+end_src
 ** Org Superstar - appearance of headers
-   #+begin_src emacs-lisp :tangle no
+   #+begin_src emacs-lisp
      (use-package org-superstar :straight t
        :config
        (org-superstar-mode 1))
