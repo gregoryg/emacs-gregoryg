@@ -115,8 +115,6 @@
      (use-package hl-line+ :straight t)
      (use-package csv-mode :straight t)
      (use-package ssh-config-mode :straight t)
-     (use-package ag
-       :straight t)
      (use-package prettify-greek :straight t)
      (use-package ob-async :straight t)
      (use-package dumb-jump
@@ -2288,6 +2286,10 @@ Open man page in current window, rather than other window with
                    (("n" . next-line)
                    ("p" . previous-line)
                    ("m" . ovpn-mode-start-vpn-with-namespace))))
+   #+end_src
+** Ag / The Silver Searcher/Surfer
+   #+begin_src emacs-lisp
+     (use-package ag  :straight t)
    #+end_src
 * Org mode stuff
 
