@@ -1211,9 +1211,9 @@
  #+end_src
 *** Start wallpaper with transparency first for aesthetics
     Script below is generated with the [[file:Desktop.org][Org file referenced above]]
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       (set-opacity 95)
-      (async-start-process "wallpaper-thang"  "nohup" nil (expand-file-name "~/bin/schedule-rotate-wallpapers.sh") "&")
+      ;; (async-start-process "wallpaper-thang"  "nohup" nil (expand-file-name "~/bin/schedule-rotate-wallpapers.sh") "&")
     #+end_src
 *** My specific config function
     I did not want =ido= integration and wanted to evolve my config.  So I copied the
@@ -1424,7 +1424,7 @@
                                (s-replace-all browsers exwm-title)))))))
         #+end_src
 **** Clean up on exit
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+     #+begin_src emacs-lisp
        (add-hook 'exwm-exit-hook
                  (lambda ()
                    (async-start-process "exwm-exit" "pkill" nil "-f" "schedule-rotate-wallpapers.sh" )))
@@ -2427,7 +2427,7 @@ Open man page in current window, rather than other window with
 
 **** Blog post
      Start a new blog post for hypecyclist.org using my default Hugo template
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+     #+begin_src emacs-lisp
        (push
         '("b" "Blog post" plain
                      (file safe-blog-filename)
@@ -2437,14 +2437,14 @@ Open man page in current window, rather than other window with
      #+end_src
 
 **** org-protocol capture - will I ever ever ever use this again??
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+     #+begin_src emacs-lisp :tangle no
        (push '("c" "org-protocol-capture" entry "~/projects/private-orgmode/inbox.org"
                "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish nil)
              org-capture-templates)
      #+end_src
 
 **** Add items to a/the inbox - GTD style
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+     #+begin_src emacs-lisp
        (push
         '("i" "inbox" entry
           (file "~/projects/private-orgmode/inbox.org")
@@ -2497,7 +2497,7 @@ Open man page in current window, rather than other window with
                         '(org-html-postamble nil))
 #+end_src
 *** Exporting Babel without evaluation
-#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+#+begin_src emacs-lisp
 (custom-set-variables '(org-export-use-babel nil))
 #+end_src
 *** Export without theme interference
@@ -2507,7 +2507,7 @@ Open man page in current window, rather than other window with
 	- State "STARTED"    from "TODO"       [2019-09-17 Tue 19:37]
 	:END:
 	Wrap advice around any means of exporting HTML, including export-and-open
-#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+#+begin_src emacs-lisp :tangle no
   ;; export to html - use light theme for export
   ;; tip o' the hat to legoscia https://github.com/legoscia/dotemacs/blob/master/dotemacs.org#theme-for-org-html-export
   (defvar my-org-html-export-theme 'material-light)
@@ -3342,10 +3342,9 @@ Open man page in current window, rather than other window with
      + consider =(setq ob-async-no-async-languages-alist '("python" "jupyter-python"))=
    +
 
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp :tangle no
      ;; (use-package jupyter
      ;;   :straight t
-     ;;    :hook (ein:notebook-mode . lsp-deferred)
      ;;   )
      ;; config from https://martinralbrecht.wordpress.com/2020/08/23/conda-jupyter-and-emacs/
      (use-package jupyter
@@ -3362,7 +3361,7 @@ Open man page in current window, rather than other window with
      ;;   (exec-path-from-shell-initialize))
    #+end_src
 ** R
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp :tangle no
      (use-package polymode :straight t
        :config
        (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
@@ -3396,7 +3395,7 @@ Open man page in current window, rather than other window with
       pip3 install sqlparse
     #+end_src
 
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp :tangle no
       (defun gjg/sqlparse-region (beg end)
         (interactive "r")
         (shell-command-on-region
@@ -3429,7 +3428,7 @@ Open man page in current window, rather than other window with
 
 *** Postgresql
     + Allow for alternative port
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+     #+begin_src emacs-lisp :tangle no
        (setq sql-postgres-login-params '(user password server database port))
        ;; (setq sql-port 3306)
      #+end_src
@@ -3448,7 +3447,7 @@ Open man page in current window, rather than other window with
    #+end_src
 
    =lilypond-mode= is not derived from =prog-mode= but we want the same hooks
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp :tangle no
      (setq LilyPond-mode-hook prog-mode-hook)
    #+end_src
 ** FINAL step after all language modes have been configured
