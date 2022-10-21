@@ -1560,7 +1560,7 @@
 	  ;; (exwm-systemtray-enable)
         #+end_src
 *** Start up xrandr to react to display changes
-        #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+        #+begin_src emacs-lisp
 	  (exwm-randr-enable)
         #+end_src
 
@@ -1710,7 +1710,7 @@
    tools
 
    + [[https://github.com/minad/corfu][GitHub - minad/corfu: corfu.el - Completion Overlay Region FUnction]]
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      (use-package corfu
        :straight t
        ;; Optional customizations
@@ -1740,17 +1740,17 @@
 
 
      ;; Add extensions
-     ;; (use-package cape
-     ;;   :straight t
-     ;;   :config
-     ;;   (setq cape-dabbrev-check-other-buffers nil)
+     (use-package cape
+       :straight t
+       :config
+       (setq cape-dabbrev-check-other-buffers nil)
      ;;   ;; Bind dedicated completion commands
      ;;   ;; Alternative prefix keys: C-c p, M-p, M-+, ...
-     ;;   :bind (("C-c p p" . completion-at-point) ;; capf
+       :bind (("C-c p p" . completion-at-point) ;; capf
      ;;          ("C-c p t" . complete-tag)        ;; etags
-     ;;          ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+              ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
      ;;          ("C-c p h" . cape-history)
-     ;;          ("C-c p f" . cape-file)
+              ("C-c p f" . cape-file)
      ;;          ("C-c p k" . cape-keyword)
      ;;          ("C-c p s" . cape-symbol)
      ;;          ("C-c p a" . cape-abbrev)
@@ -1762,10 +1762,11 @@
      ;;          ("C-c p ^" . cape-tex)
      ;;          ("C-c p &" . cape-sgml)
      ;;          ("C-c p r" . cape-rfc1345))
-     ;;   :init
-     ;;   ;; Add `completion-at-point-functions', used by `completion-at-point'.
-     ;;   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-     ;;   (add-to-list 'completion-at-point-functions #'cape-file)
+              )
+       :init
+       ;; Add `completion-at-point-functions', used by `completion-at-point'.
+       (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+       (add-to-list 'completion-at-point-functions #'cape-file)
      ;;   ;;(add-to-list 'completion-at-point-functions #'cape-history)
      ;;   ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
      ;;   ;;(add-to-list 'completion-at-point-functions #'cape-tex)
@@ -1776,15 +1777,15 @@
      ;;   ;;(add-to-list 'completion-at-point-functions #'cape-dict)
      ;;   ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
      ;;   ;;(add-to-list 'completion-at-point-functions #'cape-line)
-     ;;   )
+       )
 
 
      (use-package orderless
        :straight t
        :init
        (setq completion-styles '(orderless basic)
-	     completion-category-defaults nil
-	     completion-category-overrides '((file (styles . (partial-completion))))))
+         completion-category-defaults nil
+         completion-category-overrides '((file (styles . (partial-completion))))))
 
      ;; A few more useful configurations...
      ;; (use-package emacs
@@ -2489,7 +2490,7 @@ Open man page in current window, rather than other window with
              (highlight-regexp ":tangle no" 'hi-pink)
              (highlight-regexp ":tangle /tmp/intothevoid.el" 'hi-aquamarine)
              ;; (org-modern-mode 1)
-             (setq org-hide-leading-stars nil)
+             (setq org-hide-leading-stars t)
              (setq fill-column 90) ; good default for wide screens
              (setq org-use-property-inheritance t)
              (setq org-link-search-must-match-exact-headline nil)
