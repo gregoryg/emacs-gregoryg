@@ -2841,7 +2841,7 @@ Open man page in current window, rather than other window with
             ("notes" "~/emacs/pixmaps/mindmap-icon.png" nil nil :ascent center :height 32)
             ("work-habit" "~/emacs/pixmaps/gtd-logo-2019.png" nil nil :ascent center :height 32)
             ("linux" "~/emacs/pixmaps/linux-color.png" nil nil :ascent center :height 32)
-            ("music" "~/emacs/pixmaps/banjo.png" nil nil :ascent center :height 32)
+            ("music" "~/emacs/pixmaps/banjo-transparent.png" nil nil :ascent center :height 32)
             ("todo" ,(list (all-the-icons-material "check_box" :height 1.2)) nil nil :ascent center)
             ("networking" "/usr/share/icons/oxygen/base/256x256/devices/network-wired.png" nil nil :ascent center :height 32)
             ;; ("inbox" ,(list (all-the-icons-material "inbox" )) nil nil :ascent center :height 32)
