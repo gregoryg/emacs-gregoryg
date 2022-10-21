@@ -40,104 +40,23 @@
   #+end_src
 
 * Deal with required packages
-
-  This first section installs most required packages automatically when
-  =gjg/check-packages-on-startup= is set.
-
-  Very useful when bringing up a virgin Emacs on a new system
-
   Explicitly include =/usr/share/emacs/site-lisp/= when using a self-compiled Emacs.
   Debian and other distros place important files from their packages in that path
 
 
-#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-  (defvar gjg/check-packages-on-startup nil) ; should be nil in repo
+  #+begin_src emacs-lisp
+    (defvar gjg/check-packages-on-startup nil) ; should be nil in repo
 
-  (add-to-list 'load-path "/usr/share/emacs/site-lisp/")
-  (add-to-list 'load-path "~/emacs")
-  (require 'cl)
-  (require 'package)
+    (add-to-list 'load-path "/usr/share/emacs/site-lisp/")
+    (add-to-list 'load-path "~/emacs")
+  #+end_src
 
-  ;; get control of required packages across different emacs environments
-  (defvar gjg/required-packages
-    '(bind-key
-      buffer-expose
-      cider
-      org
-      ;; org-modern-mode
-      ;; org-plus-contrib
-      ob-async
-      pyvenv
-      prettify-greek
-      selectrum
-      use-package
-      xterm-color
-      ;; language modes
-      ;; csv-mode
-      json-mode
-      ;; scala-mode
-      ssh-config-mode
-      ;; web-mode
-      ))
-
-  (defun gjg/packages-installed-p ()
-    (cl-loop for p in gjg/required-packages
-      when (not (package-installed-p p)) do (cl-return nil)
-      finally (cl-return t)))
-
-  ;; if not all packages are installed, install 'em
-  ;; (when gjg/check-packages-on-startup
-  ;;   (unless (gjg/packages-installed-p)
-  ;;     ;; check for new package versions
-  ;;     (message "%s" "This copy of Emacs is now refreshing its package database...")
-  ;;     (package-refresh-contents)
-  ;;     (message "%s" "  done.")
-  ;;     ;; install the missing packages
-  ;;     (dolist (p gjg/required-packages)
-  ;;   (when (not (package-installed-p p))
-  ;;     (package-install p)))))
-
-#+end_src
-** straight.el: use-package without package.el
+  =straight.el= use-package without package.el
    + [[https://github.com/raxod502/straight.el][Next-generation, purely functional package manager using Git]]
    + [[https://shivjm.blog/switching-to-straight-el/][Switching to straight.el]]
 
-   I had to move this into =init.el= due to a compatibility package required for Org
+   I moved this into =init.el= due to a compatibility package required for Org
    Initial loading for Straight.el is now in [[file:.emacs.d/init.el][init.el]]
-
-** Packages with no configuration
-   Fastest searcher in the West - need to install it on the OS as package
-   =the_silver_searcher= or =silversearcher-ag=
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-     (use-package exec-path-from-shell :straight t)
-     ;; (use-package buffer-expose :straight t)
-     (use-package font-lock+ :straight t)
-     (use-package hl-line+ :straight t)
-     (use-package csv-mode :straight t)
-     (use-package ssh-config-mode :straight t)
-     (use-package prettify-greek :straight t)
-     (use-package ob-async :straight t)
-     (use-package dumb-jump
-       :straight t)
-     (use-package edit-indirect
-       :straight t)
-     (use-package help-fns+ :straight t)
-     (use-package highlight-indentation
-       :straight t)
-     ;; (use-package counsel-projectile
-     ;;   :straight nil)
-     (use-package htmlize
-       :straight t)
-     (use-package material-theme
-       :straight t)
-     (use-package ob-http :straight t)
-     ;; (use-package org-modern :straight t)
-     (use-package uuid
-       :straight t)
-     (use-package which-key :straight t)
-     (use-package terraform-mode
-       :straight t)
-   #+end_src
 
 * Greg's customizations!
 ** Use Emacs as app launcher (with completions)
@@ -188,39 +107,6 @@
                ("\\.mm\\'" . default)
                ("\\.x?html?\\'" . "/usr/bin/x-www-browser %s")
                ("\\.pdf\\'" . default))))
-   #+end_src
-** Chrome OS / Crostini things
-   Assure that web links will open in Chrome OS rather than invoking a browser
-   installed in the Linux container
-
-   As of [2020-07-31 Fri] I don't know how to determine I'm running in a Crostini
-   container, so we set this only if =sensible-browser= is found on the path
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-     (when (executable-find "sensible-browser")
-       (setq browse-url-browser-function 'browse-url-generic)
-       (setq browse-url-generic-program "sensible-browser"))
-     ;; On the pixelbook, I use a script to open Chrome for Web links in Org
-     ;; this is in custom settings, since I don't know how to detect Crostini/Chrome OS in emacs
-     ;; (setq org-file-apps
-     ;;       '((auto-mode . emacs)
-     ;;         ("\\.mm\\'" . default)
-     ;;         ("\\.x?html?\\'" . "~/bin/open-in-browser-container.sh %s")
-     ;;         ("\\.pdf\\'" . default)))
-   #+end_src
-   #+begin_src bash
-     #!/usr/bin/env bash
-
-     url="http://localhost:80/"
-     fpath=$1
-
-     echo "fpath=${fpath}"
-     ## Get relative path
-     relpath=$(realpath --relative-to="${HOME}" ${fpath})
-
-     echo $relpath
-
-     sensible-browser "${url}${relpath}"
-     # echo "$fpath" >> /tmp/opened_by_script.txt
    #+end_src
 ** Fonts
    Forever in search of the One True Holy and Apostolic Programmer Font.
@@ -839,14 +725,6 @@
        (setq uniquify-ignore-buffers-re "^\\*"))
    #+end_src
 ** Themes
-*** My modified Brutalist theme
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-     (when (boundp 'custom-theme-load-path)
-       (add-to-list 'custom-theme-load-path
-                    "~/projects/emacs/brutalist-theme/")
-       (add-to-list 'load-path
-                    "~/projects/emacs/brutalist-theme/"))
-   #+end_src
 *** Modus themes
     I want to soften the contrasts in dark mode - default is white on black.  But
     changing the background too light throws off readability of some things - notably the
@@ -1975,20 +1853,6 @@
           (file-name-directory
            default-directory))) "-sh"))))
 #+end_src
-**** Open SUDO at current remote directory
-#+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-(defun gjg/tramp-sudo-to-etc ()
-  "Dired browse as root (sudo) to /etc on current machine"
-  (interactive)
-  (let* ((trampvec (tramp-dissect-file-name default-directory))
-         (tramphop (elt trampvec 4))
-         (conntype (elt trampvec 0))
-         (trampuser (elt trampvec 1)) ; may be nil, which is cool
-         (tramphost (elt trampvec 2))
-         (sudopath (concat "/" tramphop conntype ":" tramphost "|sudo:" tramphost ":/etc/"))
-         )
-    (find-file sudopath)))
-#+end_src
 
 ** Dired
    =dired-dwim-target= is just awesome.  Whenever you have 2 Dired
@@ -2399,69 +2263,6 @@ Open man page in current window, rather than other window with
                                               ("sy" . "src yaml"))))
 
      #+end_src
-*** Crazy way to allow babel elisp to modify window configuration  :noexport:
-    This disables Org's use of =save-window-excursion= for execution of source blocks
-    Stolen from [[https://emacs.stackexchange.com/questions/42096/running-elisp-within-an-orgmode-code-block][Running elisp within an orgmode code block]] (github)
-
-    Simply add the new block param =:keep-windows= to use this functionality
-
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-      (when nil
-      (defun transform-tree (tree trafo)
-        "Transform TREE by TRAFO."
-        (let ((next tree))
-          (while next
-            (let ((this next))
-          (setq next (cdr next))
-          (if (consp (car this))
-              (transform-tree (car this) trafo)
-            (funcall trafo this)))))
-        tree)
-
-      (defun replace-in-fundef (fun sym &rest replacement)
-        "In function FUN perform REPLACEMENT."
-        (setq fun (or
-               (condition-case err
-               (let* ((pos (find-function-noselect fun t))
-                  (buf (car pos))
-                  (pt (cdr pos)))
-                 (with-current-buffer buf
-                   (save-excursion
-                     (goto-char pt)
-                     (read buf))))
-                 (error nil))
-               (and (symbolp fun) (symbol-function fun))
-               fun))
-        (transform-tree fun
-                (lambda (this)
-                  (when (eq (car this) sym)
-                    (let ((copy-repl (cl-copy-list replacement)))
-                  (setcdr (last copy-repl) (cdr this))
-                  (setcdr this (cdr copy-repl))
-                  (setcar this (car copy-repl)))))))
-
-      (defmacro save-window-excursion-if (pred &rest body)
-        "Act like `save-window-excursion' if PRED is non-nil."
-        (declare (indent 1) (debug t))
-        (let ((c (make-symbol "wconfig")))
-          `(let ((,c (and ,pred (current-window-configuration))))
-             (unwind-protect (progn ,@body)
-               (when ,c (set-window-configuration ,c))))))
-
-      (advice-remove 'org-babel-execute:emacs-lisp #'ad-org-babel-execute:emacs-lisp)
-      ;; make sure we have access to the source code of `org-babel-execute:emacs-lisp'
-      (find-function-noselect 'org-babel-execute:emacs-lisp t)
-      ;; (defun ad-org-babel-execute:emacs-lisp ...):
-      (eval (replace-in-fundef 'org-babel-execute:emacs-lisp 'org-babel-execute:emacs-lisp 'ad-org-babel-execute:emacs-lisp))
-      ;; Use `save-window-excursion-if' in `ad-org-babel-execute:emacs-lisp':
-      (declare-function 'ad-org-babel-execute:emacs-lisp " ")
-      (eval (replace-in-fundef 'ad-org-babel-execute:emacs-lisp
-                   'save-window-excursion 'save-window-excursion-if '(null (member (cdr (assoc :keep-windows params)) '("yes" "t")))))
-      ;; Replace `org-babel-execute:emacs-lisp':
-      (advice-add 'org-babel-execute:emacs-lisp :override #'ad-org-babel-execute:emacs-lisp)
-      )
-    #+end_src
-
 ** Org num mode
    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
      ;; for use with org-num-mode
@@ -2683,14 +2484,6 @@ Open man page in current window, rather than other window with
         '             ("r" "Regular todo" entry
                        (file "~/projects/private-orgmode/inbox.org")
                        "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
-        org-capture-templates)
-     #+end_src
-**** Web page entry - what is this for exactly?
-     #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-       (push
-        '             ("w" "Web page to read from copied URL" entry (file "~/projects/private-orgmode/inbox.org")
-                       "* TODO Read %(org-cliplink-capture)
-                             Captured %u")
         org-capture-templates)
      #+end_src
 ** Exporting
@@ -3382,24 +3175,10 @@ Open man page in current window, rather than other window with
        sudo npm install --save-dev yaml-language-server
      #+end_src
 *** Eglot
+    Pretty sure I'll use this in future in favor of lsp-mode
     #+begin_src emacs-lisp
       (use-package eglot :straight t)
     #+end_src
-*** LSP Package configuration
-   + [[https://www.youtube.com/watch?v=EmLCTPwhC4I][System Crafters Live! - Emacs Package Potluck (Trying Your Suggestions!) - Yo...]]
-
-     #+begin_src emacs-lisp :tangle no
-       (use-package lsp-mode
-         :straight t
-         :commands (lsp lsp-deferred)
-         :init
-         (setq lsp-keymap-prefix "C-c l") ;; Or C-l or s-l as alternatives
-         :config
-         (lsp-enable-which-key-integration t))
-       (use-package lsp-ui
-         :straight t
-         :hook (lsp-mode . lsp-ui-mode))
-     #+end_src
 ** SPARQL
    #+begin_src emacs-lisp
      (use-package sparql-mode :straight t
@@ -3416,22 +3195,6 @@ Open man page in current window, rather than other window with
 ;;     (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql"))
    #+end_src
 
-** Typescript
-   I don't actually use Typescript - but this was the example given by SystemCrafters for LSP
-
-   + [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/][JavaScript/TypeScript (theia-ide) - LSP Mode - LSP support for Emacs]]
-   + Install a TypeScript language server for each language
-   #+begin_src bash
-     npm i -g typescript-language-server ; npm i -g typescript
-   #+end_src
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-     (use-package typescript-mode
-       :straight t
-       :mode "\\.ts\\'"
-       :hook (typescript-mode . lsp-deferred )
-       :config
-       (setq typescript-indent-level 2))
-   #+end_src
 ** Clojure
    #+begin_src emacs-lisp
      ;; (add-hook 'cider-repl-mode-hook #'company-
@@ -3446,17 +3209,6 @@ Open man page in current window, rather than other window with
        :mode "\\.clj[sc]?\\'"
        :straight t)
      (add-hook 'cider-mode-hook #'company-mode)
-     ;; (use-package lsp-mode
-     ;;   :straight nil
-     ;;   :commands lsp
-     ;;   :config
-     ;;   (add-to-list 'lsp-language-id-configuration '(clojure-mode . "clojure-mode"))
-     ;;   :init
-     ;;   (setq lsp-enable-indentation nil)
-     ;;   (add-hook 'clojure-mode-hook #'lsp)
-     ;;   (add-hook 'clojurec-mode-hook #'lsp)
-     ;;   (add-hook 'clojurescript-mode-hook #'lsp))
-
      ;; ;; (add-to-list 'load-path "~/emacs/cider")
      ;; (autoload 'cider "cider" "Cider for Clojure")
      ;; (require 'cider)
@@ -3477,16 +3229,12 @@ Open man page in current window, rather than other window with
    Initial configuration was nabbed from a 2-parter by @tleydn
    [[http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch/][Configure Emacs as a Go Editor From Scratch]]
 
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp :tangle no
      (use-package go-mode
        :defer t
        :straight t
        :custom
-       (lsp-gopls-staticcheck t)
-       (lsp-eldoc-render-all t)
-       (lsp-gopls-complete-unimported t)
        :config
-       (add-hook 'go-mode-hook 'lsp-deferred)
        (add-hook 'go-mode-hook (lambda () (add-hook 'before-save-hook 'ime-go-before-save)))
        (use-package go-autocomplete :straight t)
        (auto-complete-mode 1)
@@ -3514,20 +3262,18 @@ Open man page in current window, rather than other window with
      ;; (add-hook 'go-mode-hook 'my-go-mode-hook)
      ;; (with-eval-after-load 'go-mode
      ;;   (require 'go-autocomplete))
-     ;; (setq lsp-gopls-staticcheck t)
-     ;; (setq lsp-eldoc-render-all t)
    #+end_src
 
 ** Rust
    + [[https://robert.kra.hn/posts/2021-02-07_rust-with-emacs/][Configuring Emacs for Rust development | Robert Krahn]]
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp :tangle no
      (use-package rust-mode
        :straight t)
    #+end_src
 
 ** Javascript
 *** Prefer =js2= mode
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp :tangle no
      (use-package js2-mode
        :straight t
        :config
