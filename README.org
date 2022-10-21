@@ -353,7 +353,7 @@
      (load "gjg-functions")
      (require 'gjg-functions)
    #+end_src
-** Key bindings
+** Key (and mouse) bindings
 *** Audio and media
     #+begin_src emacs-lisp
       (bind-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados down"))))
@@ -411,6 +411,13 @@
      (defalias 'rb 'rename-buffer)
 
    #+end_src
+*** Mouse actions
+    I accidentally hit these mouse combos working on the laptop - disable 'em all!
+    #+begin_src emacs-lisp
+      (global-unset-key (kbd"C-<down-mouse-1>")) ;; mouse-buffer-menu
+      (global-unset-key (kbd"C-<down-mouse-2>")) ;; facemenu-menu
+      (global-unset-key (kbd"S-<down-mouse-1>")) ;; mouse-appearance-menu
+    #+end_src
 ** Backup files
    #+begin_src emacs-lisp
      ;; backup files
