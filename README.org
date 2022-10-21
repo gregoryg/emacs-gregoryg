@@ -2841,6 +2841,7 @@ Open man page in current window, rather than other window with
             ("notes" "~/emacs/pixmaps/mindmap-icon.png" nil nil :ascent center :height 32)
             ("work-habit" "~/emacs/pixmaps/gtd-logo-2019.png" nil nil :ascent center :height 32)
             ("linux" "~/emacs/pixmaps/linux-color.png" nil nil :ascent center :height 32)
+            ("music" "~/emacs/pixmaps/banjo.png" nil nil :ascent center :height 32)
             ("todo" ,(list (all-the-icons-material "check_box" :height 1.2)) nil nil :ascent center)
             ("networking" "/usr/share/icons/oxygen/base/256x256/devices/network-wired.png" nil nil :ascent center :height 32)
             ;; ("inbox" ,(list (all-the-icons-material "inbox" )) nil nil :ascent center :height 32)
@@ -2848,6 +2849,8 @@ Open man page in current window, rather than other window with
             ("Chubb" "~/emacs/pixmaps/Chubb-Logo-1985.png" nil nil :ascent center :height 32)
             ("john deere" "~/emacs/pixmaps/tractor-flat.png" nil nil :ascent center :height 32)
             ("PicPay" "~/emacs/pixmaps/picpay-logo.png" nil nil :ascent center :height 32)
+            ("guidehouse" "~/emacs/pixmaps/guidehouse-logo.png" nil nil :ascent center :height 32)
+            ("optum" "~/emacs/pixmaps/optum-logo.png" nil nil :ascent center :height 32)
             ("inbox" "~/emacs/pixmaps/office-inbox.png" nil nil :ascent center :height 32)
             ("social" "~/emacs/pixmaps/icon-social-events.png" nil nil :ascent center :height 32)
             ("fitness" "~/emacs/pixmaps/fitness-heart.png" nil nil :ascent center :height 32)
@@ -3205,18 +3208,18 @@ Open man page in current window, rather than other window with
 
 
 
-      (defun my-denote-journal ()
-       "Create an entry tagged `journal` with the date as its title."
+     ;; Here's a function for daily journal capture - compatible-ish with Logseq
+     (defun gjg/denote-journal ()
+       "Create an entry tagged 'journal' with the date as its title."
        (interactive)
        (denote
-        (format-time-string "%A %e %B %Y")   ; format like Tuesday 14 June 2022
-        '("journal")
-        nil
-        "~/Denotes/Journal")
-
-       (insert "* Thoughts\n\n* Tasks\n\n")) ; multiple keywords are a list of strings: '("one" "two")
+        (format-time-string "%Y-%m-%s")
+        '("journal") ; multiple keywords are a list of strings: '("one" "two")
+        nil          ; default Org file type
+        (concat denote-directory "journals")))
 
    #+end_src
+
 ** Clocking time
 *** Variables and keys
     Keep =org-clock-persist= unset (its default) to avoid opening files that may have had
