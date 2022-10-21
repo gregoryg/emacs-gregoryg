@@ -137,7 +137,6 @@
      (use-package which-key :straight t)
      (use-package terraform-mode
        :straight t)
-     (use-package vterm :straight t)
    #+end_src
 
 * Greg's customizations!
@@ -2220,7 +2219,10 @@
         (use-package keychain-environment :straight t)
         (keychain-refresh-environment)
       #+end_src
-
+** Vterm
+   #+begin_src emacs-lisp
+     (use-package vterm :straight t)
+   #+end_src
 ** Magit
 *** Behavior
     #+begin_src emacs-lisp
