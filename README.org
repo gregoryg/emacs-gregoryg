@@ -2202,6 +2202,10 @@ Open man page in current window, rather than other window with
        (unbind-key (kbd "C-c C-x C-s") org-mode-map) ; org-archive-to-subtree
        (unbind-key (kbd "C-c C-x A") org-mode-map)   ; org-archive-to-archive-sibling
        (unbind-key (kbd "C-c C-x a") org-mode-map)   ; org-toggle-archive-tag
+       ;; remap the dangerous C-c C-w to avoid nuking regions
+       (unbind-key (kbd "C-c C-r") org-mode-map)   ; org-reveal
+       (unbind-key (kbd "C-c C-w") org-mode-map)     ; org-refile
+       (bind-key (kbd "C-c C-r") 'org-refile org-mode-map)
        ;; keys that conflict with buffer movement
        (unbind-key (kbd "<M-right>") org-mode-map)   ; org-metaright
        (unbind-key (kbd "<M-left>") org-mode-map)    ; org-metaleft
@@ -2945,9 +2949,10 @@ Open man page in current window, rather than other window with
    #+begin_src emacs-lisp
      ;; navigate to files using org-refile; use C-u C-c C-w
      (setq org-outline-path-complete-in-steps nil) ; use ivy/selectrum for quicker completion
-     (setq gjg/refile-targets (seq-remove (lambda (elt) (string= "~/projects/private-orgmode/inbox.org" elt)) (append gjg/personal-org-agenda-files gjg/work-agenda-files)))
-     (setq org-refile-targets '((
-                                 gjg/refile-targets :maxlevel . 2))
+     (setq gjg/refile-targets (seq-remove (lambda (elt) (string= "~/projects/private-orgmode/inbox.org" elt))
+                                          (append gjg/personal-org-agenda-files gjg/work-agenda-files)))
+     (setq org-refile-targets `((gjg/refile-targets :maxlevel . 2)
+                                (,(directory-files-recursively denote-directory org-agenda-file-regexp) :maxlevel . 2))
            org-refile-use-outline-path 'file
            org-refile-target-verify-function
            (lambda ()
