@@ -3011,7 +3011,7 @@ Open man page in current window, rather than other window with
        "Create an entry tagged 'journal' with the date as its title."
        (interactive)
        (denote
-        (format-time-string "%Y-%m-%s")
+        (format-time-string "%Y-%m-%d")
         '("journal") ; multiple keywords are a list of strings: '("one" "two")
         nil          ; default Org file type
         (concat denote-directory "journals")))
