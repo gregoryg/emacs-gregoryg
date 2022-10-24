@@ -2343,8 +2343,8 @@ Open man page in current window, rather than other window with
 ** Org Superstar - appearance of headers
    #+begin_src emacs-lisp
      (use-package org-superstar :straight t
-       :config
-       (org-superstar-mode 1))
+       :hook
+       (org-mode . org-superstar-mode))
    #+end_src
 ** Org-mode hook
    On =auto-fill-mode=: I prefer to have it on, but hate when
