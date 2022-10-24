@@ -1239,109 +1239,110 @@
 
     TODO: Define simulation key for "Print"
      #+begin_src emacs-lisp
-       (defun gjg/exwm-config ()
-	 "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
-	 ;; Set the initial workspace number.
-	 ;; (unless (get 'exwm-workspace-number 'saved-value)
-	 ;;   (setq exwm-workspace-number 2)) ; GJG changed from default
-	 ;; Global keybindings.
-	 ;; (unless (get 'exwm-input-global-keys 'saved-value)
-	 (message "Setting exwm-input-global-keys")
-	 (setq exwm-input-global-keys
-	       `(
-		 ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
-		 ([?\s-l] .   ;; super/windows l
-		  (lambda ()
-		    (interactive)
-		    (call-process-shell-command "xfce4-screensaver-command -l")))
-		 ;; 's-r': Reset (to line-mode).
-		 ([?\s-r] . exwm-reset)
-		 ([?\s-s] . save-some-buffers)
-		 ([?\s-f] . exwm-floating-toggle-floating)
-		 ;; 's-w': Switch workspace.
-		 ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
-		 ;; 's-&': Launch application. - poor man's albert/launchy
-		 ([?\s-&] . (lambda (command)
-			      (interactive (list (read-shell-command "$ ")))
-			      (start-process-shell-command command nil command)))
-		 ;; 's-&': Launch application. - poor man's albert/launchy
-		 ([?\s-7] . (lambda (command)
-			      (interactive (list (read-shell-command "$ ")))
-			      (start-process-shell-command command nil command)))
-		 ([?\s-o] .  gjg/other-window-with-winum)
-		 ([s-left] . windmove-left)
-		 ([s-right] . windmove-right)
-		 ([s-up] . windmove-up)
-		 ([s-down] . windmove-down)
-		 ([M-s-up] . windmove-delete-up)
-		 ([M-s-down] . windmove-delete-down)
-		 ([M-s-left] . windmove-delete-left)
-		 ([M-s-right] . windmove-delete-right)
-		 (,(kbd "M-SPC") . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
-		 (,(kbd "s-SPC") . app-launcher-run-app)
-		 ;; ([s-SPC] . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
-		 ([?\s-e] . gjg/ibuffer-only-exwm)
-		 ([s-backspace] . bury-buffer)
-		 ([?\s-q] . bury-buffer)
-		 ([?\s-\\] . switch-to-buffer )
-		 ([?\s-a] . gjg/open-work-agenda)
-		 ([?\s-b] . gjg/switch-to-other-buffer)
-		 ([?\s-0] . delete-window)
-		 ([?\s-1] . delete-other-windows)
-		 ([?\s-2] . gjg/split-window-below)
-		 ([?\s-3] . gjg/split-window-right)
-		 ([?\s-c] . (lambda () (interactive) (call-process-shell-command "invert-color.sh")))
-		 ([?\s-p] . playerctl-play-pause-song)
-		 ([?\s-t] . toggle-truncate-lines)
-		 ([?\s-y] . gjg/exwm-select-or-launch-spotify)
-		 (,(kbd "<XF86MonBrightnessUp>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh +5")))
-		 (,(kbd "<XF86MonBrightnessDown>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh -5")))
-		 (,(kbd "<XF86AudioRaiseVolume>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados up")))
-		 (,(kbd "<XF86AudioLowerVolume>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados down")))
-		 (,(kbd "<XF86AudioMute>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados togmute")))
-		 (,(kbd "<XF86AudioPlay>") . playerctl-play-pause-song)
-		 ([?\s--] . gjg/exwm-select-zoom-meeting)
-		 ([?\s-.] . (lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
-		 ([?\s-,] . gjg/polybar-start-or-toggle)
+         (defun gjg/exwm-config ()
+       "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
+       ;; Set the initial workspace number.
+       ;; (unless (get 'exwm-workspace-number 'saved-value)
+       ;;   (setq exwm-workspace-number 2)) ; GJG changed from default
+       ;; Global keybindings.
+       ;; (unless (get 'exwm-input-global-keys 'saved-value)
+       (message "Setting exwm-input-global-keys")
+       (setq exwm-input-global-keys
+             `(
+           ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
+           ([?\s-l] .   ;; super/windows l
+            (lambda ()
+              (interactive)
+              (call-process-shell-command "xfce4-screensaver-command -l")))
+           ;; 's-r': Reset (to line-mode).
+           ([?\s-r] . exwm-reset)
+           ([?\s-s] . save-some-buffers)
+           ([?\s-f] . exwm-floating-toggle-floating)
+           ;; 's-w': Switch workspace.
+           ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
+           ;; 's-&': Launch application. - poor man's albert/launchy
+           ([?\s-&] . (lambda (command)
+                    (interactive (list (read-shell-command "$ ")))
+                    (start-process-shell-command command nil command)))
+           ;; 's-&': Launch application. - poor man's albert/launchy
+           ([?\s-7] . (lambda (command)
+                    (interactive (list (read-shell-command "$ ")))
+                    (start-process-shell-command command nil command)))
+           ([?\s-o] .  gjg/other-window-with-winum)
+           ([s-left] . windmove-left)
+           ([s-right] . windmove-right)
+           ([s-up] . windmove-up)
+           ([s-down] . windmove-down)
+           ([M-s-up] . windmove-delete-up)
+           ([M-s-down] . windmove-delete-down)
+           ([M-s-left] . windmove-delete-left)
+           ([M-s-right] . windmove-delete-right)
+           (,(kbd "M-SPC") . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
+           (,(kbd "s-SPC") . app-launcher-run-app)
+           ;; ([s-SPC] . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
+           ([?\s-e] . gjg/ibuffer-only-exwm)
+           ([s-backspace] . bury-buffer)
+           ([?\s-q] . bury-buffer)
+           ([?\s-\\] . switch-to-buffer )
+           ([?\s-a] . gjg/open-work-agenda)
+           ([?\s-b] . gjg/switch-to-other-buffer)
+           ([?\s-0] . delete-window)
+           ([?\s-1] . delete-other-windows)
+           ([?\s-2] . gjg/split-window-below)
+           ([?\s-3] . gjg/split-window-right)
+           ([?\s-c] . (lambda () (interactive) (call-process-shell-command "invert-color.sh")))
+           ([?\s-j] . org-clock-goto)
+           ([?\s-p] . playerctl-play-pause-song)
+           ([?\s-t] . toggle-truncate-lines)
+           ([?\s-y] . gjg/exwm-select-or-launch-spotify)
+           (,(kbd "<XF86MonBrightnessUp>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh +5")))
+           (,(kbd "<XF86MonBrightnessDown>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh -5")))
+           (,(kbd "<XF86AudioRaiseVolume>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados up")))
+           (,(kbd "<XF86AudioLowerVolume>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados down")))
+           (,(kbd "<XF86AudioMute>") . (lambda nil (interactive) (call-process-shell-command "pulseaudio-control-glados togmute")))
+           (,(kbd "<XF86AudioPlay>") . playerctl-play-pause-song)
+           ([?\s--] . gjg/exwm-select-zoom-meeting)
+           ([?\s-.] . (lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
+           ([?\s-,] . gjg/polybar-start-or-toggle)
 
-		 ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
-		 ;; 's-N': Switch to certain workspace.
-		 ;; ,@(mapcar (lambda (i)
-		 ;;             `(,(kbd (format "s-%d" i)) .
-		 ;;               (lambda ()
-		 ;;                 (interactive)
-		 ;;                 (exwm-workspace-switch-create ,i))))
-		 ;;           (number-sequence 4 9))
-		 ))
-	 ;; )
-	 ;; Line-editing shortcuts
-	 (unless (get 'exwm-input-simulation-keys 'saved-value)
-	   (setq exwm-input-simulation-keys
-		 '(([?\C-b] . left)
-		   ([?\C-f] . [right])
-		   ([?\C-p] . [up])
-		   ;; ([?\C-P] . [?\C-p]) ; Print
-		   ([?\C-n] . [down])
-		   ([?\C-a] . [home])
-		   ([?\C-e] . [end])
-		   ([?\M-v] . [prior])
-		   ([?\C-v] . [next])
-		   ([?\C-d] . [delete])
-		   ([?\C-k] . [S-end delete])
-		   ([?\C-l] . [?\C-l])
-		   ([?\C-t] . [?\C-t])
-		   ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way
-		   ([?\M-w] . [?\C-c]) ; Copy that!
-		   ;; ([?\S-p] . [?\C-p]) ; TODO Print - not working
-		   ([?\C-y] . [?\C-v]) ; yank/paste
-		   )))
-	 ;; Enable EXWM
-	 (exwm-enable)
-	 ;; ;; Configure Ido
-	 ;; (exwm-config-ido)
-	 ;; Other configurations
-	 ;; (exwm-config-misc)
-	 )
+           ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
+           ;; 's-N': Switch to certain workspace.
+           ;; ,@(mapcar (lambda (i)
+           ;;             `(,(kbd (format "s-%d" i)) .
+           ;;               (lambda ()
+           ;;                 (interactive)
+           ;;                 (exwm-workspace-switch-create ,i))))
+           ;;           (number-sequence 4 9))
+           ))
+       ;; )
+       ;; Line-editing shortcuts
+       (unless (get 'exwm-input-simulation-keys 'saved-value)
+         (setq exwm-input-simulation-keys
+           '(([?\C-b] . left)
+             ([?\C-f] . [right])
+             ([?\C-p] . [up])
+             ;; ([?\C-P] . [?\C-p]) ; Print
+             ([?\C-n] . [down])
+             ([?\C-a] . [home])
+             ([?\C-e] . [end])
+             ([?\M-v] . [prior])
+             ([?\C-v] . [next])
+             ([?\C-d] . [delete])
+             ([?\C-k] . [S-end delete])
+             ([?\C-l] . [?\C-l])
+             ([?\C-t] . [?\C-t])
+             ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way
+             ([?\M-w] . [?\C-c]) ; Copy that!
+             ;; ([?\S-p] . [?\C-p]) ; TODO Print - not working
+             ([?\C-y] . [?\C-v]) ; yank/paste
+             )))
+       ;; Enable EXWM
+       (exwm-enable)
+       ;; ;; Configure Ido
+       ;; (exwm-config-ido)
+       ;; Other configurations
+       ;; (exwm-config-misc)
+       )
      #+end_src
 *** Require packages and run my custom conifg
   #+begin_src emacs-lisp
@@ -3061,7 +3062,7 @@ Open man page in current window, rather than other window with
             org-read-date-prefer-future 'time)
       ;; (org-clock-persistence-insinuate)
       ;; make the clock jump key global!
-      (global-set-key (kbd "C-c C-x j") 'org-clock-goto)
+      (global-set-key (kbd "s-j") 'org-clock-goto)
     #+end_src
 *** Clock in also to Harvest for work files
     + Goal - when clocking in on work tasks (org file is somewhere in
