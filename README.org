@@ -3328,9 +3328,7 @@ Open man page in current window, rather than other window with
                    (setq indent-tabs-mode nil)
                    (setq python-indent-offset 4)
                    (setq tab-width 4)
-                   (setq prettify-symbols-alist prettify-greek-lower)
-                   (pyvenv-mode t)
-                   (prettify-symbols-mode t)))
+                   (pyvenv-mode t)))
        )
      (use-package pyvenv :straight t
        :config
@@ -3341,11 +3339,6 @@ Open man page in current window, rather than other window with
 
      ;; (setq ansi-color-drop-regexp
      ;;       "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
-
-     ;; (require 'elpy)
-
-     ;; (require 'prettify-greek)
-
    #+end_src
 *** Treat Bazel/Starlark files as Python
     #+begin_src emacs-lisp
