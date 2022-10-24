@@ -2099,13 +2099,13 @@
 ** Magit
 *** Behavior
     #+begin_src emacs-lisp
-           (use-package magit-todos :straight t)
+      ;; (use-package magit-todos :straight t)
       (use-package magit :straight t
         :config
         (setq magit-clone-set-remote.pushDefault t))
     #+end_src
 *** Initiate =magit-todos= only on =magit= invocation, since it loads slowly
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp :tangle no
       (use-package magit-todos :straight t)
       (add-hook 'magit-status-mode-hook
                 (lambda ()
