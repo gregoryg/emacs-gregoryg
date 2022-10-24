@@ -2122,6 +2122,10 @@
 
      (defalias 'spell-buffer 'ispell-buffer)
    #+end_src
+** CSV - Clumsy Stupid Varmint
+   #+begin_src emacs-lisp
+     (use-package csv-mode :straight t )
+   #+end_src
 ** TTL - Ticky Tacky Lunacy
    #+begin_src emacs-lisp
      (use-package ttl-mode :straight t
