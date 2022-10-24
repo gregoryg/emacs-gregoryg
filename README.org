@@ -3229,7 +3229,6 @@ Open man page in current window, rather than other window with
      (use-package cider
        :mode "\\.clj[sc]?\\'"
        :straight t)
-     (add-hook 'cider-mode-hook #'company-mode)
      ;; ;; (add-to-list 'load-path "~/emacs/cider")
      ;; (autoload 'cider "cider" "Cider for Clojure")
      ;; (require 'cider)
