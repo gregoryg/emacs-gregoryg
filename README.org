@@ -3660,6 +3660,7 @@ Open man page in current window, rather than other window with
 
      (use-package doom-modeline
        :straight t
+       :ensure t
        :after eshell     ;; Make sure it gets hooked after eshell
        :hook (after-init . doom-modeline-init)
        ;; :custom-face
