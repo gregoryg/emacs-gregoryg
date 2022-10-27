@@ -3314,9 +3314,9 @@ Open man page in current window, rather than other window with
      (use-package clojure-mode
        :straight t
        :mode "\\.clj[sc]?\\'"
-       :config
-       (add-hook 'clojure-mode-hook #'lispy-mode)
-       (add-hook 'clojure-mode-hook #'aggressive-indent-mode))
+       ;; :config
+       ;; (add-hook 'clojure-mode-hook #'lispy-mode)
+       )
 
      (use-package cider
        :mode "\\.clj[sc]?\\'"
