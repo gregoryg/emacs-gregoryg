@@ -2689,58 +2689,142 @@ Open man page in current window, rather than other window with
     ;; Set agenda files to personal, override in work-related templates
     (setq org-agenda-files gjg/personal-org-agenda-files)
   #+end_src
-*** Settings for all agenda types
-  #+begin_src emacs-lisp
-    ;;(setq org-agenda-span 'day)
-    ;;(setq org-agenda-skip-scheduled-if-done t)
-    ;; (setq org-agenda-start-with-log-mode t)
-    ;; (setq org-agenda-start-with-clockreport-mode nil)
-    (setq org-agenda-category-icon-alist
-          `(
-            ("emacs" "~/emacs/pixmaps/emacs-128x128.png" nil nil :ascent center :height 32)
-            ("Stardog" "~/emacs/pixmaps/stardog-logo-128x128.png" nil nil :ascent center :height 32)
-            ("notes" "~/emacs/pixmaps/mindmap-icon-128x128.png" nil nil :ascent center :height 32)
-            ("work-habit" "~/emacs/pixmaps/gtd-logo-2019-128x128.png" nil nil :ascent center :height 32)
-            ("linux" "~/emacs/pixmaps/linux-color-128x128.png" nil nil :ascent center :height 32)
-            ("music" "~/emacs/pixmaps/banjo-transparent-128x128.png" nil nil :ascent center :height 32)
-            ("todo" ,(list (all-the-icons-material "check_box" :height 1.2)) nil nil :ascent center)
-            ("networking" "~/emacs/pixmaps/network-wired-128x128.png" nil nil :ascent center :height 32)
-            ;; ("inbox" ,(list (all-the-icons-material "inbox" )) nil nil :ascent center :height 32)
-            ("languages" ,(list (all-the-icons-fileicon "moment-tz" )) nil nil :ascent center :height 32)
-            ("Chubb" "~/emacs/pixmaps/Chubb-Logo-1985-128x128.png" nil nil :ascent center :height 32)
-            ("john deere" "~/emacs/pixmaps/tractor-flat-128x128.png" nil nil :ascent center :height 32)
-            ("PicPay" "~/emacs/pixmaps/picpay-logo-128x128.png" nil nil :ascent center :height 32)
-            ("guidehouse" "~/emacs/pixmaps/guidehouse-logo-128x128.png" nil nil :ascent center :height 32)
-            ("optum" "~/emacs/pixmaps/optum-logo-128x128.png" nil nil :ascent center :height 32)
-            ("inbox" "~/emacs/pixmaps/office-inbox-128x128.png" nil nil :ascent center :height 32)
-            ("social" "~/emacs/pixmaps/icon-social-events-128x128.png" nil nil :ascent center :height 32)
-            ("fitness" "~/emacs/pixmaps/fitness-heart-128x128.png" nil nil :ascent center :height 32)
-            ("gwennie" "~/emacs/pixmaps/loon-128x128.png" nil nil :ascent center :height 32)
-            ("finances" "~/emacs/pixmaps/finances-128x128.png" nil nil :ascent center :height 32)
-            ))
-    (setq org-agenda-sticky t
-          org-agenda-fontify-priorities t
-          org-agenda-hide-tags-regexp "noagenda"
-          org-agenda-restore-windows-after-quit t
-          -agenda-entry-text-maxlines 10
-          org-agenda-diary-file "~/projects/private-orgmode/diary.org"
-          org-agenda-include-diary t
-          org-special-ctrl-a/e t
-          org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99)
-          org-cycle-separator-lines 1
-          org-clock-history-length 12)
+*** Set icons for agenda views
+    These work by =category=
+**** Resize icons to be used in agenda views
+      Resize icons for use in agenda views to be square - helps with column alignment
+      #+begin_src bash
+        i=my-/where/ever/icon.png
+        j=$(basename $i)
+        convert -resize 512x512 $i -background transparent -gravity center -extent 512x512  ~/emacs/pixmaps/$j-512x512.png; done
 
-    (setq org-agenda-exporter-settings
-          '((ps-number-of-columns 1)
-            (ps-landscape-mode t)
-            (org-agenda-add-entry-text-maxlines 10)
-            (htmlize-output-type 'css)))
+      #+end_src
+**** Set icon definitions by category
+     #+begin_src emacs-lisp
+       ;;(setq org-agenda-span 'day)
+       ;;(setq org-agenda-skip-scheduled-if-done t)
+       ;; (setq org-agenda-start-with-log-mode t)
+       ;; (setq org-agenda-start-with-clockreport-mode nil)
+       (setq org-agenda-category-icon-alist
+             `(
+               ("emacs" "~/emacs/pixmaps/emacs-512x512.png" nil nil :ascent center :height 32)
+               ("Stardog" "~/emacs/pixmaps/stardog-logo-512x512.png" nil nil :ascent center :height 32)
+               ("notes" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
+               ("work-habit" "~/emacs/pixmaps/gtd-logo-2019-512x512.png" nil nil :ascent center :height 32)
+               ("linux" "~/emacs/pixmaps/linux-color-512x512.png" nil nil :ascent center :height 32)
+               ("music" "~/emacs/pixmaps/banjo-transparent-512x512.png" nil nil :ascent center :height 32)
+               ("networking" "~/emacs/pixmaps/network-wired-512x512.png" nil nil :ascent center :height 32)
+               ;; ("inbox" ,(list (all-the-icons-material "inbox" )) nil nil :ascent center :height 32)
+               ("languages" ,(list (all-the-icons-fileicon "moment-tz" )) nil nil :ascent center :height 32)
+               ("Chubb" "~/emacs/pixmaps/Chubb-Logo-1985-512x512.png" nil nil :ascent center :height 32)
+               ("john deere" "~/emacs/pixmaps/tractor-flat-512x512.png" nil nil :ascent center :height 32)
+               ("PicPay" "~/emacs/pixmaps/picpay-logo-512x512.png" nil nil :ascent center :height 32)
+               ("guidehouse" "~/emacs/pixmaps/guidehouse-logo-512x512.png" nil nil :ascent center :height 32)
+               ("optum" "~/emacs/pixmaps/optum-logo-512x512.png" nil nil :ascent center :height 32)
+               ("inbox" "~/emacs/pixmaps/office-inbox-512x512.png" nil nil :ascent center :height 32)
+               ("social" "~/emacs/pixmaps/icon-social-events-512x512.png" nil nil :ascent center :height 32)
+               ("fitness" "~/emacs/pixmaps/fitness-heart-512x512.png" nil nil :ascent center :height 32)
+               ("gwennie" "~/emacs/pixmaps/loon-512x512.png" nil nil :ascent center :height 32)
+               ("finances" "~/emacs/pixmaps/finances-512x512.png" nil nil :ascent center :height 32)
+               ))
+       (setq org-agenda-sticky t
+             org-agenda-fontify-priorities t
+             org-agenda-hide-tags-regexp "noagenda"
+             org-agenda-restore-windows-after-quit t
+             -agenda-entry-text-maxlines 10
+             org-agenda-diary-file "~/projects/private-orgmode/diary.org"
+             org-agenda-include-diary t
+             org-special-ctrl-a/e t
+             org-agenda-clockreport-parameter-plist '(:link t :maxlevel 99)
+             org-cycle-separator-lines 1
+             org-clock-history-length 12)
 
-   #+end_src
-*** Initialize for all agendas
-   #+begin_src emacs-lisp
-     (require 'org-agenda)
-   #+end_src
+       (setq org-agenda-exporter-settings
+             '((ps-number-of-columns 1)
+               (ps-landscape-mode t)
+               (org-agenda-add-entry-text-maxlines 10)
+               (htmlize-output-type 'css)))
+
+      #+end_src
+**** Test icons for alignment and um .... prettiness
+     Test the icons set in
+     #+begin_src org :tangle /tmp/test-icons.org
+       ,* Ohai
+         Use this to check icons and alignment in a TODO agenda buffer narrowed to this file
+
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: emacs
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: Stardog
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: notes
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: work-habit
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: linux
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: music
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: networking
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: languages
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: Chubb
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: john deere
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: PicPay
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: guidehouse
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: optum
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: inbox
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: social
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: fitness
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: gwennie
+         :END:
+       ,* TODO check a thing
+         :PROPERTIES:
+         :CATEGORY: finances
+         :END:
+     #+end_src
 *** Custom Agenda definitions
 **** Cross-context agendas
 ***** Basic Agenda with work habits added
