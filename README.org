@@ -2645,6 +2645,11 @@ Open man page in current window, rather than other window with
 
    #+end_src
 ** Org Agenda
+*** Initialize Org Agenda
+   #+begin_src emacs-lisp
+     (require 'org-agenda)
+     (setq org-agenda-custom-commands nil)
+   #+end_src
 *** Set up agenda files lists
     I keep one set of agenda files for personal / everyday use and another for work use.
 
