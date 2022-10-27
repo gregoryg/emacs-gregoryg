@@ -1,6 +1,7 @@
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
 ;;   On MacOS, define the meta key up front for usability when init does not load fully
+(setq frame-inhibit-implied-resize t) ; https://tony-zorman.com/posts/2022-10-22-emacs-potpourri.html
 (setq ns-command-modifier (quote meta))
 (setq garbage-collection-messages t)
 ;; (setq gc-cons-threshold 64000000)
