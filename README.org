@@ -2148,10 +2148,10 @@
                  (toggle-truncate-lines 1)))
    #+end_src
 ** Man pages
-Open man page in current window, rather than other window with
-#+begin_src emacs-lisp
-(custom-set-variables '(Man-notify-method 'pushy))
-#+end_src
+   Open man page in current window, rather than other window with
+   #+begin_src emacs-lisp
+     (custom-set-variables '(Man-notify-method 'pushy))
+   #+end_src
 ** OpenVPN
    Mode to help using OpenVPN
    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
@@ -2428,7 +2428,7 @@ Open man page in current window, rather than other window with
                         ))))
 
         (defun gjg/add-person-from-table (table)
-          "Add person from table to an Org unorder list - used with phone log capture template"
+          "Add person from table to an Org unordered list - used with phone log capture template"
           (let* ((marginalia-align-offset 80)
                  (completion-extra-properties '(:annotation-function gjg/annotate-person))
                  (myperson (assoc (completing-read "Person: " table) table))
