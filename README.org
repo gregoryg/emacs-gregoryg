@@ -1911,6 +1911,8 @@
 
      ;; set key binding in key map prior to dired-x being loaded - for autoload
      (define-key dired-mode-map "\C-x\M-o" 'dired-omit-mode)
+     (define-key dired-mode-map (kbd "M-<up>") 'dired-up-directory)
+     (define-key dired-mode-map (kbd "M-<down>") 'dired-find-file)
      (autoload 'dired-omit-mode "dired-x" "Dired-X")
      ;; (declare (special dired-x-hands-off-my-keys
      ;; 		  dired-bind-vm
@@ -1936,7 +1938,6 @@
      ;; 		      (setq dired-omit-mode t)
      ;; 		      (setq dired-omit-files "^\\..*")
      ;; 		      )))
-
    #+end_src
 *** Open file in relevant OS app
 #+begin_src emacs-lisp
