@@ -2572,7 +2572,10 @@ Open man page in current window, rather than other window with
 	- State "STARTED"    from "TODO"       [2019-09-17 Tue 19:37]
 	:END:
 	Wrap advice around any means of exporting HTML, including export-and-open
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
+  (use-package material-theme :straight t)
+  (use-package ox-gfm :straight t)
+  (use-package htmlize :straight t)
   ;; export to html - use light theme for export
   ;; tip o' the hat to legoscia https://github.com/legoscia/dotemacs/blob/master/dotemacs.org#theme-for-org-html-export
   (defvar my-org-html-export-theme 'material-light)
@@ -2583,7 +2586,6 @@ Open man page in current window, rather than other window with
         (apply orig-fun args)
       (disable-theme my-org-html-export-theme)))
 
-  (use-package ox-gfm :straight t)
   (with-eval-after-load "ox-html"
     (advice-add 'org-export-to-buffer :around 'my-with-theme)
     (advice-add 'org-export-to-file :around 'my-with-theme))
