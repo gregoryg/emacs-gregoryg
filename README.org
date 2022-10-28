@@ -2224,16 +2224,29 @@
 
      ;; Here's a function for daily journal capture - compatible-ish with Logseq
      (defun gjg/denote-journal ()
-       "Create an entry tagged 'journal' with the date as its title."
+       "Create an entry tagged 'journal' with the date as its title.
+     If an entry for today is already present, visit that file.
+     If there are more than one files that match, present a choice."
+     ;; (directory-files (concat denote-directory "/journals") nil "^[0-9T]+--2022-10-27.+org$")
        (interactive)
-       (denote
-        (format-time-string "%Y-%m-%d")
-        '("journal") ; multiple keywords are a list of strings: '("one" "two")
-        nil          ; default Org file type
-        (concat denote-directory "journals")
-        nil          ; date - default to current-time
-        'journal
-        ))
+       (let* ((dt (decode-time))
+              (today (format "%d-%d-%d" (nth 5 dt) (nth 4 dt) (nth 3 dt)))
+              (jfileregex (concat "^[0-9T]+--" today ".+org$"))
+              (jfiles (directory-files (concat denote-directory "/journals") t jfileregex)))
+         (cond
+          ((= 1 (length jfiles))
+           (find-file (car jfiles)))
+          ((> (length jfiles) 1)
+           (find-file (completing-read "Journal file (more than 1 found for today: " jfiles)))
+          (t
+           (denote
+            (format-time-string "%Y-%m-%d")
+            '("journal") ; multiple keywords are a list of strings: '("one" "two")
+            nil          ; default Org file type
+            (concat denote-directory "journals")
+            nil          ; date - default to current-time
+            'journal
+            )))))
 
    #+end_src
 ** Highlight indentation
