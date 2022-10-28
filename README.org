@@ -791,11 +791,10 @@
 
    This section is only useable on Linux - or Unix presumably - with X Window System
    running but no window manager.  An entire window manager has been written in Emacs
-   Lisp - the fundamental package that exercises the X11 APIs is called =xelb= - its GitHub
-   repository is [[https://github.com/ch11ng/xelb][here]] - also available on GNU ELPA.
+   Lisp - the fundamental package that exercises the X11 APIs is called [[https://github.com/ch11ng/xelb][XELB]]
 
-   The package built atop that to provide a usable window manager is EXWM - Emacs X Window
-   Manager - GitHub repo [[https://github.com/ch11ng/exwm][here]]
+   The package built atop that to provide a usable window manager is [[https://github.com/ch11ng/exwm][EXWM]] - Emacs X Window
+   Manager
 
    EXWM is primarily a tiling window manager, but it supports floating windows as well -
    very nice for transient dialogs.  You have control to take an application window and
