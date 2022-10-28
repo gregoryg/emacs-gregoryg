@@ -3347,7 +3347,7 @@
        )
 
      (use-package cider
-       :mode "\\.clj[sc]?\\'"
+       ;; :mode "\\.clj[sc]?\\'"
        :straight t)
      ;; ;; (add-to-list 'load-path "~/emacs/cider")
      ;; (autoload 'cider "cider" "Cider for Clojure")
