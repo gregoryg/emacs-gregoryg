@@ -2885,14 +2885,14 @@
         (add-to-list 'org-agenda-custom-commands
                      '("na" "Notes agenda"
                        ((agenda "" (
-                                    (org-agenda-files '("/home/gregj/gregj-notes/"))
+                                    (org-agenda-files '("~/gregj-notes/" "~/gregj-notes/journals/"))
                                     (org-agenda-span 'week)
                                     )
                                 ))
                        ) t)
         (add-to-list 'org-agenda-custom-commands
                      '("nt" "Zettelkastenistische Note TODOs" todo ""
-                       ((org-agenda-files '("/home/gregj/gregj-notes/"))
+                       ((org-agenda-files '("~/gregj-notes/" "~/gregj-notes/journals/"))
                         (org-agenda-overriding-header "TODO items from Zettelkasten/Denote/Roam notes")
                         ;; (org-agenda-prefix-format "")
                         )))
