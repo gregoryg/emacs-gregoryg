@@ -762,20 +762,21 @@
 *** Load default theme
     Deferred here until all theme tweaks have been applied
     #+begin_src emacs-lisp
-      (if (>  (nth 2 (decode-time )) 16)
-          (gjg/go-dark)
-        (gjg/go-light))
+      (let ((hour (nth 2 (decode-time))))
+        (if (and (< hour 9) (> hour 16))
+            (gjg/go-dark)
+          (gjg/go-light)))
     #+end_src
-** Make things open up in current window
-   There's a standard way to force niceness from packages that open buffers in random
-   windows just to be annoying.  Here's where those packages are corralled
+** Make things open up in preferred window
+   There's a standard way to force niceness from functions that open buffers in random
+   windows just to be annoying.  Here's where those functions are corralled
    #+begin_src emacs-lisp
      ;; Org capture
      (add-to-list 'display-buffer-alist '("^\\*Capture\\*" display-buffer-reuse-window display-buffer-same-window))
      ;; R
      (add-to-list 'display-buffer-alist '("^\\*R" display-buffer-same-window))
      ;; Helpful
-     (add-to-list 'display-buffer-alist '("^\\*helpful" display-buffer-same-window))
+     (add-to-list 'display-buffer-alist '("^\\*helpful" display-buffer-reuse-mode-window))
      ;; Change behavior of Magit status (status only, not magit-diff, magit-process etc)
      (add-to-list 'display-buffer-alist '("^magit:" display-buffer-same-window))
      ;; All interactive SQL modes
