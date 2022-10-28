@@ -3128,11 +3128,13 @@
    targets.  Then set =org-agenda-files= to whatever is appropriate for current context -
    i.e., work vs home
 
+   Zettelkastenistische noten should *always* be available
+
    #+begin_src emacs-lisp
      ;; navigate to files using org-refile; use C-u C-c C-w
      (setq org-outline-path-complete-in-steps nil) ; use ivy/selectrum for quicker completion
      (setq gjg/refile-targets (seq-remove (lambda (elt) (string= "~/projects/private-orgmode/inbox.org" elt))
-                                          (append gjg/personal-org-agenda-files gjg/work-agenda-files)))
+                                          (append gjg/personal-org-agenda-files gjg/work-agenda-files (list denote-directory))))
      (setq org-refile-targets `((gjg/refile-targets :maxlevel . 2)
                                 (,(directory-files-recursively denote-directory org-agenda-file-regexp) :maxlevel . 2))
            org-refile-use-outline-path 'file
