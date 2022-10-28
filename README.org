@@ -2742,6 +2742,8 @@
                ("emacs" "~/emacs/pixmaps/emacs-512x512.png" nil nil :ascent center :height 32)
                ("Stardog" "~/emacs/pixmaps/stardog-logo-512x512.png" nil nil :ascent center :height 32)
                ("notes" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
+               ("ideas" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
+               ("journal" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
                ("work-habit" "~/emacs/pixmaps/gtd-logo-2019-512x512.png" nil nil :ascent center :height 32)
                ("linux" "~/emacs/pixmaps/linux-color-512x512.png" nil nil :ascent center :height 32)
                ("music" "~/emacs/pixmaps/banjo-transparent-512x512.png" nil nil :ascent center :height 32)
