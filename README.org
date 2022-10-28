@@ -261,6 +261,7 @@
      (global-set-key (kbd "C-z") 'undo)
      (global-unset-key (kbd "M-]")) ; unset one next-buffer binding
      (global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
+     (global-set-key (kbd "s-g") 'gjg/exwm-select-or-launch-logseq)
      (global-set-key (kbd "s-y") 'gjg/exwm-select-or-launch-spotify)
      (global-set-key (kbd "s--")  'gjg/exwm-select-zoom-meeting)
 
@@ -1141,6 +1142,14 @@
       emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch (concat gjg/employer-name " Mail") "gmail")'
     #+end_src
 
+**** Function to select or launch Logseq
+     #+begin_src emacs-lisp
+       (defun gjg/exwm-select-or-launch-logseq ()
+         "Select the running Spotify window in EXWM, or launch the app"
+         (interactive)
+         (gjg/exwm-switch-to-buffer-or-launch "Logseq App" "com.logseq.Logseq"))
+     #+end_src
+
 **** Function to select or launch Spotify
      #+begin_src emacs-lisp
        (defun gjg/exwm-select-or-launch-spotify ()
@@ -1250,7 +1259,7 @@
        (setq exwm-input-global-keys
              `(
            ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
-           ([?\s-l] .   ;; super/windows l
+           (,(kbd "s-l") .   ;; super/windows l
             (lambda ()
               (interactive)
               (call-process-shell-command "xfce4-screensaver-command -l")))
@@ -1294,6 +1303,7 @@
            ([?\s-j] . org-clock-goto)
            ([?\s-p] . playerctl-play-pause-song)
            ([?\s-t] . toggle-truncate-lines)
+           ([?\s-g] . gjg/exwm-select-or-launch-logseq)
            ([?\s-y] . gjg/exwm-select-or-launch-spotify)
            (,(kbd "<XF86MonBrightnessUp>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh +5")))
            (,(kbd "<XF86MonBrightnessDown>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh -5")))
