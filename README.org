@@ -2201,7 +2201,7 @@
      ;;(setq denote-dired-directories '("~/gregj-notes/"))
      ;; (add-to-list 'denote-dired-directories "~/gregj-notes/")
      (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories)
-     ;; (add-to-list 'denote-dired-directories (expand-file-name "~/gregj-notes/"))
+     (add-to-list 'denote-dired-directories (expand-file-name "~/gregj-notes/journals/"))
      (custom-set-faces
       '(denote-faces-title
         ((t
