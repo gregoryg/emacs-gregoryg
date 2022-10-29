@@ -2248,6 +2248,27 @@
             )))))
 
    #+end_src
+*** Function to quickly browse all notes with a particular keyword
+    This relies on =gjg/dired-denote-nested-dirs=
+
+    Bring up the notes dired, prompt for an existing keyword, then limit the dired view to
+    just that keyword
+
+    #+begin_src emacs-lisp
+      (defun gjg/denote-browse-keyword (&optional keyword)
+        "Bring up the notes dired, prompt for an existing keyword, then limit the dired view to
+      just that keyword."
+        (interactive)
+        (let ((keyword (or keyword
+                           (completing-read "Denote keyword: " (denote-keywords)))))
+          (gjg/dired-denote-nested-dirs)
+          (revert-buffer)
+          ;; consider using dired-mark-files-containing-regexp !
+          (dired-mark-files-regexp (concat "_" keyword))
+          (dired-toggle-marks)
+          (dired-do-kill-lines)))
+    #+end_src
+
 ** Highlight indentation
    #+begin_src emacs-lisp
      (use-package highlight-indentation :straight t)
