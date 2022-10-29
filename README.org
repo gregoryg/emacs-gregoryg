@@ -3098,12 +3098,13 @@
     No dependency on Org or Org Agenda being loaded
 
     #+begin_src emacs-lisp
-      (let* ((thetime (decode-time))
-             (dow (nth 6 thetime))
-             (hour (nth 2 thetime)))
-        (if (and (< dow 6) (> hour 7) (< hour 18))
-            (gjg/select-agenda-context 'work)
-          (gjg/select-agenda-context 'home)))
+      ;; (let* ((thetime (decode-time))
+      ;;        (dow (nth 6 thetime))
+      ;;        (hour (nth 2 thetime)))
+      ;;   (if (and (< dow 6) (> hour 7) (< hour 18))
+      ;;       (gjg/select-agenda-context 'work)
+      ;;     (gjg/select-agenda-context 'home)))
+      (gjg/select-agenda-context 'home) ;; default to 'home context regardless
     #+end_src
 
 ** Tags/TODOs/Projects Oh My
