@@ -3814,6 +3814,11 @@
               ("C-c s l" . org-super-links-store-link)
               ("C-c s C-l" . org-super-links-insert-link)))
    #+end_src
+** Bookmark a function, bookmark crazy things
+   Let's try bookmark+
+   #+begin_src emacs-lisp
+     (use-package bookmark+ :straight t)
+   #+end_src
 * Final steps
 #+begin_src emacs-lisp
 (shell (get-buffer-create "sh1"))
