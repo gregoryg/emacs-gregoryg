@@ -763,7 +763,7 @@
     Deferred here until all theme tweaks have been applied
     #+begin_src emacs-lisp
       (let ((hour (nth 2 (decode-time))))
-        (if (and (< hour 9) (> hour 16))
+        (if (or (< hour 9) (> hour 16))
             (gjg/go-dark)
           (gjg/go-light)))
     #+end_src
