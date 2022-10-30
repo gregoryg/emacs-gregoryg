@@ -1190,7 +1190,7 @@
     Set certain windows to start in char-mode, floating/tiled etc
     #+begin_src emacs-lisp
       (setq exwm-manage-configurations
-            '(((member exwm-class-name '("Emacs" "Gnome-terminal" "konsole" "libreoffice-calc" "xdg-desktop-portal-gnome" "kitty"))
+            '(((member exwm-class-name '("Emacs" "Gnome-terminal" "konsole" "libreoffice-calc" "xdg-desktop-portal-gnome" "kitty" "UXTerm"))
                char-mode t)
               ))
     #+end_src
