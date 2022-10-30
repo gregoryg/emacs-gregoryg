@@ -2285,6 +2285,8 @@
           (dired-mark-files-regexp (concat "_" keyword))
           (dired-toggle-marks)
           (dired-do-kill-lines)))
+
+      (bind-key "/" 'gjg/denote-browse-keyword dired-mode-map)
     #+end_src
 
 ** Highlight indentation
