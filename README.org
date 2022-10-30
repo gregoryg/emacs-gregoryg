@@ -12,7 +12,7 @@
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
 #+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg-local.setup
-#+property: header-args:emacs-lisp :tangle ~/.emacs.d/emacs-init.el :results none
+#+property: header-args:emacs-lisp :tangle ~/.emacs.d/emacs-init.el
 #+property: header-args:bash :shebang #!/usr/bin/env bash :results none
 
 * Literate Programming Config file
@@ -60,6 +60,7 @@
 
 * Greg's customizations!
 ** Use Emacs as app launcher (with completions)
+   [[file:img/emacs-app-launcher.png]]
    #+begin_src emacs-lisp
      (use-package app-launcher
        :straight '(app-launcher :host github :repo "SebastienWae/app-launcher"))
@@ -92,11 +93,6 @@
    (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
    #+end_src
 
-** Emacs version things
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-     (when (<= emacs-major-version 27)
-       (remove-hook 'kill-emacs-hook #'org-babel-remove-temporary-stable-directory))
-   #+end_src
 ** Linux things
    Fix to make Org export to HTML and open do the right thing: open in the preferred
    browser rather than just HTML in an Emacs buffer
@@ -341,14 +337,17 @@
      ;; )
      ;; almost as important: keep track of those tetris scores
      (setq tetris-score-file "~/.emacs.d/tetris.score")
-
-
    #+end_src
+   #+begin_src emacs-lisp :tangle no  :results value  :exports results
+     (yow)
+   #+end_src
+
 ** Multimedia
+   Control whatever media is playing
+   Requires =playerctl= OS package as well
    #+begin_src emacs-lisp
      (use-package playerctl :straight t)
    #+end_src
-** Weird random rarely used maybe interesting things
 ** Rainbow delimiters
    #+begin_src emacs-lisp
      (use-package rainbow-delimiters :straight t)
