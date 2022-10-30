@@ -1542,19 +1542,6 @@
        ;; (define-key yafolding-mode-map (kbd "<C-S-return>") #'yafolding-toggle-all)
        ;; (define-key yafolding-mode-map (kbd "<C-M-return>") #'yafolding-toggle-element))
    #+end_src
-** Eshell
-   Okay, not yet "commonly used" (as of [2020-09-23 Wed]) ... but it appears to be
-   awesome.
-
-   Ref Howard Abrams' [[https://www.youtube.com/watch?v=RhYNu6i_uY4&t=1548s][Introduction to EShell - YouTube]]
-
-   + Eshell uses =term= when a non-line-mode command is invoked.  Set it so that the
-     =term= window goes away when the process ends.  Also make various =git= things work
-     nicely.
-   #+begin_src emacs-lisp :tangle no
-     (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
-     (setq eshell-destroy-buffer-when-process-dies t)
-   #+end_src
 ** Project.el
    Project.el is built in
 
