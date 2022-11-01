@@ -1857,6 +1857,11 @@
            default-directory))) "-sh"))))
 #+end_src
 
+** Bookmark+
+   Bookmark a function, bookmark crazy things
+   #+begin_src emacs-lisp
+     (use-package bookmark+ :straight t)
+   #+end_src
 ** Dired
    =dired-dwim-target= is just awesome.  Whenever you have 2 Dired
    windows in a frame, hitting Copy or Rename from one Dired buffer
@@ -2250,7 +2255,8 @@
     #+end_src
 *** Function to bring up nested notes dired
     This function also works very nicely in the bookmark+ package, which allows
-      bookmarking a function
+      bookmarking a function.  The function is not dependent on the =bookmark+= package,
+      but is very useful with it
     #+begin_src emacs-lisp
       (defun gjg/dired-denote-nested-dirs ()
         "Dired view with Denote directory and subdirectories"
