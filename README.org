@@ -2235,7 +2235,7 @@
       ;; (directory-files (concat denote-directory "/journals") nil "^[0-9T]+--2022-10-27.+org$")
         (interactive)
         (let* ((dt (decode-time))
-               (today (format "%d-%d-%d" (nth 5 dt) (nth 4 dt) (nth 3 dt)))
+               (today (format "%d-%02d-%02d" (nth 5 dt) (nth 4 dt) (nth 3 dt)))
                (jfileregex (concat "^[0-9T]+--" today ".+org$"))
                (jfiles (directory-files (concat denote-directory "/journals") t jfileregex)))
           (cond
