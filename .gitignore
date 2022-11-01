@@ -2,6 +2,8 @@
 src
 *.elc
 elpa/
+.emacs.d/init_bash.sh
+.emacs.d/org-persist/
 .emacs.d/ensime/
 .emacs.d/games/
 .emacs.d/session.*
