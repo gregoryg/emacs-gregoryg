@@ -785,6 +785,15 @@
                         (derived-mode-p 'sql-interactive-mode)))
                     display-buffer-same-window))
    #+end_src
+** Enable resizing windows with mouse as a normal human
+    =window-divider-mode= makes it easy to resize vertically split windows with the
+   mouse - EXWM makes it nearly impossible to select the vertical margin without this!
+
+   This is a built-in minor mode
+   #+begin_src emacs-lisp
+     (window-divider-mode 1)
+   #+end_src
+
 * EXWM : The Emacs X Window Manager
    This crazy idea is better than I thought it could be!
 
@@ -1504,9 +1513,6 @@
           :config
           (mcon-c-tab-setup-binding))
       #+end_src
-
-    =window-divider-mode= makes it easy to  resize vertically split windows with the mouse - EXWM
-    makes it nearly impossible to select the vertical margin without this!
 
 *** Start the OS processes
     #+begin_src emacs-lisp
