@@ -3814,10 +3814,21 @@
               ("C-c s l" . org-super-links-store-link)
               ("C-c s C-l" . org-super-links-insert-link)))
    #+end_src
-** Bookmark a function, bookmark crazy things
-   Let's try bookmark+
+** TRANSCLUSION
+   Big deal - would be really useful in my work org files and my notes
+   Will it be too slow?  Will it be rarely used?
+   Let's find out!
+   #+begin_src bash
+     (use-package org-transclusion :straight t)
+   #+end_src
+** Theme magic - sync system with EMACS theme
+   Make use of this at any time with =M-x theme-magic-from-emacs=
+
+   Consider putting this in a hook when changing themes - or simply in my
+   =gjg/go-{light,dark}= functions
+
    #+begin_src emacs-lisp
-     (use-package bookmark+ :straight t)
+     (use-package theme-magic :straight t)
    #+end_src
 * Final steps
 #+begin_src emacs-lisp
