@@ -2793,6 +2793,7 @@
                ("Chubb" "~/emacs/pixmaps/Chubb-Logo-1985-512x512.png" nil nil :ascent center :height 32)
                ("john deere" "~/emacs/pixmaps/tractor-flat-512x512.png" nil nil :ascent center :height 32)
                ("PicPay" "~/emacs/pixmaps/picpay-logo-512x512.png" nil nil :ascent center :height 32)
+               ("faithlife" "~/emacs/pixmaps/faithlife-logo-512x512.png" nil nil :ascent center :height 32)
                ("guidehouse" "~/emacs/pixmaps/guidehouse-logo-512x512.png" nil nil :ascent center :height 32)
                ("optum" "~/emacs/pixmaps/optum-logo-512x512.png" nil nil :ascent center :height 32)
                ("inbox" "~/emacs/pixmaps/office-inbox-512x512.png" nil nil :ascent center :height 32)
