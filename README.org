@@ -258,6 +258,7 @@
      (global-unset-key (kbd "M-]")) ; unset one next-buffer binding
      (global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
      (global-set-key (kbd "s-g") 'gjg/exwm-select-or-launch-logseq)
+     (global-set-key (kbd "s-g") 'gjg/exwm-select-slack)
      (global-set-key (kbd "s-y") 'gjg/exwm-select-or-launch-spotify)
      (global-set-key (kbd "s--")  'gjg/exwm-select-zoom-meeting)
 
@@ -1126,7 +1127,6 @@
 *** Jump to or launch application like Gmail or Spotify
     If we already have a browser window running, select it and bring it to the foreground.
     If not, launch it, showing just unread threads.
-
 **** Function =gjg/exwm-switch-to-buffer-or-launch=
 
      #+begin_src emacs-lisp
@@ -1141,7 +1141,6 @@
                  (call-process-shell-command (concat "gtk-launch " application))
                (message "No \"%s\" window is running." searchstring)))))
      #+end_src
-
 **** Shell script to select corporate Gmail window with unread threads
      This shell script can be called from Polybar (my config includes a button that
      invokes this script)
@@ -1149,7 +1148,6 @@
     #+begin_src bash :tangle ~/bin/gmail-buffer-or-launch.sh
       emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch (concat gjg/employer-name " Mail") "gmail")'
     #+end_src
-
 **** Function to select or launch Logseq
      #+begin_src emacs-lisp
        (defun gjg/exwm-select-or-launch-logseq ()
@@ -1157,7 +1155,6 @@
          (interactive)
          (gjg/exwm-switch-to-buffer-or-launch "Logseq App" "com.logseq.Logseq"))
      #+end_src
-
 **** Function to select or launch Spotify
      #+begin_src emacs-lisp
        (defun gjg/exwm-select-or-launch-spotify ()
@@ -1165,7 +1162,6 @@
          (interactive)
          (gjg/exwm-switch-to-buffer-or-launch "Spotify" "spotify"))
      #+end_src
-
 **** Function to switch quickly to Zoom Meeting
      #+begin_src emacs-lisp
        (defun gjg/exwm-select-zoom-meeting ()
@@ -1173,8 +1169,13 @@
          (interactive)
          (gjg/exwm-switch-to-buffer-or-launch "Zoom Meeting"))
      #+end_src
-
-
+**** Function to switch quickly to good ole Slack
+     #+begin_src emacs-lisp
+       (defun gjg/exwm-select-slack ()
+         "Select the running Slack window if it's running."
+         (interactive)
+         (gjg/exwm-switch-to-buffer-or-launch "slack stardog"))
+     #+end_src
 *** Update Spotify's buffer name when song changes
     If running EXWM, let's keep Spotify's buffer name hip
     #+begin_src emacs-lisp
@@ -1312,6 +1313,7 @@
            ([?\s-p] . playerctl-play-pause-song)
            ([?\s-t] . toggle-truncate-lines)
            ([?\s-g] . gjg/exwm-select-or-launch-logseq)
+           ([?\s-k] . gjg/exwm-select-slack)
            ([?\s-y] . gjg/exwm-select-or-launch-spotify)
            (,(kbd "<XF86MonBrightnessUp>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh +5")))
            (,(kbd "<XF86MonBrightnessDown>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh -5")))
@@ -1431,7 +1433,7 @@
                               (exwm-workspace-rename-buffer "chat"))
                              ;; standalone apps
                              ((s-starts-with-p "Slack" exwm-title)
-                              (exwm-workspace-rename-buffer "slack"))
+                              (exwm-workspace-rename-buffer "slack stardog"))
                              ((string= "zoom" exwm-class-name)
                               (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
                              ((string= "Logseq" exwm-class-name)
