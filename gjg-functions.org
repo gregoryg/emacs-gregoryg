@@ -338,15 +338,14 @@ A sort-of package with customization framework.  The famed =gjg= package.
          ))
      #+end_src
 ** Add unique IDs to Org Mode headers
+   + ref [[https://stackoverflow.com/a/13349772/457574][emacs - Assign IDs to every entry in Org-mode - Stack Overflow]]
      #+begin_src emacs-lisp
-     (defun gjg/add-ids-to-headers ()
-       "Add unique IDs to all headers in a buffer from current point; for use with org-mobile"
-       (interactive)
-       (save-excursion
-         (org-back-to-heading t)
-         (while (not (eobp))
-           (org-id-get-create) ;; only creates an ID property if none exists
-           (outline-next-heading))))
+       (require 'org-id)
+       (defun gjg/add-org-header-ids ()
+         (save-excursion
+           (goto-char (point-max))
+           (while (outline-previous-heading)
+             (org-id-get-create))))
      #+end_src
 ** Move next s-expression past current scope
    TODO this is a good candidate for the trash bin
