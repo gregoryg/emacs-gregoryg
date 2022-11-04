@@ -3816,11 +3816,16 @@
               ("C-c s l" . org-super-links-store-link)
               ("C-c s C-l" . org-super-links-insert-link)))
    #+end_src
-** TRANSCLUSION
+** Org Transclusion
    Big deal - would be really useful in my work org files and my notes
    Will it be too slow?  Will it be rarely used?
    Let's find out!
-   #+begin_src bash
+
+   Super cool use found: put my very large People table from the main employer Org file,
+   transclude it into the individual engagement / prospect files!
+
+   Works fast, loads fast, seems pretty great so far
+   #+begin_src emacs-lisp
      (use-package org-transclusion :straight t)
    #+end_src
 ** Theme magic - sync system with EMACS theme
