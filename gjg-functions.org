@@ -250,7 +250,30 @@ A sort-of package with customization framework.  The famed =gjg= package.
       (add-hook 'exwm-workspace-switch-hook #'gjg/send-polybar-exwm-workspace))
 
   #+end_src
+
 * Odds and ends
+** Org mode linking using refile targets
+   #+begin_src emacs-lisp
+     (defun gjg/insert-org-link ()
+       "Insert ID link using value of org-refile-targets"
+       (interactive)
+       (let* ((targets-table (org-refile-get-targets))
+              (selection (completing-read "Select block to link: " targets-table))
+              (myinfo (assoc selection targets-table))
+              (path (nth 1 myinfo))
+              (filepos (or (nth 3 myinfo) 0))
+              ;; visit the target file at position, call =org-id-get-create=
+              (targetid
+               (when (> filepos 0)
+                 (with-current-buffer
+                     (find-file-noselect path)
+                   (goto-char filepos)
+                   (org-id-get-create)))))
+         (insert (format "[[%s:%s][%s]]"
+                         (if targetid "id" "file")
+                         (if targetid targetid path)
+                         selection))))
+   #+end_src
 ** Try harebrained idea for Org Agenda usage []
    TODO come up with a better / less ambiguous term for =context=
 
