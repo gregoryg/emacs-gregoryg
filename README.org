@@ -1172,9 +1172,9 @@
 **** Function to switch quickly to good ole Slack
      #+begin_src emacs-lisp
        (defun gjg/exwm-select-slack ()
-         "Select the running Slack window if it's running."
+         "Select the running Slack window if it's running, otherwise launch."
          (interactive)
-         (gjg/exwm-switch-to-buffer-or-launch "slack stardog"))
+         (gjg/exwm-switch-to-buffer-or-launch "slack stardog" "com.slack.Slack"))
      #+end_src
 *** Update Spotify's buffer name when song changes
     If running EXWM, let's keep Spotify's buffer name hip
