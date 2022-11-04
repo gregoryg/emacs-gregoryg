@@ -2193,8 +2193,9 @@
         :bind
         ("C-S-d" . gjg/denote-project)
         :config
-        (setq denote-directory (expand-file-name "~/gregj-notes/"))
-        (setq denote-known-keywords '("journal" "projects" "ideas"))
+        (setq denote-directory (expand-file-name "~/gregj-notes/")
+              denote-known-keywords '("journal" "projects" "ideas")
+              denote-date-prompt-use-org-read-date t)
         ;; (setq denote-prompts '(title subdirectory))
         )
       (require 'denote)
