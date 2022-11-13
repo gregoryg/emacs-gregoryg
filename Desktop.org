@@ -13,7 +13,7 @@
 #+CREATOR: Emacs 28.0.50 with nativecomp
 #+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg.setup
 #+PROPERTY: header-args:emacs-lisp :results none
-#+PROPERTY: header-args:bash :results none :shebang #!/usr/bin/env bash
+#+PROPERTY: header-args:bash :results none :comments both :shebang #!/usr/bin/env bash
 * Overview
 
   Minimalistic desktop environment things that are closely tied with my EXWM configuration
