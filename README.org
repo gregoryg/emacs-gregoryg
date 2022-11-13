@@ -2882,27 +2882,27 @@
        (setq org-agenda-category-icon-alist
              `(
                ("emacs" "~/emacs/pixmaps/emacs-512x512.png" nil nil :ascent center :height 32)
-               ("Stardog" "~/emacs/pixmaps/stardog-logo-512x512.png" nil nil :ascent center :height 32)
-               ("notes" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
+               ("finances" "~/emacs/pixmaps/finances-512x512.png" nil nil :ascent center :height 32)
+               ("fitness" "~/emacs/pixmaps/fitness-heart-512x512.png" nil nil :ascent center :height 32)
+               ("gwennie" "~/emacs/pixmaps/loon-512x512.png" nil nil :ascent center :height 32)
                ("ideas" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
+               ("inbox" "~/emacs/pixmaps/office-inbox-512x512.png" nil nil :ascent center :height 32)
                ("journal" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
-               ("work-habit" "~/emacs/pixmaps/gtd-logo-2019-512x512.png" nil nil :ascent center :height 32)
+               ("languages" ,(list (all-the-icons-fileicon "moment-tz" )) nil nil :ascent center :height 32)
                ("linux" "~/emacs/pixmaps/linux-color-512x512.png" nil nil :ascent center :height 32)
                ("music" "~/emacs/pixmaps/banjo-transparent-512x512.png" nil nil :ascent center :height 32)
                ("networking" "~/emacs/pixmaps/network-wired-512x512.png" nil nil :ascent center :height 32)
+               ("notes" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
+               ("social" "~/emacs/pixmaps/icon-social-events-512x512.png" nil nil :ascent center :height 32)
+               ("stardog" "~/emacs/pixmaps/stardog-logo-512x512.png" nil nil :ascent center :height 32)
+               ("work-habit" "~/emacs/pixmaps/gtd-logo-2019-512x512.png" nil nil :ascent center :height 32)
                ;; ("inbox" ,(list (all-the-icons-material "inbox" )) nil nil :ascent center :height 32)
-               ("languages" ,(list (all-the-icons-fileicon "moment-tz" )) nil nil :ascent center :height 32)
-               ("Chubb" "~/emacs/pixmaps/Chubb-Logo-1985-512x512.png" nil nil :ascent center :height 32)
-               ("john deere" "~/emacs/pixmaps/tractor-flat-512x512.png" nil nil :ascent center :height 32)
-               ("PicPay" "~/emacs/pixmaps/picpay-logo-512x512.png" nil nil :ascent center :height 32)
+               ;; Customers / engagements
                ("faithlife" "~/emacs/pixmaps/faithlife-logo-512x512.png" nil nil :ascent center :height 32)
                ("guidehouse" "~/emacs/pixmaps/guidehouse-logo-512x512.png" nil nil :ascent center :height 32)
+               ("john deere" "~/emacs/pixmaps/tractor-flat-512x512.png" nil nil :ascent center :height 32)
                ("optum" "~/emacs/pixmaps/optum-logo-512x512.png" nil nil :ascent center :height 32)
-               ("inbox" "~/emacs/pixmaps/office-inbox-512x512.png" nil nil :ascent center :height 32)
-               ("social" "~/emacs/pixmaps/icon-social-events-512x512.png" nil nil :ascent center :height 32)
-               ("fitness" "~/emacs/pixmaps/fitness-heart-512x512.png" nil nil :ascent center :height 32)
-               ("gwennie" "~/emacs/pixmaps/loon-512x512.png" nil nil :ascent center :height 32)
-               ("finances" "~/emacs/pixmaps/finances-512x512.png" nil nil :ascent center :height 32)
+               ("picpay" "~/emacs/pixmaps/picpay-logo-512x512.png" nil nil :ascent center :height 32)
                ))
        (setq org-agenda-sticky t
              org-agenda-fontify-priorities t
@@ -3402,7 +3402,6 @@
   )
 
 #+end_src
-
 * Programming language modes
 
 ** All modes derived from =prog-mode=
