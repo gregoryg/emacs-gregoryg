@@ -2440,6 +2440,12 @@
        )
    #+end_src
 ** Org Babel and Source Code Blocks
+*** Set default tangle Org Babel headers
+    Here's a thought: *every* tangled file should have a link back to its originating Org
+    source
+    #+begin_src emacs-lisp
+      (add-to-list 'org-babel-default-header-args '(:comments . "both") )
+    #+end_src
 *** Report time for code block execution
     + Ref: My answer on Emacs Stackexchange
        [[https://emacs.stackexchange.com/a/61357/418][timers - How to time org-mode code block execution? - Emacs Stack Exchange]]
