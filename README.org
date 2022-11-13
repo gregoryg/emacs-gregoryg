@@ -3100,7 +3100,7 @@
                      '("f" "Fitness"
                        ((agenda "" (
                                     (org-agenda-span 'day)
-                                    (org-agenda-files "~/projects/private-orgmode/fitness.org"))))) t)
+                                    (org-agenda-files '("~/projects/private-orgmode/fitness.org")))))) t)
         (add-to-list 'org-agenda-custom-commands
                      '("h" "thing TODO at Home"
                        (
