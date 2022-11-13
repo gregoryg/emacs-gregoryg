@@ -3280,7 +3280,7 @@
      (setq gjg/refile-targets (seq-remove (lambda (elt) (string= "~/projects/private-orgmode/inbox.org" elt))
                                           (append gjg/personal-org-agenda-files gjg/work-agenda-files (list denote-directory))))
      (setq org-refile-targets `((gjg/refile-targets :maxlevel . 2)
-                                (,(directory-files-recursively denote-directory org-agenda-file-regexp) :maxlevel . 2))
+                                (,(directory-files-recursively denote-directory org-agenda-file-regexp nil (lambda (x) (not (s-contains? "/logseq/bak" x)))) :maxlevel . 2))
            org-refile-use-outline-path 'file
            org-refile-target-verify-function
            (lambda ()
