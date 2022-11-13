@@ -2512,6 +2512,9 @@
        (org-mode . org-superstar-mode))
    #+end_src
 ** Org-mode hook
+   :PROPERTIES:
+   :ID:       c1b7906b-4539-4cb7-94d5-285b5d17c404
+   :END:
    On =auto-fill-mode=: I prefer to have it on, but hate when
    creating links and having it wrap while typing the description.
    For this reason, I want to get in the habit of only adding links
@@ -2524,11 +2527,12 @@
              (highlight-regexp ":tangle no" 'hi-pink)
              (highlight-regexp ":tangle /tmp/intothevoid.el" 'hi-aquamarine)
              ;; (org-modern-mode 1)
-             (setq org-hide-leading-stars t)
-             (setq fill-column 90) ; good default for wide screens
-             (setq org-use-property-inheritance t)
-             (setq org-link-search-must-match-exact-headline nil)
-             (org-defkey org-mode-map [(control tab)] 'org-next-link)
+             (setq org-hide-leading-stars t
+                   fill-column 90 ; good default for wide screens
+                   org-use-property-inheritance t
+                   org-link-search-must-match-exact-headline nil
+                   ;; org-defkey org-mode-map [(control tab)] 'org-next-link
+                   org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
              ;; steal back my keys
              (org-defkey org-mode-map [home] 'beginning-of-buffer)
              (org-defkey org-mode-map [end] 'end-of-buffer)
@@ -3706,6 +3710,9 @@
       (load "~/projects/emacs/gsql-mode.el/gsql-mode")
     #+end_src
 ** Music notation - Lilypond et al
+   :PROPERTIES:
+   :ID:       20957aac-6d4a-4597-b68f-3a646ed238e5
+   :END:
    =lilypond-mode= is provided by Lilypond installation - in debian it will be found
    installed in =/usr/share/emacs/site-lisp/lilypond-mode.el=
 
