@@ -290,6 +290,8 @@
      (global-set-key (kbd "M-]") 'next-buffer)
      (global-set-key (kbd "M-[") 'previous-buffer)
      (global-set-key (kbd "C-c C-v") 'browse-url-at-point)
+     ;; (unbind-key (kbd "C-c C-o") sh-mode-map)
+     (global-set-key (kbd "C-c C-o") 'org-open-at-point)  ; open Org links in tangled files!
      (defalias 'ss 'gjg/open-remote-shell)
      (defalias 'ht 'gjg/highlight-terraform-stuff)
      (defalias 'rb 'rename-buffer)
