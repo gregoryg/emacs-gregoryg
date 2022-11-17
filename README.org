@@ -2926,7 +2926,7 @@
                ("networking" "~/emacs/pixmaps/network-wired-512x512.png" nil nil :ascent center :height 32)
                ("notes" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
                ("social" "~/emacs/pixmaps/icon-social-events-512x512.png" nil nil :ascent center :height 32)
-               ("stardog" "~/emacs/pixmaps/stardog-logo-512x512.png" nil nil :ascent center :height 32)
+               ("Stardog" "~/emacs/pixmaps/stardog-logo-512x512.png" nil nil :ascent center :height 32)
                ("work-habit" "~/emacs/pixmaps/gtd-logo-2019-512x512.png" nil nil :ascent center :height 32)
                ;; ("inbox" ,(list (all-the-icons-material "inbox" )) nil nil :ascent center :height 32)
                ;; Customers / engagements
