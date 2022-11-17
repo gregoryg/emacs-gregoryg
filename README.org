@@ -788,6 +788,18 @@
                         (derived-mode-p 'sql-interactive-mode)))
                     display-buffer-same-window))
    #+end_src
+
+   + Here's an example of wrangling a window to display in a direction, with width and
+     height constraints
+     #+begin_src emacs-lisp :tangle no
+       (add-to-list 'display-buffer-alist
+                    '(("\\*org-roam\\*"
+                       (display-buffer-in-direction)
+                       (direction . right)
+                       (window-width . 0.33)
+                       (window-height . fit-window-to-buffer))))
+     #+end_src
+
 ** Enable resizing windows with mouse as a normal human
     =window-divider-mode= makes it easy to resize vertically split windows with the
    mouse - EXWM makes it nearly impossible to select the vertical margin without this!
