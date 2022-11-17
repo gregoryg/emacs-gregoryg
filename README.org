@@ -2062,7 +2062,11 @@
        (occur-mode-display-occurrence))
      (ad-activate 'occur-prev)
    #+end_src
-** Shell mode
+** Shell and shell-script mode
+   TODO: remove conflicting key bindings
+*** Shell script mode
+    #+begin_src emacs-lisp
+    #+end_src
 *** Shell mode config
     #+begin_src emacs-lisp
       (custom-set-variables '(shell-kill-buffer-on-exit t)
