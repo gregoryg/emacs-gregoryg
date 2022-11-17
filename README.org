@@ -2331,7 +2331,7 @@
 ** Org Roam UI
    TODO: Move this into Org Roam config (maybe)
 
-   #+begin_src emacs-lisp :tangle no
+   #+begin_src emacs-lisp
      (use-package org-roam-ui
        :straight t
        ;; (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
