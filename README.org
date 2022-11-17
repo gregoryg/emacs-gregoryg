@@ -2418,8 +2418,6 @@
           (apply #'org-roam-node-insert args)))
       ;; And then bind `org-roam-insert-immediate` to a keybinding.
     #+end_src
-*** Visualizations of the graph
-    org-roam-server only worked on v1 of org-roam.
 
 * Org mode stuff
 
