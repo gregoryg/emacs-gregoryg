@@ -2381,17 +2381,29 @@
             ("C-M-i" . completion-at-point)
             )
      :config
-     (org-roam-setup)
+     ;; (org-roam-setup) ; following the lead of u/pragmat1c1
+     (setq org-roam-node-display-template
+           (concat "${title:70}"(propertize "${tags:30}" 'face 'org-tag) "${file:48}"))
      )
+
+
+
  #+end_src
 *** Org Roam Capture templates
     Let's leave the default one alone for now - make a new 'g'reg template
-    #+begin_src emacs-lisp :tangle no
+    #+begin_src emacs-lisp
       (require 'org-roam)
+      (require 'org-roam-protocol) ; allow bookmarklets to work for "ref" template
       (push
        '("g" "greg" plain "%?" :target
          (file+head "${slug}.org" "#+title: ${title}") :unnarrowed nil)
        org-roam-capture-templates)
+      (push
+       '("r" "ref" plain "%?" :target
+         (file+head "${slug}.org" "#+title: ${title}\n\n${body}") :unnarrowed t)
+       org-roam-capture-ref-templates)
+
+
     #+end_src
 *** Immediate thing in video
     Ref: comment by Umar Ahmad in [[https://www.youtube.com/watch?v=AyhPmypHDEw][Getting Started with Org Roam - Build a Second Brain in Emacs - YouTube]]
