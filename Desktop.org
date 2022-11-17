@@ -840,6 +840,27 @@
      Type=Application
      Categories=Database;
    #+end_src
+** Org Roam Protocol
+   Org-roam provides extensions for capturing content from external applications such as
+   the browser, via =org-protocol=.  Org-roam extends =org-protocol= with 2 protocols: the
+   =roam-node= and =roam-ref= protocols.
+
+   #+begin_src conf :tangle ~/.local/share/applications/org-protocol.desktop
+     [Desktop Entry]
+     Name=Org-Protocol
+     Exec=emacsclient %u
+     Icon= ~/emacs/pixmaps/org-roam.png
+     Type=Application
+     Terminal=false
+     MimeType=x-scheme-handler/org-protocol
+     Categories=Roam
+   #+end_src
+
+   Activate this by running
+   #+begin_src bash
+     xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
+   #+end_src
+
 ** Polybar panel
    We can choose between simple and fancy
    #+begin_src conf :tangle ~/.local/share/applications/polybar-starter.desktop
