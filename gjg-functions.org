@@ -253,6 +253,10 @@ A sort-of package with customization framework.  The famed =gjg= package.
 
 * Odds and ends
 ** Org mode linking using refile targets
+   :PROPERTIES:
+   :ID:       5450a76d-760d-4157-b311-bcf68f8b86a4
+   :END:
+   TODO: degrade to =org=insert-link= behavior - e.g. accept URL
    #+begin_src emacs-lisp
      (defun gjg/insert-org-link ()
        "Insert ID link using value of org-refile-targets"
