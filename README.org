@@ -2350,19 +2350,25 @@
 ** Org Roam
    I'm starting off with @daviwil's config (simplified) as it exists [2022-11-11 Fri]
 
+   + [[https://www.reddit.com/r/emacs/comments/veesun/orgroam_is_absolutely_fantastic/][(2) org-roam is absolutely fantastic! : emacs ≫ www.reddit.com]]
 
 *** Configuration and startup
- #+begin_src emacs-lisp :tangle no
+ #+begin_src emacs-lisp
+   ;; (setq org-roam-database-connector 'sqlite-builtin) ; set before loading org-roam
    (use-package org-roam
      :straight t
      :hook
      (after-init . org-roam-mode)
      :init
-     (setq org-roam-v2-ack t)
+     (setq
+      org-roam-v2-ack t
+      dw/daily-note-filename "%<%Y-%m-%d>.org"
+      dw/daily-note-header "#+title: %<%Y-%m-%d %a>\n\n[[roam:%<%Y-%B>]]\n\n")
+
      :custom
      (org-roam-directory "~/projects/private-orgmode/roam-notes")
      (org-roam-completion-everywhere t)
-     ;; :bind (:map org-roam-mode-map
+     (setq org-id-extra-files (org-roam--list-files org-roam-directory))  ;; :bind (:map org-roam-mode-map
      ;;             (("C-c n l" . org-roam)
      ;;              ("C-c n f" . org-roam-find-file)
      ;;              ("C-c n g" . org-roam-show-graph))
