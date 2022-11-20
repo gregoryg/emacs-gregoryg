@@ -128,6 +128,145 @@ A sort-of package with customization framework.  The famed =gjg= package.
        (gjg/select-agenda-context 'work)
        (org-agenda nil "W"))
    #+end_src
+* Org Mode to RDF and (maybe) RDBMS
+  [[id:6a76fbd7-4f5a-48a6-8b27-ca158946a7ca][make Org and Markdown files into RDF triples]]
+  TODO: return results as property lists rather than positional values
+** Code to return (very) simplifed headline parse of current Org buffer
+   :PROPERTIES:
+   :ID:       d08013df-17b2-4faa-b429-e91493625897
+   :END:
+   #+begin_src emacs-lisp
+     ;; tags are being used only at file level for now (#+FILETAGS)
+     (defun gjg/parse-org-buffer-for-rdf ()
+       "Parse current Org buffer, returning elements for my ontology."
+       (org-element-map (org-element-parse-buffer 'headline) 'headline
+         (lambda (hl)
+           (let* ((element-type (car hl))
+                  (body (cadr hl))
+                  (pos (plist-get body :robust-begin))
+                  (properties (org-entry-properties pos))
+                  (title (plist-get body :raw-value))
+                  (level (plist-get body :level))
+                  (todo-state (plist-get body :todo-type))
+                  (parent (plist-get body :parent))
+                  (parent-id (plist-get (cadr parent) :ID))
+                  (id (plist-get body :ID))
+                  (category (cdr (assoc "CATEGORY" properties))) ;; inherited or local
+                  )
+             (list
+              element-type level title todo-state id parent-id category
+              ))))
+       )
+   #+end_src
+** Return string with full RDF set based on my Org Mode ontology
+   :PROPERTIES:
+   :ID:       80080bf7-b231-4bac-885d-6d27333e6530
+   :END:
+   #+begin_src emacs-lisp
+     (defun gjg/generate-rdf-from-org ()
+       "Return Turtle format RDF for a graph based on my Org Mode ontology."
+       ;; using concat instead of format due to conditional lines
+       (let* ((orgparse (gjg/parse-org-buffer-for-rdf))
+              (todo-states (delete-dups (mapcar (lambda (hl) (nth 3 hl)) orgparse)))
+              (categories (delete-dups (mapcar (lambda (hl) (nth 6 hl)) orgparse)))
+              (properties (org-entry-properties 0))
+              (alltags (when (and properties (assoc "ALLTAGS" properties))
+                         (s-split ":" (substring-no-properties (cdr (assoc "ALLTAGS" properties))) t)))
+              (file-name (buffer-file-name))
+              (file-id (s-replace "/" "_" file-name))
+              (todo-state-data (mapcar
+                                (lambda (todo-state)
+                                  (format "
+     :%s a :Todo . \n" todo-state )) todo-states
+                                ))
+              (file-level-data (format "
+     PREFIX : <urn:orgmode:model#>
+     :File-%s a :File ;
+          rdfs:label \"%s\" ;
+          :file_path \"%s\" ;
+          :file_type \"%s\" .\n"
+                                       file-id
+                                       (file-name-base file-name)
+                                       file-name
+                                       "org"))
+              (filetag-data (mapcar
+                             (lambda (tag)
+                               (format "
+     :Tag-%s a :Tag ;
+          rdfs:label \"%s\" .\n
+     :File-%s a :File ;
+          :file_tag :Tag-%s . \n"
+                                       tag
+                                       tag
+                                       file-id
+                                       tag
+                                       ))
+                             alltags))
+              (category-data (mapcar
+                              (lambda (cat)
+                                (format "
+     :Category-%s a :Category ;
+     rdfs:label \"%s\" .\n"
+                                        cat  cat))
+                              categories))
+
+              (topic-level-data (mapcar
+                                 (lambda (hl)
+                                   (let ((level (nth 1 hl))
+                                         (title (s-replace "\"" "\\\"" (nth 2 hl)))
+                                         (id (nth 4 hl))
+                                         (category (nth 6 hl))
+                                         (todo-data (when (nth 3 hl) (concat "     :todo_state :" (symbol-name (nth 3 hl))  " ;\n")))
+                                         (child-data (when (nth 5 hl) (concat "     :child_of :Topic-" (nth 5 hl)  " ;\n")))
+                                         )
+                                     (concat "
+     :Topic-" id " a :Topic ;\n"
+     "     rdfs:label \"" title "\" ;\n"
+     "     :topic_level " (int-to-string level) " ;\n"
+     "     :topic_headline \"" title "\" ;\n"
+     "     :topic_category :Category-" category " ;\n"
+     todo-data
+     child-data
+     "     :from_file :File-" file-id " .\n"
+     )
+                                     ))
+                                 orgparse)
+
+                                )
+
+              ) ; now we're in the let*
+         (concat
+          (format "# Data from file %s\n" file-name)
+          file-level-data
+          "# Unique file tags\n"
+          (s-join "\n" filetag-data)
+          "# Unique TODO states in file\n"
+          (s-join "\n" todo-state-data)
+          "# Unique categories in file\n"
+          (s-join "\n" category-data)
+          "# Topics (Org Mode headlines)\n"
+          (s-join "\n" topic-level-data)
+          )
+         ) ;; end of let*
+       )
+   #+end_src
+** Write RDF as turtle for directory of Org files
+   #+begin_src emacs-lisp
+     (defun gjg/write-org-to-rdf ()
+       "Build RDF and write TURTLE file for all Org Mode files in current directory"
+       (interactive)
+       (let ((files   (directory-files-recursively "~/gregj-notes/" org-agenda-file-regexp)))
+         (dolist (file files)
+           (message "Processing file %s" file)
+           (let ((buffer (or (find-buffer-visiting file) (find-file-noselect file))))
+             (with-current-buffer buffer
+               (org-mode)
+               (gjg/add-org-header-ids)
+               (f-write (gjg/generate-rdf-from-org) 'utf-8 (concat "/tmp/" (file-name-sans-extension (file-name-nondirectory file)) ".ttl")
+                        )
+             )))
+         ))
+   #+end_src
 * Stardog and other RDF/SPARQL databases
    #+begin_src emacs-lisp
      ;; TODO: create function to change just the database
