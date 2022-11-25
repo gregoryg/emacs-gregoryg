@@ -725,7 +725,8 @@
      Categories=Automation;
    #+end_src
 ** IntelliJ IDEA Community Edition
-   #+begin_src conf :tangle ~/.local/share/applications/jetbrains-idea-ce.desktop
+   # :tangle ~/.local/share/applications/jetbrains-idea-ce.desktop
+   #+begin_src conf :tangle no
      [Desktop Entry]
      Version=1.0
      Type=Application
