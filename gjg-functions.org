@@ -139,23 +139,57 @@ A sort-of package with customization framework.  The famed =gjg= package.
      ;; tags are being used only at file level for now (#+FILETAGS)
      (defun gjg/parse-org-buffer-for-rdf ()
        "Parse current Org buffer, returning elements for my ontology."
-       (org-element-map (org-element-parse-buffer 'headline) 'headline
+       (org-element-map (org-element-parse-buffer 'headline) '( headline)
          (lambda (hl)
-           (let* ((element-type (car hl))
-                  (body (cadr hl))
-                  (pos (plist-get body :robust-begin))
-                  (properties (org-entry-properties pos))
-                  (title (plist-get body :raw-value))
-                  (level (plist-get body :level))
-                  (todo-state (plist-get body :todo-type))
-                  (parent (plist-get body :parent))
-                  (parent-id (plist-get (cadr parent) :ID))
-                  (id (plist-get body :ID))
-                  (category (cdr (assoc "CATEGORY" properties))) ;; inherited or local
+           (let* ((element-type   (car hl))
+                  (body           (cadr hl))
+                  (pos            (plist-get body :robust-begin))
+                  (properties     (org-entry-properties pos))
+                  (title          (plist-get body :raw-value))
+                  (level          (plist-get body :level))
+                  (todo-state     (plist-get body :todo-type))
+                  (parent         (plist-get body :parent))
+                  (parent-id      (plist-get (cadr parent) :ID))
+                  (id             (plist-get body :ID))
+                  (category       (cdr (assoc "CATEGORY" properties))) ;; inherited or local
+                  (contents-begin (plist-get body :contents-begin))
+                  (contents-end   (plist-get body :contents-end))
                   )
-             (list
-              element-type level title todo-state id parent-id category
-              ))))
+             ;; TODO nab links in *only* the current heading/topic
+             (org-with-point-at contents-begin
+               (org-narrow-to-subtree)
+               (org-fold-hide-subtree)
+               (org-show-entry)
+               (org-element-map (org-element-parse-buffer '(object) t) '(link)
+                 (lambda (linky)
+                   (message "Ohai: link discovered: %s %s" (plist-get linky :type) (plist-get linky :path)
+                 )))
+               (widen)
+               )
+
+             (when title
+               (list
+                element-type level title todo-state id parent-id category
+                ))))))
+     (defun gjg/parse-org-buffer-links-for-rdf ()
+       "Parse current Org buffer, returning links for my ontology."
+       (setq-local element-type nil)
+       (org-element-map (org-element-parse-buffer) '(link headline)
+         ;; assume elements will appear in order
+         (lambda (hl)
+           (if (eq 'headline (car hl))
+               (setq-local headline-id (plist-get (cadr hl) :ID))
+             (let* ((body         (cadr hl))
+                    (element-type (car hl))
+                    (link-type    (plist-get body :type))
+                    (link-format  (plist-get body :format))
+                    (link-path    (plist-get body :path))
+                    )
+               )
+             (when (and element-type (eq 'link element-type))
+               (list
+                (headline-id link-type link-path link-format)
+                )))))
        )
    #+end_src
 ** Return string with full RDF set based on my Org Mode ontology
@@ -252,20 +286,19 @@ A sort-of package with customization framework.  The famed =gjg= package.
    #+end_src
 ** Write RDF as turtle for directory of Org files
    #+begin_src emacs-lisp
-     (defun gjg/write-org-to-rdf ()
-       "Build RDF and write TURTLE file for all Org Mode files in current directory"
+     (defun gjg/write-org-to-rdf (&optional dir)
+       "Build RDF and write TURTLE file for all Org Mode files in notes directory.
+     Write all TURTLE files to DIR, or `/tmp/' if not specified."
        (interactive)
-       (let ((files   (directory-files-recursively "~/gregj-notes/" org-agenda-file-regexp)))
+       (let ((files   (directory-files-recursively "~/gregj-notes/" org-agenda-file-regexp))
+             (targetdir (or dir "/tmp/")))
          (dolist (file files)
            (message "Processing file %s" file)
            (let ((buffer (or (find-buffer-visiting file) (find-file-noselect file))))
              (with-current-buffer buffer
                (org-mode)
                (gjg/add-org-header-ids)
-               (f-write (gjg/generate-rdf-from-org) 'utf-8 (concat "/tmp/" (file-name-sans-extension (file-name-nondirectory file)) ".ttl")
-                        )
-             )))
-         ))
+               (f-write (gjg/generate-rdf-from-org) 'utf-8 (concat targetdir "/" (file-name-sans-extension (file-name-nondirectory file)) ".ttl")))))))
    #+end_src
 * Stardog and other RDF/SPARQL databases
    #+begin_src emacs-lisp
