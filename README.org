@@ -2224,6 +2224,46 @@
   sqlite is apparently compiled into Emacs itself now!
 
   Overall, the great Zettelkasten problem must find a solution!
+** Org Roam vs Denote
+   I feel every time I try Org Roam that I am walking on eggshells, not understanding the
+   full set of configurations and the "proper" use of it.  This time around, I got into
+   the Org Roam protocol capture, and Org Roam capture templates, which makes things
+   better - but these are actually very close to existing Org Mode capabilities with
+   a little extra sauce added - quite against Denote's approach to avoid duplicating
+   Emacs basics.
+
+   I find that Denote doesn't get in my way, is fun to extend ... and I think I just
+   talked myself into abandoning Org Roam *yet again*
+*** Denote pros and cons
+**** Pros
+     + Very simple and understandable
+     + Absolutely outstanding documentation
+     + Unbelievable responsiveness from @prot on GitHub / other forums
+     + Philospophy to let Emacs do Emacs things - not subsume everyting in a complex package
+     + Easily configurable
+     + No external dependencies
+**** Cons
+     + No "Denote UI" graphing - thus need to find external viz/nav tools
+       The lack of graph viz has me trying Logseq, Obsidian and my own Org-to-RDF export
+       Should I look at the code that loads Org Roam into sqlite???
+
+*** Org Roam pros and cons
+**** Pros
+     + Graph-aware
+     + Nodes can be defined at file or subtree level, simply add ID
+     + Born to support Zettelkasten method (also a con)
+     + Vis/Nav supported by the amazing Org Roam UI (such a big plus)
+     + Sqlite - also a con
+       Once you have a relational representation, you can do all sorts of useful things
+       [[https://lucidmanager.org/data-science/visualise-org-roam/][Visualise Org-Roam Networks With igraph and R]]
+**** Cons
+     + Adding ID property to subtree turns it into a node - MAYBE UNINTENTIONALLY
+     + External dependency on sqlite - now included in Emacs but still annoys me
+     + Terrible documentation IMO - much thinner than Denote's with a much larger user base
+     + Assumes Zettelkasten - which I can't say suits my purposes exactly
+     + Oddly difficult to learn and get started with
+     + Fragile and easily broken in my experience (especially org-roam-ui)
+
 
 ** Denote - note taking
    + Prot's denote - on System Crafters [[https://systemcrafters.net/live-streams/july-15-2022/][System Crafters Live! - July 15, 2022 - System Crafters]]
