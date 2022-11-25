@@ -199,6 +199,29 @@
 
    The fix: invoke =ibus-setup=, and delete all keyboard shortcuts under the =Emoji= tab
 
+* Set default applications
+  Here's what =mimeapps.list= looks like after a year of use on Debian
+  #+begin_src conf :tangle ~/.config/mimeapps.list
+    [Default Applications]
+    text/html=brave-browser.desktop
+    x-scheme-handler/http=brave-browser.desktop
+    x-scheme-handler/https=brave-browser.desktop
+    x-scheme-handler/about=brave-browser.desktop
+    x-scheme-handler/unknown=brave-browser.desktop
+    x-scheme-handler/webcal=brave-browser.desktop
+    x-scheme-handler/mailto=brave-browser.desktop
+    text/org=emacsclient.desktop
+    text/markdown=emacsclient.desktop;
+    x-scheme-handler/org-protocol=org-protocol.desktop
+
+    [Added Associations]
+    text/turtle=emacsclient.desktop;
+    application/x-sms-rom=emacsclient.desktop;
+    text/org=emacsclient.desktop;
+    text/markdown=emacsclient.desktop;
+    video/mp4=vlc.desktop;org.gnome.Totem.desktop;
+    video/x-flv=vlc.desktop;
+  #+end_src
 * Useful scripts when no DE is available
 ** Script to run autostart apps including compositor
   I run a shell script which starts up key helper apps like albert/ulauncher, picom/compton and
