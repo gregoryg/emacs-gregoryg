@@ -318,14 +318,21 @@
    #+end_src
 
 
-** Automatic typing - abbrevs and expansions
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
-;; Dynamic abbrevs should expand both words and symbols
-(setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
-;; and now set up hippie-expand
-(global-set-key (kbd "M-/") 'hippie-expand)
-
-   #+end_src
+** Automatic typing
+*** Abbreviations while typing
+    Abbrevs are stored in =~/.emacs.d/abbrev_defs=
+    #+begin_src emacs-lisp
+     ;; Dynamic abbrevs should expand both words and symbols
+     (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
+    #+end_src
+*** Dynamic expansions with =M-/=
+    The question to settle here is should I stick with default Dabbrev, or re-activate
+    hippie-expand which I've used forever - also a built-in now?  Not sure I know the diff
+    anymore
+    #+begin_src emacs-lisp :tangle no
+      ;; and now set up hippie-expand
+      (global-set-key (kbd "M-/") 'hippie-expand)
+    #+end_src
 ** Games and silliness
    #+begin_src emacs-lisp
      ;; very important: keep a long list of yow lines
