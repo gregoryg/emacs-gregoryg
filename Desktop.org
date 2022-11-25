@@ -1262,6 +1262,13 @@
 ** Zoom
    Use this if you are not using the OS package manager installation - set =:tangle no= if
    you are
+
+   Also - one important setting to maintain sanity in a tiling window manager like EXWM is
+   #+begin_src conf :tangle no
+     enableMiniWindow=false
+   #+end_src
+
+   Set that in =~/.config/zoomus.conf= or similar
    #+begin_src conf :tangle no
  ~/.local/share/applications/zoom.desktop
      [Desktop Entry]
