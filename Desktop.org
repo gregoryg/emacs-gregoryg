@@ -213,6 +213,7 @@
     text/org=emacsclient.desktop
     text/markdown=emacsclient.desktop;
     x-scheme-handler/org-protocol=org-protocol.desktop
+    image/gif=eom.desktop
 
     [Added Associations]
     text/turtle=emacsclient.desktop;
@@ -221,6 +222,7 @@
     text/markdown=emacsclient.desktop;
     video/mp4=vlc.desktop;org.gnome.Totem.desktop;
     video/x-flv=vlc.desktop;
+    image/gif=eom.desktop;
   #+end_src
 * Useful scripts when no DE is available
 ** Script to run autostart apps including compositor
