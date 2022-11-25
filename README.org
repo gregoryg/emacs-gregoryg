@@ -2990,6 +2990,7 @@
                ;; ("inbox" ,(list (all-the-icons-material "inbox" )) nil nil :ascent center :height 32)
                ;; Customers / engagements
                ("faithlife" "~/emacs/pixmaps/faithlife-logo-512x512.png" nil nil :ascent center :height 32)
+               ("forge" "~/emacs/pixmaps/Forge-Global.png" nil nil :ascent center :height 32)
                ("guidehouse" "~/emacs/pixmaps/guidehouse-logo-512x512.png" nil nil :ascent center :height 32)
                ("john deere" "~/emacs/pixmaps/tractor-flat-512x512.png" nil nil :ascent center :height 32)
                ("optum" "~/emacs/pixmaps/optum-logo-512x512.png" nil nil :ascent center :height 32)
