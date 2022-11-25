@@ -2311,10 +2311,13 @@
                        :jump-to-captured t)))
     #+end_src
 *** Journal
+    :PROPERTIES:
+    :ID:       d7faff4e-90a4-4b70-986f-739e3b936539
+    :END:
     Use a =journals/= subdirectory to integrate nicely with Logseq
     #+begin_src emacs-lisp
       ;; Denote templates
-      (add-to-list 'denote-templates '(journal . "* Thoughts\n\n* Tasks\n" ) )
+      (add-to-list 'denote-templates '(journal . "* Thoughts\n\n* Tasks (require a category)\n" ) )
 
       ;; Here's a function for daily journal capture - compatible-ish with Logseq
       (defun gjg/denote-journal ()
@@ -2375,6 +2378,15 @@
 
       (bind-key "/" 'gjg/denote-browse-keyword dired-mode-map)
     #+end_src
+*** Deregister the =:denote= link type
+    I prefer to not make Denote itself a dependency - just use native Org Mode link types
+    such as =id= and =file=
+
+    #+begin_src emacs-lisp
+      (setq org-link-parameters
+            (delq (assoc "denote" org-link-parameters) org-link-parameters))
+    #+end_src
+
 ** Org Roam UI
    TODO: Move this into Org Roam config (maybe)
 
