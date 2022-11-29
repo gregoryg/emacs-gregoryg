@@ -19,6 +19,9 @@
 A sort-of package with customization framework.  The famed =gjg= package.
 
 * Variables with =defcustom=
+  :PROPERTIES:
+  :ID:       a0ef1a1a-59f5-4ba8-ac37-013ad307011e
+  :END:
    #+begin_src emacs-lisp
      (defcustom gjg/current-agenda-context 'work
        "Context for Org Agenda that determines global value of `org-agenda-files`"
@@ -82,6 +85,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
        :group 'gjg)
    #+end_src
 * Quick theme switching
+  :PROPERTIES:
+  :ID:       67100837-6b96-46e1-b923-932b31ae1297
+  :END:
    #+begin_src emacs-lisp
     (defun gjg/go-dark ()
       "switch to preferred dark theme"
@@ -96,6 +102,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
 
    #+end_src
 * Register buffer name modeline segment for use in various modeline packages
+  :PROPERTIES:
+  :ID:       fb954462-87b1-46ea-8374-97759940b485
+  :END:
   #+begin_src emacs-lisp :tangle no
     (defun gjg/moodline-buffer-name-segment
         "Displays the name of the current buffer in the mode-line - truncated to gjg/max-buffer-name-in-modeline if set"
@@ -304,6 +313,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
        )
    #+end_src
 ** Write RDF as turtle for directory of Org files
+   :PROPERTIES:
+   :ID:       ffbcffc0-1820-47fc-93ab-be7ab5d36e65
+   :END:
    #+begin_src emacs-lisp
      (defun gjg/write-org-to-rdf (&optional dir)
        "Build RDF and write TURTLE file for all Org Mode files in notes directory.
@@ -320,6 +332,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
                (f-write (gjg/generate-rdf-from-org) 'utf-8 (concat targetdir "/" (file-name-sans-extension (file-name-nondirectory file)) ".ttl")))))))
    #+end_src
 * Stardog and other RDF/SPARQL databases
+  :PROPERTIES:
+  :ID:       05f31067-47d5-4486-a252-3af2a0157978
+  :END:
    #+begin_src emacs-lisp
      ;; TODO: create function to change just the database
      ;; TODO: create function select database after querying server ( /admin/databases)
@@ -412,6 +427,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
          (gjg/set-sparql-header-args url db api-type)))
    #+end_src
 * Polybar for use with Linux EXWM and desktop environments
+  :PROPERTIES:
+  :ID:       8c5730d0-92b7-42eb-b8ad-db2dae8e6a38
+  :END:
   #+begin_src emacs-lisp
     (defun gjg/polybar-start-or-toggle ()
       "Toggle visibility of polybar, or start it if not running"
@@ -443,6 +461,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
   #+end_src
 
 * Odds and ends
+  :PROPERTIES:
+  :ID:       39e8657c-2662-4231-9fc6-440544b659e2
+  :END:
 ** Org mode linking using refile targets
    :PROPERTIES:
    :ID:       5450a76d-760d-4157-b311-bcf68f8b86a4
@@ -470,6 +491,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
                          selection))))
    #+end_src
 ** Try harebrained idea for Org Agenda usage []
+   :PROPERTIES:
+   :ID:       461e61b0-2cc4-4fa6-81dd-13e489c69b51
+   :END:
    TODO come up with a better / less ambiguous term for =context=
 
    The idea is to have a smaller set of custom agenda commands that will depend on setting a
@@ -482,6 +506,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
 
    Var used is =gjg/current-agenda-context=
 *** DONE Add indication of context to the Agenda Dispatcher
+    :PROPERTIES:
+    :ID:       1aad783e-f6b2-489a-b69d-d2a709d797b6
+    :END:
     :LOGBOOK:
     - State "DONE"       from              [2022-09-20 Tue 15:26]
     :END:
@@ -498,6 +525,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
       ;; (remove-hook 'window-selection-change-functions 'gjg/display-agenda-context)
     #+end_src
 *** Create a context switcher
+    :PROPERTIES:
+    :ID:       6d89a208-8799-405c-b996-395ca8fbf4de
+    :END:
     #+begin_src emacs-lisp
       (defun gjg/select-agenda-context (&optional context)
         "Set current Org Agenda context (work/home etc)."
@@ -512,6 +542,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
       (global-set-key (kbd "C-c b") 'gjg/select-agenda-context)
     #+end_src
 ** Unfill paragraph
+   :PROPERTIES:
+   :ID:       8c584065-8611-4926-8535-4f69345aa10a
+   :END:
    Very useful - recognize paragraphs in text with line endings made just for display
    #+begin_src emacs-lisp
      ;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
@@ -523,6 +556,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
 
    #+end_src
 ** Replace fancy quotes/dashes with plain old quotes/dashes
+   :PROPERTIES:
+   :ID:       6b620c2d-aba5-43e3-841a-e19fe7e2e78d
+   :END:
    #+begin_src emacs-lisp
      (defun replace-smart-quotes (beg end)
        "Replace 'smart quotes' in buffer or region with ascii quotes."
@@ -541,6 +577,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
                                nil beg end))
    #+end_src
 ** Make acronyms of text
+   :PROPERTIES:
+   :ID:       5e9d588e-4ca0-4336-b188-28340430d7fd
+   :END:
    Great World Blunders -> gwb
      #+begin_src emacs-lisp
      (defun gjg/acronyminize (text &optional do-capitalize)
@@ -556,6 +595,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
          ))
      #+end_src
 ** Add unique IDs to Org Mode headers
+   :PROPERTIES:
+   :ID:       2ec9cebc-57e0-4154-b8d8-42702f0ef974
+   :END:
    + ref [[https://stackoverflow.com/a/13349772/457574][emacs - Assign IDs to every entry in Org-mode - Stack Overflow]]
      #+begin_src emacs-lisp
        (require 'org-id)
@@ -566,6 +608,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
              (org-id-get-create))))
      #+end_src
 ** Move next s-expression past current scope
+   :PROPERTIES:
+   :ID:       3cd0bcfa-2f09-414f-85ea-0f6a267c89f0
+   :END:
    TODO this is a good candidate for the trash bin
      #+begin_src emacs-lisp
      (defun gjg/move-next-sexp-past-current-scope ()
@@ -581,6 +626,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
        (indent-region (mark) (point)))
      #+end_src
 * Provide the library - we're done!
+  :PROPERTIES:
+  :ID:       cbd06cb9-7d27-4d09-be18-150053dbede0
+  :END:
    #+begin_src emacs-lisp
     (provide 'gjg-functions)
    #+end_src
