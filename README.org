@@ -2186,7 +2186,7 @@
    #+end_src
 ** OpenVPN
    Mode to help using OpenVPN
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp :tangle no
      (use-package ovpn-mode
        :straight t
        :custom
@@ -2586,7 +2586,7 @@
 
      #+end_src
 ** Org num mode
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp :tangle no
      ;; for use with org-num-mode
      (defun org-num-skip-top-level-format (numbering)
        "Number from subtree display function.
@@ -2664,7 +2664,7 @@
    the other window is a Web browser (this only works in EXWM!).  Go to the browser
    window, copy the URL, then use =org-cliplink= at the starting point in the original Org window.
 
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp :tangle no
    (fset 'gjg/url-grab-cliplink
    (kmacro-lambda-form [?\C-x ?o ?\C-l ?\M-w tab ?\C-x ?o ?\M-x ?o ?r ?g ?- ?c ?l ?i ?p ?l ?i ?n ?k return] 0 "%d"))
    #+end_src
