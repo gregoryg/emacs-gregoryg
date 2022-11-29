@@ -1455,11 +1455,9 @@
                              ;; standalone apps
                              ((s-starts-with-p "Slack" exwm-title)
                               (exwm-workspace-rename-buffer "slack stardog"))
-                             ((string= "zoom" exwm-class-name)
-                              (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
                              ((string= "Logseq" exwm-class-name)
                               (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name " App")))
-                             ((string= "Spotify" exwm-class-name)
+                             ((member exwm-class-name '("Eom" "Eog" "zoom" "Spotify" ))
                               (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
                              (:else
                               (exwm-workspace-rename-buffer
