@@ -2945,7 +2945,7 @@
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
     (add-to-list 'gjg/agenda-contexts-alist `(work ,(gjg/get-work-agenda-files)))
     (add-to-list 'gjg/agenda-contexts-alist `(home ,gjg/personal-org-agenda-files))
-    (add-to-list 'gjg/agenda-contexts-alist `(fitness ,(list "~/projects/private-orgmode/fitness.org")))
+    (add-to-list 'gjg/agenda-contexts-alist `(fitness ,(list "~/projects/private-orgmode/fitness/fitness.org")))
     (add-to-list 'gjg/agenda-contexts-alist `(notes ,(list "~/gregj-notes/")))
 
 
@@ -3192,7 +3192,7 @@
                      '("f" "Fitness"
                        ((agenda "" (
                                     (org-agenda-span 'day)
-                                    (org-agenda-files '("~/projects/private-orgmode/fitness.org")))))) t)
+                                    (org-agenda-files '("~/projects/private-orgmode/fitness/fitness.org")))))) t)
         (add-to-list 'org-agenda-custom-commands
                      '("h" "thing TODO at Home"
                        (
