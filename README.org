@@ -2644,8 +2644,7 @@
    defined for any function related to =org-tree-to-indirect-buffer=
 
    It therefore seems the only way to affect it is to advise a function.
-
-   #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+   #+begin_src emacs-lisp
      (defun gjg/rename-org-indirect-buffer (orig-fun &rest arg)
        (rename-buffer (concat "INDIRECT-" (buffer-name))))
 
