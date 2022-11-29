@@ -2859,49 +2859,49 @@
      ;;         ("," . org-columns)
      ;;         ("q" . bury-buffer)))
      ;; DAN DAVISON nifty speed commands
-     (defun ded/org-show-next-heading-tidily ()
+     (defun ded/org-show-next-heading-tidily (&optional NO-NARROW)
        "Show next entry, keeping other entries closed."
        (interactive)
        (widen)
        (if (save-excursion (end-of-line) (outline-invisible-p))
-       (progn (org-show-entry) (outline-show-children))
-     (outline-next-heading)
-     (unless (and (bolp) (org-at-heading-p))
-       (org-up-heading-safe)
-       (outline-hide-subtree)
-       (error "Boundary reached"))
-     (org-overview)
-     (org-reveal t)
-     (org-show-entry)
-     (outline-show-children)
-     (org-narrow-to-subtree)))
+           (progn (org-show-entry) (outline-show-children))
+         (outline-next-heading)
+         (unless (and (bolp) (org-at-heading-p))
+           (org-up-heading-safe)
+           (outline-hide-subtree)
+           (error "Boundary reached"))
+         (org-overview)
+         (org-reveal t)
+         (org-show-entry)
+         (outline-show-children)
+         (unless NO-NARROW (org-narrow-to-subtree))))
 
-     (defun ded/org-show-previous-heading-tidily ()
+     (defun ded/org-show-previous-heading-tidily (&optional NO-NARROW)
        "Show previous entry, keeping other entries closed."
        (interactive)
        (widen)
        (let ((pos (point)))
-     (outline-previous-heading)
-     (unless (and (< (point) pos) (bolp) (org-at-heading-p))
-       (goto-char pos)
-       (outline-hide-subtree)
-       (error "Boundary reached"))
-     (org-overview)
-     (org-reveal t)
-     (org-show-entry)
-     (outline-show-children)
-     (org-narrow-to-subtree)))
+         (outline-previous-heading)
+         (unless (and (< (point) pos) (bolp) (org-at-heading-p))
+           (goto-char pos)
+           (outline-hide-subtree)
+           (error "Boundary reached"))
+         (org-overview)
+         (org-reveal t)
+         (org-show-entry)
+         (outline-show-children)
+         (unless NO-NARROW (org-narrow-to-subtree))))
 
      (add-to-list 'org-speed-commands
-          '("]" ded/org-show-next-heading-tidily))
+                  '("]" ded/org-show-next-heading-tidily))
      (add-to-list 'org-speed-commands
-          '("[" ded/org-show-previous-heading-tidily))
+                  '("[" ded/org-show-previous-heading-tidily))
      (add-to-list 'org-speed-commands
-          '("s" save-buffer))
+                  '("s" save-buffer))
      (add-to-list 'org-speed-commands
-          '("d" org-toggle-narrow-to-subtree))
+                  '("d" org-toggle-narrow-to-subtree))
 
-;; END DAN DAVISON nifty speed commands
+     ;; END DAN DAVISON nifty speed commands
      (setq org-speed-commands (delete '("a" . org-archive-subtree-default-with-confirmation) org-speed-commands))
    #+end_src
 ** Org Agenda
