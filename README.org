@@ -3981,7 +3981,17 @@
        (global-hide-mode-line-mode 0)
        (bind-key "s-m" 'mood-line-mode))
    #+end_src
-* Section of trying-things-out-and-please-remember-to-delete-them-afterwards
+* Section of trying-things-out-and-please-remember-to-delete-them-if-they-dont-work-out
+** Coterm - comint with terminal emulation
+   #+begin_src emacs-lisp
+     (use-package coterm :straight t
+       :config
+       (coterm-mode 1))
+   #+end_src
+
+   #+RESULTS:
+   : t
+
 ** Org super links
    + In constant search of cool backlinks
    + [[https://github.com/toshism/org-super-links][GitHub - toshism/org-super-links: Package to create links with auto backlinks]]
