@@ -3258,36 +3258,15 @@
 
    #+end_src
 *** Clock table
-    #+begin_src emacs-lisp :tangle /tmp/intothevoid.el
+    #+begin_src emacs-lisp
       ;; First set clock summary to *not* show hours as days
       ;; ref: https://stackoverflow.com/a/54376827/457574
-      (setq org-duration-format (quote h:mm))
-
-      (setq org-clocktable-defaults
-            '(:maxlevel 2
-                 :lang "en"
-                 :scope file
-                 :block nil
-                 :wstart 1
-                 :mstart 1
-                 :tstart nil
-                 :tend nil
-                 :step nil
-                 :stepskip0 nil
-                 :fileskip0 t
-                 :tags nil
-                 :match nil
-                 :emphasize t
-                 :link t
-                 :narrow 75!
-                 :indent t
-                 :hidefiles nil
-                 :formula nil
-                 :timestamp nil
-                 :level nil
-                 :tcolumns nil
-                 :formatter nil)
-            )
+      (with-eval-after-load 'org-clock
+        ;; (setq org-duration-format (quote h:mm)) ;; only in Org 9.1+
+        (plist-put org-clocktable-defaults :fileskip0 t)
+        (plist-put org-clocktable-defaults :emphasize t)
+        (plist-put org-clocktable-defaults :link t)
+        (plist-put org-clocktable-defaults :narrow '75!))
     #+end_src
 *** Agenda context
     This is something to help separate work time.
