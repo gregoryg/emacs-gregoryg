@@ -106,6 +106,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
         )
   #+end_src
 * Work/Job/Consulting/Employer functions
+  :PROPERTIES:
+  :ID:       a234d0a6-b019-4f55-95a0-d314bda7d439
+  :END:
    #+begin_src emacs-lisp
      (defun gjg/nag-timer () "Nag me when there isn't a clock running"
             (unless (marker-buffer org-clock-marker)
@@ -129,48 +132,64 @@ A sort-of package with customization framework.  The famed =gjg= package.
        (org-agenda nil "W"))
    #+end_src
 * Org Mode to RDF and (maybe) RDBMS
-  [[id:6a76fbd7-4f5a-48a6-8b27-ca158946a7ca][make Org and Markdown files into RDF triples]]
+  :PROPERTIES:
+  :ID:       732c1c28-5cee-4674-b4b2-ac3684759de4
+  :END:
+  [[id:de526c56-8069-47b6-b4f9-16f72e9e57d2][make Org and Markdown files into RDF triples]]
+
   TODO: return results as property lists rather than positional values
+       use org-entry-get
 ** Code to return (very) simplifed headline parse of current Org buffer
    :PROPERTIES:
    :ID:       d08013df-17b2-4faa-b429-e91493625897
    :END:
    #+begin_src emacs-lisp
      ;; tags are being used only at file level for now (#+FILETAGS)
-     (defun gjg/parse-org-buffer-for-rdf ()
-       "Parse current Org buffer, returning elements for my ontology."
-       (org-element-map (org-element-parse-buffer 'headline) '( headline)
+     (defun gjg/parse-org-buffer-for-rdf (&optional SIMPLE-LIST)
+       "Parse current Org buffer, returning elements for my ontology.
+     Set SIMPLE-LIST to t to return ordered list rather than keyed property list."
+       (org-element-map (org-element-parse-buffer 'object) '( headline)
          (lambda (hl)
            (let* ((element-type   (car hl))
                   (body           (cadr hl))
-                  (pos            (plist-get body :robust-begin))
+                  (pos            (org-element-property :robust-begin hl))
                   (properties     (org-entry-properties pos))
-                  (title          (plist-get body :raw-value))
-                  (level          (plist-get body :level))
-                  (todo-state     (plist-get body :todo-type))
-                  (parent         (plist-get body :parent))
-                  (parent-id      (plist-get (cadr parent) :ID))
-                  (id             (plist-get body :ID))
+                  (title          (org-element-property :raw-value hl))
+                  (level          (org-element-property :level hl))
+                  (todo-state     (org-element-property :todo-type hl))
+                  (parent         (org-element-property :parent hl))
+                  (parent-id      (when parent (org-element-property :ID (assoc 'headline parent))))
+                  (id             (org-element-property :ID hl))
                   (category       (cdr (assoc "CATEGORY" properties))) ;; inherited or local
-                  (contents-begin (plist-get body :contents-begin))
-                  (contents-end   (plist-get body :contents-end))
-                  )
+                  (contents-begin (org-element-property :contents-begin hl))
+                  (contents-end (org-element-property :contents-end hl)))
+             (message "DEBUG Level %d, id %s, parent id %s  \"%s\"" level id parent-id title)
+             (setq gort parent)
              ;; TODO nab links in *only* the current heading/topic
-             (org-with-point-at contents-begin
-               (org-narrow-to-subtree)
-               (org-fold-hide-subtree)
-               (org-show-entry)
-               (org-element-map (org-element-parse-buffer '(object) t) '(link)
-                 (lambda (linky)
-                   (message "Ohai: link discovered: %s %s" (plist-get linky :type) (plist-get linky :path)
-                 )))
-               (widen)
-               )
-
+             ;; (org-with-point-at contents-begin
+             ;;   (org-narrow-to-subtree)
+             ;;   (org-fold-hide-subtree)
+             ;;   (org-show-entry)
+             ;;   (org-element-map (org-element-parse-buffer '(object) t) '(link)
+             ;;     (lambda (linky)
+             ;;       (message "Ohai: link discovered: %s %s" (plist-get linky :type) (plist-get linky :path)
+             ;;     )))
+             ;;   (widen)
+             ;;   )
              (when title
-               (list
-                element-type level title todo-state id parent-id category
-                ))))))
+               (if SIMPLE-LIST
+                   (list
+                    element-type level title todo-state id parent-id category
+                    )
+                 (list :type element-type
+                       :level level
+                       :title title
+                       :todo-state todo-state
+                       :id id
+                       :parent-id parent-id
+                       :category category
+                       ))
+               )))))
      (defun gjg/parse-org-buffer-links-for-rdf ()
        "Parse current Org buffer, returning links for my ontology."
        (setq-local element-type nil)
