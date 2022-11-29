@@ -266,6 +266,9 @@
     fi
 
 
+    # assure that battery monitoring is goin' on
+    acpi
+
     # Set scrolling direction to "natural"
     xmodmap -e "pointer = 1 2 3 4 5"
 
