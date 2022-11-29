@@ -12,7 +12,7 @@
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.2 (Org mode 9.1.9)
 #+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg-local.setup
-#+property: header-args:emacs-lisp :tangle ~/.emacs.d/emacs-init.el
+#+property: header-args:emacs-lisp :tangle ~/.emacs.d/emacs-init.el :results none
 #+property: header-args:bash :comments both :shebang #!/usr/bin/env bash :results none
 
 * Literate Programming Config file
