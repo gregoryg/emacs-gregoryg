@@ -2341,8 +2341,11 @@
              (concat denote-directory "journals")
              nil          ; date - default to current-time
              'journal
-             )))))
+             )))
+          (save-buffer) ;; gotta save immediately to avoid creating duplicate dailies
+          ))
     #+end_src
+
 *** Function to bring up nested notes dired
     This function also works very nicely in the bookmark+ package, which allows
       bookmarking a function.  The function is not dependent on the =bookmark+= package,
