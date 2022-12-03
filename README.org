@@ -585,9 +585,9 @@
        (interactive)
        (let* ((active-buffers-with-mode (mapcar #'(lambda (x) (with-current-buffer x (cons (buffer-name) (symbol-name major-mode)))) (buffer-list)))
           (distinct-modes (-distinct (mapcar #'cdr active-buffers-with-mode)))
-          (selected-mode (ido-completing-read "Mode: " distinct-modes))
+          (selected-mode (completing-read "Mode: " distinct-modes))
           (candidate-buffers (mapcar #'car (cl-remove-if-not '(lambda (x) (string-equal selected-mode (cdr x))) active-buffers-with-mode)))
-          (selected-buffer (ido-completing-read "Buffer: " candidate-buffers)))
+          (selected-buffer (completing-read "Buffer: " candidate-buffers)))
          (switch-to-buffer selected-buffer)))
 
      (defun gjg/max-frame ()
