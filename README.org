@@ -3905,17 +3905,11 @@
    #+end_src
 ** Doom modeline
    #+begin_src emacs-lisp
-     (use-package minions
-       :straight t
-       :hook (doom-modeline-mode . minions-mode)
-       :custom
-       (minions-mode-line-lighter ""))
-
      (use-package doom-modeline
        :straight t
        :ensure t
        :after eshell     ;; Make sure it gets hooked after eshell
-       :hook (after-init . doom-modeline-init)
+       :hook (after-init . doom-modeline-mode)
        ;; :custom-face
        ;; ;; (mode-line ((t (:height 0.85))))
        ;; (mode-line-inactive ((t (:height 0.95))))
@@ -3950,6 +3944,12 @@
        ;;      ;; )
        ;;  )))
        )
+     (use-package minions
+       :straight t
+       :hook (doom-modeline-mode . minions-mode)
+       :custom
+       (minions-mode-line-lighter ""))
+
    #+end_src
 ** Moodline
    #+begin_src emacs-lisp :tangle no
