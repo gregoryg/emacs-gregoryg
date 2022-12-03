@@ -832,6 +832,18 @@
      Type=Application
      Categories=Office;Mail;
    #+end_src
+** Mastodon
+   Go directly to my server
+   #+begin_src bash  :tangle ~/.local/share/applications/mastodon.desktop
+     [Desktop Entry]
+     Name=Mastodon
+     Comment=
+     Exec=xdg-open https://discuss.systems/home
+     Icon= /home/gregj/.local/share/pixmaps/mastodon-logo.png
+     Terminal=false
+     Type=Application
+     Categories=Communication
+   #+end_src
 ** Microsoft Teams
    As of [2021-01-26 Tue] I am having microphone problems using the Linux client for
    Teams.  Things seem to run fine in the browser, however.
@@ -983,6 +995,18 @@
      Terminal=false
      Type=Application
      Categories=Office;Productivity;
+   #+end_src
+** Rocket Language
+   This has to run in Chrome for reasons
+   #+begin_src conf :tangle ~/.local/share/applications/rocket-language.desktop
+     [Desktop Entry]
+     Name=Rocket Language
+     Comment=Spanish Portugues
+     Exec=google-chrome https://app.rocketlanguages.com/
+     Icon= /home/gregj/.local/share/pixmaps/rocket-languages-logo-transparent.png
+     Terminal=false
+     Type=Application
+     Categories=Messaging
    #+end_src
 ** Rotate Wallpaper
    #+begin_src conf :tangle ~/.local/share/applications/rotate-wallpapers.desktop
