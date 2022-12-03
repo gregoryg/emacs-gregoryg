@@ -842,10 +842,9 @@
    disappeared.  This section will attempt to implement patches known to fix current bugs
    until such time as existing PRs start getting merged
 *** Fix frame focus for Emacs 29+
-    PR is [[https://github.com/ch11ng/exwm/pull/890][ch11ng/exwm#890 Fix frame focus for Emacs 29 by mgi]]
-    Discussion on mailing list [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=58438][#58438 - 29.0.50; EXWM focus lost - GNU bug report logs]]
-    Use the patch in below function - compare with exwm.el =exwm--on-ClientMessage=
-    #+begin_src emacs-lisp
+    [2022-12-03 Sat] THIS PATCH IS INCLUDED IN EXWM 0.27!
+    [[file:.emacs.d/straight/repos/exwm/exwm.el::defun exwm--on-ClientMessage (raw-data _synthetic][exwm--on-ClientMessage]]
+    #+begin_src emacs-lisp :tangle no
       (defun exwm--on-ClientMessage (raw-data _synthetic)
         "Handle ClientMessage event."
         (let ((obj (make-instance 'xcb:ClientMessage))
