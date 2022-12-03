@@ -2066,9 +2066,22 @@
        (occur-mode-display-occurrence))
      (ad-activate 'occur-prev)
    #+end_src
-** Shell and shell-script mode
+** Shell and related modes
    TODO: remove conflicting key bindings
-*** Shell script mode
+*** OHAI
+*** Vterm
+    #+begin_src emacs-lisp
+      (use-package vterm :straight t)
+    #+end_src
+*** Coterm - comint with terminal emulation
+    This thing is magnificent.  It provides good-enough terminal emulation in my beloved
+    old friend shell-mode windows.
+    #+begin_src emacs-lisp
+      (use-package coterm :straight t
+        :config
+        (coterm-mode 1))
+    #+end_src
+*** Shell script mode :tangle no
     #+begin_src emacs-lisp
     #+end_src
 *** Shell mode config
@@ -2124,10 +2137,6 @@
         (use-package keychain-environment :straight t)
         (keychain-refresh-environment)
       #+end_src
-** Vterm
-   #+begin_src emacs-lisp
-     (use-package vterm :straight t)
-   #+end_src
 ** Magit
 *** Behavior
     #+begin_src emacs-lisp
@@ -3981,20 +3990,11 @@
        (bind-key "s-m" 'mood-line-mode))
    #+end_src
 * Section of trying-things-out-and-please-remember-to-delete-them-if-they-dont-work-out
-** Coterm - comint with terminal emulation
-   #+begin_src emacs-lisp
-     (use-package coterm :straight t
-       :config
-       (coterm-mode 1))
-   #+end_src
-
-   #+RESULTS:
-   : t
 
 ** Org super links
    + In constant search of cool backlinks
    + [[https://github.com/toshism/org-super-links][GitHub - toshism/org-super-links: Package to create links with auto backlinks]]
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package org-super-links
        :straight (org-super-links :type git :host github :repo "toshism/org-super-links" :branch "develop")
        :bind (("C-c s s" . org-super-links-link)
