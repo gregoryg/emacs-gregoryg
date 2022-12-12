@@ -3559,9 +3559,10 @@
        sudo npm install --save-dev yaml-language-server
      #+end_src
 *** Eglot
-    Pretty sure I'll use this in future in favor of lsp-mode
+    Best LSP supporting mode available - and a built-in as of Emacs 29!
     #+begin_src emacs-lisp
-      (use-package eglot :straight t)
+      (when (< emacs-major-version 29)
+        (use-package eglot :straight t))
     #+end_src
 ** SPARQL
    #+begin_src emacs-lisp
