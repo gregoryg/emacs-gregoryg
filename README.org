@@ -238,7 +238,8 @@
   ;; Allow Emacs to resize mini windows, otherwise this does not work:
   ;;   (setq org-use-fast-todo-selection 'expert)
   (setq resize-mini-windows t)
-
+  ;; as of Emacs 29
+  (setq pixel-scroll-precision-mode t)
 #+end_src
 ** Custom Functions in a separate file
    TODO: pull these functions in
