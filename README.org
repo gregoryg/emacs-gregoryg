@@ -401,37 +401,39 @@
   #+end_src
 * Window/buffer management
 ** GJG full screen, movement, transparency
-   TODO: figure out global Super key chords in exwm map vs global key map
+** GJG Transparency / Opacity management
+   Emacs 29 ushers in a bold new era where a frame's background can be made transparent
+   without affecting the transparency of foreground text and other elements.  Who'd-a
+   thunk?  Use that feature when available
+
    #+begin_src emacs-lisp
-     ;; unbind some keys in favor of my functions bound to SUPER- combinations
-     ;; the existing keys will work in Emacs buffers, but not in EXWM X buffers; the SUPER combos work everywhere
-     (global-unset-key (kbd "M-]")) ; next-buffer
-     (global-unset-key (kbd "M-[")) ; previous-buffer
+     ;; TODO ; fix toggle-transparency
+     (defun toggle-transparency (alpha-level)
+       (interactive "p")
+       (message (format "%s" alpha-level))
+       (when (< alpha-level 50) (setq alpha-level 85))
+       (let ((myalpha (or (frame-parameter nil 'alpha) 100))
+             (frame-param (if (< emacs-major-version 29) 'alpha 'alpha-background)))
 
-     (defun revert-dammit () ; revert buffer without prompting
-       (interactive)
-       ;; revert buffer, don't use auto-save, preserve modes
-       (revert-buffer t t t))
-     (defalias 'rd 'revert-dammit)
-     (defun gjg/switch-to-other-buffer ()
-       (interactive)
-       (switch-to-buffer (other-buffer))
-       (message "Switched to other-buffer"))
-     (defun gjg/split-window-below ()
-       "Split window below, switch to the new window AND switch buffer in that window"
-       (interactive)
-       (split-window-below)
-       (other-window 1)
-       (switch-to-buffer (other-buffer)))
-     (defun gjg/split-window-right ()
-       "Split window right, switch to the new window AND switch buffer in that window"
-       (interactive)
-       (split-window-right)
-       (other-window 1)
-       (switch-to-buffer (other-buffer)))
-     (bind-key "C-x 2" 'gjg/split-window-below)
-     (bind-key "C-x 3" 'gjg/split-window-right)
+         (set-frame-parameter nil frame-param myalpha)
+         (message (format "Frame %s level is %d" frame-param myalpha))))
 
+     (defun set-transparency (alpha-level)
+       ;; in Emacs 29+, set background opacity
+       ;; before 29, we have no choice but to set frame opacity
+       (interactive "p")
+       (message (format "Alpha level passed in: %s" alpha-level))
+       (let ((alpha-level (if (< alpha-level 2)
+                              (read-number "Opacity percentage: " 85)
+                            alpha-level))
+             (frame-param (if (< emacs-major-version 29) 'alpha 'alpha-background)))
+         (set-frame-parameter nil frame-param alpha-level)
+         (message (format "Frame %s level is %d" frame-param alpha-level))))
+     (defalias 'set-opacity 'set-transparency )
+
+   #+end_src
+** Packages for window and buffer nav
+   #+begin_src emacs-lisp
      (use-package ace-window
        :straight t
        :config
