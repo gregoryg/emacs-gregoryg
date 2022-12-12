@@ -114,6 +114,11 @@
    frame hook - not certain I would want it for every frame.  This would make use of the
    hook variable =after-make-frame-functions=
 
+   Emacs 29 obviates my need for the inc/dec functions in =fontize.el= The key bindings
+   for the new-in-Emacs-29 frame font resize functions are
+   * =C-x C-M-+= -,0
+
+
    #+begin_src emacs-lisp
      (defun gjg/set-frame-font ()
        "Set frame font based on window system"
@@ -128,10 +133,17 @@
               )))
      (gjg/set-frame-font)
      ;; (add-hook 'after-make-frame-functions 'gjg/set-frame-font)
-     ;; (load-library "fontize")
-     ;; (require 'fontize)
-     (autoload 'inc-font-size "fontize" "Adjust buffer relative font size" t)
-     (autoload 'dec-font-size "fontize" "Adjust buffer relative font size" t)
+     (cond
+      ((< emacs-major-version 29) ; from "fontize" package in ~/emacs/
+       (autoload 'inc-font-size "fontize" "Adjust buffer relative font size" t)
+       (autoload 'dec-font-size "fontize" "Adjust buffer relative font size" t))
+      (t
+       (defun inc-font-size ()
+         (interactive)
+         (global-text-scale-adjust 1))
+       (defun dec-font-size ()
+         (interactive)
+         (global-text-scale-adjust -1))))
 
      (global-set-key [C-kp-subtract] 'dec-font-size)
      (global-set-key [C-kp-add] 'inc-font-size)
