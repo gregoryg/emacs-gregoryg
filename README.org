@@ -4064,6 +4064,27 @@
    #+begin_src emacs-lisp
      (use-package theme-magic :straight t)
    #+end_src
+** New built-in functions in 29 to consider adding to workflow
+   + rename-visited-file
+   + frame parameter: alpha-background (set-frame-parameter (selected-frame) 'alpha-background 0.90)
+   + var x-gtk-use-native-input
+   + var: pixel-scroll-precision-mode - looks like a no-brainer
+   + split-root-window-below, split-root-window-right
+   + var: show-paren-context-when-offscreen
+   + dabbrev-capf for use on completion-at-point functions
+   + project-list-buffers =C-x p C-b=
+   + var dired-omit-lines
+   + New connection methods "docker", "podman" and "kubernetes".
+     + I may retire my custom commands for same
+   + var python-shell-dedicated
+   + pkg vtable.el
+   + pkg wallpaper
+   + python-ts-mode, json-ts-mode, bash-ts-mode etc
+   +
+   #+begin_src emacs-lisp
+     (setq show-paren-context-when-offscreen 'overlay)
+   #+end_src
+
 * Final steps
 #+begin_src emacs-lisp
 (shell (get-buffer-create "sh1"))
