@@ -59,6 +59,14 @@
    Initial loading for Straight.el is now in [[file:.emacs.d/init.el][init.el]]
 
 * Greg's customizations!
+** Revert buffer shortcut
+   #+begin_src emacs-lisp
+     (defun revert-dammit () ; revert buffer without prompting
+       (interactive)
+       ;; revert buffer, don't use auto-save, preserve modes
+       (revert-buffer t t t))
+     (defalias 'rd 'revert-dammit)
+   #+end_src
 ** Use Emacs as app launcher (with completions)
    [[file:img/emacs-app-launcher.png]]
    #+begin_src emacs-lisp
@@ -433,22 +441,6 @@
           ))
        :bind
         (("C-x o" . ace-window)))
-     ;; (require 'ace-window)
-     ;; (custom-set-faces
-     ;;  '(aw-leading-char-face
-     ;;    ((t (:foreground "deep sky blue" :height 5.0)))))
-     ;; (bind-key "C-x o" 'ace-window)
-     ;; (setq winum-keymap
-     ;;       (let ((map (make-sparse-keymap)))
-     ;;         (define-key map (kbd "C-`") 'winum-select-window-by-number)
-     ;;         (define-key map (kbd "M-0") 'winum-select-window-0)
-     ;;         (define-key map (kbd "M-1") 'winum-select-window-1)
-     ;;         (define-key map (kbd "M-2") 'winum-select-window-2)
-     ;;         (define-key map (kbd "M-3") 'winum-select-window-3)
-     ;;         (define-key map (kbd "M-4") 'winum-select-window-4)
-     ;;         (define-key map (kbd "M-5") 'winum-select-window-5)
-     ;;         )
-     ;;       )
      (use-package winum
        :straight t
        :config
@@ -475,92 +467,69 @@
                 (message "Jumping to %d" jwin)
                 (winum-select-window-by-number jwin)))
               ))
-     (bind-key "C-x o" 'gjg/other-window-with-winum)
-     (bind-key "s-a" 'gjg/open-work-agenda)
-     (bind-key "s-o" 'gjg/other-window-with-winum)
-     (bind-key "s-b" 'gjg/switch-to-other-buffer)
-     (bind-key "s-<up>" 'windmove-up)
-     (bind-key "s-<down>" 'windmove-down)
-     (bind-key "s-<right>" 'windmove-right)
-     (bind-key "s-<left>" 'windmove-left)
+   #+end_src
+** GJG Window splitting
+   #+begin_src emacs-lisp
+     ;; unbind some keys in favor of my functions bound to SUPER- combinations
+     ;; the existing keys will work in Emacs buffers, but not in EXWM X buffers; the SUPER combos work everywhere
+     (global-unset-key (kbd "M-]")) ; next-buffer
+     (global-unset-key (kbd "M-[")) ; previous-buffer
+     (defun gjg/switch-to-other-buffer ()
+       (interactive)
+       (switch-to-buffer (other-buffer))
+       (message "Switched to other-buffer"))
+     (defun gjg/split-window-below ()
+       "Split window below, switch to the new window AND switch buffer in that window"
+       (interactive)
+       (split-window-below)
+       (other-window 1)
+       (switch-to-buffer (other-buffer)))
+     (defun gjg/split-window-right ()
+       "Split window right, switch to the new window AND switch buffer in that window"
+       (interactive)
+       (split-window-right)
+       (other-window 1)
+       (switch-to-buffer (other-buffer)))
+     (defun toggle-window-split ()
+       (interactive)
+       (if (= (count-windows) 2)
+           (let* ((this-win-buffer (window-buffer))
+                  (next-win-buffer (window-buffer (next-window)))
+                  (this-win-edges (window-edges (selected-window)))
+                  (next-win-edges (window-edges (next-window)))
+                  (this-win-2nd (not (and (<= (car this-win-edges)
+                                              (car next-win-edges))
+                                          (<= (cadr this-win-edges)
+                                              (cadr next-win-edges)))))
+                  (splitter
+                   (if (= (car this-win-edges)
+                          (car (window-edges (next-window))))
+                       'split-window-horizontally
+                     'split-window-vertically)))
+             (delete-other-windows)
+             (let ((first-win (selected-window)))
+               (funcall splitter)
+               (if this-win-2nd (other-window 1))
+               (set-window-buffer (selected-window) this-win-buffer)
+               (set-window-buffer (next-window) next-win-buffer)
+               (select-window first-win)
+               (if this-win-2nd (other-window 1))))))
 
-     (bind-key "s-0" 'delete-window)
-     (bind-key "s-1" 'delete-other-windows)
-     (bind-key "s-2" 'gjg/split-window-below)
-     (bind-key "s-3" 'gjg/split-window-right)
-     (bind-key "M-s-<up>" 'windmove-delete-up)
-     (bind-key "M-s-<down>" 'windmove-delete-down)
-     (bind-key "M-s-<left>" 'windmove-delete-left)
-     (bind-key "M-s-<right>" 'windmove-delete-right)
-     (bind-key "s-p" 'playerctl-play-pause-song)
-     (bind-key "s-q" 'bury-buffer)
-     (bind-key "s-t" 'toggle-truncate-lines)
-     (bind-key "s-y" 'gjg/exwm-select-or-launch-spotify)
-     (bind-key "s-c" #'(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
-     (bind-key "s-." #'(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
-     (bind-key "s-," 'gjg/polybar-start-or-toggle)
-     (bind-key "s-]" 'ded/org-show-next-heading-tidily)
-     (bind-key "s-[" 'ded/org-show-previous-heading-tidily)
-     (bind-key "M-SPC" #'(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
-     (bind-key "s-\\" 'switch-to-buffer)
-     ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
+
+   #+end_src
+** Indirect buffer use
+   #+begin_src emacs-lisp
      (defun gjg/widen-ask-if-indirect ()
        "If buffer is indirect, ask before widening"
        (interactive)
        (if (buffer-base-buffer)
            (when (yes-or-no-p "Buffer is indirect; really widen? ")
-         (widen))
+             (widen))
          (widen)))
-     (defun toggle-transparency (alpha-level)
-       (interactive "p")
-       (message (format "%s" alpha-level))
-       (if (< alpha-level 50) (setq alpha-level 85))
-       (let ((myalpha (frame-parameter nil 'alpha)))
-         (if (or (not myalpha)
-                 (= myalpha 100))
-         (set-frame-parameter nil 'alpha alpha-level)
-           (set-frame-parameter nil 'alpha 100))
-         )
-       (message (format "Alpha level is %d" (frame-parameter nil 'alpha)))
-       )
-
-     (defun set-transparency (alpha-level)
-       (interactive "p")
-       (message (format "Alpha level passed in: %s" alpha-level))
-       (let ((alpha-level (if (< alpha-level 2)
-                  (read-number "Opacity percentage: " 85)
-                    alpha-level))
-         (myalpha (frame-parameter nil 'alpha)))
-         (set-frame-parameter nil 'alpha alpha-level))
-       (message (format "Alpha level is %d" (frame-parameter nil 'alpha))))
-     (defalias 'set-opacity 'set-transparency )
-
-     (defun toggle-window-split ()
-       (interactive)
-       (if (= (count-windows) 2)
-           (let* ((this-win-buffer (window-buffer))
-              (next-win-buffer (window-buffer (next-window)))
-              (this-win-edges (window-edges (selected-window)))
-              (next-win-edges (window-edges (next-window)))
-              (this-win-2nd (not (and (<= (car this-win-edges)
-                          (car next-win-edges))
-                          (<= (cadr this-win-edges)
-                          (cadr next-win-edges)))))
-              (splitter
-               (if (= (car this-win-edges)
-                  (car (window-edges (next-window))))
-               'split-window-horizontally
-             'split-window-vertically)))
-         (delete-other-windows)
-         (let ((first-win (selected-window)))
-           (funcall splitter)
-           (if this-win-2nd (other-window 1))
-           (set-window-buffer (selected-window) this-win-buffer)
-           (set-window-buffer (next-window) next-win-buffer)
-           (select-window first-win)
-           (if this-win-2nd (other-window 1))))))
-
-     (define-key ctl-x-4-map "t" 'toggle-window-split)
+   #+end_src
+** Full screen functions - MAY BE OBSOLETE
+   Certainly all this is irrelevant when using EXWM or any tiling window manager
+   #+begin_src emacs-lisp :tangle no
      ;; *** Full-screen frame defuns
 
      (defun switch-full-screen ()
@@ -633,6 +602,42 @@
          (t
           (if (eq (frame-parameter nil 'gjg/frame-maxp) nil) (gjg/max-frame) (gjg/restore-frame)))))
 
+   #+end_src
+** Big bunch of key bindings for Window/Buffer navigation
+   TODO: figure out global Super key chords in exwm map vs global key map
+   #+begin_src emacs-lisp
+     (bind-key "C-x 2" 'gjg/split-window-below)
+     (bind-key "C-x 3" 'gjg/split-window-right)
+     (bind-key "C-x o" 'gjg/other-window-with-winum)
+     (bind-key "s-a" 'gjg/open-work-agenda)
+     (bind-key "s-o" 'gjg/other-window-with-winum)
+     (bind-key "s-b" 'gjg/switch-to-other-buffer)
+     (bind-key "s-<up>" 'windmove-up)
+     (bind-key "s-<down>" 'windmove-down)
+     (bind-key "s-<right>" 'windmove-right)
+     (bind-key "s-<left>" 'windmove-left)
+
+     (bind-key "s-0" 'delete-window)
+     (bind-key "s-1" 'delete-other-windows)
+     (bind-key "s-2" 'gjg/split-window-below)
+     (bind-key "s-3" 'gjg/split-window-right)
+     (bind-key "M-s-<up>" 'windmove-delete-up)
+     (bind-key "M-s-<down>" 'windmove-delete-down)
+     (bind-key "M-s-<left>" 'windmove-delete-left)
+     (bind-key "M-s-<right>" 'windmove-delete-right)
+     (bind-key "s-p" 'playerctl-play-pause-song)
+     (bind-key "s-q" 'bury-buffer)
+     (bind-key "s-t" 'toggle-truncate-lines)
+     (bind-key "s-y" 'gjg/exwm-select-or-launch-spotify)
+     (bind-key "s-c" #'(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
+     (bind-key "s-." #'(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
+     (bind-key "s-," 'gjg/polybar-start-or-toggle)
+     (bind-key "s-]" 'ded/org-show-next-heading-tidily)
+     (bind-key "s-[" 'ded/org-show-previous-heading-tidily)
+     (bind-key "M-SPC" #'(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
+     (bind-key "s-\\" 'switch-to-buffer)
+     ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
+     (define-key ctl-x-4-map "t" 'toggle-window-split)
    #+end_src
 ** Winner-mode and Windmove
   winner-mode is a built-in
