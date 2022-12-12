@@ -1591,7 +1591,7 @@
    Project.el is built in
 
    #+begin_src emacs-lisp
-     (use-package project :straight t)
+     ;; (use-package project :straight t)
      (setq project-switch-commands
         '((project-find-file "Find file")
           (project-find-regexp "Find regexp")
