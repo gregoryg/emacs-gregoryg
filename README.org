@@ -3745,9 +3745,29 @@
        (setq ess-sas-edit-keys-toggle nil)
        :init (require 'ess-site))
    #+end_src
-** Scheme
-*** Guile
+** Lisp
+*** Common Lisp
+    Here we will assume SBCL
+    + Install SBCL from [[https://www.sbcl.org/getting.html][the website]]
+    + [[https://lispcookbook.github.io/cl-cookbook/getting-started.html#install-quicklisp][Install Quicklisp]]
+    + [[https://www.reddit.com/r/Common_Lisp/comments/huk6fx/how_should_i_install_slime_debian_linux/][How should I install Slime? (Debian Linux) : Common_Lisp]]
+    + [[https://lispcookbook.github.io/cl-cookbook/getting-started.html#install-quicklisp][Getting started with Common Lisp]]
+    + [[https://github.com/joaotavora/sly][joaotavora/sly: Sylvester the Cat's Common Lisp IDE ≫ github.com]]
+    #+begin_src emacs-lisp :tangle no
+      (load (expand-file-name "~/quicklisp/slime-helper.el"))
+      ;; Replace "sbcl" with the path to your implementation
+      (setq inferior-lisp-program "sbcl")
+    #+end_src
+    #+begin_src emacs-lisp
+      (use-package sly
+        :straight t
+        :config
+        (setq inferior-lisp-program "sbcl"
+              sly-symbol-completion-mode nil))
+    #+end_src
 
+*** Guile Scheme
+    +
    Setup for Guile Scheme - primarily for use on Guix system
    #+begin_src emacs-lisp :tangle no
      (use-package geiser
@@ -3760,11 +3780,11 @@
              ))
      (use-package geiser-guile :straight t)
    #+end_src
-*** Racket
+*** Racket Scheme
     :PROPERTIES:
     :ID:       4c49ed92-563b-488a-988a-de54a24dd7c1
     :END:
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package geiser
        :straight t
        :config
