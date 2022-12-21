@@ -2648,6 +2648,7 @@
              (highlight-regexp ":tangle /tmp/intothevoid.el" 'hi-aquamarine)
              ;; (org-modern-mode 1)
              (setq org-hide-leading-stars t
+                   abbrev-mode 1
                    fill-column 90 ; good default for wide screens
                    org-use-property-inheritance t
                    org-link-search-must-match-exact-headline nil
