@@ -2120,7 +2120,7 @@
     #+begin_src emacs-lisp
       (add-hook 'shell-mode-hook
                 (lambda ()
-                  (gjg/turn-on-comint-history (getenv "HISFILE"))))
+                  (gjg/turn-on-comint-history (getenv "HISTFILE"))))
       (add-hook 'kill-buffer-hook #'comint-write-input-ring)
       (add-hook 'kill-emacs-hook
                 (lambda ()
