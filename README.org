@@ -1554,7 +1554,7 @@
 
 *** Start the OS processes
     #+begin_src emacs-lisp
-      (call-process-shell-command "~/bin/emacswm.sh")
+      (call-process-shell-command (expand-file-name "~/bin/emacswm.sh"))
       (setenv "EDITOR" "emacsclient")
     #+end_src
 
@@ -3375,7 +3375,7 @@
 
    #+begin_src emacs-lisp
      ;; navigate to files using org-refile; use C-u C-c C-w
-     (setq org-outline-path-complete-in-steps nil) ; use ivy/selectrum for quicker completion
+     (setq org-outline-path-complete-in-steps nil) ; use completion framework for quicker completion
      (setq gjg/refile-targets (seq-remove (lambda (elt) (string= "~/projects/private-orgmode/inbox.org" elt))
                                           (append gjg/personal-org-agenda-files gjg/work-agenda-files (list denote-directory))))
      (setq org-refile-targets `((gjg/refile-targets :maxlevel . 2)
