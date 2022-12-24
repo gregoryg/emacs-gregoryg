@@ -273,9 +273,6 @@
     xmodmap -e "pointer = 1 2 3 4 5"
 
     rm -vf nohup.out
-    echo Start compositor
-    reset-compositor.sh
-
     echo Start notification system
     nohup dunst&
 
@@ -287,6 +284,10 @@
     # echo Start xscreensaver
     # xscreensaver &
     nohup xfce4-power-manager&
+
+    echo Start compositor
+    ~/bin/reset-compositor.sh
+
   #+end_src
 ** Scripts to rotate wallpaper on multiple screens
    The schedule script runs only if it is not already running
