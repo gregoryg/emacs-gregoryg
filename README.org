@@ -2420,7 +2420,7 @@
 ** Org Roam UI
    TODO: Move this into Org Roam config (maybe)
 
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package org-roam-ui
        :straight t
        ;; (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
@@ -2442,45 +2442,42 @@
    + [[https://www.reddit.com/r/emacs/comments/veesun/orgroam_is_absolutely_fantastic/][(2) org-roam is absolutely fantastic! : emacs ≫ www.reddit.com]]
 
 *** Configuration and startup
- #+begin_src emacs-lisp
-   ;; (setq org-roam-database-connector 'sqlite-builtin) ; set before loading org-roam
-   (use-package org-roam
-     :straight t
-     :hook
-     (after-init . org-roam-mode)
-     :init
-     (setq
-      org-roam-v2-ack t
-      dw/daily-note-filename "%<%Y-%m-%d>.org"
-      dw/daily-note-header "#+title: %<%Y-%m-%d %a>\n\n[[roam:%<%Y-%B>]]\n\n")
+    #+begin_src emacs-lisp :tangle no
+      ;; (setq org-roam-database-connector 'sqlite-builtin) ; set before loading org-roam
+      (use-package org-roam
+        :straight t
+        :hook
+        (after-init . org-roam-mode)
+        :init
+        (setq
+         org-roam-v2-ack t
+         dw/daily-note-filename "%<%Y-%m-%d>.org"
+         dw/daily-note-header "#+title: %<%Y-%m-%d %a>\n\n[[roam:%<%Y-%B>]]\n\n")
 
-     :custom
-     (org-roam-directory "~/projects/private-orgmode/roam-notes")
-     (org-roam-completion-everywhere t)
-     (setq org-id-extra-files (org-roam--list-files org-roam-directory))  ;; :bind (:map org-roam-mode-map
-     ;;             (("C-c n l" . org-roam)
-     ;;              ("C-c n f" . org-roam-find-file)
-     ;;              ("C-c n g" . org-roam-show-graph))
-     ;;             :map org-mode-map
-     ;;             (("C-c n i" . org-roam-insert)))
-     :bind (("C-c n l" . org-roam-buffer-toggle)
-            ("C-c n f" . org-roam-node-find)
-            ("C-c n i" . org-roam-node-insert)
-            :map org-mode-map
-            ("C-M-i" . completion-at-point)
-            )
-     :config
-     ;; (org-roam-setup) ; following the lead of u/pragmat1c1
-     (setq org-roam-node-display-template
-           (concat "${title:70}"(propertize "${tags:30}" 'face 'org-tag) "${file:48}"))
-     )
-
-
-
- #+end_src
+        :custom
+        (org-roam-directory "~/projects/private-orgmode/roam-notes")
+        (org-roam-completion-everywhere t)
+        (setq org-id-extra-files (org-roam--list-files org-roam-directory))  ;; :bind (:map org-roam-mode-map
+        ;;             (("C-c n l" . org-roam)
+        ;;              ("C-c n f" . org-roam-find-file)
+        ;;              ("C-c n g" . org-roam-show-graph))
+        ;;             :map org-mode-map
+        ;;             (("C-c n i" . org-roam-insert)))
+        :bind (("C-c n l" . org-roam-buffer-toggle)
+               ("C-c n f" . org-roam-node-find)
+               ("C-c n i" . org-roam-node-insert)
+               :map org-mode-map
+               ("C-M-i" . completion-at-point)
+               )
+        :config
+        ;; (org-roam-setup) ; following the lead of u/pragmat1c1
+        (setq org-roam-node-display-template
+              (concat "${title:70}"(propertize "${tags:30}" 'face 'org-tag) "${file:48}"))
+        )
+    #+end_src
 *** Org Roam Capture templates
     Let's leave the default one alone for now - make a new 'g'reg template
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle no
       (require 'org-roam)
       (require 'org-roam-protocol) ; allow bookmarklets to work for "ref" template
       (push
