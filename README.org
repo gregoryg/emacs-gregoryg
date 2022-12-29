@@ -259,11 +259,14 @@
 ** Key (and mouse) bindings
 *** Audio and media
     #+begin_src emacs-lisp
-      (bind-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados down"))))
-      (bind-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados up"))))
-      (bind-key (kbd "<XF86AudioMute>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados togmute"))))
+      (defun gjg/volume (volcmd)
+        "Control volume with pulseaudio script."
+        (let ((audioctl (expand-file-name "~/bin/pulseaudio-control-glados")))
+          (call-process-shell-command (concat audioctl " " volcmd))))
+      (bind-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (gjg/volume "down")))
+      (bind-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive) (gjg/volume "up")))
+      (bind-key (kbd "<XF86AudioMute>") (lambda () (interactive) (gjg/volume "togmute")))
       (bind-key (kbd "<XF86AudioPlay>") (lambda () (interactive) (call-process-shell-command "/usr/bin/playerctl play-pause") ))
-      (bind-key (kbd "<XF86AudioMute>") (lambda () (interactive) (call-process-shell-command (expand-file-name "~/bin/pulseaudio-control-glados togmute"))))
     #+end_src
 *** Big blob of various key bindings
    #+begin_src emacs-lisp
