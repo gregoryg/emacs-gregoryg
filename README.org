@@ -2605,6 +2605,7 @@
                                               ("sj" . "src json")
                                               ("sJ" . "src javascript")
                                               ("sl" . "src emacs-lisp")
+                                              ("sL" . "src lisp") ;; Common Lisp
                                               ("sp" . "src python")
                                               ("sP" . "src jupyter-python")
                                               ("sq" . "src sql")
@@ -3761,7 +3762,9 @@
         :straight t
         :config
         (setq inferior-lisp-program "sbcl"
-              sly-symbol-completion-mode nil))
+              org-babel-lisp-eval-fn 'sly-eval
+              sly-symbol-completion-mode nil)
+        (electric-pair-local-mode 1))
     #+end_src
 
 *** Guile Scheme
@@ -3876,6 +3879,7 @@
                 (http . t) ;; curl
                 (js . t)
                 (latex . t)
+                (lisp . t)
                 ;;                (jupyter . t) ;; makes Emacs core dump??? (related to compiled zmq)
                 (plantuml . t)
                 (lilypond . t)
