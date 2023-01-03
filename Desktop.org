@@ -483,6 +483,83 @@
     # ~/.local/python-venvs/jupyter/bin/python3 ~/.config/polybar/gmail-unread.py
 
   #+end_src
+* Applications not handled by OS package managers
+   #+end_src
+  Guix, Debian, and other preferred OS distributions are "OSS Puritan" to varying degress.
+
+  To manage the unsavory apps I may want to run, I have chosen the Flatpak system.  It's
+  needlessly huge in that it downloads duplicates of libraries for different packages, but
+  it's easy to maintain and runs fast.
+
+  To control where things are installed, we can add a bind mount to the key app install paths
+  + System-wide path =/var/lib/flatpak=
+  + Local path =~/.local/share/flatpak= (and maybe =~/.var/app=)
+
+  I use =--user= installs on my laptop(s)
+
+
+  Examples of apps I prefer to run on Flatpak:
+  + Discord
+  + Draw.io
+  + Logseq
+  + Microsoft Edge
+  + Microsoft Teams
+  + Obsidian
+  + OBS Studio (settings are kept more consistently)
+  + Signal Desktop
+  + Slack
+  + Steam
+  + Visual Studio Code
+  + Zoom
+** Add the primary repository
+  Add the Flathub package repository
+  #+begin_src bash
+    flatpak remote-add --user \
+            --if-not-exists \
+            flathub https://flathub.org/repo/flathub.flatpakrepo
+    # For system-wide, do the same without --user and run as root
+  #+end_src
+** Names and notes for Flatpak Applicatons
+*** Firefox - org.mozilla.firefox
+   + Firefox supports the flatpak distribution method.  Neither Google nor Microsoft (for
+     Edge) are supporting it
+   + Go to preferences to allow DRM content - otherwise there will be no audio on YouTube videos
+*** Discord - com.discordapp.Discord
+*** Slack - com.slack.Slack
+*** Signal Desktop - org.signal.Signal
+*** Spotify - com.spotify.Client
+*** Steam - com.valvesoftware.Steam
+    For game =.desktop= shortcuts, open up the xdg directories.  Open up any library
+    folders used as well
+    #+begin_src bash
+      flatpak --user override --filesystem=/data/Steam com.valvesoftware.Steam
+      flatpak --user override --filesystem=xdg-data/icons com.valvesoftware.Steam
+      flatpak --user override --filesystem=xdg-data/applications com.valvesoftware.Steam
+      flatpak --user override --filesystem=xdg-desktop com.valvesoftware.Steam
+      flatpak --user override --filesystem=/data/music com.spotify.Client
+    #+end_src
+*** Visual Studio Code - OSS - com.visualstudio.code-oss
+*** Zoom - us.zoom.Zoom
+  + Give access to virtual backgrounds
+    #+begin_src bash
+      flatpak --user override --filesystem=~/backgrounds us.zoom.Zoom
+      flatpak --user override --filesystem=~/.zoom us.zoom.Zoom
+    #+end_src
+  + Run Zoom once, exit, then edit ~/.var/app/us.zoom.Zoom/config/zoomus.conf
+    Set =enableMiniWindow=false=
+  + Add MIME handler =x-scheme-handler/zoommtg=us.zoom.Zoom.desktop= to
+    =~/.config/mimeapps.list=
+** Special cases to place in =~/bin=
+*** AWS CLI
+     Debian apt gets weird about updating the AWS CLI - I install it with curl/wget and
+     thereafter let the command keep itself updated.
+
+     #+begin_src bash :results silent
+       cd /tmp/
+       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+       unzip awscliv2.zip
+       ./aws/install --install-dir ~/bin/awscli/ --bin-dir ~/bin/
+     #+end_src
 * Desktop files to use with Albert / ulauncher / rofi
 ** Assure directories are created before tangling
    #+begin_src bash
@@ -1312,69 +1389,3 @@
      Type=Application
      Categories=Application;Network;Productivity;
      StartupNotify=True
-   #+end_src
-* Applications not handled by OS package managers
-  Guix, Debian, and other preferred OS distributions are "OSS Puritan" to varying degress.
-
-  To manage the unsavory apps I may want to run, I have chosen the Flatpak system.  It's
-  needlessly huge in that it downloads duplicates of libraries for different packages, but
-  it's easy to maintain and runs fast.
-
-  To control where things are installed, we can add a bind mount to the key app install paths
-  + System-wide path =/var/lib/flatpak=
-  + Local path =~/.local/share/flatpak= (and maybe =~/.var/app=)
-
-  I use =--user= installs on my laptop(s)
-
-
-  Examples of apps I prefer to run on Flatpak:
-  + Discord
-  + Draw.io
-  + Logseq
-  + Microsoft Edge
-  + Microsoft Teams
-  + Obsidian
-  + OBS Studio (settings are kept more consistently)
-  + Signal Desktop
-  + Slack
-  + Steam
-  + Visual Studio Code
-  + Zoom
-** Add the primary repository
-  Add the Flathub package repository
-  #+begin_src bash
-    flatpak remote-add --user \
-            --if-not-exists \
-            flathub https://flathub.org/repo/flathub.flatpakrepo
-    # For system-wide, do the same without --user and run as root
-  #+end_src
-** Names and notes for Flatpak Applicatons
-*** Firefox - org.mozilla.firefox
-   + Firefox supports the flatpak distribution method.  Neither Google nor Microsoft (for
-     Edge) are supporting it
-   + Go to preferences to allow DRM content - otherwise there will be no audio on YouTube videos
-*** Discord - com.discordapp.Discord
-*** Slack - com.slack.Slack
-*** Signal Desktop - org.signal.Signal
-*** Spotify - com.spotify.Client
-*** Steam - com.valvesoftware.Steam
-    For game =.desktop= shortcuts, open up the xdg directories.  Open up any library
-    folders used as well
-    #+begin_src bash
-      flatpak --user override --filesystem=/data/Steam com.valvesoftware.Steam
-      flatpak --user override --filesystem=xdg-data/icons com.valvesoftware.Steam
-      flatpak --user override --filesystem=xdg-data/applications com.valvesoftware.Steam
-      flatpak --user override --filesystem=xdg-desktop com.valvesoftware.Steam
-      flatpak --user override --filesystem=/data/music com.spotify.Client
-    #+end_src
-*** Visual Studio Code - OSS - com.visualstudio.code-oss
-*** Zoom - us.zoom.Zoom
-  + Give access to virtual backgrounds
-    #+begin_src bash
-      flatpak --user override --filesystem=~/backgrounds us.zoom.Zoom
-      flatpak --user override --filesystem=~/.zoom us.zoom.Zoom
-    #+end_src
-  + Run Zoom once, exit, then edit ~/.var/app/us.zoom.Zoom/config/zoomus.conf
-    Set =enableMiniWindow=false=
-  + Add MIME handler =x-scheme-handler/zoommtg=us.zoom.Zoom.desktop= to
-    =~/.config/mimeapps.list=
