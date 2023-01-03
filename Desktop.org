@@ -925,16 +925,15 @@
 ** Microsoft Teams
    As of [2021-01-26 Tue] I am having microphone problems using the Linux client for
    Teams.  Things seem to run fine in the browser, however.
-   #+begin_src conf :tangle no
-         # ~/.local/share/applications/teams-browser.desktop
-         [Desktop Entry]
-         Name=Microsoft Teams in browser
-         Comment=
-         Exec=xdg-open https://teams.microsoft.com
-         Icon=/home/gregj/.local/share/pixmaps/teams-logo.png
-         Terminal=false
-         Type=Application
-         Categories=InstantMessaging;
+   #+begin_src conf :tangle ~/.local/share/applications/teams-browser.desktop
+     [Desktop Entry]
+     Name=Microsoft Teams in browser
+     Comment=
+     Exec=google-chrome https://teams.microsoft.com
+     Icon=/home/gregj/.local/share/pixmaps/teams-logo.png
+     Terminal=false
+     Type=Application
+     Categories=InstantMessaging;
    #+end_src
 ** Monitor change
    Run when external monitor is connected/disconnected
