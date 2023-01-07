@@ -3524,6 +3524,13 @@
                  (electric-pair-local-mode 1)))
 
    #+end_src
+   And we'll do the same for the Sly REPL(s)
+   #+begin_src emacs-lisp
+     (add-hook 'sly-mrepl-mode-hook
+               (lambda ()
+                 (rainbow-delimiters-mode 1)
+                 (electric-pair-local-mode 1)))
+   #+end_src
 ** Language Servers and setup for LSP / Eglot
 *** Language Servers
 **** Bash
@@ -3750,7 +3757,6 @@
     Here we will assume SBCL
     + Install SBCL from [[https://www.sbcl.org/getting.html][the website]]
     + [[https://lispcookbook.github.io/cl-cookbook/getting-started.html#install-quicklisp][Install Quicklisp]]
-    + [[https://www.reddit.com/r/Common_Lisp/comments/huk6fx/how_should_i_install_slime_debian_linux/][How should I install Slime? (Debian Linux) : Common_Lisp]]
     + [[https://lispcookbook.github.io/cl-cookbook/getting-started.html#install-quicklisp][Getting started with Common Lisp]]
     + [[https://github.com/joaotavora/sly][joaotavora/sly: Sylvester the Cat's Common Lisp IDE ≫ github.com]]
     #+begin_src emacs-lisp :tangle no
