@@ -89,17 +89,23 @@ A sort-of package with customization framework.  The famed =gjg= package.
   :ID:       67100837-6b96-46e1-b923-932b31ae1297
   :END:
    #+begin_src emacs-lisp
-    (defun gjg/go-dark ()
-      "switch to preferred dark theme"
-      (interactive)
-      (load-theme (intern gjg/preferred-dark-theme) t)
-      (disable-theme (intern gjg/preferred-light-theme)))
-    (defun gjg/go-light ()
-      "switch to preferred light theme"
-      (interactive)
-      (load-theme (intern gjg/preferred-light-theme) t)
-      (disable-theme (intern gjg/preferred-dark-theme)))
+     (defun gjg/go-dark ()
+       "switch to preferred dark theme - currently specific to modus-themes."
+       (interactive)
+       (if (s-starts-with? "modus-" gjg/preferred-dark-theme)
+           (modus-themes-load-theme (intern gjg/preferred-dark-theme))
+         (progn
+           (load-theme (intern gjg/preferred-dark-theme))
+           ((disable-theme gjg/preferred-light-theme)))))
 
+     (defun gjg/go-light ()
+       "switch to preferred light theme - currently specific to modus-themes."
+       (interactive)
+       (if (s-starts-with? "modus-" gjg/preferred-light-theme)
+           (modus-themes-load-theme (intern gjg/preferred-light-theme))
+         (progn
+           (load-theme (intern gjg/preferred-light-theme))
+           ((disable-theme gjg/preferred-dark-theme)))))
    #+end_src
 * Register buffer name modeline segment for use in various modeline packages
   :PROPERTIES:
