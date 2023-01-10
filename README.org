@@ -768,7 +768,17 @@
     foreground colors very slightly.
     #+begin_src emacs-lisp
       ;; make the modus themes act more like my brutalist theme in Org
-      (require 'modus-themes)
+      ;; (require 'modus-themes)
+      (defun gjg/my-modus-themes-custom-faces ()
+        "Tweak faces"
+        (message "Setting custom org-habit face for Modus themes")
+        (modus-themes-with-colors
+          (custom-set-faces
+           `(org-habit-clear-face ((,c :background ,bg-graph-green-0 :foreground "black")))
+           `(org-habit-clear-future-face ((,c :background ,bg-graph-green-1 )))
+           `(org-habit-ready-face ((,c :background ,bg-graph-green-0 :foreground "black")))
+           `(org-habit-ready-future-face ((,c :background ,bg-graph-green-1 ))))))
+      (add-hook 'modus-themes-after-load-theme-hook #'gjg/my-modus-themes-custom-faces)
       (setq modus-themes-headings
             '((1 . ( semibold 1.3))
               (2 . ( semibold 1.1))
