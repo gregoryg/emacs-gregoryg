@@ -1487,8 +1487,8 @@
                              ((s-starts-with-p "Chat - " exwm-title)
                               (exwm-workspace-rename-buffer "chat"))
                              ;; standalone apps
-                             ((s-starts-with-p "Slack" exwm-title)
-                              (exwm-workspace-rename-buffer "slack stardog"))
+                             ((string= "Slack" exwm-class-name)
+                              (exwm-workspace-rename-buffer (concat "slack stardog" "- " exwm-title)))
                              ((string= "Logseq" exwm-class-name)
                               (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name " App")))
                              ((member exwm-class-name '("Eom" "Eog" "zoom" "Spotify" ))
