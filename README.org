@@ -4144,6 +4144,10 @@
    #+begin_src emacs-lisp
      (setq show-paren-context-when-offscreen 'overlay)
    #+end_src
+** Org-ros screen grabber into Org Mode
+   [[https://www.reddit.com/r/orgmode/comments/10c0cmf/orgros_screenshot_utility_for_orgmode_and_its/][[org-ros] Screenshot utility for org-mode - and it's future. : orgmode ≫ www.reddit.com]]
+
+   
 
 * Final steps
 #+begin_src emacs-lisp
