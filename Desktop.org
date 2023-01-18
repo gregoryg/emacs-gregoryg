@@ -355,8 +355,25 @@
      do
          # DISPLAY=:0.0 /usr/bin/feh --bg-max --randomize ~/backgrounds/safe/1920x1200/
          /home/gregj/bin/rotate-wallpapers.sh
-         sleep 3600
+         sleep 20m
      done
+   #+end_src
+   #+begin_src bash :tangle ~/bin/random-wallpaper-by-keyword.sh
+     word=$1
+
+     if [ -z "${word}" ] ; then
+         echo "Usage: $0 'keyword'"
+         exit 0
+     fi
+
+     newpaper=$(find ~/backgrounds -iname "*${word}*" | shuf | head -1)
+     if [ -n "${newpaper}" ] ; then
+         feh --bg-fill "${newpaper}"
+     else
+         echo "No wallpaper found with keyword \"${word}\" - skipping."
+         exit 0
+     fi
+
    #+end_src
 ** Script to launch panel with good widgets
    #+begin_src bash :tangle ~/bin/xfce-panel-widgets.sh
