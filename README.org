@@ -2629,6 +2629,17 @@
                                               ("sy" . "src yaml"))))
 
      #+end_src
+*** Report on tangling when buffer is narrowed
+    When one means to french fry (tangle whole file) but pizzas instead (tangle narrowed
+    file) one may have a bad time.  But it's often intended - so don't stop, prompt and
+    annoy - simply report - result: joy.
+    #+begin_src emacs-lisp
+      (add-hook 'org-babel-tangle-finished-hook
+                (lambda () (interactive)
+                  (when (buffer-narrowed-p)
+                    (message "Blocks were tangled from narrowed buffer. Check *Messages* for count." (buffer-name)))))
+    #+end_src
+
 ** Org num mode
    #+begin_src emacs-lisp :tangle no
      ;; for use with org-num-mode
