@@ -70,18 +70,19 @@
      ICON_GOOD="/usr/share/icons/Papirus/48x48/status/battery-good.svg"
      TARGET_MAX=80
      TARGET_MIN=20
+     TARGET_STOP_NAGGING=85 # stop nagging on full battery after this threshold
      BATTERY_PATH=$(upower -e | grep battery_BAT0)
      LINE_POWER_PATH=$(upower -e | grep line_power_AC)
      BATTERY_PERCENTAGE=$(upower -i $BATTERY_PATH | grep 'percentage:' | awk '{ print $2 }' | sed 's/%//')
      CABLE_PLUGGED=$(upower -i $LINE_POWER_PATH | grep -A2 'line-power' | grep online | awk '{ print $2 }')
 
      if [[ $CABLE_PLUGGED == 'yes' ]]; then
-         if [[ $BATTERY_PERCENTAGE -gt ${TARGET_MAX} ]]; then
+         if [ $BATTERY_PERCENTAGE -ge ${TARGET_MAX} ] && [ $BATTERY_PERCENTAGE -lt ${TARGET_STOP_NAGGING} ] ; then
              /usr/bin/notify-send --urgency=normal --icon=${ICON_GOOD} "Battery optimization" "Battery reached ${TARGET_MAX}%, unplug the power cable to optimize battery life."
          fi
      else
          if [[ $BATTERY_PERCENTAGE -lt ${TARGET_MIN} ]]; then
-             /usr/bin/notify-send --urgency=critical --icon=${ICON_LOW} "Battery optimization" "Battery is below ${TARGET_MIN}%, plug in the power cable to optimize battery life."
+             /usr/bin/notify-send --urgency=critical --icon=${ICON_LOW} "Battery optimization" "Battery is below ${TARGET_MIN}% (${BATTERY_PERCENTAGE}%), plug in the power cable to optimize battery life."
          fi
      fi
    #+end_src
