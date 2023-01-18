@@ -2797,11 +2797,16 @@
     #+end_src
 
 *** Template definitions
-   + N.B. First set up org-protocol (require the library) prior to using the related
-     capture templates.  I'm not doing it at the moment because I can use the JS clip
-     extension from ChromeOS (no =emacsclient= binary on Chrome OS, just in a Linux
-     container I cannot reach)
+   + First set up org-protocol (require the library) prior to using the related
+     capture templates.
 
+     If on a system with no =emacsclient= binary - such as Chrome OS - consider using the JS clip
+     extension from ChromeOS.
+
+   #+begin_src emacs-lisp
+     (when (executable-find "emacsclient")
+       (require 'org-protocol))
+   #+end_src
 **** Blog post
      Start a new blog post for hypecyclist.org using my default Hugo template
      #+begin_src emacs-lisp
