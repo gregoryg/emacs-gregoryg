@@ -794,14 +794,12 @@
               (habit . simplified))
             modus-themes-org-blocks nil
             ;; modus-themes-vivendi-color-overrides
+            modus-themes-common-palette-overrides
+            '(,@modus-themes-preset-overrides-intense)
             modus-vivendi-palette-overrides
             '((bg-main "#1a1a1a")  ; gray10
               (fg-main "#e5e5e5")  ; gray90
-              (bg-hl-line "#262626"))
-            ;; modus-operandi-palette-overrides
-            ;; '((org-habit-clear-face
-            ;;    ))
-            )
+              (bg-hl-line "#262626")))
     #+end_src
 *** Load default theme
     Deferred here until all theme tweaks have been applied
@@ -3020,7 +3018,6 @@
         i=my-/where/ever/icon.png
         j=$(basename $i)
         convert -resize 512x512 $i -background transparent -gravity center -extent 512x512  ~/emacs/pixmaps/$j-512x512.png; done
-
       #+end_src
 **** Set icon definitions by category
      #+begin_src emacs-lisp
@@ -3054,6 +3051,8 @@
                ("john deere" "~/emacs/pixmaps/tractor-flat-512x512.png" nil nil :ascent center :height 32)
                ("optum" "~/emacs/pixmaps/optum-logo-512x512.png" nil nil :ascent center :height 32)
                ("picpay" "~/emacs/pixmaps/picpay-logo-512x512.png" nil nil :ascent center :height 32)
+               ("sherwin" "~/emacs/pixmaps/Paint-3D-icon-logo.png" nil nil :ascent center :height 32)
+               ("vizient" "~/emacs/pixmaps/vizient-logo-512x512.png" nil nil :ascent center :height 32)
                ))
        (setq org-agenda-sticky t
              org-agenda-fontify-priorities t
