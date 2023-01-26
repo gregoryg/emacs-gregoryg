@@ -1968,7 +1968,7 @@
            dired-omit-files "^\\.?#\\|^\\..*"
            delete-by-moving-to-trash nil
            dired-listing-switches "-alh --group-directories-first")
-
+     (delete ".bin" dired-omit-extensions)
      ;; set key binding in key map prior to dired-x being loaded - for autoload
      (define-key dired-mode-map "\C-x\M-o" 'dired-omit-mode)
      (define-key dired-mode-map (kbd "M-<up>") 'dired-up-directory)
