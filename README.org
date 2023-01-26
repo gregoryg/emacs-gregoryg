@@ -2988,6 +2988,7 @@
     (global-set-key (kbd "C-c a") 'org-agenda)
     (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
     (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
+                                          "~/projects/private-orgmode/learning.org"
                                           "~/projects/private-orgmode/inbox.org"
                                           "~/projects/private-orgmode/someday.org"
                                           "~/projects/private-orgmode/projects.org"
