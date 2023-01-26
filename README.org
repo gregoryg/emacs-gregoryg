@@ -4146,8 +4146,32 @@
    #+end_src
 ** Org-ros screen grabber into Org Mode
    [[https://www.reddit.com/r/orgmode/comments/10c0cmf/orgros_screenshot_utility_for_orgmode_and_its/][[org-ros] Screenshot utility for org-mode - and it's future. : orgmode ≫ www.reddit.com]]
+** Org drill flashcards
+   There was a time I used this a lot
 
-   
+   org-drill implements both spaced repetition and [[https://gitlab.com/phillord/org-drill#incremental-reading][incremental reading]].
+
+   #+begin_src emacs-lisp
+     (use-package org-drill :straight t :tangle no
+       :config
+       (setq org-drill-add-random-noise-to-intervals-p t
+	     org-drill-adjust-intervals-for-early-and-late-repetitions-p t
+
+       ))
+   #+end_src
+** Alternative to Org Drill
+   #+begin_src bash
+     sudo apt-get -y install gawk
+   #+end_src
+   #+begin_src emacs-lisp
+     ;; (straight-use-package 'hydra)
+     (use-package hydra :straight t)
+     (use-package org-fc
+       :load-path "~/projects/emacs/org-fc/"
+       :custom (org-fc-directories '("~/projects/private-orgmode/"))
+       :config
+       (require 'org-fc-hydra))
+   #+end_src
 
 * Final steps
 #+begin_src emacs-lisp
