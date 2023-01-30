@@ -2945,16 +2945,15 @@
 #+end_src
 ** Speed commands
    The square bracket "show heading tidily" shortcuts can be used as a flexible
-   slide show presentation
+   slide show presentation.
+
+   The OG functions from Dan Davison are now included here [[https://orgmode.org/worg/org-hacks.html#sec-1-3-2][Org ad hoc code, quick hacks and workarounds ≫ orgmode.org]]
+
    #+begin_src emacs-lisp
      (setq org-use-speed-commands t) ;; POWER USER BABY
-     ;; (setq org-speed-commands-user
-     ;;       '(
-     ;;         ("," . org-columns)
-     ;;         ("q" . bury-buffer)))
      ;; DAN DAVISON nifty speed commands
      (defun ded/org-show-next-heading-tidily (&optional NO-NARROW)
-       "Show next entry, keeping other entries closed."
+       "Show next subtree, keeping other entries closed. Narrow to the subtree unless NO-NARROW is true."
        (interactive)
        (widen)
        (if (save-excursion (end-of-line) (outline-invisible-p))
@@ -2971,7 +2970,7 @@
          (unless NO-NARROW (org-narrow-to-subtree))))
 
      (defun ded/org-show-previous-heading-tidily (&optional NO-NARROW)
-       "Show previous entry, keeping other entries closed."
+       "Show previous subtree, keeping other entries closed. Narrow to the subtree unless NO-NARROW is true."
        (interactive)
        (widen)
        (let ((pos (point)))
