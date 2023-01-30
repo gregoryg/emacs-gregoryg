@@ -74,6 +74,45 @@
        :straight '(app-launcher :host github :repo "SebastienWae/app-launcher"))
      (global-set-key (kbd "s-SPC") 'app-launcher-run-app)
    #+end_src
+** Use Rofi as app launcher
+*** Generate the script that *should* be in the adi1090x repo
+    #+begin_src bash :tangle ~/bin/launch-rofi.sh
+      rofidir="$HOME/.config/rofi"
+      theme="${1:-type-1}"
+      style="${2:-style-1}"
+
+      echo "DEBUG: theme is ${theme}, style is ${style}"
+      rofi \
+          -show drun \
+          -theme ${rofidir}/launchers/${theme}/${style}.rasi
+    #+end_src
+*** Emacs function to call with crazy randomness
+   Here's a helper script to launch =adi1090x='s themed rofi configs
+   Nice theme/style combos (ref [[https://github.com/adi1090x/rofi#previews][adi1090x/rofi ≫ github.com]])
+   | Type | Style | notes              |
+   |------+-------+--------------------|
+   |    2 |    15 |                    |
+   |    3 |     7 |                    |
+   |    3 |     8 |                    |
+   |    5 |     5 |                    |
+   |    6 |     4 |                    |
+   |    6 |     5 |                    |
+   |    6 |     6 | Very cool b&w      |
+   |    6 |     7 | Very cool dark     |
+   |    7 |     6 | clean, light, tech |
+   |    7 |     7 | cool, dark, tech   |
+
+   #+begin_src emacs-lisp
+     ;; alternative launch for use with my dotfiles config:
+     ;;    (call-process-shell-command "rofi -modi drun,run -show drun")
+     (defun gjg/launch-rofi ()
+       "Launch one of adi1090x rofi themes."
+       (interactive)
+       (let* ((preferidos '( (2 15) (3 7) (3 8) (5 5) (6 4) (6 5) (6 6) (6 7) (7 6) (7 7)))
+              (selected (nth (random (length preferidos)) preferidos)))
+         (call-process-shell-command (format "~/bin/launch-rofi.sh type-%d style-%d" (car selected) (nth 1 selected)))
+         (message "Rofi launched with type %d and style %d " (car selected) (nth 1 selected))))
+   #+end_src
 ** Cleanup on file save
    Tip o' the hat to [[https://github.com/mitchty][@mitchty]]
    Remove trailing whitespace when saving files
@@ -240,7 +279,6 @@
   ;; if point is at end of line, keep it there for vertical movement
   (setq track-eol t)
   (setq align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
-  (setq Man-notify-method 'pushy) ;; show man page in current window
   (setq auth-source-save-behavior nil) ; NEVER store passwords
   (setq enable-recursive-minibuffers t)
   ;; Allow Emacs to resize mini windows, otherwise this does not work:
@@ -639,7 +677,8 @@
      (bind-key "s-," 'gjg/polybar-start-or-toggle)
      (bind-key "s-]" 'ded/org-show-next-heading-tidily)
      (bind-key "s-[" 'ded/org-show-previous-heading-tidily)
-     (bind-key "M-SPC" #'(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
+     ;; (bind-key "M-SPC" #'(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
+     (bind-key "M-SPC" 'gjg/launch-rofi)
      (bind-key "s-\\" 'switch-to-buffer)
      ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
      (define-key ctl-x-4-map "t" 'toggle-window-split)
@@ -1348,9 +1387,8 @@
            ([M-s-down] . windmove-delete-down)
            ([M-s-left] . windmove-delete-left)
            ([M-s-right] . windmove-delete-right)
-           (,(kbd "M-SPC") . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
+           (,(kbd "M-SPC") . gjg/launch-rofi)
            (,(kbd "s-SPC") . app-launcher-run-app)
-           ;; ([s-SPC] . (lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
            ([?\s-e] . gjg/ibuffer-only-exwm)
            ([s-backspace] . bury-buffer)
            ([?\s-q] . bury-buffer)
