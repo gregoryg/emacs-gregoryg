@@ -67,6 +67,11 @@ A sort-of package with customization framework.  The famed =gjg= package.
        :type 'string
        :group 'gjg)
 
+     (defcustom gjg/screensaver-program "xscreensaver"
+       "Linux preferred screen saver program."
+       :type 'string
+       :group 'gjg)
+
      (defcustom gjg/stardog-connections-alist
        nil
        "List of stardog connections "
@@ -465,7 +470,21 @@ A sort-of package with customization framework.  The famed =gjg= package.
       (add-hook 'exwm-workspace-switch-hook #'gjg/send-polybar-exwm-workspace))
 
   #+end_src
-
+* Laptop management
+** Lock screen
+   #+begin_src emacs-lisp
+     (defun gjg/lock-screen ()
+       "Linux-specific screen lock with order of preference for screensaver programs."
+       (interactive)
+       (let ((pgm (or (and gjg/screensaver-program (executable-find gjg/screensaver-program))
+                      (executable-find "xfce4-screensaver-command")
+                      (executable-find "xscreensaver"))))
+         (if pgm
+             (progn
+               (call-process-shell-command (concat pgm "-command -lock"))
+               (message (concat "Fun: " pgm "-command -lock")))
+           (message "No screen saver program found."))))
+   #+end_src
 * Odds and ends
   :PROPERTIES:
   :ID:       39e8657c-2662-4231-9fc6-440544b659e2
