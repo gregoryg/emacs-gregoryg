@@ -914,6 +914,9 @@
    #+end_src
 
 ** Lefty Loosey
+   #+begin_src bash :tangle ~/bin/lefty
+     xmodmap -e "pointer = 3 2 1"
+   #+end_src
    #+begin_src conf :tangle ~/.local/share/applications/lefty.desktop
      [Desktop Entry]
      Name=Lefty Loosey
@@ -1122,6 +1125,9 @@
      Categories=Office;Productivity;
    #+end_src
 ** Righty Tighty
+   #+begin_src bash :tangle ~/bin/righty
+     xmodmap -e "pointer = 1 2 3"
+   #+end_src
    #+begin_src conf :tangle ~/.local/share/applications/righty.desktop
      [Desktop Entry]
      Name=Righty Tighty
