@@ -4196,7 +4196,7 @@
 
        ))
    #+end_src
-** Alternative to Org Drill
+** Alternative to Org Drill: Org FC
    #+begin_src bash
      sudo apt-get -y install gawk
    #+end_src
@@ -4207,7 +4207,9 @@
        :load-path "~/projects/emacs/org-fc/"
        :custom (org-fc-directories '("~/projects/private-orgmode/"))
        :config
-       (require 'org-fc-hydra))
+       (require 'org-fc-hydra)
+       (require 'org-fc-keymap-hint)
+       (global-set-key (kbd "C-c f") 'org-fc-hydra/body))
    #+end_src
 
 * Final steps
