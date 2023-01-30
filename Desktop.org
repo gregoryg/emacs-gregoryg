@@ -519,7 +519,8 @@
      /home/gregj/bin/capsctrl.sh
      /home/gregj/bin/schedule-rotate-wallpapers.sh
    #+end_src
-* Python virtual environment including Gmail packages
+* Polybar including modules and scripts
+** Python virtual environment including Gmail packages
   This virtual environment supports the Unread Gmail module used with Polybar.  The same
   virtual environment will also be used for Jupyter Lab
   #+begin_src bash :results both
@@ -531,6 +532,16 @@
     # ~/.local/python-venvs/jupyter/bin/python3 ~/.config/polybar/gmail-unread.py
 
   #+end_src
+** Script to pause Gmail unread reporting
+   #+begin_src bash :tangle ~/bin/gmail-unread-toggle-pause.sh
+     if [ -f "/tmp/pause-gmail-unread" ]; then
+         rm -f /tmp/pause-gmail-unread
+         echo Unread gmail threads resumed.
+     else
+         touch /tmp/pause-gmail-unread
+         echo Unread gmail threads paused.
+     fi
+   #+end_src
 * Applications not handled by OS package managers
    #+end_src
   Guix, Debian, and other preferred OS distributions are "OSS Puritan" to varying degress.
