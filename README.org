@@ -89,26 +89,14 @@
 *** Emacs function to call with crazy randomness
    Here's a helper script to launch =adi1090x='s themed rofi configs
    Nice theme/style combos (ref [[https://github.com/adi1090x/rofi#previews][adi1090x/rofi ≫ github.com]])
-   | Type | Style | notes              |
-   |------+-------+--------------------|
-   |    2 |    15 |                    |
-   |    3 |     7 |                    |
-   |    3 |     8 |                    |
-   |    5 |     5 |                    |
-   |    6 |     4 |                    |
-   |    6 |     5 |                    |
-   |    6 |     6 | Very cool b&w      |
-   |    6 |     7 | Very cool dark     |
-   |    7 |     6 | clean, light, tech |
-   |    7 |     7 | cool, dark, tech   |
-
    #+begin_src emacs-lisp
      ;; alternative launch for use with my dotfiles config:
      ;;    (call-process-shell-command "rofi -modi drun,run -show drun")
      (defun gjg/launch-rofi ()
        "Launch one of adi1090x rofi themes."
        (interactive)
-       (let* ((preferidos '( (2 15) (3 7) (3 8) (5 5) (6 4) (6 5) (6 6) (6 7) (7 6) (7 7)))
+
+       (let* ((preferidos '( (6 5) (6 6) (6 7) (7 6)))
               (selected (nth (random (length preferidos)) preferidos)))
          (call-process-shell-command (format "~/bin/launch-rofi.sh type-%d style-%d" (car selected) (nth 1 selected)))
          (message "Rofi launched with type %d and style %d " (car selected) (nth 1 selected))))
