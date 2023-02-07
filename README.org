@@ -4197,8 +4197,8 @@
 
    org-drill implements both spaced repetition and [[https://gitlab.com/phillord/org-drill#incremental-reading][incremental reading]].
 
-   #+begin_src emacs-lisp
-     (use-package org-drill :straight t :tangle no
+   #+begin_src emacs-lisp :tangle no
+     (use-package org-drill :straight t
        :config
        (setq org-drill-add-random-noise-to-intervals-p t
 	     org-drill-adjust-intervals-for-early-and-late-repetitions-p t
@@ -4213,12 +4213,14 @@
      ;; (straight-use-package 'hydra)
      (use-package hydra :straight t)
      (use-package org-fc
+       :defer t
        :load-path "~/projects/emacs/org-fc/"
        :custom (org-fc-directories '("~/projects/private-orgmode/"))
        :config
        (require 'org-fc-hydra)
        (require 'org-fc-keymap-hint)
-       (global-set-key (kbd "C-c f") 'org-fc-hydra/body))
+       (global-set-key (kbd "C-c f") 'org-fc-hydra/body)
+       (add-hook 'org-fc-after-flip-hook 'org-fold-show-subtree))
    #+end_src
 
 * Final steps
