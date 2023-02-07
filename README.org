@@ -1240,7 +1240,7 @@
        (defun gjg/exwm-select-or-launch-spotify ()
          "Select the running Spotify window in EXWM, or launch the app"
          (interactive)
-         (gjg/exwm-switch-to-buffer-or-launch "Spotify" "spotify"))
+         (gjg/exwm-switch-to-buffer-or-launch "Spotify" "com.spotify.Client"))
      #+end_src
 **** Function to switch quickly to Zoom Meeting
      #+begin_src emacs-lisp
