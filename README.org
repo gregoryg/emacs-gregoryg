@@ -1348,10 +1348,7 @@
        (setq exwm-input-global-keys
              `(
            ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
-           (,(kbd "s-l") .   ;; super/windows l
-            (lambda ()
-              (interactive)
-              (call-process-shell-command "xfce4-screensaver-command -l")))
+           (,(kbd "s-l") . gjg/lock-screen)
            ;; 's-r': Reset (to line-mode).
            ([?\s-r] . exwm-reset)
            ([?\s-s] . save-some-buffers)
