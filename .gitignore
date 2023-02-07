@@ -50,3 +50,5 @@ network-security.data
 .cache/
 **/*org.html
 emacs/gjg-functions.el
+.emacs.d/org-fc-reviews.tsv
+.emacs.d/places
