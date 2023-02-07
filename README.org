@@ -3569,6 +3569,16 @@
   )
 
 #+end_src
+* Presentation and screencasting
+  Most everything I use is encoded in my own Org-as-presentation method using the
+  ded/org-show-{next,prev}-heading-tidily bound to global keys
+
+  The rest is outside of Emacs (OBS Studio for example)
+
+  But for this one bitlet: echoing keystrokes during a screencast.
+  #+begin_src emacs-lisp
+    (use-package command-log-mode :straight t :defer t)
+  #+end_src
 * Programming language modes
 
 ** All modes derived from =prog-mode=
