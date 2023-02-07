@@ -2542,7 +2542,7 @@
 
 * Org mode stuff
 
-** Contributions package
+** Org Contributions package
    Add =ignore= tag to headlines you don't want to export
    Refer to [[https://emacs.stackexchange.com/a/17677/418][org mode - Is it possible to export content of subtrees without their heading...]]
    #+begin_src emacs-lisp
@@ -2857,22 +2857,36 @@
      #+end_src
 
 **** Phone/meeting/task - the heart of it all
-     TODO: Fix the disappearing clock in the original template definition
-
      #+begin_src emacs-lisp
-       (push
-        '("p" "Phone/Meeting" entry
-          (file+headline gjg/employer-org-file "Calls and Meetings")
-          "* %t %^{type|Call|Meeting|Task} with %^{with|Solutions Team|SE Team|Steven|Marketing|Sales|Engineering|South Sales Team|Central Sales Team}: %^{Subject|Sync-up|Stand-up|Team|Presentation|Intro|Weekly cadence|Learning Update|Working session|Status update}
-         %i
-         + Team: GG and %?
+       (defun gjg/phone-meeting-template ()
+         "Org capture template function for call/meeting logs.
+       Pull in all customers from active engagements! "
+         (format "* %%t %%^{type|%s} with %%^{with|%s}: %%^{subject|%s}
+         %%i
+         + Team: GG and %%?
            \#+begin_src emacs-lisp :var table=people :results append raw :exports results :eval never-export
             (gjg/add-person-from-table table)
            \#+end_src
        ,** Notes
          +
        ,** Next steps
-       " :prepend t :clock-in t :clock-keep t :jump-to-captured t) org-capture-templates)
+       "
+                 "Call|Meeting|Task"
+                 (concat "Solutions Team|SE Team|PS|Fuller|Marketing|Sales|Engineering|Product|"
+                         (s-join "|"
+                                 (mapcar #'org-get-title
+                                         (directory-files-recursively "~/projects/private-orgmode/stardog/engagements/"
+                                                                      "org$")))
+                         )
+                 "Sync-up|Stand-up|Presentation|Intro|Bi-Weekly Presales Pipeline|Weekly|Weekly cadence|Working session")
+
+         )
+
+       (push
+        '("p" "Phone/Meeting" entry
+          (file+headline gjg/employer-org-file "Calls and Meetings")
+          (function gjg/phone-meeting-template)
+          :prepend t :clock-in t :clock-keep t :jump-to-captured t) org-capture-templates)
      #+end_src
 
 **** Clock in to a new work "t"ask
