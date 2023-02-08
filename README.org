@@ -4213,7 +4213,7 @@
      ;; (straight-use-package 'hydra)
      (use-package hydra :straight t)
      (use-package org-fc
-       :defer t
+       :defer nil
        :load-path "~/projects/emacs/org-fc/"
        :custom (org-fc-directories '("~/projects/private-orgmode/"))
        :config
