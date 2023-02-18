@@ -313,7 +313,7 @@
     # xrandr --output eDP-1 --brightness .8
 
     echo Start xscreensaver
-    xscreensaver &
+    xscreensaver -no-splash &
 
     nohup xfce4-power-manager&
 
