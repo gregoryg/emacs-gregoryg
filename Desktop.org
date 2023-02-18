@@ -339,7 +339,9 @@
      # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 1 --bg-max --randomize ~/backgrounds/safe/1920x1200/
      # DISPLAY=:0.0 /usr/bin/feh --xinerama-index 0 --bg-max --randomize ~/backgrounds/safe/3440x1440/
 
-     feh --bg-fill --randomize --recursive  ~/backgrounds/safe/
+     myrandomfile=$(find ~/backgrounds/safe/ -type f | shuf | head -1)
+     echo ${myrandomfile} > /tmp/last-wallpaper.txt
+     feh --bg-fill ${myrandomfile}
    #+end_src
    #+begin_src bash :tangle ~/bin/schedule-rotate-wallpapers.sh
      #!/usr/bin/env bash
