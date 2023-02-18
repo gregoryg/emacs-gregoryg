@@ -839,7 +839,7 @@
 ** Hangouts / Google Chat
    #+begin_src conf :tangle ~/.local/share/applications/fhangouts.desktop
      [Desktop Entry]
-     Name=Chat (née Hangouts)
+     Name=Charlar (née Hangouts)
      Comment=Google Chat
      Exec=xdg-open https://mail.google.com/chat/u/0
      Icon=/home/gregj/.local/share/pixmaps/google-chat.png
