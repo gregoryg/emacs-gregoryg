@@ -27,7 +27,7 @@
 
 (add-hook 'emacs-startup-hook
           (lambda ()
-            ;; (setq gc-cons-threshold better-gc-cons-threshold)
+            (setq gc-cons-threshold better-gc-cons-threshold)
             (setq file-name-handler-alist file-name-handler-alist-original)
             (makunbound 'file-name-handler-alist-original)))
 
@@ -50,8 +50,8 @@
 (use-package bind-key :straight t :defer nil)
 (use-package f :straight t)
 (use-package s :straight t)
-(straight-use-package 'gcmh) ;; garbage collection magic hack
-(gcmh-mode 1)
+;; (straight-use-package 'gcmh) ;; garbage collection magic hack
+;; (gcmh-mode 1)
 ;; require use-package for byte-compiled init files ref https://github.com/jwiegley/use-package/issues/436
 (require 'use-package)
 (straight-use-package 'org)
