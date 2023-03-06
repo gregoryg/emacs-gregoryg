@@ -3067,6 +3067,7 @@
                ("coding" "~/emacs/pixmaps/math-function.png" nil nil :ascent center :height 32)
                ("emacs" "~/emacs/pixmaps/emacs-512x512.png" nil nil :ascent center :height 32)
                ("finances" "~/emacs/pixmaps/finances-512x512.png" nil nil :ascent center :height 32)
+               ("fire" "~/emacs/pixmaps/fire.png" nil nil :ascent center :height 32)
                ("fitness" "~/emacs/pixmaps/fitness-heart-512x512.png" nil nil :ascent center :height 32)
                ("gwennie" "~/emacs/pixmaps/loon-512x512.png" nil nil :ascent center :height 32)
                ("ideas" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
