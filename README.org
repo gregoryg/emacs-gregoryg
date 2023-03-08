@@ -3902,6 +3902,27 @@
          "python -c 'import sys, sqlparse; print(sqlparse.format(sys.stdin.read(), reindent=True))'"
          t t))
     #+end_src
+*** Save command history for all SQL modes
+    WIP WIP WIP
+    Try setting comint-input-ring-file-name as buffer-local for sql-interactive-mode
+
+    ref: [[https://stackoverflow.com/a/61192837/457574][emacs sql mode could not save history - Stack Overflow]]
+    #+begin_src emacs-lisp :tangle no
+      (defun gjg/sql-save-history-hook ()
+        (let ((lval 'comint-input-ring-file-name)
+              (rval 'sql-product))
+          (if (symbol-value rval)
+              (let ((filename
+                     (concat "~/.emacs.d/sql/"
+                             (symbol-name (symbol-value rval))
+                             "-history.sql")))
+                (set (make-local-variable lval) filename))
+            (message "SQL history will not be saved because %s is nil"
+                     (symbol-name rval)))))
+
+      (add-hook 'sql-interactive-mode-hook 'gjg/sql-save-history-hook)
+      (add-hook 'kill-buffer-hook 'comint-write-input-ring)
+    #+end_src
 
 *** MySQL / MariaDB
 
