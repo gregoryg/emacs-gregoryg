@@ -4245,6 +4245,20 @@
        (global-set-key (kbd "C-c f") 'org-fc-hydra/body)
        (add-hook 'org-fc-after-flip-hook 'org-fold-show-subtree))
    #+end_src
+** Mermaid diagramming
+   + [[https://github.com/mermaid-js/mermaid-cli][Releases · mermaid-js/mermaid-cli ≫ github.com]]
+   #+begin_src bash
+     npm install -g @mermaid-js/mermaid-cli
+   #+end_src
+** GitHub-flavoured markdown
+   A minor mode providing syntax highlighting and live preview!
+   + Requires a python environment with =grip=
+     #+begin_src bash
+       pip install grip
+     #+end_src
+     #+begin_src emacs-lisp
+       (use-package grip :straight t)
+     #+end_src
 
 * Final steps
 #+begin_src emacs-lisp
