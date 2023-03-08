@@ -884,18 +884,6 @@
      StartupWMClass=jetbrains-idea-ce
    #+end_src
 
-** JMeter
-   #+begin_src conf :tangle ~/.local/share/applications/jmeter.desktop
-     [Desktop Entry]
-     Version=1.0
-     Type=Application
-     Name=JMeter
-     Icon= /home/gregj/.local/share/pixmaps/jmeter-feather.png
-     Exec="/home/gregj/bin/apache-jmeter-5.4.3/bin/jmeter"
-     Comment=Load testing
-     Categories=Development;Metrics;Testing;
-     Terminal=false
-   #+end_src
 ** Jupyter Lab - local server
    + tangle startup script
      #+begin_src bash :tangle ~/bin/start_jupyterlab.sh
