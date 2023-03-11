@@ -367,16 +367,13 @@ A sort-of package with customization framework.  The famed =gjg= package.
              ;; (message "I got these databases %s" response ))
              (goto-char 0)
              (completing-read "Ohai: "
-                              (append (cdr (assq 'databases (json-read))) nil)
-                              )
-           )
-         )))
+                              (append (cdr (assq 'databases (json-read))) nil))))))
+
      (defun gjg/stardog-get-databases (server)
        "Get list of databases from the Stardog server - will work for users with admin rights"
        ;; (url-retrieve (concat server "/admin/databases") #'gjg/handle-stardog-result )
        (url-retrieve (concat (replace-regexp-in-string "/+$" "" server) "/admin/databases") #'gjg/handle-stardog-result (list (current-buffer)))
-       (url-retrieve (concat (replace-regexp-in-string "/+$" "" server) "/admin/databases") #'gjg/handle-stardog-result)
-         )
+       (url-retrieve (concat (replace-regexp-in-string "/+$" "" server) "/admin/databases") #'gjg/handle-stardog-result))
 
      (defun gjg/stardog-build-url (arg &optional server database api-endpoint reasoning  )
        "Create a Stardog specific URL for use with Stardog Platform API.  Support query and update endpoints as well as reasoning"
@@ -384,21 +381,23 @@ A sort-of package with customization framework.  The famed =gjg= package.
        (let* ((server (or server
                        (cdr (assoc :server (gjg/set-sparql-headers)))))
               (database (or database (completing-read "Database name: " '("this" "thag"))))
-              (api-endpoint (if arg "update" "query"))
-              )
+              (api-endpoint (if arg "update" "query")))
          (message
          (format "%s/%s/%s"
                  server
                  database
                  api-endpoint
-                 (when (and (not arg) (string= "query" api-endpoint)) "?reasoning=true")
-                 )
-         )))
+                 (when (and (not arg) (string= "query" api-endpoint)) "?reasoning=true")))))
 
      (defun gjg/set-sparql-header-args (url db endpoint)
+       "Set local buffer header args for SPARQL."
        (let* ((url (replace-regexp-in-string "//+$" "" url))
               (fullurl (concat url "/" db "/" endpoint "/" )))
          ;; (message "My lovely url is %s\n" fullurl)
+         (let ((myheader
+                (add-to-list 'org-babel-default-header-args:sparql
+                             `(:server . url )
+                             ))))
          (setq-local org-babel-default-header-args:sparql
                      (cons `(:server . ,url)
                            (cons `(:url  . ,fullurl)
@@ -421,8 +420,7 @@ A sort-of package with customization framework.  The famed =gjg= package.
                      (string-pad "" (- 20 (string-width connection-name)))
                      displayurl
                      (string-pad "" (- 55 (string-width displayurl)))
-                     db
-                     ))))
+                     db))))
 
      (defun gjg/set-sparql-headers ()
        "Set Org Babel headers for SPARQL.   table named `svar` should have these columns: connection-name, base-url, database, api-type"
