@@ -4252,12 +4252,13 @@
    #+end_src
 ** GitHub-flavoured markdown
    A minor mode providing syntax highlighting and live preview!
+   In my environment, activate =myspark= environment first, with for example =M-x pyvenv-workon=
    + Requires a python environment with =grip=
      #+begin_src bash
        pip install grip
      #+end_src
      #+begin_src emacs-lisp
-       (use-package grip :straight t)
+       (use-package grip-mode :straight t :defer t)
      #+end_src
 
 * Final steps
