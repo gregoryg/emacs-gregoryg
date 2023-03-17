@@ -151,6 +151,21 @@ A sort-of package with customization framework.  The famed =gjg= package.
        (gjg/select-agenda-context 'work)
        (org-agenda nil "W"))
    #+end_src
+* Kubernetes helpers
+** Forward ports
+   To start, this is specifically for Stardog ports 5820 and 5806
+   #+begin_src emacs-lisp
+     (defun gjg/forward-homelab-ports (&optional ports)
+       "kubectl port-forward for Stardog ports 5820 and 5806 or optionally any ports."
+       (interactive)
+       (let ((ports (or ports '(5820 5806)))
+             (fwdbuff (shell "fwd-sh")))
+         (when fwdbuff
+           (process-send-string fwdbuff
+                                (concat "kubectl -n stardog port-forward stardog-stardog-0 --address=0.0.0.0 "
+                                        (mapconcat #'number-to-string ports " ")
+                                        "\n")))))
+   #+end_src
 * Org Mode to RDF and (maybe) RDBMS
   :PROPERTIES:
   :ID:       732c1c28-5cee-4674-b4b2-ac3684759de4
