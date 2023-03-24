@@ -77,11 +77,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
        "List of stardog connections "
        :type '(alist :key-type (symbol :tag "Connection name")
                      :value-type (list (string :tag "Endpoint URL")
-                                       (string :tag "Database name")
-                                       ))
+                                       (string :tag "Database name")))
        :group 'gjg
-       :version "0.1"
-       )
+       :version "0.1")
 
      (defcustom gjg/yow-file
        "~/emacs/yow.lines"
