@@ -527,12 +527,12 @@
   This virtual environment supports the Unread Gmail module used with Polybar.  The same
   virtual environment will also be used for Jupyter Lab
   #+begin_src bash :results both
-    python3 -m venv ~/.local/python-venvs/jupyter/
-    source ~/.local/python-venvs/jupyter/bin/activate
+    python3 -m venv ~/.local/python-venvs/gmail/
+    source ~/.local/python-venvs/gmail/bin/activate
     pip install google google_auth google_auth_oauthlib googleapi
     deactivate
     # Test with
-    # ~/.local/python-venvs/jupyter/bin/python3 ~/.config/polybar/gmail-unread.py
+    # ~/.local/python-venvs/gmail/bin/python3 ~/.config/polybar/gmail-unread.py
 
   #+end_src
 ** Script to pause Gmail unread reporting
