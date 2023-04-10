@@ -3232,6 +3232,12 @@
                                 ))
                        ) t)
         (add-to-list 'org-agenda-custom-commands
+                     '("nr" "Zettelkastenistische REVIEW" tags "-reviewed|-do_not_review"
+                       ((org-agenda-files '("~/gregj-notes/" "~/gregj-notes/journals/"))
+                        (org-agenda-overriding-header "Notes Review")
+                        ;; (org-agenda-prefix-format "")
+                        )))
+        (add-to-list 'org-agenda-custom-commands
                      '("nt" "Zettelkastenistische Note TODOs" todo ""
                        ((org-agenda-files '("~/gregj-notes/" "~/gregj-notes/journals/"))
                         (org-agenda-overriding-header "TODO items from Zettelkasten/Denote/Roam notes")
