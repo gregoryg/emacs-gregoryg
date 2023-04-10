@@ -2997,6 +2997,14 @@
      ;; END DAN DAVISON nifty speed commands
      (setq org-speed-commands (delete '("a" . org-archive-subtree-default-with-confirmation) org-speed-commands))
    #+end_src
+** Org Transclusion
+   Super cool use found: put my very large People table from the main employer Org file,
+   transclude it into the individual engagement / prospect files!
+
+   Works fast, loads fast, pretty great
+   #+begin_src emacs-lisp
+     (use-package org-transclusion :straight t)
+   #+end_src
 ** Org Agenda
 *** Initialize Org Agenda
    #+begin_src emacs-lisp
@@ -3087,6 +3095,7 @@
                ("faithlife" "~/emacs/pixmaps/faithlife-logo-512x512.png" nil nil :ascent center :height 32)
                ("forge" "~/emacs/pixmaps/Forge-Global.png" nil nil :ascent center :height 32)
                ("guidehouse" "~/emacs/pixmaps/guidehouse-logo-512x512.png" nil nil :ascent center :height 32)
+               ("hagerty" "~/emacs/pixmaps/hagerty.png" nil nil :ascent center :height 32)
                ("john deere" "~/emacs/pixmaps/tractor-flat-512x512.png" nil nil :ascent center :height 32)
                ("optum" "~/emacs/pixmaps/optum-logo-512x512.png" nil nil :ascent center :height 32)
                ("picpay" "~/emacs/pixmaps/picpay-logo-512x512.png" nil nil :ascent center :height 32)
@@ -4172,30 +4181,19 @@
               ("C-c s l" . org-super-links-store-link)
               ("C-c s C-l" . org-super-links-insert-link)))
    #+end_src
-** Org Transclusion
-   Big deal - would be really useful in my work org files and my notes
-   Will it be too slow?  Will it be rarely used?
-   Let's find out!
-
-   Super cool use found: put my very large People table from the main employer Org file,
-   transclude it into the individual engagement / prospect files!
-
-   Works fast, loads fast, seems pretty great so far
-   #+begin_src emacs-lisp
-     (use-package org-transclusion :straight t)
-   #+end_src
-** Theme magic - sync system with EMACS theme
+** Theme magic - sync system with EMACS theme (unused)
    Make use of this at any time with =M-x theme-magic-from-emacs=
 
    Consider putting this in a hook when changing themes - or simply in my
    =gjg/go-{light,dark}= functions
 
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package theme-magic :straight t)
    #+end_src
 ** New built-in functions in 29 to consider adding to workflow
    + rename-visited-file
-   + frame parameter: alpha-background (set-frame-parameter (selected-frame) 'alpha-background 0.90)
+   + [X] frame parameter: alpha-background (set-frame-parameter (selected-frame) 'alpha-background 0.90)
+     + used now in my =set-transparency= function
    + var x-gtk-use-native-input
    + var: pixel-scroll-precision-mode - looks like a no-brainer
    + split-root-window-below, split-root-window-right
