@@ -3241,7 +3241,7 @@
                                 ))
                        ) t)
         (add-to-list 'org-agenda-custom-commands
-                     '("nr" "Zettelkastenistische REVIEW" tags "-reviewed|-do_not_review"
+                     '("nr" "Zettelkastenistische REVIEW" tags "-reviewed-do_not_review"
                        ((org-agenda-files '("~/gregj-notes/" "~/gregj-notes/journals/"))
                         (org-agenda-overriding-header "Notes Review")
                         ;; (org-agenda-prefix-format "")
@@ -3271,7 +3271,7 @@
                          ;; Work agenda with clocked time
                          (agenda ""
                                  ((org-agenda-span 'day)
-                                  (org-agenda-files gjg/work-agenda-files)
+                                  (org-agenda-files (cons "~/projects/private-orgmode/work-habits.org" gjg/work-agenda-files ))
                                   (org-agenda-start-with-log-mode '(clock))
                                   (org-deadline-warning-days 2)
                                   (org-agenda-start-with-clockreport-mode t)
@@ -3522,6 +3522,10 @@
       (global-set-key (kbd "s-j") 'org-clock-goto)
     #+end_src
 *** Clock in also to Harvest for work files
+    + [[https://kgajera.github.io/hrvst-cli/][Getting Started | Harvest CLI ≫ kgajera.github.io]]
+      #+begin_src bash
+        npm install -g hrvst-cli
+      #+end_src
     + Goal - when clocking in on work tasks (org file is somewhere in
       ~/projects/private-orgmode/rancher), prompt for project/task to start timer for in
       Harvest also.
