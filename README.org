@@ -4282,7 +4282,173 @@
      #+begin_src emacs-lisp
        (use-package grip-mode :straight t :defer t)
      #+end_src
+** sqls or sql-language-server with eglot for SQL interface
+   [[https://www.reddit.com/r/emacs/comments/ijbvwv/eglot_sqls_sql_client/][(3) eglot + sqls = SQL client? : emacs ≫ www.reddit.com]]
 
+   #+begin_src emacs-lisp
+     ;; Emacs 29 has eglot as a built-in, so lose the use-package stuff
+     (require 'eglot)
+     (bind-key "C-c C-d" 'eglot-help-at-point eglot-mode-map)
+     (bind-key "C-c C-r" 'eglot-code-actions  eglot-mode-map)
+
+     ;; (setq eglot-sync-connect t)
+     (add-to-list 'display-buffer-alist
+                  '("\\*sqls\\*"
+                    (display-buffer-reuse-window display-buffer-at-bottom)
+                    (reusable-frames . visible)
+                    (window-height . 0.3)))
+
+     (defclass eglot-sqls (eglot-lsp-server) () :documentation "SQL's Language Server")
+       (add-to-list 'eglot-server-programs '(sql-mode . (eglot-sqls "sqls")))
+       (cl-defmethod eglot-execute-command
+         ((server eglot-sqls) (command (eql executeQuery)) arguments)
+         "For executeQuery."
+         ;; (ignore-errors
+         (let* ((beg (eglot--pos-to-lsp-position (if (use-region-p) (region-beginning) (point-min))))
+                (end (eglot--pos-to-lsp-position (if (use-region-p) (region-end) (point-max))))
+                (res (jsonrpc-request server :workspace/executeCommand
+                                      `(:command ,(format "%s" command) :arguments ,arguments
+                                                 :timeout 0.5 :range (:start ,beg :end ,end))))
+                (buffer (generate-new-buffer "*sqls*")))
+           (with-current-buffer buffer
+             (eglot--apply-text-edits `[
+                                        (:range
+                                         (:start
+                                          (:line 0 :character 0)
+                                          :end
+                                          (:line 0 :character 0))
+                                         :newText ,res)
+                                        ]
+                                      )
+             (org-mode))
+           (pop-to-buffer buffer))
+         )
+       (cl-defmethod eglot-execute-command
+         ((server eglot-sqls) (_cmd (eql switchDatabase)) arguments)
+         "For switchDatabase."
+         (let* ((res (jsonrpc-request server :workspace/executeCommand
+                                      `(:command "showDatabases" :arguments ,arguments :timeout 0.5)))
+                (menu-items (split-string res "\n"))
+                (menu `("Eglot code actions:" ("dummy" ,@menu-items)))
+                (db (if (listp last-nonmenu-event)
+                        (x-popup-menu last-nonmenu-event menu)
+                      (completing-read "[eglot] Pick an database: "
+                                       menu-items nil t
+                                       nil nil (car menu-items))
+                      ))
+                )
+           (jsonrpc-request server :workspace/executeCommand
+                            `(:command "switchDatabase" :arguments [,db] :timeout 0.5))
+           ))
+
+
+
+     ;; (use-package eglot
+     ;;   :straight t
+     ;;   :bind (:map eglot-mode-map
+     ;;               ("C-c C-d" . eglot-help-at-point)
+     ;;               ("C-c C-r" . eglot-code-actions))
+     ;;   :config
+     ;;   (setq eglot-sync-connect 1)
+
+     ;;   (add-to-list 'display-buffer-alist
+     ;;                '("\\*sqls\\*"
+     ;;                  (display-buffer-reuse-window display-buffer-at-bottom)
+     ;;                  (reusable-frames . visible)
+     ;;                  (window-height . 0.3)))
+
+     ;;   (defclass eglot-sqls (eglot-lsp-server) () :documentation "SQL's Language Server")
+     ;;   (add-to-list 'eglot-server-programs '(sql-mode . (eglot-sqls "sqls")))
+     ;;   (cl-defmethod eglot-execute-command
+     ;;     ((server eglot-sqls) (command (eql executeQuery)) arguments)
+     ;;     "For executeQuery."
+     ;;     ;; (ignore-errors
+     ;;     (let* ((beg (eglot--pos-to-lsp-position (if (use-region-p) (region-beginning) (point-min))))
+     ;;            (end (eglot--pos-to-lsp-position (if (use-region-p) (region-end) (point-max))))
+     ;;            (res (jsonrpc-request server :workspace/executeCommand
+     ;;                                  `(:command ,(format "%s" command) :arguments ,arguments
+     ;;                                             :timeout 0.5 :range (:start ,beg :end ,end))))
+     ;;            (buffer (generate-new-buffer "*sqls*")))
+     ;;       (with-current-buffer buffer
+     ;;         (eglot--apply-text-edits `[
+     ;;                                    (:range
+     ;;                                     (:start
+     ;;                                      (:line 0 :character 0)
+     ;;                                      :end
+     ;;                                      (:line 0 :character 0))
+     ;;                                     :newText ,res)
+     ;;                                    ]
+     ;;                                  )
+     ;;         (org-mode))
+     ;;       (pop-to-buffer buffer))
+     ;;     )
+     ;;   (cl-defmethod eglot-execute-command
+     ;;     ((server eglot-sqls) (_cmd (eql switchDatabase)) arguments)
+     ;;     "For switchDatabase."
+     ;;     (let* ((res (jsonrpc-request server :workspace/executeCommand
+     ;;                                  `(:command "showDatabases" :arguments ,arguments :timeout 0.5)))
+     ;;            (menu-items (split-string res "\n"))
+     ;;            (menu `("Eglot code actions:" ("dummy" ,@menu-items)))
+     ;;            (db (if (listp last-nonmenu-event)
+     ;;                    (x-popup-menu last-nonmenu-event menu)
+     ;;                  (completing-read "[eglot] Pick an database: "
+     ;;                                   menu-items nil t
+     ;;                                   nil nil (car menu-items))
+     ;;                  ))
+     ;;            )
+     ;;       (jsonrpc-request server :workspace/executeCommand
+     ;;                        `(:command "switchDatabase" :arguments [,db] :timeout 0.5))
+     ;;       ))
+   #+end_src
+** OPENAI ChatGPT and DALL-E
+   ref: [[https://github.com/rksm/org-ai][rksm/org-ai: ChatGPT and DALL-E in org-mode using the OpenAI APIs ≫ github.com]]
+   #+begin_src emacs-lisp
+     (straight-use-package
+      '(org-ai :type git :host github :repo "rksm/org-ai"
+               :local-repo "org-ai"
+               :files ("*.el" "README.md")))
+   #+end_src
+
+   #+begin_ai :temperature 1
+   is emacs the greatest editor?
+
+[AI]: As an AI language model, I cannot form an opinion on which editor is the greatest. It ultimately depends on personal preference and the specific needs of the user. Emacs is a popular editor among programmers due to its extensive customization options and powerful features. However, other editors such as Vim, Sublime Text, and Atom also have a loyal user base with their own unique strengths and weaknesses.
+
+[ME]: What ingredients would you think would be in a cocktail named "The Zegroni"?
+
+[AI]: As an AI language model, I can suggest cocktail ingredients commonly used in similar cocktail names for "The Zegroni" based on classic cocktail recipes:
+
+- Gin: A traditional Negroni drink contains gin, which is a popular spirit used in classic cocktails.
+- Campari: Campari is used in a classic Negroni drink, and its bitterness adds depth to the cocktail's flavor.
+- Sweet Vermouth: Vermouth is a fortified wine used as a key ingredient in a Negroni drink. Sweet vermouth balances Campari's bitterness and adds a mellow flavor to the drink.
+- Orange Peel: Adding a twist of orange peel garnish at the end will accentuate the citrus flavor present in gin and add an aromatic and flavorful finish to the drink.
+
+So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an orange peel garnish. However, the cocktail's actual recipe would depend on the bartender's interpretation and personal preference.
+
+[ME]:
+   #+end_ai
+** Deft
+   #+begin_src emacs-lisp
+     (use-package deft :straight t
+       :bind ("<f8>" . deft)
+       :config
+       (setq
+        deft-extensions '("org" "md" "txt")
+        deft-directory "~/gregj-notes/"
+        deft-recursive t))
+   #+end_src
+** Eat - a terminal emulator
+   #+begin_src emacs-lisp :tangle no
+     (straight-use-package
+      '(eat :type git
+            :host codeberg.org
+            :repo "akib/emacs-eat"
+            :files ("*.el" ("term" "term/*.el") "*.texi"
+                    "*.ti" ("terminfo/e" "terminfo/e/*")
+                    ("terminfo/65" "terminfo/65/*")
+                    ("integration" "integration/*")
+                    (:exclude ".dir-locals.el" "*-tests.el"))))
+   #+end_src
 * Final steps
 #+begin_src emacs-lisp
 (shell (get-buffer-create "sh1"))
