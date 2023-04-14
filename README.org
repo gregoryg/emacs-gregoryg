@@ -4189,6 +4189,11 @@
        (bind-key "s-m" 'mood-line-mode))
    #+end_src
 * Section of trying-things-out-and-please-remember-to-delete-them-if-they-dont-work-out
+** TODO Review, optionally promote or delete new Emacs packages
+   SCHEDULED: <2023-03-18 sáb .+1w>
+   :PROPERTIES:
+   :STYLE:    habit
+   :END:
 
 ** Org super links
    + In constant search of cool backlinks
