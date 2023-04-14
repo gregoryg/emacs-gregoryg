@@ -837,7 +837,7 @@
      Categories=InstantMessaging;
    #+end_src
 ** Hangouts / Google Chat
-   #+begin_src conf :tangle ~/.local/share/applications/fhangouts.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/google-chat.desktop
      [Desktop Entry]
      Name=Charlar (née Hangouts)
      Comment=Google Chat

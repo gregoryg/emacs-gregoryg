@@ -661,7 +661,8 @@
      (bind-key "s-q" 'bury-buffer)
      (bind-key "s-t" 'toggle-truncate-lines)
      (bind-key "s-y" 'gjg/exwm-select-or-launch-spotify)
-     (bind-key "s-c" #'(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
+     (bind-key "s-c" 'gjg/exwm-select-or-launch-google-chat)
+     ;; (bind-key "s-c" #'(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
      (bind-key "s-." #'(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
      (bind-key "s-," 'gjg/polybar-start-or-toggle)
      (bind-key "s-]" 'ded/org-show-next-heading-tidily)
@@ -1229,6 +1230,13 @@
     #+begin_src bash :tangle ~/bin/gmail-buffer-or-launch.sh
       emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch (concat gjg/employer-name " Mail") "gmail")'
     #+end_src
+**** Function to select or launch Google Chat
+     #+begin_src emacs-lisp
+       (defun gjg/exwm-select-or-launch-google-chat ()
+         "Select the running Google Chat window in EXWM, or launch the app"
+         (interactive)
+         (gjg/exwm-switch-to-buffer-or-launch "GChat" "google-chat"))
+     #+end_src
 **** Function to select or launch Logseq
      #+begin_src emacs-lisp
        (defun gjg/exwm-select-or-launch-logseq ()
@@ -1385,12 +1393,13 @@
            ([?\s-1] . delete-other-windows)
            ([?\s-2] . gjg/split-window-below)
            ([?\s-3] . gjg/split-window-right)
-           ([?\s-c] . (lambda () (interactive) (call-process-shell-command "invert-color.sh")))
+           ;; ([?\s-c] . (lambda () (interactive) (call-process-shell-command "invert-color.sh")))
            ([?\s-j] . org-clock-goto)
            ([?\s-p] . playerctl-play-pause-song)
            ([?\s-t] . toggle-truncate-lines)
            ([?\s-g] . gjg/exwm-select-or-launch-logseq)
            ([?\s-k] . gjg/exwm-select-slack)
+           ([?\s-c] . gjg/exwm-select-or-launch-google-chat)
            ([?\s-y] . gjg/exwm-select-or-launch-spotify)
            (,(kbd "<XF86MonBrightnessUp>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh +5")))
            (,(kbd "<XF86MonBrightnessDown>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh -5")))
@@ -1506,8 +1515,8 @@
                               (exwm-workspace-rename-buffer "calendar - outlook"))
                              ((s-starts-with-p "Google Hangouts - " exwm-title)
                               (exwm-workspace-rename-buffer "hangouts"))
-                             ((s-starts-with-p "Chat - " exwm-title)
-                              (exwm-workspace-rename-buffer "chat"))
+                             ((s-matches? ".?Chat .+ mail.google.com" exwm-title)
+                              (exwm-workspace-rename-buffer (s-replace "Chat " "GChat " exwm-title)))
                              ;; standalone apps
                              ((string= "Slack" exwm-class-name)
                               (exwm-workspace-rename-buffer (concat "slack stardog" "- " exwm-title)))
