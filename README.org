@@ -3061,7 +3061,7 @@
     (add-to-list 'gjg/agenda-contexts-alist `(work ,(gjg/get-work-agenda-files)))
     (add-to-list 'gjg/agenda-contexts-alist `(home ,gjg/personal-org-agenda-files))
     (add-to-list 'gjg/agenda-contexts-alist `(fitness ,(list "~/projects/private-orgmode/fitness/fitness.org")))
-    (add-to-list 'gjg/agenda-contexts-alist `(notes ,(list "~/gregj-notes/")))
+    (add-to-list 'gjg/agenda-contexts-alist `(notes ,(list "~/gregj-notes/" "~/gregj-notes/journals/")))
 
 
 
@@ -3269,11 +3269,11 @@
                       '("W" "Work Agenda"
                         (
                          ;; Work / Laptop Habits section
-                         (agenda ""
-                                 ((org-agenda-files '("~/projects/private-orgmode/work-habits.org"))
-                                  (org-agenda-start-with-log-mode nil)
-                                  (org-agenda-start-with-clockreport-mode nil)
-                                  (org-agenda-overriding-header "Work/Laptop Morning Tasks")))
+                         ;; (agenda ""
+                         ;;         ((org-agenda-files '("~/projects/private-orgmode/work-habits.org"))
+                         ;;          (org-agenda-start-with-log-mode nil)
+                         ;;          (org-agenda-start-with-clockreport-mode nil)
+                         ;;          (org-agenda-overriding-header "Work/Laptop Morning Tasks")))
                          ;; Work agenda with clocked time
                          (agenda ""
                                  ((org-agenda-span 'day)
