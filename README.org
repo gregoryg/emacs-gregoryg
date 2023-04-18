@@ -3572,6 +3572,15 @@
 
                   ;; (message (format "Selected task is %s" org-clock-heading) )))
       #+end_src
+*** Start nag timer during work hours
+    #+begin_src emacs-lisp
+      (let* ((datetime (decode-time))
+              (hour (nth 2 datetime))
+              (dow  (nth 6 datetime)))
+        (if (and (> dow 0) (< dow 6) (> hour 7) (< hour 18))
+            (gjg/nag)
+          (gjg/cancel-nag)))
+    #+end_src
 ** Behavior
 #+begin_src emacs-lisp
   (setq org-adapt-indentation t
