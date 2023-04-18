@@ -3111,8 +3111,8 @@
                ("optum" "~/emacs/pixmaps/optum-logo-512x512.png" nil nil :ascent center :height 32)
                ("picpay" "~/emacs/pixmaps/picpay-logo-512x512.png" nil nil :ascent center :height 32)
                ("sherwin" "~/emacs/pixmaps/Paint-3D-icon-logo.png" nil nil :ascent center :height 32)
-               ("vizient" "~/emacs/pixmaps/vizient-logo-512x512.png" nil nil :ascent center :height 32)
-               ))
+               ("UL" "~/emacs/pixmaps/UL_Mark.svg.png" nil nil :ascent center :height 32)
+               ("vizient" "~/emacs/pixmaps/vizient-logo-512x512.png" nil nil :ascent center :height 32)))
        (setq org-agenda-sticky t
              org-agenda-fontify-priorities t
              org-agenda-hide-tags-regexp "noagenda"
