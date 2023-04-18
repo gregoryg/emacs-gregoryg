@@ -2134,10 +2134,14 @@
    #+end_src
 ** Shell and related modes
    TODO: remove conflicting key bindings
-*** OHAI
 *** Vterm
     #+begin_src emacs-lisp
-      (use-package vterm :straight t)
+      (use-package vterm :straight t
+        :ensure t
+        :config
+        (define-key vterm-mode-map (kbd "M-p") nil)
+        :bind (:map vterm-mode-map
+                    (("M-p" . (lambda () (interactive) (vterm-insert  (kbd "<up>")))))))
     #+end_src
 *** Coterm - comint with terminal emulation
     This thing is magnificent.  It provides good-enough terminal emulation in my beloved
