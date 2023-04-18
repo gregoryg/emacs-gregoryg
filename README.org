@@ -3082,12 +3082,14 @@
        ;; (setq org-agenda-start-with-clockreport-mode nil)
        (setq org-agenda-category-icon-alist
              `(
+               ("charity" "~/emacs/pixmaps/charity.png" nil nil :ascent center :height 32)
                ("coding" "~/emacs/pixmaps/math-function.png" nil nil :ascent center :height 32)
                ("emacs" "~/emacs/pixmaps/emacs-512x512.png" nil nil :ascent center :height 32)
                ("finances" "~/emacs/pixmaps/finances-512x512.png" nil nil :ascent center :height 32)
                ("fire" "~/emacs/pixmaps/fire.png" nil nil :ascent center :height 32)
                ("fitness" "~/emacs/pixmaps/fitness-heart-512x512.png" nil nil :ascent center :height 32)
                ("gwennie" "~/emacs/pixmaps/loon-512x512.png" nil nil :ascent center :height 32)
+               ("ai"    "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
                ("ideas" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
                ("inbox" "~/emacs/pixmaps/office-inbox-512x512.png" nil nil :ascent center :height 32)
                ("journal" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 32)
