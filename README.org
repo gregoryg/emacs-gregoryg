@@ -3594,7 +3594,7 @@
                   ;; (message (format "Selected task is %s" org-clock-heading) )))
       #+end_src
 *** Start nag timer during work hours
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle no
       (let* ((datetime (decode-time))
               (hour (nth 2 datetime))
               (dow  (nth 6 datetime)))
