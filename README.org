@@ -1875,12 +1875,6 @@
       ;; example TRAMP URI:   //dcos:jupyter:
       (require 'tramp)
       (with-eval-after-load 'tramp
-        (add-to-list 'tramp-methods
-                     `("docker"
-                       (tramp-login-program      "docker")
-                       (tramp-login-args         (nil ("exec" "-it") ("-u" "%u") ("%h") ("sh")))
-                       (tramp-remote-shell       "/bin/sh")
-                       (tramp-remote-shell-args  ("-i" "-c"))))
         ;; Add method to connect to Kubernetes pods
         ;; we need to execute a command like the following
         ;;  kubectl exec -it --namespace jhub jupyter-gregj -- /bin/bash
