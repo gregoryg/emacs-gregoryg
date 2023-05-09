@@ -310,6 +310,8 @@
      (global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
      (global-set-key (kbd "s-g") 'gjg/exwm-select-or-launch-logseq)
      (global-set-key (kbd "s-g") 'gjg/exwm-select-slack)
+     (global-set-key (kbd "s-m") 'gjg/exwm-select-music-window)
+     (global-set-key (kbd "s-'") 'gjg/exwm-select-music-window)
      (global-set-key (kbd "s-y") 'gjg/exwm-select-or-launch-spotify)
      (global-set-key (kbd "s--")  'gjg/exwm-select-zoom-meeting)
 
@@ -660,6 +662,8 @@
      (bind-key "s-p" 'playerctl-play-pause-song)
      (bind-key "s-q" 'bury-buffer)
      (bind-key "s-t" 'toggle-truncate-lines)
+     (bind-key "s-m" 'gjg/exwm-select-music-window)
+     (bind-key "s-'" 'gjg/exwm-select-music-window)
      (bind-key "s-y" 'gjg/exwm-select-or-launch-spotify)
      (bind-key "s-c" 'gjg/exwm-select-or-launch-google-chat)
      ;; (bind-key "s-c" #'(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
@@ -1230,6 +1234,27 @@
     #+begin_src bash :tangle ~/bin/gmail-buffer-or-launch.sh
       emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch (concat gjg/employer-name " Mail") "gmail")'
     #+end_src
+**** Function to select WHATEVER IS PLAYING MUSIC
+     This makes use of the `playerctl` command to give us the window title
+
+     #+begin_src emacs-lisp
+       ; playerctl statuses: Stopped / Paused / Playing
+       (defun gjg/exwm-select-music-window ()
+         "Select the window currently playing audio as determined by playerctl."
+         (interactive)
+         (let* ((playerctlrtn (with-temp-buffer
+                                (list (apply
+                                       'call-process
+                                       "playerctl" nil (current-buffer) nil
+                                       '("metadata" "title"))
+                                      (substring (buffer-string) 0 -1))))
+                (exitcode     (nth 0 playerctlrtn))
+                (window-title (nth 1 playerctlrtn)))
+           (if (zerop exitcode)
+               (gjg/exwm-switch-to-buffer-or-launch window-title)
+             (message "No recognized audio player."))))
+
+     #+end_src
 **** Function to select or launch Google Chat
      #+begin_src emacs-lisp
        (defun gjg/exwm-select-or-launch-google-chat ()
@@ -1249,7 +1274,7 @@
        (defun gjg/exwm-select-or-launch-spotify ()
          "Select the running Spotify window in EXWM, or launch the app"
          (interactive)
-         (gjg/exwm-switch-to-buffer-or-launch "Spotify" "com.spotify.Client"))
+         (gjg/exwm-switch-to-buffer-or-launch "Spotify" "spotify"))
      #+end_src
 **** Function to switch quickly to Zoom Meeting
      #+begin_src emacs-lisp
@@ -1283,7 +1308,8 @@
       summary=$2
       body=$3
       # emacsclient -e "(gjg/update-spotify-exwm-window \"${summary} - ${body}\")"
-      emacsclient -e "(gjg/update-spotify-exwm-window \"${body}\")"
+      # emacsclient -e "(gjg/update-spotify-exwm-window \"${body}\")"
+      emacsclient -e "(gjg/update-spotify-exwm-window \"${summary}\")"
     #+end_src
 *** Select apps such as secondary Emacs to start in char-mode, start floating/tiled etc.
     Set certain windows to start in char-mode, floating/tiled etc
