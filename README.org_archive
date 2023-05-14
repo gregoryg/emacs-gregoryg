@@ -464,3 +464,22 @@ Archived entries from file /home/gregj/emacs-gregoryg/README.org
     (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
     (setq eshell-destroy-buffer-when-process-dies t)
   #+end_src
+
+* Eat - a terminal emulator
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2023-05-10 mié 17:52
+  :ARCHIVE_FILE: ~/emacs-gregoryg/README.org
+  :ARCHIVE_OLPATH: Section of trying-things-out-and-please-remember-to-delete-them-if-they-dont-work-out
+  :ARCHIVE_CATEGORY: README
+  :END:
+  #+begin_src emacs-lisp :tangle no
+    (straight-use-package
+     '(eat :type git
+           :host codeberg.org
+           :repo "akib/emacs-eat"
+           :files ("*.el" ("term" "term/*.el") "*.texi"
+                   "*.ti" ("terminfo/e" "terminfo/e/*")
+                   ("terminfo/65" "terminfo/65/*")
+                   ("integration" "integration/*")
+                   (:exclude ".dir-locals.el" "*-tests.el"))))
+  #+end_src
