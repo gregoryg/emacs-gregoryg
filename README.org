@@ -1637,6 +1637,7 @@
 * Commonly used modes
 ** Start emacs server
    #+begin_src emacs-lisp
+     (require 'server)
      (unless (server-running-p)
        (server-start))
    #+end_src
