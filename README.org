@@ -2660,6 +2660,7 @@
                                               ("sJ" . "src javascript")
                                               ("sl" . "src emacs-lisp")
                                               ("sL" . "src lisp") ;; Common Lisp
+                                              ("so" . "src org")
                                               ("sp" . "src python")
                                               ("sP" . "src jupyter-python")
                                               ("sq" . "src sql")
