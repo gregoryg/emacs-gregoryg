@@ -466,8 +466,7 @@
    #+end_src
 ** Packages for window and buffer nav
    #+begin_src emacs-lisp
-     (use-package ace-window
-       :straight t
+     (use-package ace-window :straight t
        :config
        (custom-set-faces
         '(aw-leading-char-face
@@ -475,8 +474,7 @@
           ))
        :bind
         (("C-x o" . ace-window)))
-     (use-package winum
-       :straight t
+     (use-package winum :straight t
        :config
        (setq winum-scope                       'frame-local
              winum-auto-assign-0-to-minibuffer nil
@@ -1620,8 +1618,7 @@
            :type git
            :host github
            :repo "casouri/emacs-mission-control"))
-        (use-package mission-control
-          :straight t
+        (use-package mission-control :straight t
           :config
           (mcon-c-tab-setup-binding))
       #+end_src
@@ -1647,8 +1644,7 @@
    Yafolding mode is useful in code and (maybe even but probably not in) Org.  Let's keep
    Org mode's keys unmolested, and use an additional modifier to toggle hide/show
    #+begin_src emacs-lisp
-     (use-package yafolding
-       :straight t
+     (use-package yafolding :straight t
        :init
        (unbind-key (kbd "<C-return>") yafolding-mode-map)
        (unbind-key (kbd "<C-S-return>") yafolding-mode-map)
@@ -1704,8 +1700,7 @@
 
    + [[https://github.com/minad/corfu][GitHub - minad/corfu: corfu.el - Completion Overlay Region FUnction]]
    #+begin_src emacs-lisp
-     (use-package corfu
-       :straight t
+     (use-package corfu :straight t
        ;; Optional customizations
        :custom
        ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
@@ -1733,8 +1728,7 @@
 
 
      ;; Add extensions
-     (use-package cape
-       :straight t
+     (use-package cape :straight t
        :config
        (setq cape-dabbrev-check-other-buffers nil)
      ;;   ;; Bind dedicated completion commands
@@ -1773,16 +1767,15 @@
        )
 
 
-     (use-package orderless
-       :straight t
+     (use-package orderless :straight t
        :init
        (setq completion-styles '(orderless basic)
          completion-category-defaults nil
          completion-category-overrides '((file (styles . (partial-completion))))))
 
      ;; A few more useful configurations...
-     ;; (use-package emacs
-     ;;   :straight t
+     ;; (use-package emacs :straight t
+     ;;
      ;;   :init
      ;;   ;; TAB cycle if there are only few candidates
      ;;   (setq completion-cycle-threshold 3)
@@ -1798,8 +1791,7 @@
    #+end_src
 ** Marginalia - crazy annotations for completions
    #+begin_src emacs-lisp
-     (use-package marginalia
-       :straight t
+     (use-package marginalia :straight t
        :bind (("M-A" . marginalia-cycle)
               :map minibuffer-local-map
               ("M-A" . marginalia-cycle)
@@ -1811,8 +1803,7 @@
    It's common to have very long lines in Markdown text - so turn on =longlines-mode=
    with word wrapping only for those files.
    #+begin_src emacs-lisp
-     (use-package markdown-mode
-       :straight t
+     (use-package markdown-mode :straight t
        :hook
        (markdown-mode . visual-line-mode)
      )
@@ -1981,13 +1972,12 @@
    the directory changes.
 
    #+begin_src emacs-lisp
-     ;; (require 'dired)
+     (require 'dired)
      (with-eval-after-load 'dired)
      ;; (use-package all-the-icons-dired :straight t)
-     (use-package all-the-icons :straight t :ensure t) ;; currently ([2022-12-03 Sat]) being used for org-agenda-category-icon-alist and maybe doom-modelinea
+     (use-package all-the-icons :straight t) ;; currently ([2022-12-03 Sat]) being used for org-agenda-category-icon-alist and maybe doom-modelinea
      (use-package dired-collapse :straight t)
-     (use-package treemacs
-       :straight t
+     (use-package treemacs :straight t
        :defer t
        :config
        (progn
@@ -2010,8 +2000,7 @@
              ("C-o" . treemacs-visit-node-no-split))
        )
 
-     (use-package treemacs-icons-dired
-       :straight t
+     (use-package treemacs-icons-dired :straight t
        :hook
        (dired-mode . treemacs-icons-dired-enable-once))
 
@@ -2104,8 +2093,7 @@
    #+end_src
 *** Use the Helpful package
    #+begin_src emacs-lisp
-     (use-package helpful
-       :straight t
+     (use-package helpful :straight t
        :config
        (global-set-key (kbd "C-h f") #'helpful-callable)
        (global-set-key (kbd "C-h v") #'helpful-variable)
@@ -2201,8 +2189,7 @@
     #+end_src
 *** Bash completions
     #+begin_src emacs-lisp
-      (use-package bash-completion
-        :straight t
+      (use-package bash-completion :straight t
         :config
         (bash-completion-setup))
     #+end_src
@@ -2258,7 +2245,7 @@
    #+end_src
 ** CSV - Clumsy Stupid Varmint
    #+begin_src emacs-lisp
-     (use-package csv-mode :straight t )
+     (use-package csv-mode :straight t)
    #+end_src
 ** TTL - Ticky Tacky Lunacy
    #+begin_src emacs-lisp
@@ -2270,8 +2257,7 @@
    #+end_src
 ** YAML - You A Moth Licker
    #+begin_src emacs-lisp
-     (use-package yaml-mode
-       :straight t
+     (use-package yaml-mode :straight t
        :hook (yaml-mode . (lambda () (yafolding-mode 1)
                             (toggle-truncate-lines 1))))
      (add-hook 'conf-mode-hook
@@ -2287,8 +2273,7 @@
 ** OpenVPN
    Mode to help using OpenVPN
    #+begin_src emacs-lisp :tangle no
-     (use-package ovpn-mode
-       :straight t
+     (use-package ovpn-mode :straight t
        :custom
        (ovpn-mode-authinfo-path "~/.local/.authinfo.gpg")
        (ovpn-mode-base-directory "~/.config/openvpn/")
@@ -2300,7 +2285,7 @@
    #+end_src
 ** Ag / The Silver Searcher/Surfer
    #+begin_src emacs-lisp
-     (use-package ag  :straight t)
+     (use-package ag :straight t)
    #+end_src
 
 ** Highlight indentation
@@ -2369,8 +2354,7 @@
 *** Initialize package
     Install and do initial configuration of Denote including Denote Dired
     #+begin_src emacs-lisp
-      (use-package denote
-        :straight t
+      (use-package denote :straight t
         :defer nil
         :init
         (defun gjg/denote-project () (interactive) (project-switch-project "~/gregj-notes"))
@@ -2492,8 +2476,7 @@
    TODO: Move this into Org Roam config (maybe)
 
    #+begin_src emacs-lisp :tangle no
-     (use-package org-roam-ui
-       :straight t
+     (use-package org-roam-ui :straight t
        ;; (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
        :after org-roam
        ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
@@ -2515,8 +2498,7 @@
 *** Configuration and startup
     #+begin_src emacs-lisp :tangle no
       ;; (setq org-roam-database-connector 'sqlite-builtin) ; set before loading org-roam
-      (use-package org-roam
-        :straight t
+      (use-package org-roam :straight t
         :hook
         (after-init . org-roam-mode)
         :init
@@ -2582,8 +2564,7 @@
    Add =ignore= tag to headlines you don't want to export
    Refer to [[https://emacs.stackexchange.com/a/17677/418][org mode - Is it possible to export content of subtrees without their heading...]]
    #+begin_src emacs-lisp
-     (use-package org-contrib
-       :straight t
+     (use-package org-contrib :straight t
        :config
        (require 'ox-extra)
        (ox-extras-activate '(ignore-headlines)))
@@ -3735,16 +3716,15 @@
 ** Clojure
    #+begin_src emacs-lisp
      ;; (add-hook 'cider-repl-mode-hook #'company-
-     (use-package clojure-mode
-       :straight t
+     (use-package clojure-mode :straight t
        :mode "\\.clj[sc]?\\'"
        ;; :config
        ;; (add-hook 'clojure-mode-hook #'lispy-mode)
        )
 
-     (use-package cider
+     (use-package cider :straight t
        ;; :mode "\\.clj[sc]?\\'"
-       :straight t)
+       )
      ;; ;; (add-to-list 'load-path "~/emacs/cider")
      ;; (autoload 'cider "cider" "Cider for Clojure")
      ;; (require 'cider)
@@ -3766,9 +3746,8 @@
    [[http://tleyden.github.io/blog/2014/05/22/configure-emacs-as-a-go-editor-from-scratch/][Configure Emacs as a Go Editor From Scratch]]
 
    #+begin_src emacs-lisp :tangle no
-     (use-package go-mode
+     (use-package go-mode :straight t
        :defer t
-       :straight t
        :custom
        :config
        (add-hook 'go-mode-hook (lambda () (add-hook 'before-save-hook 'ime-go-before-save)))
@@ -3803,15 +3782,14 @@
 ** Rust
    + [[https://robert.kra.hn/posts/2021-02-07_rust-with-emacs/][Configuring Emacs for Rust development | Robert Krahn]]
    #+begin_src emacs-lisp :tangle no
-     (use-package rust-mode
-       :straight t)
+     (use-package rust-mode :straight t)
    #+end_src
 
 ** Javascript
 *** Prefer =js2= mode
    #+begin_src emacs-lisp :tangle no
-     (use-package js2-mode
-       :straight t
+     (use-package js :straight t 2-mode
+
        :config
        (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
    #+end_src
@@ -3831,8 +3809,7 @@
    #+begin_src emacs-lisp
      ;; Python
 
-     (use-package python
-       :straight t
+     (use-package python :straight t
        :custom
        (org-babel-python-command "python3")
        :config
@@ -3867,20 +3844,19 @@
    +
 
    #+begin_src emacs-lisp :tangle no
-     ;; (use-package jupyter
-     ;;   :straight t
+     ;; (use-package jupyter :straight t
+     ;;
      ;;   )
      ;; config from https://martinralbrecht.wordpress.com/2020/08/23/conda-jupyter-and-emacs/
-     (use-package jupyter
-       :straight t
+     (use-package jupyter :straight t
        :commands (jupyter-run-server-repl
                   jupyter-run-repl
                   jupyter-server-list-kernels)
        :init (eval-after-load 'jupyter-org-extensions ; conflicts with my helm config, I use <f2 #>
                '(unbind-key "C-c h" jupyter-org-interaction-mode-map)))
-     ;; (use-package ob-ipython ; abandoned project https://github.com/syl20bnr/spacemacs/issues/9941#issuecomment-543227397
-     ;;   :straight t)
-     ;; (use-package ein :straight t)
+     ;; (use-package ob-ipython :straight t  ; abandoned project https://github.com/syl20bnr/spacemacs/issues/9941#issuecomment-543227397
+     ;;   )
+     ;; (use-package ein :straight t  )
      ;; (when (memq window-system '(mac ns x))
      ;;   (exec-path-from-shell-initialize))
    #+end_src
@@ -3909,8 +3885,7 @@
       (setq inferior-lisp-program "sbcl")
     #+end_src
     #+begin_src emacs-lisp
-      (use-package sly
-        :straight t
+      (use-package sly :straight t
         :config
         (setq inferior-lisp-program "sbcl"
               org-babel-lisp-eval-fn 'sly-eval
@@ -3922,8 +3897,7 @@
     +
    Setup for Guile Scheme - primarily for use on Guix system
    #+begin_src emacs-lisp :tangle no
-     (use-package geiser
-       :straight t
+     (use-package geiser :straight t
        :config
        (setq geiser-default-implementation 'guile
              geiser-active-implementations '(guile)
@@ -3937,15 +3911,14 @@
     :ID:       4c49ed92-563b-488a-988a-de54a24dd7c1
     :END:
    #+begin_src emacs-lisp :tangle no
-     (use-package geiser
-       :straight t
+     (use-package geiser :straight t
        :config
        (setq geiser-default-implementation 'racket
              geiser-active-implementations '(racket)
              geiser-implementations-alist '(((regexp "\\.scm$") racket))
              ;; geiser-repl-default-port 44555 ; for Gambit Scheme (from @daviwil)
              ))
-     (use-package geiser-racket :straight t)
+     (use-package geiser-racket :straight t  )
      (with-eval-after-load 'eglot
        (add-to-list 'eglot-server-programs '(scheme-mode . ("racket" "-l" "racket-langserver"))))
    #+end_src
@@ -4142,8 +4115,7 @@
    #+end_src
 ** Doom modeline
    #+begin_src emacs-lisp
-     (use-package doom-modeline
-       :straight t
+     (use-package doom-modeline :straight t
        :ensure t
        :after eshell     ;; Make sure it gets hooked after eshell
        :hook (after-init . doom-modeline-mode)
@@ -4181,8 +4153,7 @@
        ;;      ;; )
        ;;  )))
        )
-     (use-package minions
-       :straight t
+     (use-package minions :straight t
        :hook (doom-modeline-mode . minions-mode)
        :custom
        (minions-mode-line-lighter ""))
@@ -4190,15 +4161,14 @@
    #+end_src
 ** Moodline
    #+begin_src emacs-lisp :tangle no
-     (use-package mood-line
-       :straight t
+     (use-package mood-line :straight t
        :config
        (mood-line-mode 1))
    #+end_src
 ** Simple mode line
    #+begin_src emacs-lisp :tangle no
-     (use-package simple-modeline
-       :straight t
+     (use-package simple-modeline :straight t
+
        :config
        (simple-modeline-mode 1))
    #+end_src
@@ -4207,10 +4177,8 @@
      10% plugged in, and red for 90% on battery.  I prefer the way =battery.el= sets
      faces for level of charge with +/- optionally for charging/discharging.
    #+begin_src emacs-lisp :tangle no
-     (use-package smart-mode-line-powerline-theme
-       :straight t)
-     (use-package smart-mode-line
-       :straight t
+     (use-package smart-mode-line-powerline-theme :straight t)
+     (use-package smart-mode-line :straight t
        :config
        (sml/setup))
 
@@ -4220,8 +4188,7 @@
    Set to hide globally, then bind a Super key to toggle only the current buffer. Super
    nice to use when screen sharing - provides ={global-}hide-mode-line-mode=
    #+begin_src emacs-lisp
-     (use-package hide-mode-line
-       :straight t
+     (use-package hide-mode-line :straight t
        :config
        (global-hide-mode-line-mode 0)
        (bind-key "s-m" 'mood-line-mode))
@@ -4295,7 +4262,7 @@
    #+begin_src emacs-lisp
      ;; (straight-use-package 'hydra)
      (use-package hydra :straight t)
-     (use-package org-fc
+     (use-package org-fc :straight t
        :defer nil
        :load-path "~/projects/emacs/org-fc/"
        :custom (org-fc-directories '("~/projects/private-orgmode/"))
@@ -4381,8 +4348,7 @@
 
 
 
-     ;; (use-package eglot
-     ;;   :straight t
+     ;; (use-package eglot :straight t
      ;;   :bind (:map eglot-mode-map
      ;;               ("C-c C-d" . eglot-help-at-point)
      ;;               ("C-c C-r" . eglot-code-actions))
@@ -4475,17 +4441,13 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
         deft-directory "~/gregj-notes/"
         deft-recursive t))
    #+end_src
-** Eat - a terminal emulator
-   #+begin_src emacs-lisp :tangle no
-     (straight-use-package
-      '(eat :type git
-            :host codeberg.org
-            :repo "akib/emacs-eat"
-            :files ("*.el" ("term" "term/*.el") "*.texi"
-                    "*.ti" ("terminfo/e" "terminfo/e/*")
-                    ("terminfo/65" "terminfo/65/*")
-                    ("integration" "integration/*")
-                    (:exclude ".dir-locals.el" "*-tests.el"))))
+** REST API helper
+   #+begin_src emacs-lisp
+     (use-package request :straight t :ensure t)
+   #+end_src
+
+   Sample usage
+   #+begin_src emacs-lisp
    #+end_src
 * Final steps
 #+begin_src emacs-lisp
