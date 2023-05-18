@@ -2898,7 +2898,7 @@
                                          (directory-files-recursively "~/projects/private-orgmode/stardog/engagements/"
                                                                       "org$")))
                          )
-                 "Sync-up|Stand-up|Presentation|Intro|Bi-Weekly Presales Pipeline|Weekly|Weekly cadence|Working session")
+                 "Sync-up|Stand-up|Presentation|Intro|Biweekly Services Engagement Review|Weekly|Weekly cadence|Working session")
 
          )
 
