@@ -55,7 +55,6 @@
 ;; require use-package for byte-compiled init files ref https://github.com/jwiegley/use-package/issues/436
 (require 'use-package)
 (straight-use-package 'org)
-(require 'org)
 ;(org-babel-tangle-file "~/emacs-gregoryg/README.org")
 (load "~/.emacs.d/emacs-init")
 
