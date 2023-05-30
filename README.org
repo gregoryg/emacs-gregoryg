@@ -1528,7 +1528,7 @@
           (add-hook 'exwm-update-title-hook
                     (lambda ()
                       (let ((browsers '(("Mozilla Firefox" . "firefox")
-                                        ("Personal - Microsoft​ Edge Beta" . "msedge")
+                                        ("Personal: Microsoft​ Edge Dev" . "edge")
                                         ("Google Chrome" . "chrome")
                                         ("Chromium" . "chromium"))))
                             (cond
