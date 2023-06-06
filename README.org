@@ -59,6 +59,11 @@
    Initial loading for Straight.el is now in [[file:.emacs.d/init.el][init.el]]
 
 * Greg's customizations!
+** Do async things
+   #+begin_src emacs-lisp
+     (use-package async :straight t)
+     (use-package ob-async :straight t)
+   #+end_src
 ** Revert buffer shortcut
    #+begin_src emacs-lisp
      (defun revert-dammit () ; revert buffer without prompting
@@ -1344,7 +1349,7 @@
     Script below is generated with the [[file:Desktop.org][Org file referenced above]]
     #+begin_src emacs-lisp
       (set-opacity 85)
-      ;; (async-start-process "wallpaper-thang"  "nohup" nil (expand-file-name "~/bin/schedule-rotate-wallpapers.sh") "&")
+      (async-start-process "wallpaper-thang"  "nohup" nil (expand-file-name "~/bin/schedule-rotate-wallpapers.sh") "&")
     #+end_src
 *** My specific config function
     I did not want =ido= integration and wanted to evolve my config.  So I copied the
