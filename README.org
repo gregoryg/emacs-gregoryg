@@ -2571,7 +2571,7 @@
    Add =ignore= tag to headlines you don't want to export
    Refer to [[https://emacs.stackexchange.com/a/17677/418][org mode - Is it possible to export content of subtrees without their heading...]]
    #+begin_src emacs-lisp
-     (use-package org-contrib :straight t
+     (use-package org-contrib :straight t :tangle no
        :config
        (require 'ox-extra)
        (ox-extras-activate '(ignore-headlines)))
@@ -2754,7 +2754,7 @@
 ** Blogs - linking and image additions
    For blogging especially, we want to quickly add web links and images.  2 packages from
    m?elpa help here
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package org-cliplink :straight t)
      (use-package org-download :straight t)
    #+end_src
@@ -3068,7 +3068,8 @@
                                                            "\\`[^.].*\\.org\\(\\.gpg\\)?\\'")))
         (add-to-list 'engagement-files gjg/employer-org-file t)
         (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)
-        (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
+        ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)
+        ))
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
     (add-to-list 'gjg/agenda-contexts-alist `(work ,(gjg/get-work-agenda-files)))
     (add-to-list 'gjg/agenda-contexts-alist `(home ,gjg/personal-org-agenda-files))
@@ -3491,18 +3492,11 @@
    #+begin_src emacs-lisp
      ;; navigate to files using org-refile; use C-u C-c C-w
      (setq org-outline-path-complete-in-steps nil) ; use completion framework for quicker completion
-     (setq gjg/refile-targets (seq-remove (lambda (elt) (string= "~/projects/private-orgmode/inbox.org" elt))
-                                          (append gjg/personal-org-agenda-files gjg/work-agenda-files (list denote-directory))))
-     (setq org-refile-targets `((gjg/refile-targets :maxlevel . 2)
-                                (,(directory-files-recursively denote-directory org-agenda-file-regexp nil (lambda (x) (not (s-contains? "/logseq/bak" x)))) :maxlevel . 2))
+     ;; Refile targets should be limited to org-agenda-files
+     ;; TODO remove inbox.org based on absolute expanded path
+     (setq org-refile-targets '((org-agenda-files :maxlevel . 2))
            org-refile-use-outline-path 'file
-           org-refile-target-verify-function
-           (lambda ()
-             (not (member "ARCHIVE" (org-get-tags)))))
-
-     ;; (setcdr (assoc 'org-refile ivy-initial-inputs-alist) "")
-     ;; (setcdr (assoc 'org-agenda-refile ivy-initial-inputs-alist) "")
-     ;; (setcdr (assoc 'org-capture-refile ivy-initial-inputs-alist) "")
+           org-refile-target-verify-function (lambda () (not (member "ARCHIVE" (org-get-tags)))))
 
      (defun gjg/org-refile-goto ()
        "Call org-refile with arg to visit an org-mode location. A convenience function to bind to a global key."
