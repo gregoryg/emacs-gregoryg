@@ -1098,7 +1098,7 @@
      [Desktop Entry]
      Name=Reddit
      Comment=Reddit
-     Exec=xdg-open https://reddit.com/
+     Exec=xdg-open https://www.androidauthority.com/third-party-reddit-apps-statement-3332238/
      Icon=/home/gregj/.local/share/pixmaps/reddit-monster.png
      Terminal=false
      Type=Application
