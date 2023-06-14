@@ -3831,9 +3831,7 @@
        )
      (use-package pyvenv :straight t
        :config
-       (setenv "WORKON_HOME" (expand-file-name "~/.local/python-venvs/") )
-       )
-
+       (setenv "WORKON_HOME" (expand-file-name "~/.local/python-venvs/")))
      (custom-set-variables '(org-babel-python-command "python3"))
 
      ;; (setq ansi-color-drop-regexp
