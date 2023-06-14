@@ -4438,7 +4438,7 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
 [ME]:
    #+end_ai
 ** Deft
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package deft :straight t
        :bind ("<f8>" . deft)
        :config
