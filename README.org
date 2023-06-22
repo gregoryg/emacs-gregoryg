@@ -2570,8 +2570,8 @@
 ** Org Contributions package
    Add =ignore= tag to headlines you don't want to export
    Refer to [[https://emacs.stackexchange.com/a/17677/418][org mode - Is it possible to export content of subtrees without their heading...]]
-   #+begin_src emacs-lisp
-     (use-package org-contrib :straight t :tangle no
+   #+begin_src emacs-lisp :tangle no
+     (use-package org-contrib :straight t
        :config
        (require 'ox-extra)
        (ox-extras-activate '(ignore-headlines)))
