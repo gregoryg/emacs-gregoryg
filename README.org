@@ -4454,6 +4454,16 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
    Sample usage
    #+begin_src emacs-lisp
    #+end_src
+** Reading list stuff
+   #+begin_src emacs-lisp
+     (use-package org-books :straight t)
+     (push
+      '("v" "Video+Book reading list" entry
+        (file+headline "~/projects/private-orgmode/reading-list.org" "Books")
+        "* %^{title}\n  %^{author}p%^{format|kindle}p\n  %?"
+        :prepend nil :jump-to-captured t)
+      org-capture-templates)
+   #+end_src
 * Final steps
 #+begin_src emacs-lisp
 (shell (get-buffer-create "sh1"))
