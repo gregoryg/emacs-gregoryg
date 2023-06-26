@@ -52,6 +52,11 @@ A sort-of package with customization framework.  The famed =gjg= package.
        :type 'string
        :group 'gjg)
 
+     (defcustom gjg/org-export-dir "/tmp/"
+       "Path to write export files such as .org.html instead of current directory."
+       :type 'string
+       :group 'gjg)
+
      (defcustom gjg/visual-notify-command "notify-send"
        "Command to create a visual notification"
        :type 'string
@@ -531,6 +536,21 @@ A sort-of package with customization framework.  The famed =gjg= package.
                          (if targetid "id" "file")
                          (if targetid targetid path)
                          selection))))
+   #+end_src
+** Declutter org directories when using export
+   Hat tip [[https://stackoverflow.com/a/47850858/457574][org-export-html to a specific directory (stackoverflow)]]
+   #+begin_src emacs-lisp
+     (defun gjg/set-org-export-directory (orig-fun extension
+                                                   &optional subtreep pub-dir)
+       "Advice function to set export directory for `org-export-output-file-name'.
+     Set `gjg/org-export-dir' to specify the desired export directory."
+       (let ((pub-dir (or pub-dir
+                          (and (boundp 'gjg/org-export-dir)
+                               gjg/org-export-dir))))
+         (apply orig-fun extension subtreep pub-dir nil)))
+
+     (advice-add 'org-export-output-file-name
+                 :around #'gjg/set-org-export-directory)
    #+end_src
 ** Try harebrained idea for Org Agenda usage []
    :PROPERTIES:
