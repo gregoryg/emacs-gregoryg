@@ -3928,6 +3928,27 @@
        (add-to-list 'eglot-server-programs '(scheme-mode . ("racket" "-l" "racket-langserver"))))
    #+end_src
 ** SQL and even GSQL
+*** Crazy removal of sql-login-delay
+    SQL connections are very very fast, yet I always wait ~8 seconds before I can start
+    typing in a new interactive SQL buffer (at least for MySQL/MariaDB).  Why?  There's a
+    section in the =sql-product-interactive= function that waits for pending output from a
+    process for no apparent reason, snippet below
+    #+begin_src emacs-lisp :tangle no
+      (while (and proc
+                  (memq (process-status proc) '(open run))
+
+                  (or (accept-process-output proc step) ; ALWAYS returns nil IME
+
+                      (<= 0.0 (setq secs (- secs step))))
+                  (progn (goto-char (point-max))
+                         (not (re-search-backward sql-prompt-regexp 0 t))))
+        (sql-progress-reporter-update rpt))  # ....
+    #+end_src
+
+    Therefore, I shall try globally setting sql-login-delay to zero.  Wish me luck!
+    #+begin_src emacs-lisp
+      (setq sql-login-delay 0)
+    #+end_src
 *** Format SQL
     Emacs doesn't come out of the box with a useful SQL formatter, so go ahead and use an
     external process
