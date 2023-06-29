@@ -3129,6 +3129,7 @@
                ("hagerty" "~/emacs/pixmaps/hagerty.png" nil nil :ascent center :height 32)
                ("ida" "~/emacs/pixmaps/ida-logo-512x512.png" nil nil :ascent center :height 32)
                ("john deere" "~/emacs/pixmaps/tractor-flat-512x512.png" nil nil :ascent center :height 32)
+               ("navitas" "~/emacs/pixmaps/navitas-favicon.png" nil nil :ascent center :height 32)
                ("optum" "~/emacs/pixmaps/optum-logo-512x512.png" nil nil :ascent center :height 32)
                ("picpay" "~/emacs/pixmaps/picpay-logo-512x512.png" nil nil :ascent center :height 32)
                ("sherwin" "~/emacs/pixmaps/Paint-3D-icon-logo.png" nil nil :ascent center :height 32)
