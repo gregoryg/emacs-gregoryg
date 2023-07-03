@@ -1815,6 +1815,13 @@
      )
    #+end_src
 ** TRAMP
+*** Tramp general config
+    TRAMP may prompt for passphrase for =~/.authinfo.gpg= upon nearly every invocation if
+    =tramp-completion-use-auth-sources= is t.  So .... don't do that.
+    #+begin_src emacs-lisp
+      (custom-set-variables '(tramp-completion-use-auth-sources nil)
+                            '(tramp-allow-unsafe-temporary-files t))
+    #+end_src
 *** Tweak remote bash shell prompt PS1
     #+begin_src bash :tangle ~/.emacs.d/init_bash.sh
       # Reset the prompt for remote TRAMP shells.
