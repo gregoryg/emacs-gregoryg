@@ -4440,8 +4440,9 @@
      ;;       ))
    #+end_src
 ** OPENAI ChatGPT and DALL-E
+*** package org-ai
    ref: [[https://github.com/rksm/org-ai][rksm/org-ai: ChatGPT and DALL-E in org-mode using the OpenAI APIs ≫ github.com]]
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (straight-use-package
       '(org-ai :type git :host github :repo "rksm/org-ai"
                :local-repo "org-ai"
@@ -4466,6 +4467,90 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
 
 [ME]:
    #+end_ai
+*** package gptel
+    + ref: [[https://github.com/karthink/gptel][karthink/gptel: A no-frills ChatGPT client for Emacs ≫ github.com]] This package
+      has it all: auth-source, Org Mode buffers, Markdown mode or other-mode buffers if
+      you prefer, named prompts for special occasions, a transient mode interface, model
+      choice, temperature settings, streaming support, multiple APIs, multiple chat
+      sessions, an active GitHub. A dedication to keeping everything in plain text
+      (without metadata markup)
+
+    #+begin_src text
+      Org Mode's hottest new package is: *Flux*
+
+      This 9-dimensional creation from electronic-cowboy and lisp wizard Zalando Jamboree is
+      back with a package that urges your Emacs to scream, "YAS QUEEN?!"
+
+      Flux has everything: Auth-source scribblings, vim-spangled Org mode buffers, Markdown mode
+      mazes or closets of other-mode buffers, if that's your jam. But don’t be surprised when a
+      hefty, tattooed struct-o-ram named ‘PromptMeister’ asks for your name at every seasonal
+      gala—it’s just one of Flux's eccentricities.
+
+      This mystery box of productivity delivers a Transient Mode interface, shimmering like a
+      disco ball in a warehouse party. Dial up the intensity with temperature settings that go
+      from 'Iceberg lettuce cool' to 'Surface-of-the-Sun' hot.
+
+      Untangle the frayed ends of API nightmares with Flux's multi-tentacled monster: not one,
+      not two, but a cornucopia of APIs standing by for your service.
+
+      It doesn't stop there— Flux is the host of a cosmic rave where you can step into the
+      parallel universe of multiple chat sessions, a networking hub buzzing louder than a
+      neon-soaked beehive in the heart of Times Square.
+
+      Last but not least, enjoy an always-in-the-moment GitHub pulsating like a cybernetic heart
+      fuelling this beast of an Emacs package.
+
+      So if you're looking for where the party's at, navigate your spaceship to the Flux
+      Nebula. Just remember, the password at the door is 'M-x customize'.
+    #+end_src
+    #+begin_src emacs-lisp
+      (use-package gptel :straight t
+        :config
+        (setq gptel-default-mode 'org-mode
+              gptel-model 'gpt-4))
+
+      ;; pandoc -f gfm -t org|sed '/:PROPERTIES:/,/:END:/d'
+
+      (defun gjg/gptel--convert-markdown->org (str)
+        "Convert string STR from markdown to org markup using Pandoc.
+      Remove the property drawers Pandoc insists on inserting for org output."
+        ;; point will be at the last user position - assistant response will be after that to the end of the buffer (hopefully without the next user prompt)
+        ;; So let's
+        (interactive)
+        (message "Ohai - DEBUG - gjg/gptel--convert-markdown->org is called with str |%s|" str)
+
+        (let* ((org-prefix (alist-get 'org-mode gptel-prompt-prefix-alist))
+               (shift-indent (progn (string-match "^\\(\\*+\\)" org-prefix) (length (match-string 1 org-prefix)))))
+          (with-temp-buffer
+            (insert str)
+            ;; (push-mark (point-min))
+            ;; (goto-char (point-max))
+            (shell-command-on-region (point-min) (point-max)
+                                     (format "pandoc -f gfm -t org --shift-heading-level-by=%d|sed '/:PROPERTIES:/,/:END:/d'" shift-indent)
+                                     nil ;; use current buffer (?)
+                                     t   ;; replace the buffer contents
+                                     "*gptel-convert-error*")
+            (goto-char (point-min))
+            (insert (concat (alist-get 'org-mode gptel-prompt-prefix-alist) "Assistant:\n"))
+            ;; (insert (alist-get 'org-mode gptel-prompt-prefix-alist) "* OHAI\n")
+            ;; (kill-region (point) (pont-max))
+            ;; (org-yank)
+            (buffer-string))))
+
+      (defun gjg/gptel-convert-org-with-pandoc (content buffer)
+        "Transform CONTENT acoording to required major-mode.
+      Currenly only `org-mode` is supported"
+        (message "Ohai - DEBUG - gjg/gptel-convert-org-with-pandoc is called with content |%s|" content)
+        (pcase (buffer-local-value 'major-mode buffer)
+          ('org-mode (gjg/gptel--convert-markdown->org content))
+          (_ content)))
+
+      (custom-set-variables '(gptel-response-filter-functions
+                              '(gjg/gptel-convert-org-with-pandoc)))
+      ;; debug gptel--transform-response
+      ;; What are popular genres of acoustic string music, output as topics and subtopics in markdown?
+    #+end_src
+
 ** Deft
    #+begin_src emacs-lisp :tangle no
      (use-package deft :straight t
