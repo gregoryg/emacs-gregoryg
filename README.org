@@ -1922,16 +1922,16 @@
     #+end_src
 *** Handle SUDO - root and other users
     #+begin_src emacs-lisp
-;; TRAMP SUDO FUN - snarfed from Peter Dyballa on gmane.emacs.help
-(defun my-tramp-header-line-function ()
-  (when (string-match "^/.*su\\(do\\)?:" default-directory)
-    (setq header-line-format
-	      (format-mode-line "----- THIS BUFFER IS VISITED WITH SUDO PRIVILEGES -----"
-			                'font-lock-warning-face))))
+      ;; TRAMP SUDO FUN - snarfed from Peter Dyballa on gmane.emacs.help
+      (defun my-tramp-header-line-function ()
+        (when (string-match "^/.*su\\(do\\)?:" default-directory)
+          (setq header-line-format
+                (format-mode-line "----- THIS BUFFER IS VISITED WITH SUDO PRIVILEGES -----"
+                                  'font-lock-warning-face))))
 
-(with-eval-after-load 'tramp
-  (add-hook 'find-file-hook 'my-tramp-header-line-function)
-  (add-hook 'dired-mode-hook 'my-tramp-header-line-function))
+      (with-eval-after-load 'tramp
+        (add-hook 'find-file-hook 'my-tramp-header-line-function)
+        (add-hook 'dired-mode-hook 'my-tramp-header-line-function))
     #+end_src
 *** Shell sugar
 **** Open remote shell in current remote directory
