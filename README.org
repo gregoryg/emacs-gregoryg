@@ -4468,6 +4468,8 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
 [ME]:
    #+end_ai
 *** package gptel
+    + TODO: add completing-read with marginalia for =gptel-directives= (named prompts)
+    + TODO: indicate system prompt(s) and model(s) used in *gpt-mode* buffer
     + ref: [[https://github.com/karthink/gptel][karthink/gptel: A no-frills ChatGPT client for Emacs ≫ github.com]] This package
       has it all: auth-source, Org Mode buffers, Markdown mode or other-mode buffers if
       you prefer, named prompts for special occasions, a transient mode interface, model
@@ -4517,8 +4519,6 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
         ;; point will be at the last user position - assistant response will be after that to the end of the buffer (hopefully without the next user prompt)
         ;; So let's
         (interactive)
-        (message "Ohai - DEBUG - gjg/gptel--convert-markdown->org is called with str |%s|" str)
-
         (let* ((org-prefix (alist-get 'org-mode gptel-prompt-prefix-alist))
                (shift-indent (progn (string-match "^\\(\\*+\\)" org-prefix) (length (match-string 1 org-prefix)))))
           (with-temp-buffer
@@ -4540,13 +4540,13 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
       (defun gjg/gptel-convert-org-with-pandoc (content buffer)
         "Transform CONTENT acoording to required major-mode.
       Currenly only `org-mode` is supported"
-        (message "Ohai - DEBUG - gjg/gptel-convert-org-with-pandoc is called with content |%s|" content)
         (pcase (buffer-local-value 'major-mode buffer)
           ('org-mode (gjg/gptel--convert-markdown->org content))
           (_ content)))
 
       (custom-set-variables '(gptel-response-filter-functions
                               '(gjg/gptel-convert-org-with-pandoc)))
+
       ;; debug gptel--transform-response
       ;; What are popular genres of acoustic string music, output as topics and subtopics in markdown?
     #+end_src
