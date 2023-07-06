@@ -4520,21 +4520,19 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
         ;; So let's
         (interactive)
         (let* ((org-prefix (alist-get 'org-mode gptel-prompt-prefix-alist))
-               (shift-indent (progn (string-match "^\\(\\*+\\)" org-prefix) (length (match-string 1 org-prefix)))))
+               (shift-indent (progn (string-match "^\\(\\*+\\)" org-prefix) (length (match-string 1 org-prefix))))
+               (sentence-end "\\([.?!
+      ]\\)"))
           (with-temp-buffer
             (insert str)
-            ;; (push-mark (point-min))
-            ;; (goto-char (point-max))
             (shell-command-on-region (point-min) (point-max)
                                      (format "pandoc -f gfm -t org --shift-heading-level-by=%d|sed '/:PROPERTIES:/,/:END:/d'" shift-indent)
-                                     nil ;; use current buffer (?)
+                                     nil ;; use current buffer
                                      t   ;; replace the buffer contents
                                      "*gptel-convert-error*")
             (goto-char (point-min))
-            (insert (concat (alist-get 'org-mode gptel-prompt-prefix-alist) "Assistant:\n"))
-            ;; (insert (alist-get 'org-mode gptel-prompt-prefix-alist) "* OHAI\n")
-            ;; (kill-region (point) (pont-max))
-            ;; (org-yank)
+            (insert (format "%sAssistant: %s\n" (alist-get 'org-mode gptel-prompt-prefix-alist) (or (sentence-at-point t) "[resp]")))
+            (goto-char (point-max))
             (buffer-string))))
 
       (defun gjg/gptel-convert-org-with-pandoc (content buffer)
