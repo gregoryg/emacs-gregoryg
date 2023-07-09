@@ -4554,9 +4554,38 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
 
       (custom-set-variables '(gptel-response-filter-functions
                               '(gjg/gptel-convert-org-with-pandoc)))
+      (defun gjg/gptel--annotate-directives (s)
+        "Make the directives selection look fancy."
+        (let* ((item (assoc (intern s) minibuffer-completion-table))
+               (desc (s-truncate 40 (nth 1 item)))
+               (prompt (s-truncate 80 (s-replace "\n" "\\n" (nth 2 item)))))
+          (when item (concat
+                      (string-pad "" (- 40 (string-width s)))
+                      desc
+                      (string-pad "" (- 55 (string-width desc)))
+                      prompt
+                      ))))
 
-      ;; debug gptel--transform-response
-      ;; What are popular genres of acoustic string music, output as topics and subtopics in markdown?
+      (defun gjg/gptel-select-system-prompt (&optional directive-key)
+        "Set system message in local gptel buffer to directive/prompt indicated by DIRECTIVE-KEY."
+        (interactive)
+        (let* ((marginalia-align-offset 80)
+              (completion-extra-properties '(:annotation-function gjg/gptel--annotate-directives))
+              (directive-key (or directive-key
+                                  (intern
+                                         (completing-read
+                                          "New directive: "
+                                          ;; (format "Current prompt %s: "
+                                          ;;         (truncate-string-to-width gptel--system-message 20 nil nil (truncate-string-ellipsis) ))
+                                          gptel-directives))))
+
+               )
+          (setq-local gptel--system-message (nth 2 (assoc directive-key gptel-directives)))))
+
+
+
+        ;; debug gptel--transform-response
+        ;; What are popular genres of acoustic string music, output as topics and subtopics in markdown?
     #+end_src
 
 ** Deft
