@@ -4506,11 +4506,21 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
       Nebula. Just remember, the password at the door is 'M-x customize'.
     #+end_src
     #+begin_src emacs-lisp
-      (use-package gptel :straight t
-        :config
-        (setq gptel-default-mode 'org-mode
-              gptel-model 'gpt-4))
+      (straight-use-package
+       '(gptel :type git :host github :repo "karthink/gptel"
+               :fork (:host github :branch "gregoryg" :repo "gregoryg/gptel")))
+      (setq gptel-default-mode 'org-mode
+            gptel-model 'gpt-4)
+      ;; defer nothing
+      (require 'gptel)
+      (require 'gptel-curl)
+      (require 'gptel-transient)
 
+      ;; (use-package gptel :straight t
+      ;;   :config
+      ;;   (setq gptel-default-mode 'org-mode
+      ;;         gptel-model 'gpt-4))
+      t
       ;; pandoc -f gfm -t org|sed '/:PROPERTIES:/,/:END:/d'
 
       (defun gjg/gptel--convert-markdown->org (str)
