@@ -4574,9 +4574,9 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
               (directive-key (or directive-key
                                   (intern
                                          (completing-read
-                                          "New directive: "
-                                          ;; (format "Current prompt %s: "
-                                          ;;         (truncate-string-to-width gptel--system-message 20 nil nil (truncate-string-ellipsis) ))
+                                          ;; "New directive: "
+                                          (format "Current prompt %s: "
+                                                  (truncate-string-to-width gptel--system-message 90 nil nil (truncate-string-ellipsis) ))
                                           gptel-directives))))
 
                )
