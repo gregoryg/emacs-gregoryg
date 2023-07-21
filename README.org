@@ -388,7 +388,7 @@
     The question to settle here is should I stick with default Dabbrev, or re-activate
     hippie-expand which I've used forever - also a built-in now?  Not sure I know the diff
     anymore
-    #+begin_src emacs-lisp :tangle no
+    #+begin_src emacs-lisp
       ;; and now set up hippie-expand
       (global-set-key (kbd "M-/") 'hippie-expand)
     #+end_src
