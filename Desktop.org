@@ -980,9 +980,9 @@
    Teams.  Things seem to run fine in the browser, however.
    #+begin_src conf :tangle ~/.local/share/applications/teams-browser.desktop
      [Desktop Entry]
-     Name=Microsoft Teams in browser
+     Name=Microsoft Teams - Edge
      Comment=
-     Exec=google-chrome https://teams.microsoft.com
+     Exec=microsoft-edge https://teams.microsoft.com
      Icon=/home/gregj/.local/share/pixmaps/teams-logo.png
      Terminal=false
      Type=Application
