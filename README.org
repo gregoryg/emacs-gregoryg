@@ -319,6 +319,7 @@
      (global-set-key (kbd "s-'") 'gjg/exwm-select-music-window)
      (global-set-key (kbd "s-y") 'gjg/exwm-select-or-launch-spotify)
      (global-set-key (kbd "s--")  'gjg/exwm-select-zoom-meeting)
+     (global-set-key (kbd "s-=")  'gjg/exwm-select-teams-meeting)
 
      (global-set-key [f1] 'delete-other-windows)
      (global-set-key [f2] 'gjg/switch-to-other-buffer)
@@ -1286,6 +1287,13 @@
          (interactive)
          (gjg/exwm-switch-to-buffer-or-launch "Zoom Meeting"))
      #+end_src
+**** Function to switch quickly to Microsoft Teams in Edge
+     #+begin_src emacs-lisp
+       (defun gjg/exwm-select-teams-meeting ()
+         "Select the running Microsoft Teams window if it's running."
+         (interactive)
+         (gjg/exwm-switch-to-buffer-or-launch "Microsoft Teams ≫ teams.microsoft.com"))
+     #+end_src
 **** Function to switch quickly to good ole Slack
      #+begin_src emacs-lisp
        (defun gjg/exwm-select-slack ()
@@ -1437,6 +1445,7 @@
            (,(kbd "<XF86AudioMute>") . (lambda () (interactive) (gjg/volume "togmute")))
            (,(kbd "<XF86AudioPlay>") . playerctl-play-pause-song)
            ([?\s--] . gjg/exwm-select-zoom-meeting)
+           ([?\s-=] . gjg/exwm-select-teams-meeting)
            ([?\s-.] . (lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
            ([?\s-,] . gjg/polybar-start-or-toggle)
 
