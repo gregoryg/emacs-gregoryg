@@ -2975,8 +2975,7 @@
   (use-package htmlize :straight t)
   ;; export to html - use light theme for export
   ;; tip o' the hat to legoscia https://github.com/legoscia/dotemacs/blob/master/dotemacs.org#theme-for-org-html-export
-  (defvar my-org-html-export-theme 'material-light)
-
+  (defvar my-org-html-export-theme (intern gjg/preferred-light-theme))
   (defun my-with-theme (orig-fun &rest args)
     (load-theme my-org-html-export-theme)
     (unwind-protect
