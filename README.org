@@ -831,9 +831,10 @@
             ;; modus-themes-vivendi-color-overrides
             modus-themes-common-palette-overrides
             '(,@modus-themes-preset-overrides-intense)
-            modus-vivendi-palette-overrides
+            modus-vivendi-tinted-palette-overrides
             '((bg-main "#1a1a1a")  ; gray10
               (fg-main "#e5e5e5")  ; gray90
+              (fg-heading-4 "#f4a460")
               (bg-hl-line "#262626")))
     #+end_src
 *** Load default theme
