@@ -1740,7 +1740,7 @@
        ;; Recommended: Enable Corfu globally.
        ;; This is recommended since Dabbrev can be used globally (M-/).
        ;; See also `corfu-excluded-modes'.
-       (corfu-excluded-modes '(shell-mode vterm-mode comint-mode))
+       (corfu-exclude-modes '(shell-mode vterm-mode comint-mode))
        :init
        (global-corfu-mode))
 
@@ -2806,6 +2806,7 @@
 
         (defun gjg/add-person-from-table (table)
           "Add person from table to an Org unordered list - used with phone log capture template"
+          (interactive)
           (let* ((marginalia-align-offset 80)
                  (completion-extra-properties '(:annotation-function gjg/annotate-person))
                  (myperson (assoc (completing-read "Person: " table) table))
@@ -3148,6 +3149,7 @@
                ("ida" "~/emacs/pixmaps/ida-logo-512x512.png" nil nil :ascent center :height 32)
                ("investec" "~/emacs/pixmaps/investec-logo-512x512.png" nil nil :ascent center :height 32)
                ("john deere" "~/emacs/pixmaps/tractor-flat-512x512.png" nil nil :ascent center :height 32)
+               ("mars" "~/emacs/pixmaps/mars-logo-512x512.png" nil nil :ascent center :height 32)
                ("navitas" "~/emacs/pixmaps/navitas-favicon.png" nil nil :ascent center :height 32)
                ("optum" "~/emacs/pixmaps/optum-logo-512x512.png" nil nil :ascent center :height 32)
                ("picpay" "~/emacs/pixmaps/picpay-logo-512x512.png" nil nil :ascent center :height 32)
