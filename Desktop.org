@@ -1093,16 +1093,16 @@
      Categories=Kubernetes;Administration;Awesomeness
    #+end_src
 
-** Reddit
+** Lemmy
    #+begin_src conf :tangle ~/.local/share/applications/freddit.desktop
      [Desktop Entry]
-     Name=Reddit
-     Comment=Reddit
-     Exec=xdg-open https://www.androidauthority.com/third-party-reddit-apps-statement-3332238/
-     Icon=/home/gregj/.local/share/pixmaps/reddit-monster.png
+     Name=Lemmy
+     Comment=Bye Bye Reddit
+     Exec=xdg-open https://lemmy.one
+     Icon=/home/gregj/.local/share/pixmaps/fediverse-color.png-512x512.png
      Terminal=false
      Type=Application
-     Categories=InstantMessaging;
+     Categories=Stuff
    #+end_src
 ** Reset compositor
    #+begin_src conf :tangle ~/.local/share/applications/reset-compositor.desktop
