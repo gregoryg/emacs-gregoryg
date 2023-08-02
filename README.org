@@ -227,7 +227,7 @@
   (show-paren-mode 1)
   ;; ** Global identity (ie, same on all machines) - Emacs does not make good guesses here
   (setq user-full-name "Gregory Grubbs"
-	user-mail-address "gregory.grubbs@gmail.com")
+    user-mail-address "gregory.grubbs@gmail.com")
 
   (setq confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
 
@@ -315,8 +315,7 @@
      (global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
      (global-set-key (kbd "s-g") 'gjg/exwm-select-or-launch-logseq)
      (global-set-key (kbd "s-g") 'gjg/exwm-select-slack)
-     (global-set-key (kbd "s-m") 'gjg/exwm-select-music-window)
-     (global-set-key (kbd "s-'") 'gjg/exwm-select-music-window)
+     (global-set-key (kbd "s-'") 'gjg/add-person-from-table)
      (global-set-key (kbd "s-y") 'gjg/exwm-select-or-launch-spotify)
      (global-set-key (kbd "s--")  'gjg/exwm-select-zoom-meeting)
      (global-set-key (kbd "s-=")  'gjg/exwm-select-teams-meeting)
@@ -666,8 +665,7 @@
      (bind-key "s-p" 'playerctl-play-pause-song)
      (bind-key "s-q" 'bury-buffer)
      (bind-key "s-t" 'toggle-truncate-lines)
-     (bind-key "s-m" 'gjg/exwm-select-music-window)
-     (bind-key "s-'" 'gjg/exwm-select-music-window)
+     (bind-key "s-'" 'gjg/add-person-from-table)
      (bind-key "s-y" 'gjg/exwm-select-or-launch-spotify)
      (bind-key "s-c" 'gjg/exwm-select-or-launch-google-chat)
      ;; (bind-key "s-c" #'(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
