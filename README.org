@@ -1397,7 +1397,7 @@
        (setq exwm-input-global-keys
              `(
            ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
-           (,(kbd "s-l") . gjg/lock-screen)
+           (,(kbd "s-<escape>") . gjg/lock-screen)
            ;; 's-r': Reset (to line-mode).
            ([?\s-r] . exwm-reset)
            ([?\s-s] . save-some-buffers)
@@ -1545,7 +1545,7 @@
           (add-hook 'exwm-update-title-hook
                     (lambda ()
                       (let ((browsers '(("Mozilla Firefox" . "firefox")
-                                        ("Personal: Microsoft​ Edge Dev" . "edge")
+                                        ("Personal - Microsoft​ Edge" . "edge")
                                         ("Google Chrome" . "chrome")
                                         ("Chromium" . "chromium"))))
                             (cond
