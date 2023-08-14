@@ -3081,15 +3081,25 @@
                                           "~/projects/private-orgmode/someday.org"
                                           "~/projects/private-orgmode/projects.org"
                                           "~/projects/private-orgmode/habits.org"))
+    ;; TODO add filter function to recurse only 1 level into engagements/ rather than use remove
     (defun gjg/get-work-agenda-files ()
       "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
       (let ((engagement-files (directory-files-recursively (concat (f-dirname gjg/employer-org-file) "/engagements/")
                                                            "\\`[^.].*\\.org\\(\\.gpg\\)?\\'")))
         (add-to-list 'engagement-files gjg/employer-org-file t)
         (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)
+        ;; hacky thing to remove weird files from agenda
+        (remove "/home/gregj/projects/private-orgmode/stardog/engagements/UL/recruitment_roi.org" engagement-files)
+        (remove "/home/gregj/projects/private-orgmode/stardog/engagements/UL/create-ddl.org" engagement-files)
+        (remove "/home/gregj/projects/private-orgmode/stardog/engagements/UL/mysql-design.org" engagement-files)
+        (remove "/home/gregj/projects/private-orgmode/stardog/engagements/UL/project-stages.org" engagement-files)
+        (remove "/home/gregj/projects/private-orgmode/stardog/engagements/UL/load-data.org" engagement-files)
+        (remove "/home/gregj/projects/private-orgmode/stardog/engagements/ida/ldap-settings.org" engagement-files)
+        (remove "/home/gregj/projects/private-orgmode/stardog/engagements/navitas/from_customer/plan/recruitment_roi.org" engagement-files)
+        (remove "/home/gregj/projects/private-orgmode/stardog/engagements/client-TEMPLATE.org" engagement-files)
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)
         ))
-        ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)))
+
     (add-to-list 'gjg/agenda-contexts-alist `(work ,(gjg/get-work-agenda-files)))
     (add-to-list 'gjg/agenda-contexts-alist `(home ,gjg/personal-org-agenda-files))
     (add-to-list 'gjg/agenda-contexts-alist `(fitness ,(list "~/projects/private-orgmode/fitness/fitness.org")))
