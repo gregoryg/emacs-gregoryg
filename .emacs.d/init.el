@@ -48,6 +48,7 @@
 (load "~/projects/emacs/straight.el/bootstrap")
 (straight-use-package 'use-package)
 (use-package bind-key :straight t :defer nil)
+(require 'shortdoc)
 (use-package f :straight t)
 (use-package s :straight t)
 (straight-use-package 'gcmh) ;; garbage collection magic hack
