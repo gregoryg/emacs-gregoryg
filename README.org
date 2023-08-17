@@ -3149,6 +3149,7 @@
                ("work-habit" "~/emacs/pixmaps/gtd-logo-2019-512x512.png" nil nil :ascent center :height 32)
                ;; ("inbox" ,(list (all-the-icons-material "inbox" )) nil nil :ascent center :height 32)
                ;; Customers / engagements
+               ("accenture" "~/emacs/pixmaps/accenture-logo-512x512.png" nil nil :ascent center :height 32)
                ("cis" "~/emacs/pixmaps/cis-security-logo-512x512.png" nil nil :ascent center :height 32)
                ("disney" "~/emacs/pixmaps/disney-logo-512x512.png" nil nil :ascent center :height 32)
                ("faithlife" "~/emacs/pixmaps/faithlife-logo-512x512.png" nil nil :ascent center :height 32)
