@@ -1359,7 +1359,7 @@
 *** Start wallpaper with transparency first for aesthetics
     Script below is generated with the [[file:Desktop.org][Org file referenced above]]
     #+begin_src emacs-lisp
-      (set-opacity 85)
+      (set-opacity 90)
       (async-start-process "wallpaper-thang"  "nohup" nil (expand-file-name "~/bin/schedule-rotate-wallpapers.sh") "&")
     #+end_src
 *** My specific config function
