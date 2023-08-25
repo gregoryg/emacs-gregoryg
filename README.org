@@ -448,7 +448,7 @@
      (defun toggle-transparency (alpha-level)
        (interactive "p")
        (message (format "%s" alpha-level))
-       (when (< alpha-level 50) (setq alpha-level 85))
+       (when (< alpha-level 50) (setq alpha-level 90))
        (let ((myalpha (or (frame-parameter nil 'alpha) 100))
              (frame-param (if (< emacs-major-version 29) 'alpha 'alpha-background)))
 
@@ -461,7 +461,7 @@
        (interactive "p")
        (message (format "Alpha level passed in: %s" alpha-level))
        (let ((alpha-level (if (< alpha-level 2)
-                              (read-number "Opacity percentage: " 85)
+                              (read-number "Opacity percentage: " 90)
                             alpha-level))
              (frame-param (if (< emacs-major-version 29) 'alpha 'alpha-background)))
          (set-frame-parameter nil frame-param alpha-level)
