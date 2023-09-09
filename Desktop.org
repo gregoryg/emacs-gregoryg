@@ -115,6 +115,7 @@
           texlive-fonts-extra \
           fonts-oxygen \
           fonts-freefont-otf \
+          fortunes \
           gcc \
           git \
           gwenview \
@@ -122,8 +123,9 @@
           jupyter \
           libreoffice-gtk3 \
           libtool-bin \
-          mlocate \
-          nm-applet \
+          keychain \
+          locate \
+          nm-tray \
           network-manager-openvpn-gnome \
           pdsh \
           playerctl \
@@ -131,9 +133,9 @@
           polybar \
           python3-venv \
           qlipper \
+          ripgrep \
           rofi \
           ruby \
-          silversearcher-ag \
           slick-greeter \
           tree \
           vlc \
@@ -144,7 +146,6 @@
           xfce4-power-manager-plugins \
           xfce4-pulseaudio-plugin \
           xfce4-screenshooter \
-          xfce4-statusnotifier-plugin \
           xfce4-whiskermenu-plugin \
           xfconf \
           xscreensaver
