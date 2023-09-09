@@ -2311,9 +2311,11 @@
                    ("p" . previous-line)
                    ("m" . ovpn-mode-start-vpn-with-namespace))))
    #+end_src
-** Ag / The Silver Searcher/Surfer
+** rg / ripgrep
+   + Switching from ag/Silver Searcher simply because ag is no longer in the default repos
+     for Debian Trixie
    #+begin_src emacs-lisp
-     (use-package ag :straight t)
+     (use-package rg :straight t)
    #+end_src
 
 ** Highlight indentation
