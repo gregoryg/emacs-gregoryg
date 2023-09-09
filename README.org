@@ -1559,6 +1559,8 @@
                              ((s-matches? ".?Chat .+ mail.google.com" exwm-title)
                               (exwm-workspace-rename-buffer (s-replace "Chat " "GChat " exwm-title)))
                              ;; standalone apps
+                             ((string= "kitty" exwm-class-name)
+                              (exwm-workspace-rename-buffer (concat "kitty - " exwm-title)))
                              ((string= "Slack" exwm-class-name)
                               (exwm-workspace-rename-buffer (concat "slack stardog" "- " exwm-title)))
                              ((string= "Logseq" exwm-class-name)
