@@ -148,7 +148,7 @@
           xfce4-screenshooter \
           xfce4-whiskermenu-plugin \
           xfconf \
-          xscreensaver
+          xfce4-screensaver
    #+end_src
 ** X Session Desktop file for Lightdm
    Having this allows EXWM to be chosen from the Display Manager
@@ -314,7 +314,7 @@
     # xrandr --output eDP-1 --brightness .8
 
     echo Start xscreensaver
-    xscreensaver -no-splash &
+    xfce4-screensaver -no-splash &
 
     nohup xfce4-power-manager&
 
