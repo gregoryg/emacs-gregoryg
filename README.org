@@ -2315,7 +2315,14 @@
    + Switching from ag/Silver Searcher simply because ag is no longer in the default repos
      for Debian Trixie
    #+begin_src emacs-lisp
-     (use-package rg :straight t)
+     (use-package rg :straight t
+       :custom
+       (rg-custom-type-aliases
+        '(
+          ("sparql" . "*.{sparql,rq}")
+          ("rdf"    . "*.{ttl,turtle,rdf,owl,trig}")
+          ("sms"    . "*.{sms,sms2}")))
+       (rg-hide-command t))
    #+end_src
 
 ** Highlight indentation
