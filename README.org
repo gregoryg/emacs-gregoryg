@@ -1719,7 +1719,7 @@
    tools
 
    + [[https://github.com/minad/corfu][GitHub - minad/corfu: corfu.el - Completion Overlay Region FUnction]]
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package corfu :straight t
        ;; Optional customizations
        :custom
