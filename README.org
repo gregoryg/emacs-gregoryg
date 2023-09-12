@@ -3758,13 +3758,8 @@
        ;; (sparql-language-server)
        )
    #+end_src
-   #+begin_src emacs-lisp
-     ;; (add-to-list 'lsp-language-id-configuration '(".*\\.sparql" . "sparql"))
-;;     (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql"))
-   #+end_src
-
 ** Clojure
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      ;; (add-hook 'cider-repl-mode-hook #'company-
      (use-package clojure-mode :straight t
        :mode "\\.clj[sc]?\\'"
