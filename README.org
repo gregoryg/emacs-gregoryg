@@ -3687,7 +3687,6 @@
      (add-hook 'prog-mode-hook
                (lambda ()
                       (rainbow-delimiters-mode 1)
-                 (corfu-mode 1)
                  (yafolding-mode 1)
                  (electric-pair-local-mode 1)))
    #+end_src
@@ -3697,7 +3696,6 @@
      (add-hook 'inferior-emacs-lisp-mode-hook
                (lambda ()
                  (rainbow-delimiters-mode 1)
-                 (corfu-mode 1)
                  (electric-pair-local-mode 1)))
 
    #+end_src
