@@ -125,6 +125,7 @@
           libtool-bin \
           keychain \
           locate \
+          net-tools \
           nm-tray \
           network-manager-openvpn-gnome \
           pdsh \
