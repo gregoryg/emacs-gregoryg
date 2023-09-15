@@ -3760,7 +3760,7 @@
        )
    #+end_src
 ** Clojure
-   #+begin_src emacs-lisp :tangle no
+   #+begin_src emacs-lisp
      ;; (add-hook 'cider-repl-mode-hook #'company-
      (use-package clojure-mode :straight t
        :mode "\\.clj[sc]?\\'"
