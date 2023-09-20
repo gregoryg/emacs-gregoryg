@@ -1714,12 +1714,16 @@
        (unbind-key (kbd "C-c .") org-mode-map))
    #+end_src
 
-** Corfu - auto-complete and more
-   I want something for auto-complete that behaves more like selectrum and other such
-   tools
+** Corfu - in-buffer auto-complete and more
 
    + [[https://github.com/minad/corfu][GitHub - minad/corfu: corfu.el - Completion Overlay Region FUnction]]
-   #+begin_src emacs-lisp :tangle no
+   + Require 'dabbrev
+     + I believe that fixes this error
+       #+begin_example
+         Error running timer ‘corfu--auto-complete-deferred’: (void-variable dabbrev-abbrev-skip-leading-regexp)
+       #+end_example
+   #+begin_src emacs-lisp
+     (require 'dabbrev)
      (use-package corfu :straight t
        ;; Optional customizations
        :custom
