@@ -1327,8 +1327,8 @@
       (setq exwm-manage-configurations
             '(((member exwm-class-name '("Emacs" "Gnome-terminal" "konsole" "libreoffice-calc" "xdg-desktop-portal-gnome" "kitty" "UXTerm"))
                char-mode t)
-              ((member exwm-class-name '("Pavucontrol"))
-               floating t)
+              ;; ((member exwm-class-name '("Pavucontrol"))
+              ;;  floating t)
               ;; ((and (string= "zoom" exwm-class-name) (string= "Settings" exwm-title))
               ;;  floating t)
               ))
