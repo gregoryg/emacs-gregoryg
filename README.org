@@ -4368,7 +4368,7 @@
 ** GitHub-flavoured markdown
    A minor mode providing syntax highlighting and live preview!
    In my environment, activate =myspark= environment first, with for example =M-x pyvenv-workon=
-   + Requires a python environment with =grip=
+   + Requires a python environment with =grip= :tangle no
      #+begin_src bash
        pip install grip
      #+end_src
