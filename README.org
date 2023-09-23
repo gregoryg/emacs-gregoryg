@@ -2150,7 +2150,7 @@
    #+end_src
 
 ** Selectrum (will it replace Ivy which replaced Ido?)
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package selectrum :straight t)
      (selectrum-mode +1)
      (use-package selectrum-prescient :straight t)
@@ -2159,6 +2159,23 @@
    #+end_src
 
 
+** Vertico (will it replace Selectrum which replaced Ivy which replaced Ido?)
+   #+begin_src emacs-lisp
+     (use-package vertico :straight t)
+     (vertico-mode)
+   #+end_src
+   [[https://github.com/minad/vertico#completion-styles-and-tab-completion][Completion styles and tab completion for Vertico+Orderless]]
+
+   #+begin_src emacs-lisp
+     (use-package orderless :straight t
+       :config
+       ;; Configure a custom style dispatcher (see the Consult wiki)
+       ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+       ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+       (setq completion-styles '(orderless basic)
+             completion-category-defaults nil
+             completion-category-overrides '((file (styles partial-completion)))))
+   #+end_src
 ** Occur
 *** Navigation
    #+begin_src emacs-lisp
