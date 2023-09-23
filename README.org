@@ -4560,6 +4560,8 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
         (interactive)
         (let* ((org-prefix (alist-get 'org-mode gptel-prompt-prefix-alist))
                (shift-indent (progn (string-match "^\\(\\*+\\)" org-prefix) (length (match-string 1 org-prefix))))
+               (lua-filter (when (file-readable-p "~/.config/pandoc/gfm_code_to_org_block.lua")
+                             (concat "--lua-filter=" (expand-file-name "~/.config/pandoc/gfm_code_to_org_block.lua"))))
                (sentence-end "\\([.?!
       ]\\)"))
           ;; TODO: consider placing original complete response in the kill ring
@@ -4567,7 +4569,7 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
           (with-current-buffer (get-buffer-create (make-temp-name "*gptel-convert-"))
             (insert str)
             (shell-command-on-region (point-min) (point-max)
-                                     (format "pandoc -f gfm -t org --shift-heading-level-by=%d|sed '/:PROPERTIES:/,/:END:/d'" shift-indent)
+                                     (format "pandoc -f gfm -t org --shift-heading-level-by=%d %s|sed '/:PROPERTIES:/,/:END:/d'" shift-indent lua-filter)
                                      nil ;; use current buffer
                                      t   ;; replace the buffer contents
                                      "*gptel-convert-error*")
