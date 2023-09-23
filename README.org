@@ -4531,23 +4531,24 @@ So, The Zegroni cocktail might include gin, Campari, sweet vermouth, and an oran
       sessions, an active GitHub. A dedication to keeping everything in plain text
       (without metadata markup)
 
-    Because I want to augment, tweak and contribute to this package, I tell
-    =straight-use-package= to pull from my fork and my branch.
+**** Using straight.el with a fork of a GitHub repo
+     Because I want to augment, tweak and contribute to this package, I tell
+     =straight-use-package= to pull from my fork and my branch.
 
-    #+begin_src emacs-lisp
-      (straight-use-package
-       '(gptel :type git :host github :repo "karthink/gptel"
-               :fork (:host github :branch "gregoryg" :repo "gregoryg/gptel")))
-      (setq gptel-default-mode 'org-mode
-            gptel-use-curl nil
-            gptel-model 'gpt-4)
-      ;; defer nothing
-      (require 'gptel)
-      (require 'gptel-curl)
-      (require 'gptel-transient)
-    #+end_src
+     #+begin_src emacs-lisp
+       (straight-use-package
+        '(gptel :type git :host github :repo "karthink/gptel"
+                :fork (:host github :branch "gregoryg" :repo "gregoryg/gptel")))
+       (setq gptel-default-mode 'org-mode
+             gptel-use-curl nil
+             gptel-model 'gpt-4)
+       ;; defer nothing
+       (require 'gptel)
+       (require 'gptel-curl)
+       (require 'gptel-transient)
+     #+end_src
 
-    And my supplementos
+**** And my supplementos
 
     #+begin_src emacs-lisp
       ;; pandoc -f gfm -t org|sed '/:PROPERTIES:/,/:END:/d'
