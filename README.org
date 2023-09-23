@@ -2256,6 +2256,8 @@
       (add-hook 'shell-mode-hook
             (lambda ()
               (abbrev-mode 1)
+              (dirtrack-mode 0)
+              (shell-dirtrack-mode 1)
               (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))
     #+end_src
 *** SSH Agent in subprocesses
