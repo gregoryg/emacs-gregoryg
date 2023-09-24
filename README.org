@@ -4030,6 +4030,7 @@
          t t))
     #+end_src
 *** Save command history for all SQL modes
+**** First attempt using Stack Overflow (and also Emacs Wiki)
     WIP WIP WIP
     Try setting comint-input-ring-file-name as buffer-local for sql-interactive-mode
 
@@ -4050,7 +4051,34 @@
       (add-hook 'sql-interactive-mode-hook 'gjg/sql-save-history-hook)
       (add-hook 'kill-buffer-hook 'comint-write-input-ring)
     #+end_src
+**** Second attempt using gpt-4 [2023-09-23 Sat]
+     #+begin_src emacs-lisp
+       (defvar my-sql-input-ring-file "~/.emacs.d/sqlhistory"
+         "Path to file for saving sql-mode history.")
 
+       (defun my-sql-save-history ()
+         "Save sql-mode input history to a file."
+         (let ((l (ring-elements comint-input-ring)))
+           (when l
+             (with-temp-file my-sql-input-ring-file
+           (dolist (input l)
+             (insert input ?\n))))))
+
+       (defun my-sql-load-history ()
+         "Load sql-mode input history from a file."
+         (let ((f my-sql-input-ring-file))
+           (when (file-exists-p f)
+             (nreverse
+              (with-temp-buffer
+            (insert-file-contents f)
+            (split-string (buffer-string) "\n" t))))))
+
+       (add-hook 'sql-interactive-mode-hook
+             (lambda ()
+               (setq comint-input-ring-file-name my-sql-input-ring-file)
+               (comint-read-input-ring 'silent)
+               (add-hook 'kill-buffer-hook #'comint-write-input-ring nil 'local)))
+     #+end_src
 *** MySQL / MariaDB
 
     + Assure that client prompt is recognized for both products
