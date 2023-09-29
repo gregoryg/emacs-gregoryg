@@ -2725,6 +2725,7 @@
                                               ("sr" . "src R")
                                               ("sR" . "src jupyter-R")
                                               ("ss" . "src bash")
+                                              ("st" . "src text")
                                               ("sy" . "src yaml"))))
 
      #+end_src
