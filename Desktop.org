@@ -91,7 +91,7 @@
   of those
 ** Guix
   GNU Guix changes everything - packages will be added declaratively*
-* Debian and Ubuntu
+** Debian and Ubuntu
    #+begin_src bash
      sudo apt update
      sudo apt -y install \
@@ -103,6 +103,7 @@
           cowsay \
           discount \
           dunst \
+          evdi-dkms \
           feh \
           flatpak \
           font-manager \
