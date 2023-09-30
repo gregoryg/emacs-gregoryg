@@ -242,7 +242,7 @@
 
   (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows
 
-  (setq fill-column 90); good default for wider screens - BUT this is buffer-local so should be set in mode hooks only
+  (setq-default fill-column 100); good default for wider screens
 
   ;; ensure that the default for searches is case-insensitive
   (setq case-fold-search t)
