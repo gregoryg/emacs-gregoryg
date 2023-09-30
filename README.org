@@ -2708,7 +2708,7 @@
                                               ("E" . "export")
                                               ("h" . "export html")
                                               ("l" . "export latex")
-                                              ("\"" . "quote")
+                                              ("'" . "quote")
                                               ("qp" . "src sparql")
                                               ("qq" . "src sql")
                                               ("S" . "src")
