@@ -1653,6 +1653,21 @@
         ) ;; when gjg/exwm-needed-p
         #+end_src
 
+* Text / reading modes
+** Visual line wrapping
+   There is a way to make this usable without =auto-fill-mode= being on, as I have had for
+   years (as of [2023-09-30 Sat])
+
+   GPT-4 hipped me to =visual-fill-column=  - the combination of the two leads to bliss -
+   one without the other is not great.
+
+   Therefore, let's set this for Org and =text-mode=
+   #+begin_src emacs-lisp
+     (use-package visual-fill-column :straight t)
+     (add-hook 'text-mode-hook #'visual-line-mode)
+     (add-hook 'org-mode-hook #'visual-line-mode)
+     (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
+   #+end_src
 * Commonly used modes
 ** Start emacs server
    #+begin_src emacs-lisp
@@ -2767,13 +2782,12 @@
    #+begin_src emacs-lisp
      (add-hook 'org-mode-hook
            (lambda ()
-             (auto-fill-mode 1)
+             ;; (auto-fill-mode 1) ;; experiment with visual-line <2023-09-30 Sat>
              (highlight-regexp ":tangle no" 'hi-pink)
              (highlight-regexp ":tangle /tmp/intothevoid.el" 'hi-aquamarine)
              ;; (org-modern-mode 1)
              (setq org-hide-leading-stars t
                    abbrev-mode 1
-                   fill-column 90 ; good default for wide screens
                    org-use-property-inheritance t
                    org-link-search-must-match-exact-headline nil
                    ;; org-defkey org-mode-map [(control tab)] 'org-next-link
