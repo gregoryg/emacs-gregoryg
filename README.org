@@ -3208,7 +3208,7 @@
              org-agenda-fontify-priorities t
              org-agenda-hide-tags-regexp "noagenda"
              org-agenda-restore-windows-after-quit t
-             -agenda-entry-text-maxlines 10
+             org-agenda-entry-text-maxlines 10
              org-agenda-diary-file "~/projects/private-orgmode/diary.org"
              org-agenda-include-diary t
              org-special-ctrl-a/e t
