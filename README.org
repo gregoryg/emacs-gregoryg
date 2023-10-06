@@ -1664,12 +1664,13 @@
    one without the other is not great.
 
    Therefore, let's set this for Org and =text-mode=
-   #+begin_src emacs-lisp
-     (use-package visual-fill-column :straight t)
-     (add-hook 'text-mode-hook #'visual-line-mode)
-     (add-hook 'org-mode-hook #'visual-line-mode)
-     (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
-   #+end_src
+     #+begin_src emacs-lisp
+       (use-package visual-fill-column :straight t)
+       (global-visual-line-mode 1)
+       ;; (add-hook 'text-mode-hook #'visual-line-mode)
+       ;; (add-hook 'org-mode-hook #'visual-line-mode)
+       ;; (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
+     #+end_src
 * Commonly used modes
 ** Start emacs server
    #+begin_src emacs-lisp
