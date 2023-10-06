@@ -222,10 +222,7 @@
   (setq tab-always-indent 'complete)
 
   (setq-default indent-tabs-mode nil)
-  (setq-default tab-always-indent t)
   (setq-default tab-width 4)
-  ;; blink parens and similar delimiters
-  (show-paren-mode 1)
   ;; ** Global identity (ie, same on all machines) - Emacs does not make good guesses here
   (setq user-full-name "Gregory Grubbs"
     user-mail-address "gregory.grubbs@gmail.com")
