@@ -3867,7 +3867,11 @@
      (use-package rust-mode :straight t)
    #+end_src
 
-** Javascript
+** Javascript including JSON
+*** Prefer json-mode to built-in package
+    #+begin_src emacs-lisp
+      (use-package json-mode :straight t)
+    #+end_src
 *** Prefer =js2= mode
    #+begin_src emacs-lisp :tangle no
      (use-package js :straight t 2-mode
