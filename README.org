@@ -1,4 +1,4 @@
-# -*- eval: (visual-fill-column-mode -1) -*- 
+# -*- mode: org; eval: (read-only-mode 1)  -*-
 #+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t
 #+OPTIONS: author:t broken-links:nil c:nil creator:nil
 #+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
