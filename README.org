@@ -792,7 +792,8 @@
    #+end_src
 ** Themes
 *** Modus themes
-    Use the built-in
+    Use the built-in - for Emacs >= 30.  Prior to that version, you have to install a package in order to get modus-themes 4.x
+
 
     I want to soften the contrasts in dark mode - default is white on black.  But
     changing the background too light throws off readability of some things - notably the
@@ -802,6 +803,9 @@
     #+begin_src emacs-lisp
       ;; make the modus themes act more like my brutalist theme in Org
       ;; (require 'modus-themes)
+      (when (< emacs-major-version 30)
+        (use-package modus-themes :straight t))
+
       (defun gjg/my-modus-themes-custom-faces ()
         "Tweak faces"
         (message "Setting custom org-habit face for Modus themes")
