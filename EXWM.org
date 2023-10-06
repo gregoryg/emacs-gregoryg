@@ -1,0 +1,777 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:2 todo:t |:t
+#+TITLE: gregoryg's EXWM configuration and starup
+#+DATE: <2019-09-08 Sun>
+#+AUTHOR: Greg Grubbs
+#+EMAIL: gregory.grubbs@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.2 (Org mode 9.1.9)
+#+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg-local.setup
+#+property: header-args:emacs-lisp :tangle ~/.emacs.d/launch-exwm.el :results none
+#+property: header-args:bash :comments both :shebang #!/usr/bin/env bash :results none
+
+* Load EXWM and dependencies
+  #+begin_src emacs-lisp
+    (use-package exwm :straight t)
+  #+end_src
+
+* Patches and egregious hacks
+  There is currently [2022-10-17 Mon] *NO* real maintainer of the EXWM repo - @ch11ng has
+  disappeared.  This section will attempt to implement patches known to fix current bugs
+  until such time as existing PRs start getting merged
+** Fix frame focus for Emacs 29+
+   [2022-12-03 Sat] THIS PATCH IS INCLUDED IN EXWM 0.27!
+   [[file:.emacs.d/straight/repos/exwm/exwm.el::defun exwm--on-ClientMessage (raw-data _synthetic][exwm--on-ClientMessage]]
+   #+begin_src emacs-lisp :tangle no
+     (defun exwm--on-ClientMessage (raw-data _synthetic)
+       "Handle ClientMessage event."
+       (let ((obj (make-instance 'xcb:ClientMessage))
+             type id data)
+         (xcb:unmarshal obj raw-data)
+         (setq type (slot-value obj 'type)
+               id (slot-value obj 'window)
+               data (slot-value (slot-value obj 'data) 'data32))
+         (exwm--log "atom=%s(%s)" (x-get-atom-name type exwm-workspace--current)
+                    type)
+         (cond
+          ;; _NET_NUMBER_OF_DESKTOPS.
+          ((= type xcb:Atom:_NET_NUMBER_OF_DESKTOPS)
+           (let ((current (exwm-workspace--count))
+                 (requested (elt data 0)))
+             ;; Only allow increasing/decreasing the workspace number by 1.
+             (cond
+              ((< current requested)
+               (make-frame))
+              ((and (> current requested)
+                    (> current 1))
+               (let ((frame (car (last exwm-workspace--list))))
+                 (exwm-workspace--get-remove-frame-next-workspace frame)
+                 (delete-frame frame))))))
+          ;; _NET_CURRENT_DESKTOP.
+          ((= type xcb:Atom:_NET_CURRENT_DESKTOP)
+           (exwm-workspace-switch (elt data 0)))
+          ;; _NET_ACTIVE_WINDOW.
+          ((= type xcb:Atom:_NET_ACTIVE_WINDOW)
+           (dolist (f exwm-workspace--list)
+             (when (eq id (frame-parameter f 'exwm-outer-id))
+               (x-focus-frame f t)))
+           (let ((buffer (exwm--id->buffer id))
+                 iconic window)
+             (when (buffer-live-p buffer)
+               (with-current-buffer buffer
+                 (when (eq exwm--frame exwm-workspace--current)
+                   (if exwm--floating-frame
+                       (select-frame exwm--floating-frame)
+                     (setq iconic (exwm-layout--iconic-state-p))
+                     (when iconic
+                       ;; State change: iconic => normal.
+                       (set-window-buffer (frame-selected-window exwm--frame)
+                                          (current-buffer)))
+                     ;; Focus transfer.
+                     (setq window (get-buffer-window nil t))
+                     (when (or iconic
+                               (not (eq window (selected-window))))
+                       (select-window window))))))))
+          ;; _NET_CLOSE_WINDOW.
+          ((= type xcb:Atom:_NET_CLOSE_WINDOW)
+           (let ((buffer (exwm--id->buffer id)))
+             (when (buffer-live-p buffer)
+               (exwm--defer 0 #'kill-buffer buffer))))
+          ;; _NET_WM_MOVERESIZE
+          ((= type xcb:Atom:_NET_WM_MOVERESIZE)
+           (let ((direction (elt data 2))
+                 (buffer (exwm--id->buffer id)))
+             (unless (and buffer
+                          (not (buffer-local-value 'exwm--floating-frame buffer)))
+               (cond ((= direction
+                         xcb:ewmh:_NET_WM_MOVERESIZE_SIZE_KEYBOARD)
+                      ;; FIXME
+                      )
+                     ((= direction
+                         xcb:ewmh:_NET_WM_MOVERESIZE_MOVE_KEYBOARD)
+                      ;; FIXME
+                      )
+                     ((= direction xcb:ewmh:_NET_WM_MOVERESIZE_CANCEL)
+                      (exwm-floating--stop-moveresize))
+                     ;; In case it's a workspace frame.
+                     ((and (not buffer)
+                           (catch 'break
+                             (dolist (f exwm-workspace--list)
+                               (when (or (eq id (frame-parameter f 'exwm-outer-id))
+                                         (eq id (frame-parameter f 'exwm-id)))
+                                 (throw 'break t)))
+                             nil)))
+                     (t
+                      ;; In case it's a floating frame,
+                      ;; move the corresponding X window instead.
+                      (unless buffer
+                        (catch 'break
+                          (dolist (pair exwm--id-buffer-alist)
+                            (with-current-buffer (cdr pair)
+                              (when
+                                  (and exwm--floating-frame
+                                       (or (eq id
+                                               (frame-parameter exwm--floating-frame
+                                                                'exwm-outer-id))
+                                           (eq id
+                                               (frame-parameter exwm--floating-frame
+                                                                'exwm-id))))
+                                (setq id exwm--id)
+                                (throw 'break nil))))))
+                      ;; Start to move it.
+                      (exwm-floating--start-moveresize id direction))))))
+          ;; _NET_REQUEST_FRAME_EXTENTS
+          ((= type xcb:Atom:_NET_REQUEST_FRAME_EXTENTS)
+           (let ((buffer (exwm--id->buffer id))
+                 top btm)
+             (if (or (not buffer)
+                     (not (buffer-local-value 'exwm--floating-frame buffer)))
+                 (setq top 0
+                       btm 0)
+               (setq top (window-header-line-height)
+                     btm (window-mode-line-height)))
+             (xcb:+request exwm--connection
+                 (make-instance 'xcb:ewmh:set-_NET_FRAME_EXTENTS
+                                :window id
+                                :left 0
+                                :right 0
+                                :top top
+                                :bottom btm)))
+           (xcb:flush exwm--connection))
+          ;; _NET_WM_DESKTOP.
+          ((= type xcb:Atom:_NET_WM_DESKTOP)
+           (let ((buffer (exwm--id->buffer id)))
+             (when (buffer-live-p buffer)
+               (exwm-workspace-move-window (elt data 0) id))))
+          ;; _NET_WM_STATE
+          ((= type xcb:Atom:_NET_WM_STATE)
+           (let ((action (elt data 0))
+                 (props (list (elt data 1) (elt data 2)))
+                 (buffer (exwm--id->buffer id))
+                 props-new)
+             ;; only support _NET_WM_STATE_FULLSCREEN / _NET_WM_STATE_ADD for frames
+             (when (and (not buffer)
+                        (memq xcb:Atom:_NET_WM_STATE_FULLSCREEN props)
+                        (= action xcb:ewmh:_NET_WM_STATE_ADD))
+               (xcb:+request
+                   exwm--connection
+                   (make-instance 'xcb:ewmh:set-_NET_WM_STATE
+                                  :window id
+                                  :data (vector xcb:Atom:_NET_WM_STATE_FULLSCREEN)))
+               (xcb:flush exwm--connection))
+             (when buffer                    ;ensure it's managed
+               (with-current-buffer buffer
+                 ;; _NET_WM_STATE_FULLSCREEN
+                 (when (or (memq xcb:Atom:_NET_WM_STATE_FULLSCREEN props)
+                           (memq xcb:Atom:_NET_WM_STATE_ABOVE props))
+                   (cond ((= action xcb:ewmh:_NET_WM_STATE_ADD)
+                          (unless (exwm-layout--fullscreen-p)
+                            (exwm-layout-set-fullscreen id))
+                          (push xcb:Atom:_NET_WM_STATE_FULLSCREEN props-new))
+                         ((= action xcb:ewmh:_NET_WM_STATE_REMOVE)
+                          (when (exwm-layout--fullscreen-p)
+                            (exwm-layout-unset-fullscreen id)))
+                         ((= action xcb:ewmh:_NET_WM_STATE_TOGGLE)
+                          (if (exwm-layout--fullscreen-p)
+                              (exwm-layout-unset-fullscreen id)
+                            (exwm-layout-set-fullscreen id)
+                            (push xcb:Atom:_NET_WM_STATE_FULLSCREEN props-new)))))
+                 ;; _NET_WM_STATE_DEMANDS_ATTENTION
+                 ;; FIXME: check (may require other properties set)
+                 (when (memq xcb:Atom:_NET_WM_STATE_DEMANDS_ATTENTION props)
+                   (when (= action xcb:ewmh:_NET_WM_STATE_ADD)
+                     (unless (eq exwm--frame exwm-workspace--current)
+                       (set-frame-parameter exwm--frame 'exwm-urgency t)
+                       (setq exwm-workspace--switch-history-outdated t)))
+                   ;; xcb:ewmh:_NET_WM_STATE_REMOVE?
+                   ;; xcb:ewmh:_NET_WM_STATE_TOGGLE?
+                   )
+                 (xcb:+request exwm--connection
+                     (make-instance 'xcb:ewmh:set-_NET_WM_STATE
+                                    :window id :data (vconcat props-new)))
+                 (xcb:flush exwm--connection)))))
+          ((= type xcb:Atom:WM_PROTOCOLS)
+           (let ((type (elt data 0)))
+             (cond ((= type xcb:Atom:_NET_WM_PING)
+                    (setq exwm-manage--ping-lock nil))
+                   (t (exwm--log "Unhandled WM_PROTOCOLS of type: %d" type)))))
+          ((= type xcb:Atom:WM_CHANGE_STATE)
+           (let ((buffer (exwm--id->buffer id)))
+             (when (and (buffer-live-p buffer)
+                        (= (elt data 0) xcb:icccm:WM_STATE:IconicState))
+               (with-current-buffer buffer
+                 (if exwm--floating-frame
+                     (call-interactively #'exwm-floating-hide)
+                   (bury-buffer))))))
+          (t
+           (exwm--log "Unhandled: %s(%d)"
+                      (x-get-atom-name type exwm-workspace--current) type)))))
+   #+end_src
+
+* Warning about use with =winner-mode=
+  I struggled with hangs in EXWM that I of course attributed to EXWM
+  or XELB.  The typical reproducible action was to initiate a floating dialog in an X11
+  application such as Zoom, or the Open File dialog from a web browser (for example).
+  Depending on the timing, I would see a message in Emacs similar to
+  #+begin_example
+    Error in post-command-hook (winner-save-old-configurations): (wrong-type-argument frame-live-p #<dead frame Open File 0x558a5304a578>)
+  #+end_example
+
+  The problem is a failure to check for dead frames before saving window configurations.
+  The solution I use is to add advice before one function that removes dead frames from
+  the list of frames.
+
+  #+begin_src emacs-lisp :tangle no
+    ;; Add advice to stop hangs on EXWM
+    ;; The problem happens with floating windows that disappear - like open file dialog or a Zoom dialog when starting a meeting
+    ;; The solution is to assure all frames in winner-modified-list pass the frame-live-p test
+    (defun gjg/winner-clean-up-modified-list ()
+      "Remove dead frames from `winner-modified-list`"
+      (dolist (frame winner-modified-list)
+        (unless (frame-live-p frame)
+          (delete frame winner-modified-list))))
+    (advice-add 'winner-save-old-configurations :before #'gjg/winner-clean-up-modified-list)
+
+  #+end_src
+* Recommended changes to workflow when using a tiling window manager
+** Web browser should open new windows rather than tabs
+   Doing this allows Emacs to search window/tab titles.  It's a weird change at first,
+   but it's a much better experience in a tiling window manager that has good search.
+
+   In Firefox, you can go to =about:preferences=.  Under the *Tabs*, uncheck =Open links
+   in tabs instead of new windows=
+
+   If you want to make a radical change, find an extension for your web browser that
+   disallows tabs altogether - so even when you explicitly ask to open a new tab, the
+   extension makes it a new window.
+** Scripts will be required to handle operations normally managed by Desktop Environment
+   I have moved all the generated scripts and configs I use to support EXWM - and
+   theoretically any other tiling window manager - to [[file:Desktop.org][this Org file]].  I use that Org file to
+   generate (tangle) everything I need in a Linux environment.
+
+** Launching applications without a Desktop Environment
+   EXWM default config suggests a handy shell launch command from Emacs, but I prefer to
+   use exactly what I do on every other OS - a pop-up app launcher such as [[https://github.com/albertlauncher/albert][Albert]] or ulauncher.
+
+* Unresolved problems
+** TODO Fix clipboard integration / behavior
+   + The problem is consistent cut/paste copy/yank behavior between Emacs windows and
+     managed X windows.
+
+     + Copy text in Emacs -> paste to Firefox works in =char= mode
+
+     + Copy text in Emacs -> paste to Firefox in =line= mode no worky - have to use right
+       mouse click or =S-<insert>  *how to define simulation key??*
+
+     + Copy text in Firefox =char= mode -> yank in Emacs works
+
+     + Copy text in Firefox =line= mode using =M-w= -> yank in Emacs works
+
+
+* System tray widgets
+  EXWM has a system tray that can be enabled, and some panel widgets work with it.  For
+  me, I'd rather either use pure Emacs or Linux shell methods of getting info and setting
+  values, *or* just go ahead and use a "proper" panel.
+
+   I have found that both =xfce4-panel= and the LXDE panel work a treat!  For
+   =xfce4-panel= do *not* check =Don't reserve space on borders= - that way the panel
+   will not obscure the echo area at the very bottom of the screen
+
+   One can either bring up Emacs with no DE and then run the panels as processes, or
+   hijack the default window manager in one of the lightweight DEs.
+
+** Useful panel widgets
+     + [[https://docs.xfce.org/panel-plugins/clipman/start][xfce4-clipman - a clipboard manager]]
+     + parcellite - a different clipboard manager
+     + /usr/bin/python3 /usr/share/system-config-printer/applet.py - printer notifications
+     + nm-applet --indicator  - NetworkManager applet - absolutely needed
+     + /usr/lib/blueberry/blueberry-tray.py - a Blueberry setup app triggered from the panel
+     + /usr/bin/python3 /usr/bin/blueman-applet - a *nicer* bluetooth applet with setup
+       and file transfer
+
+* Panel with Polybar
+
+  Polybar is a highly  customizable alternative to the XFCE Panel
+
+  Check out the Polybar wiki for more details on how to configure it: https://github.com/polybar/polybar/wiki
+
+  + [[https://awesomeopensource.com/projects/polybar][The Top 422 Polybar Open Source Projects on Github]]
+
+
+** Integration with =emacsclient=
+
+  Polybar provides a great, minimalistic panel for your EXWM desktop configuration.  The
+  following config integrates =emacsclient= and Polybar with =polybar-msg= to enable you
+  to gather *any* information from Emacs and display it in the panel!
+
+  Functions are defined in [[file:gjg-functions.org::*Polybar for use with Linux EXWM and desktop environments][Polybar for use with Linux EXWM and desktop environments]]
+
+** Panel configuration
+   Configurations and script for Polybar are kept in gregoryg/homelab/README-dotfiles
+
+** Helpful Polybar scripts
+*** hideIt.sh - hide *any* X window - we will use it just for polybar
+    Polybar - remarkably and shockingly - does not have an autohide feature (I believe).
+
+    So there is a clever script called [[https://raw.githubusercontent.com/Tadly/hideIt.sh/master/hideIt.sh][hideIt.sh]] - which will actually work for any X window
+
+    My current variation is based on [[https://github.com/Tadly/hideIt.sh][Tadly's hideIt.sh]]
+
+    Script(s) and desktop shortcuts are to be found in [[file:Desktop.org][Desktop.org]]
+* Interaction between Emacs and X applications
+  Emacsclient with --eval allows for some great interactions between the shell and Emacs.
+  Let's create a combination of Emacs Lisp and shell script for some of these.
+
+** Jump to or launch application like Gmail or Spotify
+   If we already have a browser window running, select it and bring it to the foreground.
+   If not, launch it, showing just unread threads.
+*** Function =gjg/exwm-switch-to-buffer-or-launch=
+
+    #+begin_src emacs-lisp
+      (defun gjg/exwm-switch-to-buffer-or-launch (searchstring &optional application)
+        "Switch to the first buffer matching SEARCHSTRING as a substring
+         If no matching buffer is found, launch the APPLICATION using gtk-launch."
+        (let
+            ((mybuf (car (cl-remove-if-not (lambda (row) (cl-search searchstring (buffer-name row))) (buffer-list)))))
+          (if mybuf
+              (switch-to-buffer mybuf)
+            (if application
+                (call-process-shell-command (concat "gtk-launch " application))
+              (message "No \"%s\" window is running." searchstring)))))
+    #+end_src
+*** Shell script to select corporate Gmail window with unread threads
+    This shell script can be called from Polybar (my config includes a button that
+    invokes this script)
+
+   #+begin_src bash :tangle ~/bin/gmail-buffer-or-launch.sh
+     emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch (concat gjg/employer-name " Mail") "gmail")'
+   #+end_src
+*** Function to select WHATEVER IS PLAYING MUSIC
+    This makes use of the `playerctl` command to give us the window title
+
+    #+begin_src emacs-lisp
+      ; playerctl statuses: Stopped / Paused / Playing
+      (defun gjg/exwm-select-music-window ()
+        "Select the window currently playing audio as determined by playerctl."
+        (interactive)
+        (let* ((playerctlrtn (with-temp-buffer
+                               (list (apply
+                                      'call-process
+                                      "playerctl" nil (current-buffer) nil
+                                      '("metadata" "title"))
+                                     (substring (buffer-string) 0 -1))))
+               (exitcode     (nth 0 playerctlrtn))
+               (window-title (nth 1 playerctlrtn)))
+          (if (zerop exitcode)
+              (gjg/exwm-switch-to-buffer-or-launch window-title)
+            (message "No recognized audio player."))))
+
+    #+end_src
+*** Function to select or launch Google Chat
+    #+begin_src emacs-lisp
+      (defun gjg/exwm-select-or-launch-google-chat ()
+        "Select the running Google Chat window in EXWM, or launch the app"
+        (interactive)
+        (gjg/exwm-switch-to-buffer-or-launch "GChat" "google-chat"))
+    #+end_src
+*** Function to select or launch Logseq
+    #+begin_src emacs-lisp
+      (defun gjg/exwm-select-or-launch-logseq ()
+        "Select the running Spotify window in EXWM, or launch the app"
+        (interactive)
+        (gjg/exwm-switch-to-buffer-or-launch "Logseq App" "com.logseq.Logseq"))
+    #+end_src
+*** Function to select or launch Spotify
+    #+begin_src emacs-lisp
+      (defun gjg/exwm-select-or-launch-spotify ()
+        "Select the running Spotify window in EXWM, or launch the app"
+        (interactive)
+        (gjg/exwm-switch-to-buffer-or-launch "Spotify" "com.spotify.Client"))
+    #+end_src
+*** Function to switch quickly to Zoom Meeting
+    #+begin_src emacs-lisp
+      (defun gjg/exwm-select-zoom-meeting ()
+        "Select the running Zoom Meeting window if it's running."
+        (interactive)
+        (gjg/exwm-switch-to-buffer-or-launch "Zoom Meeting"))
+    #+end_src
+*** Function to switch quickly to Microsoft Teams in Edge
+    #+begin_src emacs-lisp
+      (defun gjg/exwm-select-teams-meeting ()
+        "Select the running Microsoft Teams window if it's running."
+        (interactive)
+        (gjg/exwm-switch-to-buffer-or-launch "Microsoft Teams ≫ teams.microsoft.com"))
+    #+end_src
+*** Function to switch quickly to good ole Slack
+    #+begin_src emacs-lisp
+      (defun gjg/exwm-select-slack ()
+        "Select the running Slack window if it's running, otherwise launch."
+        (interactive)
+        (gjg/exwm-switch-to-buffer-or-launch "slack stardog" "com.slack.Slack"))
+    #+end_src
+** Update Spotify's buffer name when song changes
+   If running EXWM, let's keep Spotify's buffer name hip
+   #+begin_src emacs-lisp
+     (defun gjg/update-spotify-exwm-window (songname)
+       "When running EXWM add current song name to buffer name"
+       ;; find the buffer
+       (when (frame-parameter (selected-frame) 'exwm-active)
+         (dolist (mybuf (cl-remove-if-not (lambda (row) (cl-search "Spotify" (buffer-name row))) (buffer-list)))
+           (with-current-buffer mybuf
+             (when (string= "Spotify" exwm-class-name) (exwm-workspace-rename-buffer (concat exwm-class-name " - " songname)))))))
+   #+end_src
+   #+begin_src bash :tangle ~/bin/update-spotify-exwm.sh
+     # Called from dunst when Spotify makes a notification (changes song)
+     # Dunst passes these parameters in order: appname, summary, body, icon, urgency
+     echo $0 >> /tmp/update-spotify.log
+     summary=$2
+     body=$3
+     # emacsclient -e "(gjg/update-spotify-exwm-window \"${summary} - ${body}\")"
+     # emacsclient -e "(gjg/update-spotify-exwm-window \"${body}\")"
+     emacsclient -e "(gjg/update-spotify-exwm-window \"${summary}\")"
+   #+end_src
+** Select apps such as secondary Emacs to start in char-mode, start floating/tiled etc.
+   Set certain windows to start in char-mode, floating/tiled etc
+   #+begin_src emacs-lisp
+     (setq exwm-manage-configurations
+           '(((member exwm-class-name '("Emacs" "Gnome-terminal" "konsole" "libreoffice-calc" "xdg-desktop-portal-gnome" "kitty" "UXTerm"))
+              char-mode t)
+             ;; ((member exwm-class-name '("Pavucontrol"))
+             ;;  floating t)
+             ;; ((and (string= "zoom" exwm-class-name) (string= "Settings" exwm-title))
+             ;;  floating t)
+             ))
+   #+end_src
+* Let's launch
+** Ohai
+
+** Start wallpaper with transparency first for aesthetics
+   Script below is generated with the [[file:Desktop.org][Org file referenced above]]
+   #+begin_src emacs-lisp
+     (set-opacity 90)
+     (async-start-process "wallpaper-thang"  "nohup" nil (expand-file-name "~/bin/schedule-rotate-wallpapers.sh") "&")
+   #+end_src
+** My specific config function
+   I did not want =ido= integration and wanted to evolve my config.  So I copied the
+   default config function and commenced modifying
+
+   This sets the amazing simulation keys.  What does that little miracle do for us? It
+   gives us Emacs keys in Firefox, that's what it does!  And other X applications, of
+   course.
+
+   So now we can hit =C-n= to move to the next line.  I use =C-s= to search in Firefox,
+   which translates to sending a =C-f=.  There's more I want to configure but I haven't
+   entirely figured out how this works in char mode, whether it works with the Super key
+   and so forth.
+
+   RESERVED for OBS Studio:
+   + Super-X
+   + Super-C
+   + Super-/
+
+
+   TODO: Define super-{left,right,0,1,2} to mean the same thing I have in the global
+   keymap: windmove etc.
+
+   TODO: Define simulation key for "Print"
+    #+begin_src emacs-lisp
+        (defun gjg/exwm-config ()
+      "Config for moi.  Initially this is a copy of exwm-config-example, but cutting out the ido integration"
+      ;; Set the initial workspace number.
+      ;; (unless (get 'exwm-workspace-number 'saved-value)
+      ;;   (setq exwm-workspace-number 2)) ; GJG changed from default
+      ;; Global keybindings.
+      ;; (unless (get 'exwm-input-global-keys 'saved-value)
+      (message "Setting exwm-input-global-keys")
+      (setq exwm-input-global-keys
+            `(
+          ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
+          (,(kbd "s-<escape>") . gjg/lock-screen)
+          ;; 's-r': Reset (to line-mode).
+          ([?\s-r] . exwm-reset)
+          ([?\s-s] . save-some-buffers)
+          ([?\s-f] . exwm-floating-toggle-floating)
+          ;; 's-w': Switch workspace.
+          ([?\s-w] . exwm-workspace-switch) ;; use this to switch workspaces, not S-<number>
+          ;; 's-&': Launch application. - poor man's albert/launchy
+          ([?\s-&] . (lambda (command)
+                   (interactive (list (read-shell-command "$ ")))
+                   (start-process-shell-command command nil command)))
+          ;; 's-&': Launch application. - poor man's albert/launchy
+          ([?\s-7] . (lambda (command)
+                   (interactive (list (read-shell-command "$ ")))
+                   (start-process-shell-command command nil command)))
+          ([?\s-o] .  gjg/other-window-with-winum)
+          ([s-left] . windmove-left)
+          ([s-right] . windmove-right)
+          ([s-up] . windmove-up)
+          ([s-down] . windmove-down)
+          ([M-s-up] . windmove-delete-up)
+          ([M-s-down] . windmove-delete-down)
+          ([M-s-left] . windmove-delete-left)
+          ([M-s-right] . windmove-delete-right)
+          (,(kbd "M-SPC") . gjg/launch-rofi)
+          (,(kbd "s-SPC") . app-launcher-run-app)
+          ([?\s-e] . gjg/ibuffer-only-exwm)
+          ([s-backspace] . bury-buffer)
+          ([?\s-q] . bury-buffer)
+          ([?\s-\\] . switch-to-buffer )
+          ([?\s-a] . gjg/open-work-agenda)
+          ([?\s-b] . gjg/switch-to-other-buffer)
+          ([?\s-0] . delete-window)
+          ([?\s-1] . delete-other-windows)
+          ([?\s-2] . gjg/split-window-below)
+          ([?\s-3] . gjg/split-window-right)
+          ;; ([?\s-c] . (lambda () (interactive) (call-process-shell-command "invert-color.sh")))
+          ([?\s-j] . org-clock-goto)
+          ([?\s-p] . playerctl-play-pause-song)
+          ([?\s-t] . toggle-truncate-lines)
+          ([?\s-g] . gjg/exwm-select-or-launch-logseq)
+          ([?\s-k] . gjg/exwm-select-slack)
+          ([?\s-c] . gjg/exwm-select-or-launch-google-chat)
+          ([?\s-y] . gjg/exwm-select-or-launch-spotify)
+          (,(kbd "<XF86MonBrightnessUp>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh +5")))
+          (,(kbd "<XF86MonBrightnessDown>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh -5")))
+          (,(kbd "<XF86AudioRaiseVolume>") . (lambda () (interactive) (gjg/volume "up")))
+          (,(kbd "<XF86AudioLowerVolume>") . (lambda () (interactive) (gjg/volume "down")))
+          (,(kbd "<XF86AudioMute>") . (lambda () (interactive) (gjg/volume "togmute")))
+          (,(kbd "<XF86AudioPlay>") . playerctl-play-pause-song)
+          ([?\s--] . gjg/exwm-select-zoom-meeting)
+          ([?\s-=] . gjg/exwm-select-teams-meeting)
+          ([?\s-.] . (lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
+          ([?\s-,] . gjg/polybar-start-or-toggle)
+
+          ;; GJG: I don't make much use of workspaces, so don't need the insta-create capability
+          ;; 's-N': Switch to certain workspace.
+          ;; ,@(mapcar (lambda (i)
+          ;;             `(,(kbd (format "s-%d" i)) .
+          ;;               (lambda ()
+          ;;                 (interactive)
+          ;;                 (exwm-workspace-switch-create ,i))))
+          ;;           (number-sequence 4 9))
+          ))
+      ;; )
+      ;; Line-editing shortcuts
+      (unless (get 'exwm-input-simulation-keys 'saved-value)
+        (setq exwm-input-simulation-keys
+          '(([?\C-b] . left)
+            ([?\C-f] . [right])
+            ([?\C-p] . [up])
+            ;; ([?\C-P] . [?\C-p]) ; Print
+            ([?\C-n] . [down])
+            ([?\C-a] . [home])
+            ([?\C-e] . [end])
+            ([?\M-v] . [prior])
+            ([?\C-v] . [next])
+            ([?\C-d] . [delete])
+            ([?\C-k] . [S-end delete])
+            ([?\C-l] . [?\C-l])
+            ([?\C-t] . [?\C-t])
+            ([?\C-s] . [?\C-f]) ; I'm gonna search/find a better way
+            ([?\M-w] . [?\C-c]) ; Copy that!
+            ;; ([?\S-p] . [?\C-p]) ; TODO Print - not working
+            ([?\C-y] . [?\C-v]) ; yank/paste
+            )))
+      ;; Enable EXWM
+      (exwm-enable)
+      ;; ;; Configure Ido
+      ;; (exwm-config-ido)
+      ;; Other configurations
+      ;; (exwm-config-misc)
+      )
+    #+end_src
+** Require packages and run my custom conifg
+ #+begin_src emacs-lisp
+   ;; (< 0 (length (with-current-buffer "*window-manager-error*" (buffer-string)))))
+   (require 'exwm)
+   (require 'exwm-config)
+   (gjg/exwm-config)
+ #+end_src
+** Configure hooks
+*** Deal with displays
+   When an external monitor is connected or disconnected, =exwm-randr-screen-change-hook=
+   is called.
+
+   The single command I currently run adds my external widescreen monitor to the left of
+   the internal display.
+
+   Disconnecting the external monitor was not working well until I started using
+   =autorandr= with a laptop-only and a monitor-connected profile.  I allow autodetection
+   of the appropriate profile with the =--change= parameter.  The solution came from a
+   [[https://www.reddit.com/r/emacs/comments/j0zda7/exwm_randr_config_for_laptop_disconnect/?utm_source=share&utm_medium=web2x&context=3][post on /r/emacs]]
+
+       #+begin_src emacs-lisp
+         (require 'exwm-randr)
+         ;; (setq exwm-randr-workspace-monitor-plist '(0 "DP-1")) ;; DP-1 is the big monitor, if connected
+         (setq exwm-randr-workspace-monitor-plist '(0 "DP-3" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
+
+         (add-hook 'exwm-randr-screen-change-hook
+                   (lambda()
+                     (message "Starting exwm-randr-screen-change-hook")
+                     (start-process-shell-command
+                      "autorandr" nil "autorandr --change ; autorandr"
+                      ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
+                      ;; WORKS WHEN ADDING MONITOR, NOT WHEN DISCONNECTING "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
+                      ;; and here's how I might get a mirrored setup
+                      ;; xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --mode 1920x1080 --same-as eDP-1
+                      )))
+       #+end_src
+*** Intelligently rename new buffers
+   By default, each new window's buffer is named by the 'class name': So Firefox, Slack,
+   Alacritty and so on.  This means that I will get similar buffer names for each new
+   Firefox window: Firefox<1>, Firefox<2>....
+
+   Examining both =exwm-class-name= and =exwm-title= allows us to rename the buffers so
+   that navigation via regular Emacs commands is made easy.
+
+       #+begin_src emacs-lisp
+         ;; Make class name the buffer name
+         (add-hook 'exwm-update-class-hook
+                   (lambda ()
+                     (cond
+                      (:else
+                       (exwm-workspace-rename-buffer exwm-class-name)))))
+         (add-hook 'exwm-update-title-hook
+                   (lambda ()
+                     (let ((browsers '(("Mozilla Firefox" . "firefox")
+                                       ("Personal - Microsoft​ Edge" . "edge")
+                                       ("Google Chrome" . "chrome")
+                                       ("Chromium" . "chromium"))))
+                           (cond
+                            ;; Browser titles
+                            ((s-starts-with-p "Mail - Greg Grubbs - Outlook - " exwm-title)
+                             (exwm-workspace-rename-buffer "email - outlook"))
+                            ((s-starts-with-p "Calendar - Greg Grubbs - Outlook" exwm-title)
+                             (exwm-workspace-rename-buffer "calendar - outlook"))
+                            ((s-starts-with-p "Google Hangouts - " exwm-title)
+                             (exwm-workspace-rename-buffer "hangouts"))
+                            ((s-matches? ".?Chat .+ mail.google.com" exwm-title)
+                             (exwm-workspace-rename-buffer (s-replace "Chat " "GChat " exwm-title)))
+                            ;; standalone apps
+                            ((string= "kitty" exwm-class-name)
+                             (exwm-workspace-rename-buffer (concat "kitty - " exwm-title)))
+                            ((string= "Slack" exwm-class-name)
+                             (exwm-workspace-rename-buffer (concat "slack stardog" "- " exwm-title)))
+                            ((string= "Logseq" exwm-class-name)
+                             (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name " App")))
+                            ((member exwm-class-name '("Eom" "Eog" "zoom" "Spotify" ))
+                             (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
+                            (:else
+                             (exwm-workspace-rename-buffer
+                              (s-replace-all browsers exwm-title)))))))
+       #+end_src
+*** Clean up on exit
+    #+begin_src emacs-lisp
+      (add-hook 'exwm-exit-hook
+                (lambda ()
+                  (async-start-process "exwm-exit" "pkill" nil "-f" "schedule-rotate-wallpapers.sh" )))
+    #+end_src
+
+** Start up the window manager
+   As noted above, I do not use the EXWM system tray.
+       #+begin_src emacs-lisp
+	 (exwm-enable)
+	 ;; (require 'exwm-systemtray)
+	 ;; (exwm-systemtray-enable)
+       #+end_src
+** Start up xrandr to react to display changes
+       #+begin_src emacs-lisp
+	 (exwm-randr-enable)
+       #+end_src
+
+** Deal with brightness and volume, since we don't have a DE
+   There is a =desktop-environment= package on Melpa, but it's overkill for what I need.
+   TODO: Figure out how to specify these keys and modify =exwm-input-global-keys=
+   instead.  This section doesn't work
+
+       #+begin_src emacs-lisp :tangle no
+         (exwm-input-set-key (kbd "<XF86MonBrightnessUp>")
+                             (lambda ()
+                               (interactive)
+                               (call-process-shell-command "gjg-bright.sh +5")))
+         (exwm-input-set-key (kbd "<XF86MonBrightnessDown>")
+                             (lambda ()
+                               (interactive)
+                               (call-process-shell-command "gjg-bright.sh -5")))
+         ;; N.B. keyboard backlight level (0 1 2) is kept in /sys/class/leds/dell\:\:kbd_backlight/brightness
+         (exwm-input-set-key (kbd "<XF86AudioRaiseVolume>")
+                             (lambda ()
+                               (interactive)
+                               (call-process-shell-command "amixer sset 'Master' 5%+")))
+         (exwm-input-set-key (kbd "<XF86AudioLowerVolume>")
+                             (lambda ()
+                               (interactive)
+                               (call-process-shell-command "amixer sset 'Master' 5%-")))
+         (exwm-input-set-key (kbd "<XF86AudioMute>")
+                             (lambda ()
+                               (interactive)
+                               (call-process-shell-command "amixer sset 'Master' toggle")))
+       #+end_src
+** Navigate and manipulate windows
+   Now that we will be running *everything* in Emacs, we will be doing a lot of window
+   switching and frame splitting.  Here are some ways to bring sanity to that process and
+   hopefully ease Emacs Pinky Syndrome.
+
+   =buffer-expose= is an alternative to alt-tab
+
+   TODO: look for alternative to buffer-expose, as it does not play
+   well with EXWM - many times the EXWM windows such as the browsers
+   become unusable, with click and normal keyboard events throwing
+   warnings/errors
+   Oneto consider:
+   + [[https://github.com/casouri/emacs-mission-control][GitHub - casouri/emacs-mission-control: Mac mission-control-like buffer switch]]
+     #+begin_src emacs-lisp :tangle no
+       (straight-use-package
+        '(mission-control
+          :type git
+          :host github
+          :repo "casouri/emacs-mission-control"))
+       (use-package mission-control :straight t
+         :config
+         (mcon-c-tab-setup-binding))
+     #+end_src
+** Use Emacs as app launcher (with completions)
+   [[file:img/emacs-app-launcher.png]]
+   #+begin_src emacs-lisp
+     (use-package app-launcher
+       :straight '(app-launcher :host github :repo "SebastienWae/app-launcher"))
+     (global-set-key (kbd "s-SPC") 'app-launcher-run-app)
+   #+end_src
+** Use Rofi as app launcher
+*** Generate the script that *should* be in the adi1090x repo
+    #+begin_src bash :tangle ~/bin/launch-rofi.sh
+      rofidir="$HOME/.config/rofi"
+      theme="${1:-type-1}"
+      style="${2:-style-1}"
+
+      echo "DEBUG: theme is ${theme}, style is ${style}"
+      rofi \
+          -show drun \
+          -theme ${rofidir}/launchers/${theme}/${style}.rasi
+    #+end_src
+*** Emacs function to call with crazy randomness
+   Here's a helper script to launch =adi1090x='s themed rofi configs
+   Nice theme/style combos (ref [[https://github.com/adi1090x/rofi#previews][adi1090x/rofi ≫ github.com]])
+   #+begin_src emacs-lisp
+     ;; alternative launch for use with my dotfiles config:
+     ;;    (call-process-shell-command "rofi -modi drun,run -show drun")
+     (defun gjg/launch-rofi ()
+       "Launch one of adi1090x rofi themes."
+       (interactive)
+
+       (let* ((preferidos '( (6 5) (6 6) (6 7) (7 6)))
+              (selected (nth (random (length preferidos)) preferidos)))
+         (call-process-shell-command (format "~/bin/launch-rofi.sh type-%d style-%d" (car selected) (nth 1 selected)))
+         ;; (message "Rofi launched with type %d and style %d " (car selected) (nth 1 selected))
+         ))
+   #+end_src
+** Start the OS processes
+   #+begin_src emacs-lisp
+     (call-process-shell-command (expand-file-name "~/bin/emacswm.sh"))
+     (setenv "EDITOR" "emacsclient")
+   #+end_src
