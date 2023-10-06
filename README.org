@@ -1854,14 +1854,9 @@
    #+end_src
 ** SPARQL
    #+begin_src emacs-lisp
-     (use-package sparql-mode :straight t
-       :mode "\\.\\(sparql\\|rq\\|sms\\|sms2\\)\\'"
-       ;; :hook (sparql-mode . lsp-deferred)
-       ;; :config
-       ;; (add-to-list 'lsp-language-id-configuration '(sparql-mode . "sparql"))
-       ;; :custom
-       ;; (sparql-language-server)
-       )
+     (straight-use-package
+      '(sparql-mode :type git :host github :repo "ljos/sparql-mode"
+                    :fork (:host github :branch "stardog-babel" :repo "gregoryg/sparql-mode")))
    #+end_src
 ** SQL
 *** Crazy removal of sql-login-delay
