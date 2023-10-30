@@ -21,9 +21,9 @@
   (push '(menu-bar-lines . 0) default-frame-alist))
 (push '(tool-bar-lines . 0) default-frame-alist)
 (push '(vertical-scroll-bars) default-frame-alist)
-(defvar better-gc-cons-threshold 335544320 ; 512MB
-  "The default value to use for `gc-cons-threshold'.
-;; If you experience freezing, decrease this.  If you experience stuttering, increase this.")
+;; (defvar better-gc-cons-threshold 335544320 ; 512MB
+;;   "The default value to use for `gc-cons-threshold'.
+;; ;; If you experience freezing, decrease this.  If you experience stuttering, increase this.")
 
 (add-hook 'emacs-startup-hook
           (lambda ()
