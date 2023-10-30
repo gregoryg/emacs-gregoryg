@@ -101,6 +101,7 @@
           cmake \
           compton \
           cowsay \
+          dbus-x11 \
           discount \
           dunst \
           evdi-dkms \
@@ -123,6 +124,7 @@
           ipython3 \
           jupyter \
           libreoffice-gtk3 \
+          libnotify-bin \
           libtool-bin \
           keychain \
           locate \
