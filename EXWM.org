@@ -448,8 +448,6 @@
              ))
    #+end_src
 * Let's launch
-** Ohai
-
 ** Start wallpaper with transparency first for aesthetics
    Script below is generated with the [[file:Desktop.org][Org file referenced above]]
    #+begin_src emacs-lisp
@@ -488,6 +486,8 @@
       ;; Global keybindings.
       ;; (unless (get 'exwm-input-global-keys 'saved-value)
       (message "Setting exwm-input-global-keys")
+      ;; Use XIM (emacs input method for X windows)
+      (push ?\C-\\ exwm-input-prefix-keys) ;; Use toggle-input-method binding
       (setq exwm-input-global-keys
             `(
           ([?\s-i] . exwm-input-toggle-keyboard) ; toggle line/char mode
