@@ -2630,6 +2630,7 @@
                ("optum" "~/emacs/pixmaps/optum-logo-512x512.png" nil nil :ascent center :height 48)
                ("picpay" "~/emacs/pixmaps/picpay-logo-512x512.png" nil nil :ascent center :height 48)
                ("sherwin" "~/emacs/pixmaps/Paint-3D-icon-logo.png" nil nil :ascent center :height 48)
+               ("sk-telecom" "~/emacs/pixmaps/sk-telecom-image-logo-512x512.png" nil nil :ascent center :height 48)
                ("UL" "~/emacs/pixmaps/UL_Mark.svg.png" nil nil :ascent center :height 48)
                ("voicebox-dev" "~/emacs/pixmaps/pepe-le-pew-logo-512x512.png" nil nil :ascent center :height 48)
                ("vizient" "~/emacs/pixmaps/vizient-logo-512x512.png" nil nil :ascent center :height 48)))
