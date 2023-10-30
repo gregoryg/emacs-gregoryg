@@ -2017,6 +2017,50 @@
                 (sql . t)
                 )))
    #+end_src
+
+* Devops
+** Working with containers
+   This is largely a function of TRAMP.  I have added simple ways to
+   get Dired and =shell-mode= in
+   + Docker containers using =docker-tramp= package
+   + DC/OS tasks with the =dcos= TRAMP method
+   + Kubernetes pods with the =kube= TRAMP method.  This will grab a
+     shell on the first container defined in the pod
+   + Google Cloud Shell with =gshell= TRAMP method
+
+** Highlight Terraform and Ansible messages
+   This function highlights the typical lines for:
+   + Terraform (Creation/Destruction complete)
+   + Ansible (RUNNING/STAGE/TASK/PLAY)
+   + Docker build (Step n/n)
+
+  #+begin_src emacs-lisp
+    (defun gjg/highlight-terraform-stuff ()
+      (interactive)
+      ; Terraform patterns
+      (highlight-regexp "Creation complete" 'hi-green)
+      (highlight-regexp "Destruction complete" 'hi-pink)
+      ; Docker build
+      (highlight-regexp "Step [0-9]+/[0-9]+ : [A-Z]+" 'hi-aquamarine)
+      ; Ansible
+      (highlight-regexp "\\(RUNNING\\|STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
+
+    (defun gjg/highlight-squid ()
+      (interactive)
+      ;; Registry pull-through cache
+      (highlight-regexp "^HIT" 'hi-green)
+      (highlight-regexp "^MISS" 'hi-pink)
+      ;; Docker pull-through registry patterns
+      (highlight-regexp "\"HIT\"" 'hi-green)
+      (highlight-regexp "\"MISS\"" 'hi-pink)
+      ;; Squid caching patterns
+      (highlight-regexp "[A-Z_]*_HIT[A-Z_]*" 'hi-green)
+      (highlight-regexp "[A-Z_]*_MISS[A-Z_]*" 'hi-pink)
+      (highlight-regexp "[A-Z_]*_UNMODIFIED[A-Z_]*" 'hi-green)
+      (highlight-regexp "application/[-a-z0-9A-Z]+" 'hi-yellow)
+      (highlight-regexp "/[^/]+\.rpm" 'hi-black-b)
+      (highlight-regexp "/[^/]+\.deb" 'hi-black-b))
+  #+end_src
 * Org mode stuff
 
 ** Org Contributions package
