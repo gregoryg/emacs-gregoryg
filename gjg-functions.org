@@ -77,15 +77,6 @@ A sort-of package with customization framework.  The famed =gjg= package.
        :type 'string
        :group 'gjg)
 
-     (defcustom gjg/stardog-connections-alist
-       nil
-       "List of stardog connections "
-       :type '(alist :key-type (symbol :tag "Connection name")
-                     :value-type (list (string :tag "Endpoint URL")
-                                       (string :tag "Database name")))
-       :group 'gjg
-       :version "0.1")
-
      (defcustom gjg/nag-voice-enabled nil
        "Enable or disable voice message for the work nag timer."
        :type 'boolean
