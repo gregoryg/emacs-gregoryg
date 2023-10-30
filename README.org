@@ -3290,6 +3290,10 @@
                                (step-by-step "The classic GPT smarter-upper"
                                              "Let's work this out in a step by step way to be sure we have the right answer"))))
    #+end_src
+** Vertico, anyone?
+   #+begin_src emacs-lisp
+     (use-package vertico :straight t)
+   #+end_src
 * Final steps
 #+begin_src emacs-lisp
 (shell (get-buffer-create "sh1"))
