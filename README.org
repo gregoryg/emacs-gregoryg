@@ -3095,6 +3095,7 @@
 ** Behavior
 #+begin_src emacs-lisp
   (setq org-adapt-indentation t
+        org-fontify-done-headline nil ; do *not* fontify entire line of DONE headlines
         org-agenda-window-setup 'current-window ; make c-y pay attention to current level
         org-yank-adjusted-subtrees t
         ;; org-yank-folded-subtrees nil
