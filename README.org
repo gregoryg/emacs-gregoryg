@@ -1744,7 +1744,6 @@
           ("sms"    . "*.{sms,sms2}")))
        (rg-hide-command t))
    #+end_src
-
 * Presentation and screencasting
   Most everything I use is encoded in my own Org-as-presentation method using the
   ded/org-show-{next,prev}-heading-tidily bound to global keys
@@ -1819,6 +1818,56 @@
 (add-to-list 'auto-mode-alist '("\\.cue$" . bazel-mode))
 
     #+end_src
+** Lisp
+*** Common Lisp
+    Here we will assume SBCL
+    + Install SBCL from [[https://www.sbcl.org/getting.html][the website]]
+    + [[https://lispcookbook.github.io/cl-cookbook/getting-started.html#install-quicklisp][Install Quicklisp]]
+    + [[https://lispcookbook.github.io/cl-cookbook/getting-started.html#install-quicklisp][Getting started with Common Lisp]]
+    + [[https://github.com/joaotavora/sly][joaotavora/sly: Sylvester the Cat's Common Lisp IDE ≫ github.com]]
+    #+begin_src emacs-lisp :tangle no
+      (load (expand-file-name "~/quicklisp/slime-helper.el"))
+      ;; Replace "sbcl" with the path to your implementation
+      (setq inferior-lisp-program "sbcl")
+    #+end_src
+    #+begin_src emacs-lisp
+      (use-package sly :straight t
+        :config
+        (setq inferior-lisp-program "sbcl"
+              org-babel-lisp-eval-fn 'sly-eval
+              sly-symbol-completion-mode nil)
+        (electric-pair-local-mode 1))
+    #+end_src
+
+*** Guile Scheme
+    +
+   Setup for Guile Scheme - primarily for use on Guix system
+   #+begin_src emacs-lisp :tangle no
+     (use-package geiser :straight t
+       :config
+       (setq geiser-default-implementation 'guile
+             geiser-active-implementations '(guile)
+             geiser-implementations-alist '(((regexp "\\.scm$") guile))
+             ;; geiser-repl-default-port 44555 ; for Gambit Scheme (from @daviwil)
+             ))
+     (use-package geiser-guile :straight t)
+   #+end_src
+*** Racket Scheme
+    :PROPERTIES:
+    :ID:       4c49ed92-563b-488a-988a-de54a24dd7c1
+    :END:
+   #+begin_src emacs-lisp :tangle no
+     (use-package geiser :straight t
+       :config
+       (setq geiser-default-implementation 'racket
+             geiser-active-implementations '(racket)
+             geiser-implementations-alist '(((regexp "\\.scm$") racket))
+             ;; geiser-repl-default-port 44555 ; for Gambit Scheme (from @daviwil)
+             ))
+     (use-package geiser-racket :straight t  )
+     (with-eval-after-load 'eglot
+       (add-to-list 'eglot-server-programs '(scheme-mode . ("racket" "-l" "racket-langserver"))))
+   #+end_src
 ** Python
 *** LSP Language Server
     Just make sure the language server is installed before using LSP with Python
