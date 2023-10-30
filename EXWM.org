@@ -620,6 +620,7 @@
                       ;; and here's how I might get a mirrored setup
                       ;; xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --mode 1920x1080 --same-as eDP-1
                       )))
+         (exwm-randr-enable)
        #+end_src
 *** Intelligently rename new buffers
    By default, each new window's buffer is named by the 'class name': So Firefox, Slack,
