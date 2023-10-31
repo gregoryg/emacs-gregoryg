@@ -2382,7 +2382,7 @@
        ,** Next steps
        "
                  "Call|Meeting|Task"
-                 (concat "Solutions Team|SE Team|PS|Fuller|Marketing|Sales|Engineering|Product|"
+                 (concat "Solutions Team|SE Team|PS|Marketing|Sales|Engineering|Product|"
                          (s-join "|"
                                  (mapcar #'org-get-title
                                          (directory-files-recursively "~/projects/private-orgmode/stardog/engagements/"
