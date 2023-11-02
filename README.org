@@ -663,9 +663,7 @@
     foreground colors very slightly.
     #+begin_src emacs-lisp
       ;; make the modus themes act more like my brutalist theme in Org
-      ;; (require 'modus-themes)
-      (when (< emacs-major-version 30)
-        (use-package modus-themes :straight t))
+      (use-package modus-themes :straight t)
 
       (defun gjg/my-modus-themes-custom-faces ()
         "Tweak faces"
