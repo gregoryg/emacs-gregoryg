@@ -1004,7 +1004,7 @@
        #+begin_example
          Error running timer ‘corfu--auto-complete-deferred’: (void-variable dabbrev-abbrev-skip-leading-regexp)
        #+end_example
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (require 'dabbrev)
      (use-package corfu :straight t
        ;; Optional customizations
