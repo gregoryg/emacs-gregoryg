@@ -405,7 +405,7 @@
       (defun gjg/exwm-select-teams-meeting ()
         "Select the running Microsoft Teams window if it's running."
         (interactive)
-        (gjg/exwm-switch-to-buffer-or-launch "Microsoft Teams Classic ≫ teams.microsoft.com"))
+        (gjg/exwm-switch-to-buffer-or-launch "Microsoft Teams classic ≫ teams.microsoft.com"))
     #+end_src
 *** Function to switch quickly to good ole Slack
     #+begin_src emacs-lisp
