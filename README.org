@@ -3161,7 +3161,7 @@
               :fork (:host github :branch "gregoryg" :repo "gregoryg/gptel")))
      (setq gptel-default-mode 'org-mode
            gptel-use-curl nil
-           gptel-model 'gpt-4)
+           gptel-model "gpt-4")
      ;; defer nothing
      (require 'gptel)
      (require 'gptel-curl)
