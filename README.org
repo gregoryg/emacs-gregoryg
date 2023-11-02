@@ -1684,7 +1684,7 @@
     #+begin_src emacs-lisp
       (use-package ttl-mode :straight t
         :init
-        (add-to-list 'auto-mode-alist '("\\.\\(n3\\|ttl\\|trig\\)\\'" . ttl-mode))
+        (add-to-list 'auto-mode-alist '("\\.\\(n3\\|sms\\|sms2\\|ttl\\|trig\\)\\'" . ttl-mode))
         :config
         (setq ttl-indent-level 2))
     #+end_src
