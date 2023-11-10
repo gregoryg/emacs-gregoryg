@@ -1904,6 +1904,7 @@
      (straight-use-package
       '(sparql-mode :type git :host github :repo "ljos/sparql-mode"
                     :fork (:host github :branch "stardog-babel" :repo "gregoryg/sparql-mode")))
+     (add-to-list 'auto-mode-alist '("\\.\\(sparql\\|rq\\)\\'" . sparql-mode))
      (load-library "~/projects/emacs/stardog-sparql/stardog-sparql")
    #+end_src
 ** SQL
