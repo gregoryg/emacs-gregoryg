@@ -2625,7 +2625,7 @@
                ("hagerty" "~/emacs/pixmaps/hagerty.png" nil nil :ascent center :height 48)
                ("ida" "~/emacs/pixmaps/ida-logo-512x512.png" nil nil :ascent center :height 48)
                ("investec" "~/emacs/pixmaps/investec-logo-512x512.png" nil nil :ascent center :height 48)
-               ("john-deere" "~/emacs/pixmaps/tractor-flat-512x512.png" nil nil :ascent center :height 48)
+               ("deere" "~/emacs/pixmaps/tractor-flat-512x512.png" nil nil :ascent center :height 48)
                ("mars" "~/emacs/pixmaps/mars-logo-512x512.png" nil nil :ascent center :height 48)
                ("microsoft" "~/emacs/pixmaps/microsoft-logo-512x512.png" nil nil :ascent center :height 48)
                ("morgan" "~/emacs/pixmaps/dollar-blue-512x512.png" nil nil :ascent center :height 48)
