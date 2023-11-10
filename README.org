@@ -3128,7 +3128,7 @@
   #+begin_src bash
     sudo apt-get -y install gawk
   #+end_src
-  #+begin_src emacs-lisp :tangle no
+  #+begin_src emacs-lisp
     ;; (straight-use-package 'hydra)
     (use-package hydra :straight t)
     (use-package org-fc :straight t
