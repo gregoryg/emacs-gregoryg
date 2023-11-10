@@ -15,6 +15,8 @@
 #+property: header-args:emacs-lisp :tangle ~/.emacs.d/launch-exwm.el :results none
 #+property: header-args:bash :comments both :shebang #!/usr/bin/env bash :results none
 
+This entire file provides my configuration, required Emacs supporting packages and function, and
+
 * Load EXWM and dependencies
   #+begin_src emacs-lisp
     (use-package exwm :straight t)
@@ -394,7 +396,24 @@
         (gjg/exwm-switch-to-buffer-or-launch "Spotify" "com.spotify.Client"))
     #+end_src
 *** Function to switch quickly to Zoom Meeting
-    #+begin_src emacs-lisp
+    #+begin_src
+
+*** Assistant: #+begin_src emacs-lisp
+#+begin_src emacs-lisp
+(defun gjg/exwm-select-or-launch-zoom ()
+        "Select the running Zoom meeting window in EXWM, or launch the Zoom app"
+        (interactive)
+        (gjg/exwm-switch-to-buffer-or-launch "Zoom Meeting" "zoom"))
+#+end_src
+#+end_src
+
+This function first checks if there is already a Zoom meeting window
+running by looking for a buffer with "Zoom Meeting" in its name. If it
+finds one, it switches focus to it. If it doesn't find one, it calls the
+=zoom= command to launch a new instance of the Zoom app. The =zoom=
+command must be mapped to the appropriate command to launch Zoom on your
+system.
+emacs-lisp
       (defun gjg/exwm-select-zoom-meeting ()
         "Select the running Zoom Meeting window if it's running."
         (interactive)
