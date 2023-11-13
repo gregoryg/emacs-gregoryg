@@ -865,8 +865,6 @@
         )
       (require 'denote)
 
-      ;;(setq denote-dired-directories '("~/gregj-notes/"))
-      ;; (add-to-list 'denote-dired-directories "~/gregj-notes/")
       (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories)
       (add-to-list 'denote-dired-directories (expand-file-name "~/gregj-notes/journals/"))
       (custom-set-faces
@@ -2571,8 +2569,6 @@
               (setq engagement-files (cons file engagement-files)))
             )
           )
-      ;; (let ((engagement-files (directory-files-recursively (concat (f-dirname gjg/employer-org-file) "/engagements/")
-      ;;                                                      "\\`[^.].*\\.org\\(\\.gpg\\)?\\'")))
         (add-to-list 'engagement-files gjg/employer-org-file t)
         (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)
         ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)
