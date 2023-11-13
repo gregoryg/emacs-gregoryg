@@ -1899,6 +1899,18 @@
      ;; (setq ansi-color-drop-regexp
      ;;       "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
    #+end_src
+** R
+   #+begin_src emacs-lisp :tangle no
+     (use-package polymode :straight t
+       :config
+       (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
+       (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
+       (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode)))
+     (use-package ess :straight t
+       :config
+       (setq ess-sas-edit-keys-toggle nil)
+       :init (require 'ess-site))
+   #+end_src
 ** SPARQL
    #+begin_src emacs-lisp
      (straight-use-package
