@@ -2165,6 +2165,7 @@
                                               ("sJ" . "src javascript")
                                               ("sl" . "src emacs-lisp")
                                               ("sL" . "src lisp") ;; Common Lisp
+                                              ("sm" . "src gfm") ;; Github-flavored markdown
                                               ("so" . "src org")
                                               ("sp" . "src python")
                                               ("sP" . "src jupyter-python")
