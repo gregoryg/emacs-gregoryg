@@ -11,7 +11,7 @@
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 28.0.50 with nativecomp
-#+setupfile: ~/projects/emacs/org-html-themes/org/theme-readtheorg.setup
+#+setupfile: ~/projects/emacs/org-themes/src/readtheorg_inline/readtheorg_inline.theme
 #+PROPERTY: header-args:emacs-lisp :results none
 #+PROPERTY: header-args:bash :results none :comments both :shebang #!/usr/bin/env bash
 * Overview
