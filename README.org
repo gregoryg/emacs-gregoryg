@@ -2187,7 +2187,11 @@
                   (when (buffer-narrowed-p)
                     (message "Blocks were tangled from narrowed buffer. Check *Messages* for count." (buffer-name)))))
     #+end_src
-
+** Org tidy
+   hides property drawers - good for use when presenting
+   #+begin_src emacs-lisp
+     (use-package org-tidy :straight t)
+   #+end_src
 ** Org num mode
    #+begin_src emacs-lisp :tangle no
      ;; for use with org-num-mode
