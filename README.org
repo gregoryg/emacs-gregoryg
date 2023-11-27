@@ -602,6 +602,7 @@
                              (mode . yaml-mode)
                              (mode . json-mode)))
               ("Code" (derived-mode .  prog-mode))
+              ("Images" (mode . image-mode))
               ("Magit" (or (mode . magit-diff-mode)
                            (mode . magit-status-mode)
                            (mode . magit-process-mode)
