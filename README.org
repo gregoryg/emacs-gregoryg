@@ -797,11 +797,17 @@
 ** Hide the little bleeder altogether
   Set to hide globally, then bind a Super key to toggle only the current buffer. Super
   nice to use when screen sharing - provides ={global-}hide-mode-line-mode=
+
+  NOTE: Because global-hide-mode-line-mode does not work in newly created image buffers - and because the project appears to be abandoned, I'm using =mask-mode-line= package instead
+
   #+begin_src emacs-lisp
-    (use-package hide-mode-line :straight t
-      :config
-      (global-hide-mode-line-mode 0)
-      (bind-key "s-m" 'mood-line-mode))
+    ;; (use-package hide-mode-line :straight t
+    ;;   :config
+    ;;   (global-hide-mode-line-mode 0))
+
+    (straight-use-package
+     '(mask-mode-line :type git :host github :repo "ricardoricho/mask-mode-line"
+                   :fork (:host github :branch "main" :repo "gregoryg/mask-mode-line")))
   #+end_src
 * EXWM
   Emacs as tiling window manager for X11
