@@ -3178,6 +3178,16 @@
    =straight-use-package= to pull from my fork and my branch.
 
    #+begin_src emacs-lisp
+     ;; Try my system prompt builder function
+     (let ((build-directives-fun "~/projects/ai/AIPIHKAL/gptel-build-directives.el"))
+       (when (f-exists-p build-directives-fun)
+         (load build-directives-fun)
+         (custom-set-variables '(gptel-directives
+                                 (gjg/gptel-build-directives
+                                  "~/projects/ai/AIPIHKAL/system-prompts/")))))
+   #+end_src
+
+   #+begin_src emacs-lisp
      (straight-use-package
       '(gptel :type git :host github :repo "karthink/gptel"
               :fork (:host github :branch "gregoryg" :repo "gregoryg/gptel")))
@@ -3295,7 +3305,8 @@
 ** And my custom directives (system prompts)
    TODO: make a template for this so it shows properly in Customize
 
-   #+begin_src emacs-lisp
+
+   #+begin_src emacs-lisp :tangle no
      (custom-set-variables '(gptel-directives
                              '(
                                (default-original
