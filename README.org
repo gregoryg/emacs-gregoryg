@@ -3198,18 +3198,14 @@
      (require 'gptel)
      (require 'gptel-curl)
      (require 'gptel-transient)
-     (gptel-make-openai
-      "ChatGPT"
-      :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-      :key 'gptel-api-key
-      :stream nil
-      :models '("gpt-3.5-turbo" "gpt-3.5-turbo-16k" "gpt-4" "gpt-4-32k" "gpt-4-1106-preview"))
-     (gptel-make-ollama
-      "Ollama"                               ;Any name of your choosing
-      :host "localhost:11434"                ;Where it's running
-      :models '("mistral:latest" "mistral:instruct" "llama2:latest" )            ;Installed models
-      :stream nil)                             ;Stream responses
+     ;; (gptel-make-openai
+     ;;  "ChatGPT"
+     ;;  :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+     ;;  :key 'gptel-api-key
+     ;;  :stream nil
+     ;;  :models '("gpt-3.5-turbo" "gpt-3.5-turbo-16k" "gpt-4" "gpt-4-32k" "gpt-4-1106-preview"))
 
+     (when
    #+end_src
 
 *** And my supplementos
