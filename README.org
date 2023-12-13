@@ -200,7 +200,7 @@
              ((eq window-system 'w32)
               (set-face-font 'default '"-outline-Source Code Pro-normal-normal-normal-mono-17-*-*-*-c-*-iso8859-1"))
              ((eq window-system 'x)
-              (set-frame-font "Hack-14")
+              (set-frame-font "Hack-17")
               ;; (set-frame-font "Inconsolata-16")
               )))
      (gjg/set-frame-font)
