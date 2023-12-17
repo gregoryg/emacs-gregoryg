@@ -3305,7 +3305,7 @@
     ;; debug gptel--transform-response
     ;; What are popular genres of acoustic string music, output as topics and subtopics in markdown?
   #+end_src
-** And my custom directives (system prompts)
+*** And my custom directives (system prompts)
    TODO: make a template for this so it shows properly in Customize
 
 
