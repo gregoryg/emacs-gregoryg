@@ -629,7 +629,7 @@
        (gjg/ibuffer-preview))
      (global-set-key (kbd "s-e") 'gjg/ibuffer-only-exwm)
      (defun gjg/ibuffer-preview ()
-       "View the current file in other window but to do select"
+       "View the current file in other window but do not select"
        (interactive)
        (delete-other-windows)
        (when (not (window-parent)) ;; only one window, so split
