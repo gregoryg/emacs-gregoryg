@@ -1250,6 +1250,18 @@
      Type=Application
      Categories=Community;sm
    #+end_src
+** Stardog Local Launchpad
+   #+begin_src conf :tangle ~/.local/share/applications/stardog-studio.desktop
+     [Desktop Entry]
+     Name=Stardog Launchpad
+     Comment=
+     Exec=xdg-open http://172.16.17.241:8080
+     Icon= /home/gregj/.local/share/pixmaps/stardog-logo.png
+     Terminal=false
+     Type=Application
+     Categories=Database;Graph;dh
+   #+end_src
+
 ** Stardog Studio
    #+begin_src conf :tangle ~/.local/share/applications/stardog-studio.desktop
      [Desktop Entry]
