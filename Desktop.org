@@ -1255,7 +1255,7 @@
      [Desktop Entry]
      Name=Stardog Launchpad
      Comment=
-     Exec=xdg-open http://172.16.17.241:8080
+     Exec=xdg-open http://launchpad-homelab-172.16.17.241.dnsify.me:8080
      Icon= /home/gregj/.local/share/pixmaps/stardog-logo.png
      Terminal=false
      Type=Application
