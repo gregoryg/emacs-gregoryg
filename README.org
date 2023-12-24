@@ -719,12 +719,14 @@
      (add-to-list 'display-buffer-alist '("^\\*helpful" display-buffer-reuse-mode-window))
      ;; Change behavior of Magit status (status only, not magit-diff, magit-process etc)
      (add-to-list 'display-buffer-alist '("^magit:" display-buffer-same-window))
+     ;; gptel
+     (add-to-list 'display-buffer-alist '(".*ChatGPT\\*" display-buffer-same-window))
      ;; All interactive SQL modes
      (add-to-list 'display-buffer-alist
-                  '((lambda (buffer action)
-                      (with-current-buffer buffer
-                        (derived-mode-p 'sql-interactive-mode)))
-                    display-buffer-same-window))
+		  '((lambda (buffer action)
+		      (with-current-buffer buffer
+			(derived-mode-p 'sql-interactive-mode)))
+		    display-buffer-same-window))
    #+end_src
 
    + Here's an example of wrangling a window to display in a direction, with width and
