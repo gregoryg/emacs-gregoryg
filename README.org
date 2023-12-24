@@ -3186,48 +3186,6 @@
 *** Create custom Together.AI backend
     This makes use of the [[https://docs.together.ai/docs/openai-api-compatibility][OpenAI-compatible API]], which makes the backend generation super simple!
 
-
-  #+begin_src emacs-lisp
-    ;; pandoc -f gfm -t org|sed '/:PROPERTIES:/,/:END:/d'
-
-    (defun gjg/gptel--convert-markdown->org (str)
-      "Convert string STR from markdown to org markup using Pandoc.
-    Remove the property drawers Pandoc insists on inserting for org output."
-      ;; point will be at the last user position - assistant response will be after that to the end of the buffer (hopefully without the next user prompt)
-      ;; So let's
-      (interactive)
-      (let* ((org-prefix (alist-get 'org-mode gptel-prompt-prefix-alist))
-             (shift-indent (progn (string-match "^\\(\\*+\\)" org-prefix) (length (match-string 1 org-prefix))))
-             (lua-filter (when (file-readable-p "~/.config/pandoc/gfm_code_to_org_block.lua")
-                           (concat "--lua-filter=" (expand-file-name "~/.config/pandoc/gfm_code_to_org_block.lua"))))
-             (temp-name (make-temp-name "gptel-convert-" ))
-             (sentence-end "\\([.?!
-    ]\\)"))
-        ;; TODO: consider placing original complete response in the kill ring
-        ;; (with-temp-buffer
-        (with-current-buffer (get-buffer-create (concat "*" temp-name "*"))
-          (insert str)
-          (write-region (point-min) (point-max) (concat "/tmp/" temp-name ".md" ))
-          (shell-command-on-region (point-min) (point-max)
-                                   (format "pandoc -f gfm -t org --shift-heading-level-by=%d %s|sed '/:PROPERTIES:/,/:END:/d'" shift-indent lua-filter)
-                                   nil ;; use current buffer
-                                   t   ;; replace the buffer contents
-                                   "*gptel-convert-error*")
-          (goto-char (point-min))
-          (insert (format "%sAssistant: %s\n" (alist-get 'org-mode gptel-prompt-prefix-alist) (or (sentence-at-point t) "[resp]")))
-          (goto-char (point-max))
-          (buffer-string))))
-
-    (defun gjg/gptel-convert-org-with-pandoc (content buffer)
-      "Transform CONTENT acoording to required major-mode using `pandoc'.
-    Currenly only `org-mode' is supported
-    This depends on the `pandoc' binary only, not on the  Emacs Lisp `pandoc' package."
-      (pcase (buffer-local-value 'major-mode buffer)
-        ('org-mode (gjg/gptel--convert-markdown->org content))
-        (_ content)))
-
-    (custom-set-variables '(gptel-response-filter-functions
-                            '(gjg/gptel-convert-org-with-pandoc)))
     (defun gjg/gptel--annotate-directives (s)
       "Make the directives selection look fancy."
       (let* ((item (assoc (intern s) minibuffer-completion-table))
@@ -3329,7 +3287,11 @@
                                    "~/projects/ai/AIPIHKAL/system-prompts/")))))
     #+end_src
 *** And my supplementos
+**** Convert Markdown LLM responses to Org Mode using Pandoc
+     This ultimately replaces the Markdown -> Org Mode conversion built in to =gptel=
 
+     #+begin_src emacs-lisp
+       ;; pandoc -f gfm -t org|sed '/:PROPERTIES:/,/:END:/d'
 
    #+begin_src emacs-lisp :tangle no
      (custom-set-variables '(gptel-directives
@@ -3492,6 +3454,45 @@
 
      An elderly Italian woman with wrinkles, sitting in a local cafe filled with plants and wood decorations, looking out the window, wearing a white top with light purple linen blazer, natural afternoon light shining through the window --ar 3:4
 
+       (defun gjg/gptel--convert-markdown->org (str)
+         "Convert string STR from markdown to org markup using Pandoc.
+         Remove the property drawers Pandoc insists on inserting for org output."
+         ;; point will be at the last user position - assistant response will be after that to the end of the buffer (hopefully without the next user prompt)
+         ;; So let's
+         (interactive)
+         (let* ((org-prefix (alist-get 'org-mode gptel-prompt-prefix-alist))
+                (shift-indent (progn (string-match "^\\(\\*+\\)" org-prefix) (length (match-string 1 org-prefix))))
+                (lua-filter (when (file-readable-p "~/.config/pandoc/gfm_code_to_org_block.lua")
+                              (concat "--lua-filter=" (expand-file-name "~/.config/pandoc/gfm_code_to_org_block.lua"))))
+                (temp-name (make-temp-name "gptel-convert-" ))
+                (sentence-end "\\([.?!
+         ]\\)"))
+           ;; TODO: consider placing original complete response in the kill ring
+           ;; (with-temp-buffer
+           (with-current-buffer (get-buffer-create (concat "*" temp-name "*"))
+             (insert str)
+             (write-region (point-min) (point-max) (concat "/tmp/" temp-name ".md" ))
+             (shell-command-on-region (point-min) (point-max)
+                                      (format "pandoc -f gfm -t org --shift-heading-level-by=%d %s|sed '/:PROPERTIES:/,/:END:/d'" shift-indent lua-filter)
+                                      nil ;; use current buffer
+                                      t   ;; replace the buffer contents
+                                      "*gptel-convert-error*")
+             (goto-char (point-min))
+             (insert (format "%sAssistant: %s\n" (alist-get 'org-mode gptel-prompt-prefix-alist) (or (sentence-at-point t) "[resp]")))
+             (goto-char (point-max))
+             (buffer-string))))
+
+       (defun gjg/gptel-convert-org-with-pandoc (content buffer)
+         "Transform CONTENT acoording to required major-mode using `pandoc'.
+         Currenly only `org-mode' is supported
+         This depends on the `pandoc' binary only, not on the  Emacs Lisp `pandoc' package."
+         (pcase (buffer-local-value 'major-mode buffer)
+           ('org-mode (gjg/gptel--convert-markdown->org content))
+           (_ content)))
+
+       (custom-set-variables '(gptel-response-filter-functions
+                               '(gjg/gptel-convert-org-with-pandoc)))
+     #+end_src
 
      # OUTPUT
      Your output should just be an plain list of descriptions. No numbers, no extraneous labels, no hyphens. The separator is just a double newline. Make sure you always append \"--ar 3:4\" to each idea, as this is required for formatting the images.
