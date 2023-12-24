@@ -3186,13 +3186,6 @@
 *** Create custom Together.AI backend
     This makes use of the [[https://docs.together.ai/docs/openai-api-compatibility][OpenAI-compatible API]], which makes the backend generation super simple!
 
-    (defun gjg/insert-clean-website-text (url)
-      "Run a shell command to return clean body text from the given URL."
-      (interactive)
-      (if (executable-find "text-from-url.py")
-          (insert (shell-command-to-string (concat "text-from-url.py " url)))
-        (message "Command not found: text-from-url.py")
-          )
      #+begin_src emacs-lisp
      (gptel-make-openai ; but for Togeher.AI compatible API
       "together.ai"
@@ -3496,6 +3489,16 @@
            (setq-local gptel--system-message (nth 2 (assoc directive-key gptel-directives)))))
      #+end_src
 **** Possibly useful function: insert cleaned text from URL into buffer
+     #+begin_src emacs-lisp
+       (defun gjg/insert-clean-website-text (url)
+         "Run a shell command to return clean body text from the given URL."
+         (interactive)
+         (if (executable-find "text-from-url.py")
+             (insert (shell-command-to-string (concat "text-from-url.py " url)))
+           (message "Command not found: text-from-url.py")
+           )
+         )
+     #+end_src
 
      # OUTPUT
      Your output should just be an plain list of descriptions. No numbers, no extraneous labels, no hyphens. The separator is just a double newline. Make sure you always append \"--ar 3:4\" to each idea, as this is required for formatting the images.
