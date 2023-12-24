@@ -3189,22 +3189,6 @@
      ;;  :stream nil
      ;;  :models '("gpt-3.5-turbo" "gpt-3.5-turbo-16k" "gpt-4" "gpt-4-32k" "gpt-4-1106-preview"))
 
-     (when
-         (executable-find "ollama")
-       (require 'cl-lib)
-       (let* ((ollama-process (start-process "ollama-server" nil "ollama" "serve"))
-              (ollama-models
-               (mapcar (lambda (line)
-                         (replace-regexp-in-string "[ \t]*$"
-                                                   ""
-                                                   (car (split-string line "\t"))))
-                       (cdr (process-lines "ollama" "list"))
-                       )))
-         (gptel-make-ollama
-          "Ollama"                               ;Any name of your choosing
-          :host "localhost:11434"                ;Where it's running
-          :models ollama-models
-          :stream nil)))
    #+end_src
 *** Create custom Together.AI backend
     This makes use of the [[https://docs.together.ai/docs/openai-api-compatibility][OpenAI-compatible API]], which makes the backend generation super simple!
@@ -3305,7 +3289,26 @@
      #+end_src
 *** Optionally modify OpenAI setup
 
+*** Add Ollama backend if =ollama= binary is found
+    This queries all installed models
 
+     #+begin_src emacs-lisp
+       (when
+           (executable-find "ollama")
+         (require 'cl-lib)
+         (let* ((ollama-process (ignore-errors (start-process "ollama-server" nil "ollama" "serve")))
+                (ollama-models
+                 (mapcar (lambda (line)
+                           (replace-regexp-in-string "[ \t]*$"
+                                                     ""
+                                                     (car (split-string line "\t"))))
+                         (cdr (process-lines "ollama" "list")))))
+           (gptel-make-ollama
+            "Ollama"                               ;Any name of your choosing
+            :host "localhost:11434"                ;Where it's running
+            :models ollama-models
+            :stream nil)))
+     #+end_src
 
 
     ;; debug gptel--transform-response
