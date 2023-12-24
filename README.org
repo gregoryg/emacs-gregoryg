@@ -3186,7 +3186,6 @@
 *** Create custom Together.AI backend
     This makes use of the [[https://docs.together.ai/docs/openai-api-compatibility][OpenAI-compatible API]], which makes the backend generation super simple!
 
-*** And my supplementos
 
   #+begin_src emacs-lisp
     ;; pandoc -f gfm -t org|sed '/:PROPERTIES:/,/:END:/d'
@@ -3329,6 +3328,7 @@
                                   (gjg/gptel-build-directives
                                    "~/projects/ai/AIPIHKAL/system-prompts/")))))
     #+end_src
+*** And my supplementos
 
 
    #+begin_src emacs-lisp :tangle no
