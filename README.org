@@ -3182,13 +3182,6 @@
      (require 'gptel)
      (require 'gptel-curl)
      (require 'gptel-transient)
-     ;; (gptel-make-openai
-     ;;  "ChatGPT"
-     ;;  :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
-     ;;  :key 'gptel-api-key
-     ;;  :stream nil
-     ;;  :models '("gpt-3.5-turbo" "gpt-3.5-turbo-16k" "gpt-4" "gpt-4-32k" "gpt-4-1106-preview"))
-
    #+end_src
 *** Create custom Together.AI backend
     This makes use of the [[https://docs.together.ai/docs/openai-api-compatibility][OpenAI-compatible API]], which makes the backend generation super simple!
@@ -3289,6 +3282,15 @@
      #+end_src
 *** Optionally modify OpenAI setup
 
+    If OpenAI makes new models available, the package may lag behind - so specify what models you want to use here
+     #+begin_src emacs-lisp :tangle no
+       (gptel-make-openai
+        "ChatGPT"
+        :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
+        :key 'gptel-api-key
+        :stream nil
+        :models '("gpt-3.5-turbo" "gpt-3.5-turbo-16k" "gpt-4" "gpt-4-32k" "gpt-4-1106-preview"))
+     #+end_src
 *** Add Ollama backend if =ollama= binary is found
     This queries all installed models
 
