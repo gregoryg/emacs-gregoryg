@@ -3186,38 +3186,6 @@
 *** Create custom Together.AI backend
     This makes use of the [[https://docs.together.ai/docs/openai-api-compatibility][OpenAI-compatible API]], which makes the backend generation super simple!
 
-    (defun gjg/gptel--annotate-directives (s)
-      "Make the directives selection look fancy."
-      (let* ((item (assoc (intern s) minibuffer-completion-table))
-             (desc (s-truncate 40 (nth 1 item)))
-             (prompt (s-truncate 80 (s-replace "\n" "\\n" (nth 2 item)))))
-        (when item (concat
-                    (string-pad "" (- 40 (string-width s)))
-                    desc
-                    (string-pad "" (- 55 (string-width desc)))
-                    prompt
-                    ))))
-
-    (defun gjg/gptel-select-system-prompt (&optional directive-key)
-      "Set system message in local gptel buffer to directive/prompt indicated by DIRECTIVE-KEY."
-      (interactive)
-      (let* ((marginalia-align-offset 80)
-             (completion-extra-properties '(:annotation-function gjg/gptel--annotate-directives))
-             (directive-key (or directive-key
-                                (intern
-                                 (completing-read
-                                  ;; "New directive: "
-                                  (format "Current prompt %s: "
-                                          (truncate-string-to-width gptel--system-message 90 nil nil (truncate-string-ellipsis) ))
-                                  gptel-directives
-                                  nil ;; predicate/filter
-                                  nil ;; do not require a match - allow custom prompt
-                                  nil ;; no initial input
-                                  nil ;; no history specified
-                                  "default" ;; default value if return is nil
-                                  )))))
-        (setq-local gptel--system-message (nth 2 (assoc directive-key gptel-directives)))))
-
     (defun gjg/insert-clean-website-text (url)
       "Run a shell command to return clean body text from the given URL."
       (interactive)
@@ -3493,6 +3461,41 @@
        (custom-set-variables '(gptel-response-filter-functions
                                '(gjg/gptel-convert-org-with-pandoc)))
      #+end_src
+**** Make an annotated completing-read function to select directives
+     #+begin_src emacs-lisp
+       (defun gjg/gptel--annotate-directives (s)
+         "Make the directives selection look fancy."
+         (let* ((item (assoc (intern s) minibuffer-completion-table))
+                (desc (s-truncate 40 (nth 1 item)))
+                (prompt (s-truncate 80 (s-replace "\n" "\\n" (nth 2 item)))))
+           (when item (concat
+                       (string-pad "" (- 40 (string-width s)))
+                       desc
+                       (string-pad "" (- 55 (string-width desc)))
+                       prompt
+                       ))))
+
+       (defun gjg/gptel-select-system-prompt (&optional directive-key)
+         "Set system message in local gptel buffer to directive/prompt indicated by DIRECTIVE-KEY."
+         (interactive)
+         (let* ((marginalia-align-offset 80)
+                (completion-extra-properties '(:annotation-function gjg/gptel--annotate-directives))
+                (directive-key (or directive-key
+                                   (intern
+                                    (completing-read
+                                     ;; "New directive: "
+                                     (format "Current prompt %s: "
+                                             (truncate-string-to-width gptel--system-message 90 nil nil (truncate-string-ellipsis) ))
+                                     gptel-directives
+                                     nil ;; predicate/filter
+                                     nil ;; do not require a match - allow custom prompt
+                                     nil ;; no initial input
+                                     nil ;; no history specified
+                                     "default" ;; default value if return is nil
+                                     )))))
+           (setq-local gptel--system-message (nth 2 (assoc directive-key gptel-directives)))))
+     #+end_src
+**** Possibly useful function: insert cleaned text from URL into buffer
 
      # OUTPUT
      Your output should just be an plain list of descriptions. No numbers, no extraneous labels, no hyphens. The separator is just a double newline. Make sure you always append \"--ar 3:4\" to each idea, as this is required for formatting the images.
