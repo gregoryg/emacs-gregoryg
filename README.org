@@ -3332,6 +3332,22 @@
          )
      #+end_src
 
+** ChatGPT-Shell
+   #+begin_src emacs-lisp :lexical no
+     (use-package shell-maker
+       :straight (:host github :repo "xenodium/chatgpt-shell" :files ("shell-maker.el")))
+
+     (use-package chatgpt-shell
+       :requires shell-maker
+       :straight (:host github :repo "xenodium/chatgpt-shell" :files ("chatgpt-shell.el")))
+
+     (setq chatgpt-shell-openai-key
+           (lambda ()
+             (auth-source-pick-first-password :host "api.openai.com")))
+     (setq dall-e-shell-openai-key
+           (lambda ()
+             (auth-source-pick-first-password :host "api.openai.com")))
+   #+end_src
 ** Vertico, anyone?
    #+begin_src emacs-lisp
      (use-package vertico :straight t)
