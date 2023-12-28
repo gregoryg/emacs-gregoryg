@@ -3235,9 +3235,10 @@
       (let ((build-directives-fun "~/projects/ai/AIPIHKAL/gptel-build-directives.el"))
         (when (f-exists-p build-directives-fun)
           (load build-directives-fun)
-          (custom-set-variables '(gptel-directives
-                                  (gjg/gptel-build-directives
-                                   "~/projects/ai/AIPIHKAL/system-prompts/")))))
+          ;; (custom-set-variables '(gptel-directives
+          (setq gptel-directives
+                (gjg/gptel-build-directives
+                 "~/projects/ai/AIPIHKAL/system-prompts/"))))
     #+end_src
 *** And my supplementos
 **** Convert Markdown LLM responses to Org Mode using Pandoc
