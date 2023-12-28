@@ -3186,16 +3186,15 @@
     This makes use of the [[https://docs.together.ai/docs/openai-api-compatibility][OpenAI-compatible API]], which makes the backend generation super simple!
 
      #+begin_src emacs-lisp
-     (gptel-make-openai ; but for Togeher.AI compatible API
-      "together.ai"
-      :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key )))))
-      :key 'gptel-api-key
-      :stream nil
-      :host "api.together.xyz"
-      :protocol "https"
-      :endpoint "/v1/chat/completions"
-      :models '("togethercomputer/CodeLlama-34b" "mistralai/Mixtral-8x7B-Instruct-v0.1" "togethercomputer/llama-2-70b-chat")
-      )
+       (gptel-make-openai ; but for Togeher.AI compatible API
+        "together.ai"
+        :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key )))))
+        :key 'gptel-api-key
+        :stream nil
+        :host "api.together.xyz"
+        :protocol "https"
+        :endpoint "/v1/chat/completions"
+        :models '("togethercomputer/CodeLlama-34b" "mistralai/Mixtral-8x7B-Instruct-v0.1" "togethercomputer/llama-2-70b-chat" "togethercomputer/llama-2-70b-chat"))
      #+end_src
 *** Optionally modify OpenAI setup
 
