@@ -2900,6 +2900,10 @@
                   ;; rebind to a sweet and beautiful function
                   (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
                   (yafolding-mode 1)
+                  ;; agenda lines get long with tags
+                  (visual-line-mode -1)
+                  (visual-fill-column-mode -1)
+                  (setq-local truncate-lines t)
                   (local-unset-key "a") ;; don't let this accidentally archive a tree!
                   ;; "R" is used for clock report by default
                   ;; (define-key org-agenda-mode-map "R" 'org-agenda-refile)
