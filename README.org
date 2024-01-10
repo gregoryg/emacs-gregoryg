@@ -3179,8 +3179,7 @@
       '(gptel :type git :host github :repo "karthink/gptel"
               :fork (:host github :branch "gregoryg" :repo "gregoryg/gptel")))
      (setq gptel-default-mode 'org-mode
-           gptel--debug nil
-           gptel-use-curl t)
+           gptel--debug nil)
      ;; defer nothing
      (require 'gptel)
      (require 'gptel-curl)
