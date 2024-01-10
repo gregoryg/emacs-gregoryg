@@ -3210,25 +3210,23 @@
         :stream nil
         :models '("gpt-3.5-turbo" "gpt-3.5-turbo-16k" "gpt-4" "gpt-4-32k" "gpt-4-1106-preview"))
      #+end_src
-*** Add Ollama backend if =ollama= binary is found
+*** Add Ollama backend if Ollama API server is accessible
     This queries all installed models
 
      #+begin_src emacs-lisp
-       (when
-           (executable-find "ollama")
-         (require 'cl-lib)
-         (let* ((ollama-process (ignore-errors (start-process "ollama-server" nil "ollama" "serve")))
-                (ollama-models
-                 (mapcar (lambda (line)
-                           (replace-regexp-in-string "[ \t]*$"
-                                                     ""
-                                                     (car (split-string line "\t"))))
-                         (cdr (process-lines "ollama" "list")))))
-           (gptel-make-ollama
-            "Ollama"                               ;Any name of your choosing
-            :host "localhost:11434"                ;Where it's running
-            :models ollama-models
-            :stream nil)))
+       (setq gjg/ollama-api-endpoint "http://172.16.17.77:11434")
+       (when-let* ((url (url-generic-parse-url gjg/ollama-api-endpoint))
+                   (host (url-host url))
+                   (port (url-port url))
+                   (accessible-p (ignore-errors (process-lines "nc" "-w 1" "-zv" host (number-to-string port)))))
+         (setq ollama-models
+               (s-split "\n"
+                        (shell-command-to-string (concat "curl -s '" gjg/ollama-api-endpoint "/api/tags' | jq -r '.models[].name'"))))
+         (gptel-make-ollama
+          "Ollama"
+          :host (concat host ":" (number-to-string port))
+          :models ollama-models
+          :stream nil))
      #+end_src
 
 *** Load my custom system prompts (directives)
