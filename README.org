@@ -1126,11 +1126,13 @@
                             '(tramp-allow-unsafe-temporary-files t))
     #+end_src
 *** Tweak remote bash shell prompt PS1
-    #+begin_src bash :tangle ~/.emacs.d/init_bash.sh
+    if used, tangle to  ~/.emacs.d/init_bash.sh
+
+    #+begin_src bash :tangle no
       # Reset the prompt for remote TRAMP shells.
       if [ "${INSIDE_EMACS/*tramp*/tramp}" == "tramp" ] ; then
-      #   PS1="[\u@\h \w]$ "
-         PS1="[$(echo $PS1 | cut -d':' -f 1-2 ):\w]$ "
+        PS1="[\u@\h \w]$ "
+         # PS1="[$(echo $PS1 | cut -d':' -f 1-2 ):\w]$ "
       fi
     #+end_src
 *** Add methods for Docker, DC/OS, Google Cloud Shell
