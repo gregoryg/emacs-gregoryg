@@ -3077,19 +3077,32 @@
     This queries all installed models
 
      #+begin_src emacs-lisp
+       ;; Use netcat to assure API port is open
        (setq gjg/ollama-api-endpoint "http://172.16.17.77:11434")
-       (when-let* ((url (url-generic-parse-url gjg/ollama-api-endpoint))
-                   (host (url-host url))
-                   (port (url-port url))
-                   (accessible-p (ignore-errors (process-lines "nc" "-w 1" "-zv" host (number-to-string port)))))
-         (setq ollama-models
-               (s-split "\n"
-                        (shell-command-to-string (concat "curl -s '" gjg/ollama-api-endpoint "/api/tags' | jq -r '.models[].name'"))))
-         (gptel-make-ollama
-          "Ollama"
-          :host (concat host ":" (number-to-string port))
-          :models ollama-models
-          :stream nil))
+       (defun gjg/get-ollama-models ()
+         "Return a list of Ollama models from the API, or nil if the API is not available."
+         (when-let*
+             ((url (url-generic-parse-url gjg/ollama-api-endpoint))
+              (host (url-host url))
+              (port (url-port url))
+              (maybe-ollama-models (s-split "\n"
+                                            (shell-command-to-string (concat "curl -s --connect-timeout 0.5 '"
+                                                                             gjg/ollama-api-endpoint "/api/tags' | jq -r '.models[].name'"))))
+              (my-ollama-models (seq-filter (lambda (s) (not (string= s "")))
+                                            maybe-ollama-models)))
+           (gptel-make-ollama
+            "Ollama"
+            :host (concat host ":" (number-to-string port))
+            :models my-ollama-models
+            :stream nil)
+           my-ollama-models))
+
+       ;; set globally, as ollama-models is relevant to more than gptel
+       (setq ollama-models (gjg/get-ollama-models))
+
+       (unless ollama-models
+         (setq gptel--known-backends
+               (assoc-delete-all "Ollama" gptel--known-backends #'equal)))
      #+end_src
 
 *** Load my custom system prompts (directives)
