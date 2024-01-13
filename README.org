@@ -1765,6 +1765,20 @@
        (setq ess-sas-edit-keys-toggle nil)
        :init (require 'ess-site))
    #+end_src
+** Cypher/OpenCypher for Neo4j
+   + Cypher mode
+     #+begin_src emacs-lisp
+       (use-package cypher-mode :straight t)
+     #+end_src
+   + ob-cypher
+     #+begin_src emacs-lisp
+       (use-package ob-cypher
+         :straight t
+         :config
+         (add-to-list 'org-babel-load-languages '(cypher . t))
+         (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
+         (add-to-list 'org-babel-tangle-lang-exts '("cypher" . "cypher")))
+     #+end_src
 ** SPARQL
    #+begin_src emacs-lisp
      (straight-use-package
