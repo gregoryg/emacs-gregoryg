@@ -1216,6 +1216,17 @@
      Type=Application
      Categories=Music;Media
    #+end_src
+** Stable Diffusion
+   #+begin_src conf :tangle ~/.local/share/applications/stable-diffuion.desktop
+     [Desktop Entry]
+     Name=Stable Diffusion
+     Comment=Locally hosted Stable Diffusion on Aziriphale
+     Exec=xdg-open http://aziriphale:7860/
+     Icon= /home/gregj/emacs/pixmaps/stable-diffusion-icon-using-stable-diffusion-v0-i2bkql0z88ya1-512x512.png
+     Terminal=false
+     Type=Application
+     Categories=Image;Art;Media
+   #+end_src
 ** Stardog AWS Console
    #+begin_src conf :tangle ~/.local/share/applications/stardog-aws-console.desktop
      [Desktop Entry]
