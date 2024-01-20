@@ -2251,7 +2251,7 @@
      #+end_src
 
 **** Phone/meeting/task - the heart of it all
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle no
        (defun gjg/phone-meeting-template ()
          "Org capture template function for call/meeting logs.
        Pull in all customers from active engagements! "
@@ -2279,7 +2279,7 @@
      #+end_src
 
 **** Clock in to a new work "t"ask
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle no
        (push
         '             ("t" "Task - clock in using work file" entry
                        (file+headline gjg/employer-org-file "Tasks")
@@ -2492,28 +2492,7 @@
                ("work-habit" "~/emacs/pixmaps/gtd-logo-2019-512x512.png" nil nil :ascent center :height 48)
                ;; ("inbox" ,(list (all-the-icons-material "inbox" )) nil nil :ascent center :height 48)
                ;; Customers / engagements
-               ("accenture" "~/emacs/pixmaps/accenture-logo-512x512.png" nil nil :ascent center :height 48)
-               ("cis" "~/emacs/pixmaps/cis-security-logo-512x512.png" nil nil :ascent center :height 48)
-               ("disney" "~/emacs/pixmaps/disney-logo-512x512.png" nil nil :ascent center :height 48)
-               ("faithlife" "~/emacs/pixmaps/faithlife-logo-512x512.png" nil nil :ascent center :height 48)
-               ("forge" "~/emacs/pixmaps/Forge-Global.png" nil nil :ascent center :height 48)
-               ("guidehouse" "~/emacs/pixmaps/guidehouse-logo-512x512.png" nil nil :ascent center :height 48)
-               ("gates" "~/emacs/pixmaps/gates-foundation.png" nil nil :ascent center :height 48)
-               ("hagerty" "~/emacs/pixmaps/hagerty.png" nil nil :ascent center :height 48)
-               ("ida" "~/emacs/pixmaps/ida-logo-512x512.png" nil nil :ascent center :height 48)
-               ("investec" "~/emacs/pixmaps/investec-logo-512x512.png" nil nil :ascent center :height 48)
-               ("deere" "~/emacs/pixmaps/tractor-flat-512x512.png" nil nil :ascent center :height 48)
-               ("mars" "~/emacs/pixmaps/mars-logo-512x512.png" nil nil :ascent center :height 48)
-               ("microsoft" "~/emacs/pixmaps/microsoft-logo-512x512.png" nil nil :ascent center :height 48)
-               ("morgan" "~/emacs/pixmaps/dollar-blue-512x512.png" nil nil :ascent center :height 48)
-               ("navitas" "~/emacs/pixmaps/navitas-favicon.png" nil nil :ascent center :height 48)
-               ("optum" "~/emacs/pixmaps/optum-logo-512x512.png" nil nil :ascent center :height 48)
-               ("picpay" "~/emacs/pixmaps/picpay-logo-512x512.png" nil nil :ascent center :height 48)
-               ("sherwin" "~/emacs/pixmaps/Paint-3D-icon-logo.png" nil nil :ascent center :height 48)
-               ("sk-telecom" "~/emacs/pixmaps/sk-telecom-image-logo-512x512.png" nil nil :ascent center :height 48)
-               ("UL" "~/emacs/pixmaps/UL_Mark.svg.png" nil nil :ascent center :height 48)
-               ("voicebox-dev" "~/emacs/pixmaps/pepe-le-pew-logo-512x512.png" nil nil :ascent center :height 48)
-               ("vizient" "~/emacs/pixmaps/vizient-logo-512x512.png" nil nil :ascent center :height 48)))
+               ))
        (setq org-agenda-sticky t
              org-agenda-fontify-priorities t
              org-agenda-hide-tags-regexp "noagenda"
