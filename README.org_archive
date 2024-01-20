@@ -483,3 +483,55 @@ Archived entries from file /home/gregj/emacs-gregoryg/README.org
                    ("integration" "integration/*")
                    (:exclude ".dir-locals.el" "*-tests.el"))))
   #+end_src
+
+* Clock in also to Harvest for work files
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2024-01-19 Fri 21:10
+  :ARCHIVE_FILE: ~/emacs-gregoryg/README.org
+  :ARCHIVE_OLPATH: Org mode stuff/Clocking time
+  :ARCHIVE_CATEGORY: README
+  :END:
+  + [[https://kgajera.github.io/hrvst-cli/][Getting Started | Harvest CLI ≫ kgajera.github.io]]
+    #+begin_src bash
+      npm install -g hrvst-cli
+    #+end_src
+  + Goal - when clocking in on work tasks (org file is somewhere in
+    ~/projects/private-orgmode/rancher), prompt for project/task to start timer for in
+    Harvest also.
+
+    TODO: Make =hcl= commands async
+    #+begin_src emacs-lisp :tangle no
+      (defun gjg/start-harvest-timer ()
+        (interactive)
+        (let ((harvest-alias
+               (completing-read
+                "Harvest project: "
+                (split-string
+                 (concat "non-harvest,"
+                         (string-trim (shell-command-to-string "hcl aliases"))) "[ ,]+"))))
+                ;; nil ; no predicate to limit choices
+                ;; nil ; do not require match
+                ;; "non-harvest")))
+          (if (string= "@" (substring harvest-alias 0 1))
+              (progn
+                    (message (format "Clocking in to %s" harvest-alias))
+                    (call-process-shell-command
+                     (format "hcl start %s '%s'" harvest-alias org-clock-heading)
+                     nil
+                     "harvest-commands"))
+            (message "Not clocking into Harvest"))))
+
+
+      (defun gjg/stop-harvest-timer ()
+        (interactive)
+        (call-process-shell-command
+         "hcl stop"
+         nil
+         "harvest-commands")
+        (message "Stopped harvest timer (if any)"))
+
+      ;; (add-hook 'org-clock-in-hook 'gjg/start-harvest-timer)
+      ;; (add-hook 'org-clock-out-hook 'gjg/stop-harvest-timer)
+
+                ;; (message (format "Selected task is %s" org-clock-heading) )))
+    #+end_src
