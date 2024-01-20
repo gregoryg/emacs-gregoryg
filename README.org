@@ -266,7 +266,7 @@
 
     (global-set-key [f5] 'gjg/widen-ask-if-indirect)
     ;; (global-set-key [f6] 'read-only-mode)
-    (global-set-key [f6] 'gjg/open-work-agenda)
+    ;; (global-set-key [f6] 'gjg/open-work-agenda)
     (global-set-key [f7] 'hl-line-mode) ;; toggle hl-line-mode for this window only
     ;; (global-set-key [f8] 'bury-buffer)
 
@@ -505,7 +505,7 @@
      (bind-key "C-x 2" 'gjg/split-window-below)
      (bind-key "C-x 3" 'gjg/split-window-right)
      (bind-key "C-x o" 'gjg/other-window-with-winum)
-     (bind-key "s-a" 'gjg/open-work-agenda)
+     ;; (bind-key "s-a" 'gjg/open-work-agenda)
      (bind-key "s-o" 'gjg/other-window-with-winum)
      (bind-key "s-b" 'gjg/switch-to-other-buffer)
      (bind-key "s-<up>" 'windmove-up)
@@ -2398,7 +2398,7 @@
      (require 'org-agenda)
      (setq org-agenda-custom-commands nil)
    #+end_src
-*** Set up agenda files lists
+*** Set up personal agenda files lists
     I keep one set of agenda files for personal / everyday use and another for work use.
 
     For work files, the rules are:
@@ -2410,49 +2410,51 @@
       (e.g. ./mycompany/engagements/customer2/customer2.org)
     + include the special case =inbox.org=
 
-  #+begin_src emacs-lisp
-    ;; Make sure we match encrypted files for Agenda
-    ;; ref https://emacs.stackexchange.com/a/36543/418
-    (unless (string-match-p "\\.gpg" org-agenda-file-regexp)
-      (setq org-agenda-file-regexp
-            (replace-regexp-in-string "\\\\\\.org" "\\\\.org\\\\(\\\\.gpg\\\\)?"
-                                      org-agenda-file-regexp)))
-    (global-set-key (kbd "C-c a") 'org-agenda)
-    (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
-    (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
-                                          "~/projects/private-orgmode/learning.org"
-                                          "~/projects/private-orgmode/inbox.org"
-                                          "~/projects/private-orgmode/someday.org"
-                                          "~/projects/private-orgmode/projects.org"
-                                          "~/projects/private-orgmode/habits.org"))
-    ;; TODO add filter function to recurse only 1 level into engagements/ rather than use remove
-    ;; add one "non-work" projects file to capture non-work scheduled and deadline tasks
-    ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)
-    (defun gjg/get-work-agenda-files ()
-      "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
-      (let ((engagement-files '()))
-        (dolist (file (directory-files-recursively (concat (f-dirname gjg/employer-org-file) "/engagements/")
-                                                   "\\`[^.].*\\.org\\(\\.gpg\\)?\\'"))
-          (let* ((dirname (file-name-directory file))
-                 (basename (file-name-base file))
-                 (dir (file-name-nondirectory (directory-file-name dirname))))
-            (when (and (<= (length dir) (length basename))
-                       (string= dir (substring basename 0 (length dir))))
-              (setq engagement-files (cons file engagement-files)))))
-        (add-to-list 'engagement-files gjg/employer-org-file t)
-        (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)))
+    #+begin_src emacs-lisp
+      ;; Make sure we match encrypted files for Agenda
+      ;; ref https://emacs.stackexchange.com/a/36543/418
+      (unless (string-match-p "\\.gpg" org-agenda-file-regexp)
+        (setq org-agenda-file-regexp
+              (replace-regexp-in-string "\\\\\\.org" "\\\\.org\\\\(\\\\.gpg\\\\)?"
+                                        org-agenda-file-regexp)))
+      (global-set-key (kbd "C-c a") 'org-agenda)
+      (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
+      (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
+                                            "~/projects/private-orgmode/learning.org"
+                                            "~/projects/private-orgmode/inbox.org"
+                                            "~/projects/private-orgmode/someday.org"
+                                            "~/projects/private-orgmode/projects.org"
+                                            "~/projects/private-orgmode/habits.org"))
+      (setq org-agenda-files gjg/personal-org-agenda-files)
+      (add-to-list 'gjg/agenda-contexts-alist `(home ,gjg/personal-org-agenda-files))
+      (add-to-list 'gjg/agenda-contexts-alist `(fitness ,(list "~/projects/private-orgmode/fitness/fitness.org")))
+      (add-to-list 'gjg/agenda-contexts-alist `(notes ,(list "~/gregj-notes/" "~/gregj-notes/journals/")))
+    #+end_src
+*** Set up work agenda files lists
+    #+begin_src emacs-lisp :tangle no
+      ;; TODO add filter function to recurse only 1 level into engagements/ rather than use remove
+      ;; add one "non-work" projects file to capture non-work scheduled and deadline tasks
+      ;; (add-to-list 'engagement-files "~/projects/private-orgmode/projects.org" t)
+      (defun gjg/get-work-agenda-files ()
+        "Return list of work agenda files exculding archive/ dir.  Can be called in :scope param of clocktable"
+        (let ((engagement-files '()))
+          (dolist (file (directory-files-recursively (concat (f-dirname gjg/employer-org-file) "/engagements/")
+                                                     "\\`[^.].*\\.org\\(\\.gpg\\)?\\'"))
+            (let* ((dirname (file-name-directory file))
+                   (basename (file-name-base file))
+                   (dir (file-name-nondirectory (directory-file-name dirname))))
+              (when (and (<= (length dir) (length basename))
+                         (string= dir (substring basename 0 (length dir))))
+                (setq engagement-files (cons file engagement-files)))))
+          (add-to-list 'engagement-files gjg/employer-org-file t)
+          (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)))
 
-    (add-to-list 'gjg/agenda-contexts-alist `(work ,(gjg/get-work-agenda-files)))
-    (add-to-list 'gjg/agenda-contexts-alist `(home ,gjg/personal-org-agenda-files))
-    (add-to-list 'gjg/agenda-contexts-alist `(fitness ,(list "~/projects/private-orgmode/fitness/fitness.org")))
-    (add-to-list 'gjg/agenda-contexts-alist `(notes ,(list "~/gregj-notes/" "~/gregj-notes/journals/")))
+      (add-to-list 'gjg/agenda-contexts-alist `(work ,(gjg/get-work-agenda-files)))
 
+      (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
+      ;; Set agenda files to personal, override in work-related templates
+    #+end_src
 
-
-    (setq gjg/work-agenda-files (gjg/get-work-agenda-files))
-    ;; Set agenda files to personal, override in work-related templates
-    (setq org-agenda-files gjg/personal-org-agenda-files)
-  #+end_src
 *** Set icons for agenda views
     These work by =category=
 **** Resize icons to be used in agenda views
@@ -2594,17 +2596,18 @@
 *** Custom Agenda definitions
 **** Cross-context agendas
 ***** Basic Agenda with work habits added
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle no
        (add-to-list 'org-agenda-custom-commands
                     '("A" "Agenda + work habits"
                       (
                        (agenda "" ((org-agenda-span 'day)
                                    (org-agenda-sorting-strategy
                                     (quote ((agenda time-up priority-down tag-up))))
-                                   ;; (org-agenda-category-filter-preset (list "-work-habit"))
-                                   (org-agenda-files (cons "~/projects/private-orgmode/work-habits.org" gjg/personal-org-agenda-files))
-                                   (org-deadline-warning-days 0)))
-                       )) t)
+                                   ;; (org-agend
+                                   a-category-filter-preset (list "-work-habit"))
+                               (org-agenda-files (cons "~/projects/private-orgmode/work-habits.org" gjg/personal-org-agenda-files))
+                               (org-deadline-warning-days 0)))
+                      )) t)
      #+end_src
 ***** Notes/Roam/Denote TODOs
       TODO: make category section of agenda the value of keywords in the front matter
@@ -2640,7 +2643,7 @@
        These views use the work files
 
        TODO  why does starting with clocktable and/or log-mode not work??
-       #+begin_src emacs-lisp
+       #+begin_src emacs-lisp :tangle no
          (add-to-list 'org-agenda-custom-commands
                       '("W" "Work Agenda"
                         (
