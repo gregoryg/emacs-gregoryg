@@ -1818,6 +1818,16 @@
     #+begin_src bash
       pip3 install sqlparse
     #+end_src
+*** Org Babel SQL code blocks
+    Come here to set code block headers
+
+    Add your host user/pass in ~/.emacs.d/sql-wallet
+
+    Ideally you can set header args per file, like
+    #+begin_example
+      ,#+property: header-args:sql :engine mysql :dbhost erebor :database northwind
+    #+end_example
+
 
 *** Save command history for all SQL modes
     + Little gpt-4 showed me how to do this on [2023-09-23 Sat]
