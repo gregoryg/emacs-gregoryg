@@ -704,17 +704,6 @@
      Categories=Storage
    #+end_src
 
-** Databricks VGTEST
-   #+begin_src conf :tangle ~/.local/share/applications/cloudflare.desktop
-     [Desktop Entry]
-     Name=Databricks vgtest
-     Comment=
-     Exec=xdg-open https://adb-8799800888063735.15.azuredatabricks.net/?o=8799800888063735
-     Icon= /home/gregj/.local/share/pixmaps/databricks-logo.png
-     Terminal=false
-     Type=Application
-     Categories=Spark
-   #+end_src
 ** Dired
    #+begin_src conf :tangle ~/.local/share/applications/emacs-dired.desktop
      # Stolen from https://emacs.stackexchange.com/a/16394/418
@@ -730,19 +719,7 @@
         # Terminal=false
         Categories=Office;Productivity;Coolness
    #+end_src
-** Discord
-   #+begin_src conf :tangle no
- ~/.local/share/applications/discord.desktop
-     [Desktop Entry]
-     Encoding=UTF-8
-     Name=Discord
-     Comment=Communicate
-     Exec=flatpak run com.discordapp.Discord
-     Icon= /home/gregj/.local/share/pixmaps/discord.png
-     Terminal=false
-     Type=Application
-     Categories=Messaging
-   #+end_src
+
 ** DNS Restarter
    #+begin_src conf :tangle ~/.local/share/applications/dns-restarter.desktop
      [Desktop Entry]
@@ -810,7 +787,7 @@
      [Desktop Entry]
      Name=GCP Google Cloud
      Comment=GCP
-     Exec=xdg-open https://console.cloud.google.com/compute/instances?authuser=2
+     Exec=xdg-open https://console.cloud.google.com/compute/instances?authuser=0
      Icon= /home/gregj/.local/share/pixmaps/google-cloud-logo.png
      Terminal=false
      Type=Application
@@ -828,19 +805,7 @@
      Type=Application
      Categories=Maps;Navigation
    #+end_src
-** GoToWebinar
-   GoToWebinar does not support Firefox in 2020
-   Therefore this shortcut uses Chrome
-   #+begin_src conf :tangle ~/.local/share/applications/gotowebinar.desktop
-     [Desktop Entry]
-     Name=GoToWebinar
-     Comment=Launched in Chrome
-     Exec=google-chrome https://app.gotowebinar.com/unified/index.html#/
-     Icon= /home/gregj/.local/share/pixmaps/gotowebinar.png
-     Terminal=false
-     Type=Application
-     Categories=InstantMessaging;
-   #+end_src
+
 ** Hangouts / Google Chat
    #+begin_src conf :tangle ~/.local/share/applications/google-chat.desktop
      [Desktop Entry]
@@ -940,23 +905,13 @@
      [Desktop Entry]
      Name=Google Calendar
      Comment=Google Calendar in Browser
-     Exec=xdg-open https://calendar.google.com/calendar/u/2/
+     Exec=xdg-open https://calendar.google.com/calendar/u/0/
      Icon=/home/gregj/.local/share/pixmaps/google-calendar-icon.png
      Terminal=false
      Type=Application
      Categories=Office;Calendar;
    #+end_src
-** Google Gmail
-   #+begin_src conf :tangle ~/.local/share/applications/gmail.desktop
-     [Desktop Entry]
-     Name=Gmail Corporate Mail
-     Comment=Google EMail in Browser
-     Exec=xdg-open https://mail.google.com/mail/u/2/#search/in:inbox+is:unread
-     Icon= /home/gregj/.local/share/pixmaps/gmail-logo.png
-     Terminal=false
-     Type=Application
-     Categories=Office;Mail;
-   #+end_src
+
 ** Google Gmail - Personal
    #+begin_src conf :tangle ~/.local/share/applications/gmail-personal.desktop
      [Desktop Entry]
@@ -980,19 +935,7 @@
      Type=Application
      Categories=Communication
    #+end_src
-** Microsoft Teams
-   As of [2021-01-26 Tue] I am having microphone problems using the Linux client for
-   Teams.  Things seem to run fine in the browser, however.
-   #+begin_src conf :tangle ~/.local/share/applications/teams-browser.desktop
-     [Desktop Entry]
-     Name=Microsoft Teams - Edge
-     Comment=
-     Exec=microsoft-edge https://teams.microsoft.com
-     Icon=/home/gregj/.local/share/pixmaps/teams-logo.png
-     Terminal=false
-     Type=Application
-     Categories=InstantMessaging;
-   #+end_src
+
 ** Monitor change
    Run when external monitor is connected/disconnected
    #+begin_src conf :tangle ~/.local/share/applications/autorandr-monitor.desktop
@@ -1061,18 +1004,6 @@
      Categories=Ontologies;Graph
    #+end_src
 
-** Protomolecule Virtualization - Proxmox or Harvester
-   + Port 8006 for Proxmox, 30443 for Harvester
-   #+begin_src conf :tangle ~/.local/share/applications/protomolecule.desktop
-     [Desktop Entry]
-     Name=Protomolecule
-     Comment=Protomolecule HCI
-     Exec=xdg-open https://protomolecule.magichome:30443
-     Icon= /home/gregj/.local/share/pixmaps/protomolecule.png
-     Terminal=false
-     Type=Application
-     Categories=Virtualization;HCI
-   #+end_src
 
 ** Rancher Homelab
    #+begin_src conf :tangle ~/.local/share/applications/rancher-homelab.desktop
@@ -1390,17 +1321,7 @@
          Type=Application
          Categories=Office;Productivity;
    #+end_src
-** Trello
-   #+begin_src conf :tangle ~/.local/share/applications/trello.desktop
-     [Desktop Entry]
-     Name=Trello
-     Comment=Um ... Trello!
-     Exec=xdg-open https://trello.com/
-     Icon=/home/gregj/.local/share/pixmaps/trello.png
-     Terminal=false
-     Type=Application
-     Categories=Office;Productivity;
-   #+end_src
+
 ** Vterm
    Emacs vterm!
    #+begin_src conf :tangle ~/.local/share/applications/vterm.desktop
