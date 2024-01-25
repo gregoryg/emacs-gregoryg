@@ -2394,6 +2394,11 @@
      ;; END DAN DAVISON nifty speed commands
      (setq org-speed-commands (delete '("a" . org-archive-subtree-default-with-confirmation) org-speed-commands))
    #+end_src
+** Org Powerslides
+   my extension to the Dan Davison show-blah-tidily
+   #+begin_src emacs-lisp
+     (load-file "~/projects/emacs/org-powerslides/org-powerslides.el")
+   #+end_src
 ** Org Transclusion
    Super cool use found: put my very large People table from the main employer Org file,
    transclude it into the individual engagement / prospect files!
