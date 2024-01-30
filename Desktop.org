@@ -126,6 +126,7 @@
           libreoffice-gtk3 \
           libnotify-bin \
           libtool-bin \
+          lightdm \
           keychain \
           locate \
           net-tools \
