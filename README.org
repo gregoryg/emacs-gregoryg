@@ -3112,14 +3112,16 @@
                                       t   ;; replace the buffer contents
                                       "*gptel-convert-error*")
              (goto-char (point-min))
-             (insert (format "%sAssistant: %s\n" (alist-get 'org-mode gptel-prompt-prefix-alist) (or (sentence-at-point t) "[resp]")))
+             ;; (insert (format "%sAssistant: %s\n" (alist-get 'org-mode gptel-prompt-prefix-alist) (or (sentence-at-point t) "[resp]")))
+             (insert (format "%sAssistant: \n" (alist-get 'org-mode gptel-prompt-prefix-alist)))
+             ;; (insert "\n")
              (goto-char (point-max))
              (buffer-string))))
 
        (defun gjg/gptel-convert-org-with-pandoc (content buffer)
          "Transform CONTENT acoording to required major-mode using `pandoc'.
-         Currenly only `org-mode' is supported
-         This depends on the `pandoc' binary only, not on the  Emacs Lisp `pandoc' package."
+          Currenly only `org-mode' is supported
+          This depends on the `pandoc' binary only, not on the  Emacs Lisp `pandoc' package."
          (pcase (buffer-local-value 'major-mode buffer)
            ('org-mode (gjg/gptel--convert-markdown->org content))
            (_ content)))
