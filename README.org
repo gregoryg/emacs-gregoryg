@@ -2973,6 +2973,9 @@
       (require 'org-fc-keymap-hint)
       (global-set-key (kbd "C-c f") 'org-fc-hydra/body)
       (add-hook 'org-fc-after-flip-hook 'org-fold-show-subtree))
+    (define-key org-fc-review-rate-mode-map (kbd "1") 'org-fc-review-rate-easy)
+    (define-key org-fc-review-rate-mode-map (kbd "2") 'org-fc-review-rate-good)
+    (define-key org-fc-review-rate-mode-map (kbd "3") 'org-fc-review-rate-hard)
   #+end_src
 ** GPT in Markdown and Org Mode with gptel
 
