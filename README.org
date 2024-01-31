@@ -3024,18 +3024,18 @@
         :host "api.together.xyz"
         :protocol "https"
         :endpoint "/v1/chat/completions"
-        :models '("togethercomputer/CodeLlama-34b" "mistralai/Mixtral-8x7B-Instruct-v0.1" "togethercomputer/llama-2-70b-chat" "togethercomputer/llama-2-70b-chat"))
+        :models '("togethercomputer/falcon-40b-instruct" "togethercomputer/CodeLlama-34b" "mistralai/Mixtral-8x7B-Instruct-v0.1" "togethercomputer/llama-2-70b-chat"))
      #+end_src
 *** Optionally modify OpenAI setup
 
     If OpenAI makes new models available, the package may lag behind - so specify what models you want to use here
-     #+begin_src emacs-lisp :tangle no
+     #+begin_src emacs-lisp
        (gptel-make-openai
         "ChatGPT"
         :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
         :key 'gptel-api-key
         :stream nil
-        :models '("gpt-3.5-turbo" "gpt-3.5-turbo-16k" "gpt-4" "gpt-4-32k" "gpt-4-1106-preview"))
+        :models '("gpt-3.5-turbo" "gpt-3.5-turbo-16k" "gpt-4" "gpt-4-32k" "gpt-4-turbo-preview"))
      #+end_src
 *** Add Ollama backend if Ollama API server is accessible
     This queries all installed models
