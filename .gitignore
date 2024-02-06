@@ -52,3 +52,4 @@ network-security.data
 emacs/gjg-functions.el
 .emacs.d/org-fc-reviews.tsv
 .emacs.d/places
+.emacs.d/gptel-crowdsourced-prompts.csv
