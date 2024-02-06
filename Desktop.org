@@ -1070,8 +1070,8 @@
    #+begin_src conf :tangle ~/.local/share/applications/rocket-language.desktop
      [Desktop Entry]
      Name=Rocket Language
-     Comment=Spanish Portugues
-     Exec=google-chrome https://app.rocketlanguages.com/
+     Comment=Spanish Portuguese German
+     Exec=flatpak run com.google.Chrome https://app.rocketlanguages.com/
      Icon= /home/gregj/.local/share/pixmaps/rocket-languages-logo-transparent.png
      Terminal=false
      Type=Application
