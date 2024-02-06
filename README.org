@@ -2976,6 +2976,8 @@
     (define-key org-fc-review-rate-mode-map (kbd "1") 'org-fc-review-rate-easy)
     (define-key org-fc-review-rate-mode-map (kbd "2") 'org-fc-review-rate-good)
     (define-key org-fc-review-rate-mode-map (kbd "3") 'org-fc-review-rate-hard)
+    ;; will adding tab conflict with the Org Mode tab?
+    (define-key org-fc-review-flip-mode-map (kbd "TAB") 'org-fc-review-flip)
   #+end_src
 ** GPT in Markdown and Org Mode with gptel
 
