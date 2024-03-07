@@ -41,80 +41,80 @@
    + If it's a function (line starts with almost anything other than =setq=, set the point
      in the function name and hit "C-h f"
    #+begin_src emacs-lisp
-     ;; When I want transient mark mode, I'll beat it out of you
-     (setq transient-mark-mode nil)
-     ;; (do not) display time and battery status in the mode line
-     (display-time-mode 0)
-     (display-battery-mode 0)
-     ;; turn off that stupid toolbar
-     (tool-bar-mode -1)
-     ;; scroll bars?
-     (scroll-bar-mode -1)
-     (menu-bar-mode -1)
-     ;; don't do that stoopid splash screen
-     (setq inhibit-splash-screen t)
+        ;; When I want transient mark mode, I'll beat it out of you
+        (setq transient-mark-mode nil)
+        ;; (do not) display time and battery status in the mode line
+        (display-time-mode 0)
+        (display-battery-mode 0)
+        ;; turn off that stupid toolbar
+        (tool-bar-mode -1)
+        ;; scroll bars?
+        (scroll-bar-mode -1)
+        (menu-bar-mode -1)
+        ;; don't do that stoopid splash screen
+        (setq inhibit-splash-screen t)
 
-     ;; tab indents - if line is already indented, try to auto-complete
-     (setq tab-always-indent 'complete)
+        ;; tab indents - if line is already indented, try to auto-complete
+        (setq tab-always-indent 'complete)
 
-     (setq-default indent-tabs-mode nil)
-     (setq-default tab-width 4)
-     ;; blink parens and similar delimiters
-     ;; Global identity on all machines - Emacs does not make good guesses here
-     (setq user-full-name "Gregory Grubbs"
-       user-mail-address "gregory.grubbs@gmail.com")
+        (setq-default indent-tabs-mode nil)
+        (setq-default tab-width 4)
+        ;; blink parens and similar delimiters
+        ;; Global identity on all machines - Emacs does not make good guesses here
+        (setq user-full-name "Gregory Grubbs"
+          user-mail-address "gregory.grubbs@gmail.com")
 
-     (setq confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
+        (setq confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
 
-     ;; dippy bird FTW - single character y-n for all yes/no question dialogs
-     (fset 'yes-or-no-p 'y-or-n-p)
-     (setq shell-file-name "bash")
-     ;; TODO: does setting shell-command-switch ever help?
-     ;; (setq shell-command-switch "-ic") ; source .bashrc to get aliases etc
-     (setq explicit-shell-file-name shell-file-name)
-     (setq explicit-bash-args '("--noediting" "-i"))
+        ;; dippy bird FTW - single character y-n for all yes/no question dialogs
+        (fset 'yes-or-no-p 'y-or-n-p)
+        (setq shell-file-name "bash")
+        ;; TODO: does setting shell-command-switch ever help?
+        ;; (setq shell-command-switch "-ic") ; source .bashrc to get aliases etc
+        (setq explicit-shell-file-name shell-file-name)
+        (setq explicit-bash-args '("--noediting" "-i"))
 
-     (global-hl-line-mode t) ;; highlight current line - turn off when figuring out faces
+        (global-hl-line-mode t) ;; highlight current line - turn off when figuring out faces
 
-     (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows
+        (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows
 
-     (setq-default fill-column 100); good default for wider screens
+        (setq-default fill-column 100); good default for wider screens
 
-     ;; ensure that the default for searches is case-insensitive
-     (setq case-fold-search t)
+        ;; ensure that the default for searches is case-insensitive
+        (setq case-fold-search t)
 
-     ;; highlight/colorize everything that can be colorized!
-     (global-font-lock-mode 1)
+        ;; highlight/colorize everything that can be colorized!
+        (global-font-lock-mode 1)
 
-     ;; never split windows horizontally by default
-     (setq split-width-threshold nil)
-     ;; Here's a choice one: stay in the same column while scrolling!
-     (setq scroll-preserve-screen-position t)
-     ;; in Emacs23+, make line-move move by a line, ignoring wrapping
-     (setq line-move-visual nil)
-     ;; enable hugely useful things that are disabled by default
-     (put 'narrow-to-region 'disabled nil)
-     (put 'set-goal-column 'disabled nil)
-  ;; echo quickly
-  (setq echo-keystrokes 0.1)
-  ;; keep the screen from jumping wildly as I cursor down/up
-  (setq scroll-conservatively 5)
-  ;; remember minibuffer history between sessions
-  (savehist-mode t)
-  ;; https://emacs.stackexchange.com/a/9952/418
-  (use-package exec-path-from-shell :straight t)
-  (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-env "HISTFILE")
-  ;; if point is at end of line, keep it there for vertical movement
-  (setq track-eol t)
-  (setq align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
-  (setq auth-source-save-behavior nil) ; NEVER store passwords
-  (setq enable-recursive-minibuffers t)
-  ;; Allow Emacs to resize mini windows, otherwise this does not work:
-  ;;   (setq org-use-fast-todo-selection 'expert)
-  (setq resize-mini-windows t)
-  ;; as of Emacs 29
-  (setq pixel-scroll-precision-mode t)
+        ;; never split windows horizontally by default
+        (setq split-width-threshold nil)
+        ;; Here's a choice one: stay in the same column while scrolling!
+        (setq scroll-preserve-screen-position t)
+        ;; in Emacs23+, make line-move move by a line, ignoring wrapping
+        (setq line-move-visual nil)
+        ;; enable hugely useful things that are disabled by default
+        (put 'narrow-to-region 'disabled nil)
+        (put 'set-goal-column 'disabled nil)
+     ;; echo quickly
+     (setq echo-keystrokes 0.1)
+     ;; keep the screen from jumping wildly as I cursor down/up
+     (setq scroll-conservatively 5)
+     ;; remember minibuffer history between sessions
+     (savehist-mode t)
+     ;; https://emacs.stackexchange.com/a/9952/418
+     (use-package exec-path-from-shell :straight t)
+     (exec-path-from-shell-initialize)
+     (exec-path-from-shell-copy-env "HISTFILE")
+     ;; if point is at end of line, keep it there for vertical movement
+     (setq track-eol t)
+     (setq align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
+     (setq auth-source-save-behavior nil) ; NEVER store passwords
+     (setq enable-recursive-minibuffers t)
+     ;; Allow Emacs to resize mini windows, otherwise this does not work:
+     ;;   (setq org-use-fast-todo-selection 'expert)
+     (setq resize-mini-windows t)
+     ;; as of Emacs 29
+     (setq pixel-scroll-precision-mode t)
    #+end_src
 * Start emacs server
   #+begin_src emacs-lisp
@@ -2929,31 +2929,31 @@
           (gjg/cancel-nag)))
     #+end_src
 ** Behavior
-#+begin_src emacs-lisp
-  (setq org-adapt-indentation t
-        org-export-with-toc nil
-        org-fontify-done-headline nil ; do *not* fontify entire line of DONE headlines
-        org-agenda-window-setup 'current-window ; make c-y pay attention to current level
-        org-yank-adjusted-subtrees t
-        ;; org-yank-folded-subtrees nil
-        org-insert-heading-respect-content t    ; new headings go AFTER CONTENT, even from the middle of content area
-        org-indirect-buffer-display 'other-window
-        org-reverse-note-order t                ; notes go at the top
-        org-return-follows-link t
-        org-treat-S-cursor-todo-selection-as-state-change nil ; use S-arrow without having to log state change!
-        org-log-into-drawer t
-        org-export-use-babel nil
-        org-export-with-sub-superscripts nil
-        org-html-extension "org.html"
-        org-replace-disputed-keys t)
-  ;; delete the seleted region when something is typed - don't do that
-  (delete-selection-mode -1)
+   #+begin_src emacs-lisp
+     (setq org-adapt-indentation t
+           org-export-with-toc nil
+           org-fontify-done-headline nil ; do *not* fontify entire line of DONE headlines
+           org-agenda-window-setup 'current-window ; make c-y pay attention to current level
+           org-yank-adjusted-subtrees t
+           ;; org-yank-folded-subtrees nil
+           org-insert-heading-respect-content t    ; new headings go AFTER CONTENT, even from the middle of content area
+           org-indirect-buffer-display 'other-window
+           org-reverse-note-order t                ; notes go at the top
+           org-return-follows-link t
+           org-treat-S-cursor-todo-selection-as-state-change nil ; use S-arrow without having to log state change!
+           org-log-into-drawer t
+           org-export-use-babel nil
+           org-export-with-sub-superscripts nil
+           org-html-extension "org.html"
+           org-replace-disputed-keys t)
+     ;; delete the seleted region when something is typed - don't do that
+     (delete-selection-mode -1)
 
-  ;; show only current/today's/all time in the clock task modeline
-  ;; this SHOULD be settable on a file basis by using property CLOCK_MODELINE_TOTAL
-  (setq org-clock-mode-line-total 'today)
-  (setq org-loop-over-headlines-in-active-region t)
-#+end_src
+     ;; show only current/today's/all time in the clock task modeline
+     ;; this SHOULD be settable on a file basis by using property CLOCK_MODELINE_TOTAL
+     (setq org-clock-mode-line-total 'today)
+     (setq org-loop-over-headlines-in-active-region t)
+   #+end_src
 * Learning / researching / knowledge flow
 
 ** Flaschcards
