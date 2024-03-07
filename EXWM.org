@@ -355,7 +355,8 @@ This entire file provides my configuration, required Emacs supporting packages a
     invokes this script)
 
    #+begin_src bash :tangle ~/bin/gmail-buffer-or-launch.sh
-     emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch (concat gjg/employer-name " Mail") "gmail")'
+     # emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch (concat gjg/employer-name " Mail") "gmail")'
+     emacsclient -e '(gjg/exwm-switch-to-buffer-or-launch "gregory.grubbs@gmail.com - Gmail" "gmail-personal")'
    #+end_src
 *** Function to select WHATEVER IS PLAYING MUSIC
     This makes use of the `playerctl` command to give us the window title
