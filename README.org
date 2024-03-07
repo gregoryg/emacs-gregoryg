@@ -3030,6 +3030,14 @@
         :endpoint "/v1/chat/completions"
         :models '("codellama/CodeLlama-70b-Instruct-hf" "togethercomputer/falcon-40b-instruct" "togethercomputer/CodeLlama-34b" "mistralai/Mixtral-8x7B-Instruct-v0.1" "togethercomputer/llama-2-70b-chat"))
      #+end_src
+*** Configure Anthropic Claude
+
+      #+begin_src emacs-lisp
+        (gptel-make-anthropic "Anthropic"
+          :stream nil
+          :key gptel-api-key)
+      #+end_src
+
 *** Optionally modify OpenAI setup
 
     If OpenAI makes new models available, the package may lag behind - so specify what models you want to use here
