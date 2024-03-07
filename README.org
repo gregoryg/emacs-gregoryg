@@ -3080,7 +3080,25 @@
          (setq gptel--known-backends
                (assoc-delete-all "Ollama" gptel--known-backends #'equal)))
      #+end_src
+*** Add Ollama as OpenAI API
+    Ollama recently announced ([2024-02-13]) that they support OpenAI-compatible API for LLMs
 
+    So let's use that
+    #+begin_src emacs-lisp
+
+
+      (when ollama-models  ;; set in previous code
+        (gptel-make-openai ; but for Ollama's newer compatible API
+            "ollama-compatible"
+          ;; :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key )))))
+          ;; :key gptel-api-key
+          :stream t
+          :host "172.16.17.77:11434"
+          :protocol "http"
+          :endpoint "/v1/chat/completions"
+          :models ollama-models))
+    #+end_src
+*** Add Google Gemini
 *** Load my custom system prompts (directives)
     This makes use of my AIPIKHAL package (AI Prompts I Have Known And Loved)
     #+begin_src emacs-lisp
