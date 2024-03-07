@@ -19,7 +19,11 @@ This entire file provides my configuration, required Emacs supporting packages a
 
 * Load EXWM and dependencies
   #+begin_src emacs-lisp
-    (use-package exwm :straight t)
+    (straight-use-package
+     '(exwm :type git :host github :repo "emacs-exwm/exwm"
+            :fork (:host github :branch "gregoryg" :repo "gregoryg/exwm")))
+
+    ;; (use-package exwm :straight t)
   #+end_src
 
 * Patches and egregious hacks
