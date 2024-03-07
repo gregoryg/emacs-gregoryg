@@ -3099,6 +3099,13 @@
           :models ollama-models))
     #+end_src
 *** Add Google Gemini
+    #+begin_src emacs-lisp
+      (gptel-make-gemini
+          "google-gemini"
+        :stream nil
+        :key 'gptel-api-key
+        :models '("gemini-1.0-pro"))
+    #+end_src
 *** Load my custom system prompts (directives)
     This makes use of my AIPIKHAL package (AI Prompts I Have Known And Loved)
     #+begin_src emacs-lisp
