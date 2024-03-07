@@ -2981,7 +2981,7 @@
     ;; will adding tab conflict with the Org Mode tab?
     (define-key org-fc-review-flip-mode-map (kbd "TAB") 'org-fc-review-flip)
   #+end_src
-** GPT in Markdown and Org Mode with gptel
+** GPTEL - LLMs in Markdown and Org Mode
 
   + [X] TODO: add completing-read with marginalia for =gptel-directives= (named prompts)
   + [ ] TODO: indicate system prompt(s) and model(s) used in *gpt-mode* buffer
