@@ -3163,7 +3163,10 @@
                                       "*gptel-convert-error*")
              (goto-char (point-min))
              ;; (insert (format "%sAssistant: %s\n" (alist-get 'org-mode gptel-prompt-prefix-alist) (or (sentence-at-point t) "[resp]")))
-             (insert (format "%sAssistant: \n" (alist-get 'org-mode gptel-prompt-prefix-alist)))
+             (insert (format "%sAssistant (%s %s): \n"
+                             (alist-get 'org-mode gptel-prompt-prefix-alist)
+                             (aref gptel-backend 1)
+                             gptel-model))
              ;; (insert "\n")
              (goto-char (point-max))
              (buffer-string))))
