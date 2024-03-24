@@ -702,10 +702,11 @@
 *** Load default theme
     Deferred here until all theme tweaks have been applied
     #+begin_src emacs-lisp
-      (let ((hour (nth 2 (decode-time))))
-        (if (or (< hour 9) (> hour 16))
-            (gjg/go-dark)
-          (gjg/go-light)))
+      (gjg/go-dark)
+      ;; (let ((hour (nth 2 (decode-time))))
+      ;;   (if (or (< hour 9) (> hour 16))
+      ;;       (gjg/go-dark)
+      ;;     (gjg/go-light)))
     #+end_src
 ** Make things open up in preferred window
    There's a standard way to force niceness from functions that open buffers in random
