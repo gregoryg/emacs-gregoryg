@@ -551,7 +551,7 @@
          echo Unread gmail threads paused.
      fi
    #+end_src
-* Applications not handled by OS package managers
+* Applications not handled by OS package managers - using Flatpak
    #+end_src
   Guix, Debian, and other preferred OS distributions are "OSS Puritan" to varying degress.
 
