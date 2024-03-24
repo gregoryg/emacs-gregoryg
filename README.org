@@ -2993,6 +2993,18 @@
     sessions, an active GitHub. A dedication to keeping everything in plain text
     (without metadata markup)
 
+*** Pricing
+    updated [2024-03-24]
+    | Provider    | Model               | Input/M tokens | Output/M tokens | Notes                   | ref               |
+    |-------------+---------------------+----------------+-----------------+-------------------------+-------------------|
+    | Anthropic   | claude-haiku        | $0.25          | $1.25           |                         | [[https://console.anthropic.com/settings/plans][Anthropic Console]] |
+    |             | claude-sonnet       | $3.00          | $15.00          |                         |                   |
+    |             | claude-opus         | $15.00         | $75.00          | yikes                   |                   |
+    |-------------+---------------------+----------------+-----------------+-------------------------+-------------------|
+    | OpenAI      | gpt-4-0125-preview  | $10            | $30             |                         | [[https://openai.com/pricing][Pricing]]           |
+    |-------------+---------------------+----------------+-----------------+-------------------------+-------------------|
+    | Together.ai | 41B-70B chat models | $.90 (in+out)  |                 | nothing cheaper around! | [[https://www.together.ai/pricing][Together Pricing]]  |
+
 *** Load gptel using straight.el with my fork
    Because I want to augment, tweak and contribute to this package, I tell
    =straight-use-package= to pull from my fork and my =gregoryg= branch.
