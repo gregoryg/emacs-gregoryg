@@ -3252,6 +3252,15 @@
    #+begin_src emacs-lisp
      (use-package vertico :straight t)
    #+end_src
+** Language Translation
+   #+begin_src emacs-lisp
+     (use-package google-translate :straight t)
+     ;; "smooth" UI to save a keystroke or two
+     (setq google-translate-translation-directions-alist
+           '(("es" . "en")
+             ("en" . "es")
+             ))
+   #+end_src
 * Final steps
 #+begin_src emacs-lisp
 (shell (get-buffer-create "sh1"))
