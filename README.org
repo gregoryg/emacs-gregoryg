@@ -2302,7 +2302,7 @@
 **** Regular TODO
      #+begin_src emacs-lisp
        (push
-        '             ("r" "Regular todo" entry
+        '             ("t" "Regular todo" entry
                        (file "~/projects/private-orgmode/inbox.org")
                        "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
         org-capture-templates)
