@@ -3170,6 +3170,37 @@
                  "~/projects/ai/AIPIHKAL/system-prompts/"))))
     #+end_src
 *** And my supplementos
+**** Functions to use in hooks
+***** Return Gptel backend + model
+      I find it useful to indicate model and provider service (OpenAI, ollama, together.ai etc) at the beginning of each LLM response.
+      #+begin_src emacs-lisp
+        (defun gjg/gptel-backend-and-model ()
+          "Return gptel backend and model (if any)."
+          (let ((backend (if  (boundp 'gptel-backend)  (aref gptel-backend 1)))
+                (model (if  (boundp 'gptel-model) gptel-model)))
+            (format "(%s %s)" backend model)))
+      #+end_src
+***** Insert backend+model as first string in a response buffer
+      This function is added as a hook *only* to non-gptel mode buffers.  In my org-mode chat buffers, I handle the model attribution differently (as part of my markdown->org function).
+      #+begin_src emacs-lisp
+        (defun gjg/gptel-insert-model-in-non-gptel-buffers (start end)
+          "This function will add the backend and model in the \"dynamic\" buffers only, not in dedicated chat buffers.
+        To be used in `gptel-post-response-hook'."
+          (unless (member 'gptel-mode local-minor-modes)
+            (goto-char start)
+            (insert (format "%s: " (gjg/gptel-backend-and-model)))
+            (goto-char (point-max))))
+        (add-hook 'gptel-post-response-hook 'gjg/gptel-insert-model-in-non-gptel-buffers)
+
+        (defun gjg/gptel-insert-model-in-non-gptel-buffers2 ()
+          "This function will add the backend and model in the \"dynamic\" buffers only, not in dedicated chat buffers.
+        To be used in `gptel-pre-response-hook'."
+          (unless (member 'gptel-mode local-minor-modes)
+            (goto-char (point-max))
+            (insert (format "%s: " (gjg/gptel-backend-and-model)))
+            (goto-char (point-max))))
+        (add-hook 'gptel-pre-response-hook 'gjg/gptel-insert-model-in-non-gptel-buffers2)
+      #+end_src
 **** Convert Markdown LLM responses to Org Mode using Pandoc
      This ultimately replaces the Markdown -> Org Mode conversion built in to =gptel=
 
