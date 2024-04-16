@@ -3323,6 +3323,10 @@
              ("en" . "es")
              ))
    #+end_src
+** E-books in Epub format
+   #+begin_src emacs-lisp
+     (use-package nov :straight t)
+   #+end_src
 * Final steps
 #+begin_src emacs-lisp
 (shell (get-buffer-create "sh1"))
