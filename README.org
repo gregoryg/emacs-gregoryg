@@ -372,8 +372,42 @@
 
   #+end_src
 * Window/buffer management
-** GJG full screen, movement, transparency
-** GJG Transparency / Opacity management
+** Text movement
+
+   Built-in =forward-paragraph= annoys the living hell out of me because it does not place the cursor on the first line of the paragraph.
+
+   Here's the fix with key rebinding
+
+   Found on superuser.com:
+   [[https://superuser.com/questions/643618/emacs-jump-paragraph-up-down-placing-cursor-on-the-first-visual-line/685604#685604][paragraph up / down placing cursor on the first line ≫ superuser.com]]
+
+   #+begin_src emacs-lisp
+     (defun lawlist-forward-paragraph ()
+     (interactive "^")
+       (let ((opoint (point)))
+         (skip-chars-forward "\s\t\n\r")
+         (re-search-forward "^\n" nil t)
+         (skip-chars-forward "\s\t\n\r")
+         (when (= opoint (point))
+           (goto-char (point-max)))) )
+
+     (defun lawlist-backward-paragraph ()
+     (interactive "^")
+       (let ((opoint (point)))
+         (skip-chars-backward "\s\t\n\r")
+         (re-search-backward "^\n" nil t)
+         (skip-chars-forward "\s\t\n\r")
+         (when (<= opoint (point))
+           (goto-char (point-min)))) )
+
+     ;; keep built-in forward/backward-paragraph key bindings
+     ;; use super key with unshifted square brackets for the new functions
+     (global-set-key (kbd "s-]") 'lawlist-forward-paragraph)
+     (global-set-key (kbd "s-[") 'lawlist-backward-paragraph)
+
+   #+end_src
+
+** Transparency / Opacity management
    Emacs 29 ushers in a bold new era where a frame's background can be made transparent
    without affecting the transparency of foreground text and other elements.  Who'd-a
    thunk?  Use that feature when available
