@@ -1364,7 +1364,7 @@
      (setq dired-dwim-target t
            dired-omit-files "^\\.?#\\|^\\..*"
            delete-by-moving-to-trash nil
-           dired-listing-switches "-alh --group-directories-first")
+           dired-listing-switches "-alh --group-directories-first --time-style=long-iso")
      (require 'dired-x)
      (delete ".bin" dired-omit-extensions)
      ;; set key binding in key map prior to dired-x being loaded - for autoload
