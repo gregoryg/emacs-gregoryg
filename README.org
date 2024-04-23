@@ -3094,7 +3094,7 @@
 *** Optionally modify OpenAI setup
 
     If OpenAI makes new models available, the package may lag behind - so specify what models you want to use here
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle no
        (gptel-make-openai
         "ChatGPT"
         :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key)))))
