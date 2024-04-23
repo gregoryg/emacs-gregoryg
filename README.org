@@ -3332,6 +3332,12 @@
 ** E-books in Epub format
    #+begin_src emacs-lisp
      (use-package nov :straight t)
+     (setq nov-text-width t
+           visual-fill-column-center-text t)
+     (add-to-list 'auto-mode-alist '("\\.epub$" . nov-mode))
+     (add-hook 'nov-mode-hook 'visual-line-mode)
+     (add-hook 'nov-mode-hook 'visual-fill-column-mode)
+
    #+end_src
 * Final steps
 #+begin_src emacs-lisp
