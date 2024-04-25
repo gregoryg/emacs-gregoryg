@@ -88,6 +88,19 @@ A sort-of package with customization framework.  The famed =gjg= package.
        :type 'string
        :group 'gjg)
    #+end_src
+* Interact with auth-source ~/.authinfo.gpg etc
+  #+begin_src emacs-lisp
+    (defun gjg/get-openai-api-key ()
+      "Yep. Do that."
+      (encode-coding-string
+       (funcall
+        (plist-get (car (auth-source-search :host "api.openai.com" :user "apikey" :require '(:secret))) :secret))
+       'utf-8))
+  #+end_src
+  + test it
+  #+begin_src emacs-lisp
+    (princ (gjg/get-openai-api-key))
+  #+end_src
 * Quick theme switching
   :PROPERTIES:
   :ID:       67100837-6b96-46e1-b923-932b31ae1297
