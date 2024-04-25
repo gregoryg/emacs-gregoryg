@@ -3335,9 +3335,14 @@
      (setq nov-text-width t
            visual-fill-column-center-text t)
      (add-to-list 'auto-mode-alist '("\\.epub$" . nov-mode))
-     (add-hook 'nov-mode-hook 'visual-line-mode)
-     (add-hook 'nov-mode-hook 'visual-fill-column-mode)
 
+     (defun gjg/nov-mode-buffer-setup ()
+       "Use with `nov-mode-hook' to provide a lovely reading experience."
+       (setq-local visual-line-mode t
+                   visual-fill-column-mode t
+                   nov-text-width t
+                   visual-fill-column-center-text t))
+     (add-hook 'nov-mode-hook 'gjg/nov-mode-buffer-setup)
    #+end_src
 * Final steps
 #+begin_src emacs-lisp
