@@ -3138,12 +3138,10 @@
                (assoc-delete-all "Ollama" gptel--known-backends #'equal)))
      #+end_src
 *** Add Ollama as OpenAI API
-    Ollama recently announced ([2024-02-13]) that they support OpenAI-compatible API for LLMs
+    Ollama supports OpenAI-compatible API for LLMs as of [2024-02-13]
 
     So let's use that
     #+begin_src emacs-lisp
-
-
       (when ollama-models  ;; set in previous code
         (gptel-make-openai ; but for Ollama's newer compatible API
             "ollama-compatible"
