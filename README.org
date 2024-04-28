@@ -873,16 +873,33 @@
 * Text / reading modes
 ** Visual line wrapping
    There is a way to make this usable without =auto-fill-mode= being on, as I have had for
-   years (as of [2023-09-30 Sat])
+   years (as of [2023-09-30 Sat]).
 
-   GPT-4 hipped me to =visual-fill-column=  - the combination of the two leads to bliss -
+   The combination of =visual-line-mode= and =visual-fill-column=  - leads to bliss -
    one without the other is not great.
 
-   Therefore, let's set this for Org and =text-mode=
+   There is some initialization magic that happens when the modes start in a buffer, and an order (=visual-line-mode= should be executed prior to =visual-fill-column=)
+
+   So ... here are two helper functions to reliably disable and enable the combo
+   #+begin_src emacs-lisp
+     (defun gjg/disable-visual-line-with-fill ()
+       "Disable `visual-fill-column-mode' using the function, followed by disabling `visual-line-mode' using the function."
+       (visual-fill-column-mode -1)
+       (visual-line-mode -1))
+
+     (defun gjg/enable-visual-line-with-fill ()
+       "Enable `visual-line-mode' and  `visual-fill-column-mode' using the functions."
+       (interactive)
+       (gjg/disable-visual-line-with-fill)
+       (visual-line-mode 1)
+       (visual-fill-column-mode 1))
+   #+end_src
+
+   Therefore, let's set this maybe for Org and =text-mode=
      #+begin_src emacs-lisp
        (use-package visual-fill-column :straight t)
-       (global-visual-line-mode 1)
-       ;; (add-hook 'text-mode-hook #'visual-line-mode)
+       ;; (global-visual-line-mode 1)
+       (add-hook 'text-mode-hook #'gjg/enable-visual-line-with-fill)
        ;; (add-hook 'org-mode-hook #'visual-line-mode)
        ;; (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
      #+end_src
