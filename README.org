@@ -3367,10 +3367,9 @@
 
      (defun gjg/nov-mode-buffer-setup ()
        "Use with `nov-mode-hook' to provide a lovely reading experience."
-       (setq-local visual-line-mode t
-                   visual-fill-column-mode t
-                   nov-text-width t
-                   visual-fill-column-center-text t))
+       (setq-local nov-text-width t
+                   visual-fill-column-center-text t)
+       (gjg/enable-visual-line-with-fill))
      (add-hook 'nov-mode-hook 'gjg/nov-mode-buffer-setup)
    #+end_src
 * Final steps
