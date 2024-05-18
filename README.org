@@ -406,7 +406,32 @@
      (global-set-key (kbd "s-[") 'lawlist-backward-paragraph)
 
    #+end_src
+** Switch to a buffer that uses selected minor mode
+   #+begin_src emacs-lisp
+     (defun active-minor-modes ()
+       "List all active minor modes."
+       (seq-filter #'symbol-value (seq-filter #'boundp minor-mode-list)))
 
+     (defun buffers-with-minor-mode (minor-mode)
+       "Return a list of buffers that have the specified MINOR-MODE active."
+       (let ((buffers (buffer-list)))
+         (seq-filter (lambda (buffer)
+                       (with-current-buffer buffer
+                         (and (boundp minor-mode) (symbol-value minor-mode))))
+                     buffers)))
+
+     (defun switch-to-buffer-with-minor-mode ()
+       "Prompt to select a minor mode and then switch to a buffer with that minor mode enabled."
+       (interactive)
+       (let* ((active-modes (active-minor-modes))
+              (mode (intern (completing-read "Select minor mode: " active-modes nil t)))
+              (buffers (buffers-with-minor-mode mode)))
+         (if buffers
+             (switch-to-buffer (completing-read "Select buffer: " (mapcar 'buffer-name buffers) nil t))
+           (message "No buffers found with minor mode %s" mode))))
+
+
+   #+end_src
 ** Transparency / Opacity management
    Emacs 29 ushers in a bold new era where a frame's background can be made transparent
    without affecting the transparency of foreground text and other elements.  Who'd-a
