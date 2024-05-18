@@ -924,7 +924,7 @@
      #+begin_src emacs-lisp
        (use-package visual-fill-column :straight t)
        ;; (global-visual-line-mode 1)
-       (add-hook 'text-mode-hook #'gjg/enable-visual-line-with-fill)
+       ;; (add-hook 'text-mode-hook #'gjg/enable-visual-line-with-fill)
        ;; (add-hook 'org-mode-hook #'visual-line-mode)
        ;; (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
      #+end_src
