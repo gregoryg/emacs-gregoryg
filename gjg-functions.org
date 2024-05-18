@@ -98,7 +98,7 @@ A sort-of package with customization framework.  The famed =gjg= package.
        'utf-8))
   #+end_src
   + test it
-  #+begin_src emacs-lisp
+  #+begin_src emacs-lisp :tangle no
     (princ (gjg/get-openai-api-key))
   #+end_src
 * Quick theme switching
