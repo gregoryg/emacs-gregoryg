@@ -3132,8 +3132,11 @@
                   "tiiuae/falcon-40b-instruct"
                   "codellama/CodeLlama-34b-Instruct-hf"
                   "mistralai/Mixtral-8x7B-Instruct-v0.1"
+                  "mistralai/Mixtral-8x22B-Instruct-v0.1"
                   "meta-llama/llama-2-70b-chat-hf"
-                  "meta-llama/Llama-3-70b-chat-hf"))
+                  "meta-llama/Llama-3-70b-chat-hf"
+                  "microsoft/WizardLM-2-8x22B"
+                  ))
      #+end_src
 *** Configure Anthropic Claude
 
