@@ -1052,13 +1052,23 @@
     #+end_src
 * Commonly used modes
 
-** Selectrum (will it replace Ivy which replaced Ido?)
+** Vertico (will it replace Selectrum which replaced Ivy which replaced Ido?)
    #+begin_src emacs-lisp
-     (use-package selectrum :straight t)
-     (selectrum-mode +1)
-     (use-package selectrum-prescient :straight t)
-     (selectrum-prescient-mode +1)
-     (prescient-persist-mode +1)
+     ;; TODO add Prescient (or similar) https://github.com/minad/vertico/wiki/Migrating-from-Selectrum-to-Vertico
+     (use-package vertico
+       :straight (:files (:defaults "extensions/"))
+       :init
+       (vertico-mode)
+       (vertico-multiform-mode +1))
+
+
+     (use-package orderless :straight t
+       :init
+       ;; Configure a custom style dispatcher (see the Consult wiki)
+       ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+       (setq completion-styles '(orderless basic)
+             completion-category-defaults nil
+             completion-category-overrides '((file (styles partial-completion)))))
    #+end_src
 
 ** Yafolding Mode
