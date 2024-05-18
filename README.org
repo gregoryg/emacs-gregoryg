@@ -3345,10 +3345,6 @@
          )
      #+end_src
 
-** Vertico, anyone?
-   #+begin_src emacs-lisp
-     (use-package vertico :straight t)
-   #+end_src
 ** Language Translation
    #+begin_src emacs-lisp
      (use-package google-translate :straight t)
