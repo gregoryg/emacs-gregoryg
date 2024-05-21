@@ -3359,7 +3359,7 @@
      (use-package nov :straight t)
      (setq nov-text-width t
            visual-fill-column-center-text t)
-     (add-to-list 'auto-mode-alist '("\\.epub$" . nov-mode))
+     (add-to-list 'auto-mode-alist '("\\.\\(epub\\|kepub\\)$" . nov-mode))
 
      (defun gjg/nov-mode-buffer-setup ()
        "Use with `nov-mode-hook' to provide a lovely reading experience."
