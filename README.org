@@ -1069,6 +1069,17 @@
        (setq completion-styles '(orderless basic)
              completion-category-defaults nil
              completion-category-overrides '((file (styles partial-completion)))))
+
+     ;; To use vertico in shell buffers
+     (use-package consult :straight t)
+     ;; Use `consult-completion-in-region' if Vertico is enabled.
+     ;; Otherwise use the default `completion--in-region' function.
+     (setq completion-in-region-function
+           (lambda (&rest args)
+             (apply (if vertico-mode
+                        #'consult-completion-in-region
+                      #'completion--in-region)
+                    args)))
    #+end_src
 
 ** Yafolding Mode
