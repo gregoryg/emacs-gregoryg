@@ -2606,6 +2606,7 @@
                ("networking" "~/emacs/pixmaps/network-wired-512x512.png" nil nil :ascent center :height 48)
                ("notes" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 48)
                ("social" "~/emacs/pixmaps/icon-social-events-512x512.png" nil nil :ascent center :height 48)
+               ("travel" "~/emacs/pixmaps/travel-icon-2-512x512.png" nil nil :ascent center :height 48)
                ("Stardog" "~/emacs/pixmaps/stardog-logo-512x512.png" nil nil :ascent center :height 48)
                ("work-habit" "~/emacs/pixmaps/gtd-logo-2019-512x512.png" nil nil :ascent center :height 48)
                ;; ("inbox" ,(list (all-the-icons-material "inbox" )) nil nil :ascent center :height 48)
