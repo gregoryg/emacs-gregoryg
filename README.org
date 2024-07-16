@@ -2512,6 +2512,10 @@
    #+begin_src emacs-lisp
      (require 'org-agenda)
      (setq org-agenda-custom-commands nil)
+     ;; problems in timestamps crop up when using a non-English system language - it even confuses org-lint!
+     ;; System locale to use for formatting time values.
+     (setq system-time-locale "C")         ; Make sure that the weekdays in the time stamps of your Org mode files and
+                                           ; in the agenda appear in English.
    #+end_src
 *** Set up personal agenda files lists
     I keep one set of agenda files for personal / everyday use and another for work use.
