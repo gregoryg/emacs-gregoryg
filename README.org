@@ -2180,10 +2180,19 @@
      (setq org-num-format-function 'org-num-skip-top-level-format)
    #+end_src
 ** Org Superstar - appearance of headers
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package org-superstar :straight t
        :hook
        (org-mode . org-superstar-mode))
+   #+end_src
+** Org Modern - possible replacement for Org Superstar
+   #+begin_src emacs-lisp
+     (use-package org-modern :straight t
+       :custom
+       (org-modern-checkbox nil)
+       (org-modern-hide-stars " ")
+       (org-modern-keyword nil)
+       (org-modern-star 'replace))
    #+end_src
 ** Org-mode hook
    :PROPERTIES:
