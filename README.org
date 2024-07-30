@@ -1050,6 +1050,21 @@
       (setq org-link-parameters
             (delq (assoc "denote" org-link-parameters) org-link-parameters))
     #+end_src
+** Org noter - synchronized notes with PDF and other documents
+   + can this be well integrated with denote?
+*** Install corrolary requirements
+    #+begin_src emacs-lisp
+      (use-package pdf-tools :straight t
+        :custom
+        (pdf-view-continuous nil)
+        (pdf-view-use-imagemagick t))
+      (add-to-list 'auto-mode-alist '("\\.pdf" . pdf-view-mode))
+    #+end_src
+   #+begin_src emacs-lisp
+     (use-package org-noter :straight t
+       :custom
+       (org-noter-always-create-frame nil))
+   #+end_src
 * Commonly used modes
 
 ** Vertico (will it replace Selectrum which replaced Ivy which replaced Ido?)
