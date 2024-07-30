@@ -2451,7 +2451,10 @@
        (org-modern-checkbox nil)
        (org-modern-hide-stars " ")
        (org-modern-keyword nil)
-       (org-modern-star 'replace))
+       (org-modern-star 'replace)
+       (org-modern-list '((43 . "➤") (45 . "•") (42 . "◦")))
+       :config
+       (global-org-modern-mode))
    #+end_src
 ** Org-mode hook
    :PROPERTIES:
