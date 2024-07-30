@@ -474,10 +474,10 @@
        :bind
         (("C-x o" . ace-window)))
      (use-package winum :straight t
-       :config
-       (setq winum-scope                       'frame-local
-             winum-auto-assign-0-to-minibuffer nil
-             winum-auto-setup-mode-line        t))
+       :custom
+       (winum-scope                       'frame-local)
+       (winum-auto-assign-0-to-minibuffer nil)
+       (winum-auto-setup-mode-line        t))
      (winum-mode)
      (set-face-attribute 'winum-face nil :weight 'bold)
      (defun gjg/other-window-with-winum ()
@@ -941,10 +941,10 @@
         (defun gjg/denote-project () (interactive) (project-switch-project "~/gregj-notes"))
         :bind
         ("C-S-d" . gjg/denote-project)
-        :config
-        (setq denote-directory (expand-file-name "~/gregj-notes/")
-              denote-known-keywords '("journal" "projects" "ideas")
-              denote-date-prompt-use-org-read-date t)
+        :custom
+        (denote-directory (expand-file-name "~/gregj-notes/"))
+        (denote-known-keywords '("journal" "projects" "ideas"))
+        (denote-date-prompt-use-org-read-date t)
         ;; (setq denote-prompts '(title subdirectory))
         )
       (require 'denote)
@@ -1586,8 +1586,8 @@
     #+begin_src emacs-lisp
       ;; (use-package magit-todos :straight t)
       (use-package magit :straight t
-        :config
-        (setq magit-clone-set-remote.pushDefault t))
+        :custom
+        (magit-clone-set-remote.pushDefault t))
     #+end_src
 
 ** Help and helpful modes
@@ -1680,7 +1680,6 @@
                   (yafolding-mode 1)
                   (toggle-truncate-lines 1)))
     #+end_src
-
 ** rg / ripgrep
    + Switching from ag/Silver Searcher simply because ag is no longer in the default repos
      for Debian Trixie
@@ -1782,24 +1781,23 @@
     #+end_src
     #+begin_src emacs-lisp
       (use-package sly :straight t
-        :config
-        (setq inferior-lisp-program "sbcl"
-              org-babel-lisp-eval-fn 'sly-eval
-              sly-symbol-completion-mode nil)
+        :custom
+        (inferior-lisp-program "sbcl")
+        (org-babel-lisp-eval-fn 'sly-eval)
+        (sly-symbol-completion-mode nil)
         (electric-pair-local-mode 1))
     #+end_src
 
 *** Guile Scheme
-    +
    Setup for Guile Scheme - primarily for use on Guix system
    #+begin_src emacs-lisp :tangle no
      (use-package geiser :straight t
-       :config
-       (setq geiser-default-implementation 'guile
-             geiser-active-implementations '(guile)
-             geiser-implementations-alist '(((regexp "\\.scm$") guile))
-             ;; geiser-repl-default-port 44555 ; for Gambit Scheme (from @daviwil)
-             ))
+       :custom
+       (geiser-default-implementation 'guile)
+       (geiser-active-implementations '(guile))
+       (geiser-implementations-alist '(((regexp "\\.scm$") guile)))
+       ;; geiser-repl-default-port 44555 ; for Gambit Scheme (from @daviwil)
+             )
      (use-package geiser-guile :straight t)
    #+end_src
 *** Racket Scheme
@@ -1808,12 +1806,12 @@
     :END:
    #+begin_src emacs-lisp :tangle no
      (use-package geiser :straight t
-       :config
-       (setq geiser-default-implementation 'racket
-             geiser-active-implementations '(racket)
-             geiser-implementations-alist '(((regexp "\\.scm$") racket))
-             ;; geiser-repl-default-port 44555 ; for Gambit Scheme (from @daviwil)
-             ))
+       :custom
+       (geiser-default-implementation 'racket)
+       (geiser-active-implementations '(racket))
+       (geiser-implementations-alist '(((regexp "\\.scm$") racket)))
+       ;; geiser-repl-default-port 44555 ; for Gambit Scheme (from @daviwil)
+             )
      (use-package geiser-racket :straight t  )
      (with-eval-after-load 'eglot
        (add-to-list 'eglot-server-programs '(scheme-mode . ("racket" "-l" "racket-langserver"))))
@@ -1832,17 +1830,16 @@
      (use-package python :straight t
        :custom
        (org-babel-python-command "python3")
+       (python-shell-interpreter "ipython3")
+       (python-shell-interpreter-args "-i --simple-prompt")
+       (org-babel-python-command "python3")
        :config
-       (setq python-shell-interpreter "ipython3"
-             python-shell-interpreter-args "-i --simple-prompt")
-       (setq org-babel-python-command "python3")
        (add-hook 'python-mode-hook
                  (lambda ()
                    (setq indent-tabs-mode nil)
                    (setq python-indent-offset 4)
                    (setq tab-width 4)
-                   (pyvenv-mode t)))
-       )
+                   (pyvenv-mode t))))
      (use-package pyvenv :straight t
        :config
        (setenv "WORKON_HOME" (expand-file-name "~/.local/python-venvs/")))
@@ -1859,8 +1856,8 @@
        (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
        (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode)))
      (use-package ess :straight t
-       :config
-       (setq ess-sas-edit-keys-toggle nil)
+       :custom
+       (ess-sas-edit-keys-toggle nil)
        :init (require 'ess-site))
    #+end_src
 ** Cypher/OpenCypher for Neo4j
