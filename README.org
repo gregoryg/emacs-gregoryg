@@ -655,6 +655,7 @@
                                       (mode . org-agenda-mode)
                                       (mode . markdown-mode)))
               ("Shells" (or (mode . shell-mode)
+                            (mode . vterm-mode)
                             (mode . eshell-mode)))
               ("EXWM X Apps" (mode . exwm-mode))
               ("Configs" (or (derived-mode .  conf-mode)
