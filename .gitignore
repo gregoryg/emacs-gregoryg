@@ -4,6 +4,8 @@ src
 elpa/
 .emacs.d/init_bash.sh
 .emacs.d/org-persist/
+.emacs.d/persist/
+.emacs.d/nov-places
 .emacs.d/ensime/
 .emacs.d/games/
 .emacs.d/session.*
@@ -35,6 +37,7 @@ url/
 .emacs.d/emacs-custom.el
 .emacs.d/transient/
 .emacs.d/emacs-init.el
+.emacs.d/launch-exwm.el
 .emacs.d/emacs-init.html
 .emacs.d/recentf
 .emacs.d/smex-items
@@ -53,3 +56,7 @@ emacs/gjg-functions.el
 .emacs.d/org-fc-reviews.tsv
 .emacs.d/places
 .emacs.d/gptel-crowdsourced-prompts.csv
+.emacs.d/sqlhistory
+.emacs.d/sql-wallet.gpg
+.emacs.d/sql-wallet
+.emacs.d/eww-bookmarks
