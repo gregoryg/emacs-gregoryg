@@ -3379,6 +3379,8 @@
            '(("es" . "en")
              ("en" . "es")
              ))
+             ;; ("de" . "en")
+             ;; ("en" . "de")
    #+end_src
 ** E-books in Epub format
    #+begin_src emacs-lisp
