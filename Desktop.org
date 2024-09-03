@@ -1364,7 +1364,7 @@
      [Desktop Entry]
      Name=Yummy Sauce Recipes
      Comment=
-     Exec=xdg-open http://172.16.17.5:9925/
+     Exec=xdg-open http://yummy-sauce.magichome:9925/
      Icon= /home/gregj/.local/share/pixmaps/mealie-favicon.png
      Terminal=false
      Type=Application
