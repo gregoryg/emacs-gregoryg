@@ -897,6 +897,10 @@
    #+end_src
 
 * Text / reading / note taking / LLM modes
+** Keyboard input method
+   #+begin_src emacs-lisp
+     (custom-set-variables '(default-input-method 'latin-postfix))
+   #+end_src
 ** Visual line wrapping
    There is a way to make this usable without =auto-fill-mode= being on, as I have had for
    years (as of [2023-09-30 Sat]).
