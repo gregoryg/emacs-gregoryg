@@ -1806,6 +1806,7 @@
           (project-find-regexp "Find regexp")
           (project-find-dir "Dired somewhere")
           (project-dired "Root dired" ?r)
+          (gjg/project-open-readme-or-root "README or root" ?.)
           (project-shell "Shell" ?s)
           (magit-project-status "Magit" ?m)
           (treemacs-add-and-display-current-project "Treemacs" ?t)))
