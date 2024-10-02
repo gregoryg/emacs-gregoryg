@@ -3368,7 +3368,10 @@
       :load-path "~/projects/emacs/org-fc"
       :custom (org-fc-directories '("~/projects/private-orgmode/learning/"))
       :config
-      (require 'org-fc-hydra))
+      (require 'org-fc-hydra)
+      (define-key org-fc-review-rate-mode-map "1" 'org-fc-review-rate-hard)
+      (define-key org-fc-review-rate-mode-map "2" 'org-fc-review-rate-good)
+      (define-key org-fc-review-rate-mode-map "3" 'org-fc-review-rate-easy))
     (use-package org-drill :straight t)
 #+end_src
 ** Language Translation
