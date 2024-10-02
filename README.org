@@ -1172,7 +1172,6 @@
     This queries all installed models
 
      #+begin_src emacs-lisp
-       ;; Use netcat to assure API port is open
        (setq gjg/ollama-api-endpoint "http://172.16.17.77:11434")
        (defun gjg/get-ollama-models ()
          "Return a list of Ollama models from the API, or nil if the API is not available."
@@ -1180,6 +1179,7 @@
              ((url (url-generic-parse-url gjg/ollama-api-endpoint))
               (host (url-host url))
               (port (url-port url))
+              ;; Use short timeout with curl to assure API port is open
               (maybe-ollama-models (s-split "\n"
                                             (shell-command-to-string (concat "curl -s --connect-timeout 0.5 '"
                                                                              gjg/ollama-api-endpoint "/api/tags' | jq -r '.models[].name'"))))
