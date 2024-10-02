@@ -1195,6 +1195,7 @@
        ;; set globally, as ollama-models is relevant to more than gptel
        (setq ollama-models (gjg/get-ollama-models))
 
+       ;; if API port was not found, remove backend
        (unless ollama-models
          (setq gptel--known-backends
                (assoc-delete-all "Ollama" gptel--known-backends #'equal)))
