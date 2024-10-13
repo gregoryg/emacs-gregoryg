@@ -834,7 +834,7 @@
       ; remove selection-info segment from default
       (doom-modeline-def-modeline 'main
         '(bar workspace-name window-number modals matches follow buffer-info remote-host buffer-position word-count parrot )
-        '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker time))
+        '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs check time))
       (doom-modeline-mode 1)
       ;; (doom-modeline-add-variable-watcher
       ;;  'doom-modeline--buffer-file-state-icon
