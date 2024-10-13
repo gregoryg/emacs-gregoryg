@@ -1100,10 +1100,10 @@
    =straight-use-package= to pull from my fork and my =gregoryg= branch.
 
    #+begin_src emacs-lisp
-     (straight-use-package
-      '(gptel :type git :host github :repo "karthink/gptel"
-              :fork (:host github :branch "gregoryg" :repo "gregoryg/gptel")))
-     ;; (use-package gptel :straight t)
+     ;; (straight-use-package
+     ;;  '(gptel :type git :host github :repo "karthink/gptel"
+     ;;          :fork (:host github :branch "gregoryg" :repo "gregoryg/gptel")))
+     (use-package gptel :straight t)
      (setq gptel-default-mode 'org-mode
            gptel-expert-commands t
            gptel-model "gpt-4o"
