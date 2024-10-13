@@ -1947,7 +1947,7 @@
       (use-package csv-mode :straight t)
     #+end_src
 ** TTL - Ticky Tacky Lunacy
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle no
       (use-package ttl-mode :straight t
         :init
         (add-to-list 'auto-mode-alist '("\\.\\(n3\\|sms\\|sms2\\|ttl\\|trig\\)\\'" . ttl-mode))
