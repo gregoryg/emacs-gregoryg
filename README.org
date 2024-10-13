@@ -724,8 +724,8 @@
     foreground colors very slightly.
     #+begin_src emacs-lisp
       ;; make the modus themes act more like my brutalist theme in Org
-      (use-package modus-themes :straight t)
-
+      ;; load the light theme - (load-theme is equivalent to 'require) - so we have vars and funcs
+      (load-theme 'modus-operandi)
       (defun gjg/my-modus-themes-custom-faces ()
         "Tweak faces"
         (message "Setting custom org-habit face for Modus themes")
