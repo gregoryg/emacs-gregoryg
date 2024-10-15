@@ -1130,7 +1130,7 @@
         "together.ai"
         :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key )))))
         :key gptel-api-key
-        :stream nil
+        :stream t
         :host "api.together.xyz"
         :protocol "https"
         :endpoint "/v1/chat/completions"
@@ -1148,7 +1148,7 @@
 
       #+begin_src emacs-lisp
         (gptel-make-anthropic "Anthropic"
-          :stream nil
+          :stream t
           :key gptel-api-key)
       #+end_src
 
