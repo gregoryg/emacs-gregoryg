@@ -1234,7 +1234,7 @@
           (load build-directives-fun)
           ;; (custom-set-variables '(gptel-directives
           (setq gptel-directives (gjg/gptel-build-directives "~/projects/ai/AIPIHKAL/system-prompts/")
-                gptel--system-message (cadr (alist-get 'default gptel-directives)))))
+                gptel-system-message (alist-get 'default gptel-directives))))
     #+end_src
 *** And my supplementos
 **** Functions to use in hooks
