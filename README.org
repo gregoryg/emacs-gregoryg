@@ -1262,7 +1262,7 @@
 **** Convert Markdown LLM responses to Org Mode using Pandoc
      This ultimately replaces the Markdown -> Org Mode conversion built in to =gptel=
 
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle no
        ;; pandoc -f gfm -t org|sed '/:PROPERTIES:/,/:END:/d'
 
        (defun gjg/gptel--convert-markdown->org (str)
