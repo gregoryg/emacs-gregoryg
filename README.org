@@ -1258,6 +1258,16 @@
             (insert (format "\n%s: " (gjg/gptel-backend-and-model)))
             (goto-char (point-max))))
         (add-hook 'gptel-pre-response-hook 'gjg/gptel-insert-model-in-non-gptel-buffers)
+
+        (defun gjg/gptel-insert-model-in-chat-buffers (response-begin-pos response-end-pos)
+          "This function adds the backend and model in dedicated chat buffers.
+        Can be used with the `gptel-post-response-functions' hook."
+          (let* ((inserted-string (format "%s %s\n" (alist-get 'org-mode gptel-prompt-prefix-alist) (gjg/gptel-backend-and-model)))
+                 (len-inserted (length inserted-string )))
+            (goto-char response-begin-pos)
+            (insert inserted-string)
+            (goto-char (+ response-end-pos len-inserted))))
+        (add-hook 'gptel-post-response-functions 'gjg/gptel-insert-model-in-chat-buffers)
       #+end_src
 **** Convert Markdown LLM responses to Org Mode using Pandoc
      This ultimately replaces the Markdown -> Org Mode conversion built in to =gptel=
