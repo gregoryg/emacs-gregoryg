@@ -72,7 +72,7 @@
         ;; TODO: does setting shell-command-switch ever help?
         ;; (setq shell-command-switch "-ic") ; source .bashrc to get aliases etc
         (setq explicit-shell-file-name shell-file-name)
-        (setq explicit-bash-args '("--noediting" "-i"))
+        ;; (setq explicit-bash-args '("--noediting" "-i"))
 
         (global-hl-line-mode t) ;; highlight current line - turn off when figuring out faces
 
