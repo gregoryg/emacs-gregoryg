@@ -1647,6 +1647,17 @@
         (add-hook 'find-file-hook 'my-tramp-header-line-function)
         (add-hook 'dired-mode-hook 'my-tramp-header-line-function))
     #+end_src
+*** Add connection info for certain remote shells
+    The Kobo Libra Colour II e-reader has busybox ls, which does not understand the =--time-style parameter=
+    #+begin_src emacs-lisp
+      (connection-local-set-profile-variables
+       'my-dired-profile
+       '((dired-listing-switches . "-alh --group-directories-first")))
+
+      (connection-local-set-profiles
+       '(:application tramp :machine "kobo")
+       'my-dired-profile)
+    #+end_src
 *** Shell sugar
 **** Open remote shell in current remote directory
 #+begin_src emacs-lisp
