@@ -1719,6 +1719,12 @@
        :hook
        (dired-mode . treemacs-icons-dired-enable-once))
 
+     ;; (use-package treemacs-all-the-icons :straight t
+     ;;   :requires treemacs
+     ;;   :config
+     ;;   (treemacs-load-theme "all-the-icons"))
+     ;; (use-package all-the-icons-dired :straigt t)
+
      (define-key dired-mode-map [mouse-1] 'dired-find-file)
      (define-key dired-mode-map [mouse-2] 'dired-find-file)
      (keymap-unset dired-mode-map "N") ;; run man on file????
