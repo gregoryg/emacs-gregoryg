@@ -521,7 +521,12 @@
        (split-window-right)
        (other-window 1)
        (switch-to-buffer (other-buffer)))
+
      (defun toggle-window-split ()
+       "Toggle the window layout between horizontal and vertical splits for exactly two windows in the current frame.
+
+     This function operates only when there are exactly two windows displayed. It preserves the buffers displayed in each window and maintains the current focus, switching the layout from horizontal to vertical splitting and vice versa."
+
        (interactive)
        (if (= (count-windows) 2)
            (let* ((this-win-buffer (window-buffer))
