@@ -1111,7 +1111,7 @@
      (use-package gptel :straight t)
      (setq gptel-default-mode 'org-mode
            gptel-expert-commands t
-           gptel-model "gpt-4o"
+           gptel-model 'gpt-4o
            gptel--debug nil)
      ;; defer nothing
      (require 'gptel)
