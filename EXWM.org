@@ -69,7 +69,7 @@ This entire file provides my configuration, required Emacs supporting packages a
 
 ** Launching applications without a Desktop Environment
    EXWM default config suggests a handy shell launch command from Emacs, but I prefer to
-   use exactly what I do on every other OS - a pop-up app launcher such as [[https://github.com/albertlauncher/albert][Albert]] or ulauncher.
+   use exactly what I do on every other OS - a pop-up app launcher such as [[https://github.com/albertlauncher/albert][Albert]] or [[https://github.com/davatorium/rofi][rofi]].
 
 * Unresolved problems
 ** TODO Fix clipboard integration / behavior
