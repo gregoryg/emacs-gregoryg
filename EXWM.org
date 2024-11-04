@@ -613,7 +613,6 @@ emacs-lisp
  #+begin_src emacs-lisp
    ;; (< 0 (length (with-current-buffer "*window-manager-error*" (buffer-string)))))
    (require 'exwm)
-   (require 'exwm-config)
    (gjg/exwm-config)
  #+end_src
 ** Configure hooks
