@@ -926,6 +926,17 @@
      Type=Application
      Categories=Office;Mail;
    #+end_src
+** Kobo e-books and e-reader
+   #+begin_src conf :tangle ~/.local/share/applications/kobo.desktop
+     [Desktop Entry]
+     Name=Kobo
+     Comment=Books and e-readers
+     Exec=xdg-open https://www.kobo.com/
+     Icon=/home/gregj/.local/share/pixmaps/kobo-logo-1-512x512.png
+     Terminal=false
+     Type=Application
+     Categories=Shopping;Retail;
+   #+end_src
 ** Mastodon
    Go directly to my server
    #+begin_src bash  :tangle ~/.local/share/applications/mastodon.desktop
