@@ -1812,14 +1812,13 @@
    #+begin_src emacs-lisp
      ;; (use-package project :straight t)
      (setq project-switch-commands
-        '((project-find-file "Find file")
-          (project-find-regexp "Find regexp")
-          (project-find-dir "Dired somewhere")
-          (project-dired "Root dired" ?r)
-          (gjg/project-open-readme-or-root "README or root" ?.)
-          (project-shell "Shell" ?s)
-          (magit-project-status "Magit" ?m)
-          (treemacs-add-and-display-current-project "Treemacs" ?t)))
+           '((project-find-file "Find file")
+             (project-find-regexp "Find regexp")
+             (project-find-dir "Dired somewhere")
+             (project-dired "Root dired" ?r)
+             (gjg/project-open-readme-or-root "README or root" ?.)
+             (project-shell "Shell" ?s)
+             (magit-project-status "Magit" ?m)))
      (defun gjg/project-dired-choose ()
        "Visit a directory (with completion) in the current project."
        (interactive)
