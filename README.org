@@ -1801,7 +1801,7 @@
     (interactive)
     (let* ((project (project-current t))
            (project-root (if project (project-root project) default-directory))
-           (files '("README.org" "readme.org" "README.md" "readme.md" "README"))
+           (files '("README.org" "readme.org" "README.md" "readme.md" "README" "readme"))
            (file-path (seq-find (lambda (file) (file-exists-p (expand-file-name file project-root))) files)))
       (if file-path
           (find-file (expand-file-name file-path project-root))
