@@ -1819,18 +1819,6 @@
              (gjg/project-open-readme-or-root "README or root" ?.)
              (project-shell "Shell" ?s)
              (magit-project-status "Magit" ?m)))
-     (defun gjg/project-dired-choose ()
-       "Visit a directory (with completion) in the current project."
-       (interactive)
-       (let* ((pr (project-current t))
-              (dir (expand-file-name "~/projects/homelab"))
-              (localdir (file-name-unquote (file-local-name (expand-file-name dir))))
-              (dirs (process-file-shell-command (format "%s -H %s -type d " find-program (shell-quote-argument (directory-file-name localdir))))))
-
-         (completing-read "Ohai: " dirs)))
-         ;; (message dirs)))
-
-         ;; (project-find-file-in (thing-at-point 'filename) dirs pr)))
    #+end_src
 ** Shell and related modes
    TODO: remove conflicting key bindings
