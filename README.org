@@ -42,80 +42,76 @@
    + If it's a function (line starts with almost anything other than =setq=, set the point
      in the function name and hit "C-h f"
    #+begin_src emacs-lisp
-        ;; When I want transient mark mode, I'll beat it out of you
-        (setq transient-mark-mode nil)
-        ;; (do not) display time and battery status in the mode line
-        (display-time-mode 0)
-        (display-battery-mode 0)
-        ;; turn off that stupid toolbar
-        (tool-bar-mode -1)
-        ;; scroll bars?
-        (scroll-bar-mode -1)
-        (menu-bar-mode -1)
-        ;; don't do that stoopid splash screen
-        (setq inhibit-splash-screen t)
+     ;; When I want transient mark mode, I'll beat it out of you
+     (transient-mark-mode -1)
+     ;; (do not) display time and battery status in the mode line
+     (display-time-mode 0)
+     (display-battery-mode 0)
+     ;; turn off that stupid toolbar
+     (tool-bar-mode -1)
+     ;; scroll bars?
+     (scroll-bar-mode -1)
+     (menu-bar-mode -1)
+     ;; don't do that stoopid splash screen
+     (custom-set-variables '(inhibit-splash-screen t))
 
-        ;; tab indents - if line is already indented, try to auto-complete
-        (setq tab-always-indent 'complete)
+     ;; tab indents - if line is already indented, try to auto-complete
+     (custom-set-variables '
+      (tab-always-indent 'complete)
+      (indent-tabs-mode nil)
+      (tab-width 4))
 
-        (setq-default indent-tabs-mode nil)
-        (setq-default tab-width 4)
-        ;; blink parens and similar delimiters
-        ;; Global identity on all machines - Emacs does not make good guesses here
-        (setq user-full-name "Gregory Grubbs"
-          user-mail-address "gregory.grubbs@gmail.com")
+     ;; (setq-default indent-tabs-mode nil)
+     ;; (setq-default tab-width 4)
 
-        (setq confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
+     ;; blink parens and similar delimiters
+     ;; Global identity on all machines - Emacs does not make good guesses here
+     (custom-set-variables '(user-full-name "Gregory Grubbs")
+                                            '(user-mail-address "gregory.grubbs@gmail.com"))
 
-        ;; dippy bird FTW - single character y-n for all yes/no question dialogs
-        (fset 'yes-or-no-p 'y-or-n-p)
-        (setq shell-file-name "bash")
-        ;; TODO: does setting shell-command-switch ever help?
-        ;; (setq shell-command-switch "-ic") ; source .bashrc to get aliases etc
-        (setq explicit-shell-file-name shell-file-name)
-        ;; (setq explicit-bash-args '("--noediting" "-i"))
+     (custom-set-variables '(confirm-kill-emacs 'y-or-n-p)) ;; confirm to exit emacs
 
-        (global-hl-line-mode t) ;; highlight current line - turn off when figuring out faces
+     ;; dippy bird FTW - single character y-n for all yes/no question dialogs
+     (fset 'yes-or-no-p 'y-or-n-p)
+     (custom-set-variables '(shell-file-name "bash"))
+     ;; TODO: does setting shell-command-switch ever help?
+     ;; (setq shell-command-switch "-ic") ; source .bashrc to get aliases etc
+     (custom-set-variables '(explicit-shell-file-name shell-file-name))
+     ;; (setq explicit-bash-args '("--noediting" "-i"))
 
-        (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows
+     (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows
 
-        (setq-default fill-column 100); good default for wider screens
+     (custom-set-variables '(fill-column 100)); good default for wider screens
 
-        ;; ensure that the default for searches is case-insensitive
-        (setq case-fold-search t)
-
-        ;; highlight/colorize everything that can be colorized!
-        (global-font-lock-mode 1)
-
-        ;; never split windows horizontally by default
-        (setq split-width-threshold nil)
-        ;; Here's a choice one: stay in the same column while scrolling!
-        (setq scroll-preserve-screen-position t)
-        ;; in Emacs23+, make line-move move by a line, ignoring wrapping
-        (setq line-move-visual nil)
-        ;; enable hugely useful things that are disabled by default
-        (put 'narrow-to-region 'disabled nil)
-        (put 'set-goal-column 'disabled nil)
+     ;; never split windows horizontally by default - this is personal preference
+     (custom-set-variables  '(split-width-threshold nil))
+     ;; Here's a choice one: stay in the same column while scrolling!
+     (custom-set-variables '(scroll-preserve-screen-position t))
+     ;; in Emacs23+, make line-move move by a line, ignoring wrapping
+     (custom-set-variables '(line-move-visual nil))
+     ;; enable hugely useful things that are disabled by default
+     (put 'narrow-to-region 'disabled nil)
+     (put 'set-goal-column 'disabled nil)
      ;; echo quickly
-     (setq echo-keystrokes 0.1)
+     (custom-set-variables '(echo-keystrokes 0.1))
      ;; keep the screen from jumping wildly as I cursor down/up
-     (setq scroll-conservatively 5)
+     (custom-set-variables '(scroll-conservatively 5))
      ;; remember minibuffer history between sessions
      (savehist-mode t)
-     ;; https://emacs.stackexchange.com/a/9952/418
+     ;; https://emacs.stackexchange.com/a/9952/418 - same for shell and other comint buffers
      (use-package exec-path-from-shell :straight t)
      (exec-path-from-shell-initialize)
      (exec-path-from-shell-copy-env "HISTFILE")
      ;; if point is at end of line, keep it there for vertical movement
-     (setq track-eol t)
-     (setq align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
-     (setq auth-source-save-behavior nil) ; NEVER store passwords
-     (setq enable-recursive-minibuffers t)
-     ;; Allow Emacs to resize mini windows, otherwise this does not work:
-     ;;   (setq org-use-fast-todo-selection 'expert)
-     (setq resize-mini-windows t)
+     (custom-set-variables
+      '(track-eol t)
+      '(align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
+      '(auth-source-save-behavior nil) ; NEVER store passwords
+      '(enable-recursive-minibuffers t))
+     ;; Allow Emacs to resize mini windows, otherwise Org Mode's org-use-fast-todo-selection 'expert does not work
+     (custom-set-variables '(resize-mini-windows t))
      ;; as of Emacs 29
-     (setq pixel-scroll-precision-mode t)
+     (custom-set-variables '(pixel-scroll-precision-mode t))
    #+end_src
 * Start emacs server
   #+begin_src emacs-lisp
