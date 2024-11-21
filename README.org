@@ -216,9 +216,10 @@
 
      (global-set-key [C-kp-subtract] 'dec-font-size)
      (global-set-key [C-kp-add] 'inc-font-size)
+
    #+end_src
 ** Custom Functions in a separate file
-  TODO: pull these functions in
+  TODO: pull these functions in to this Org Mode doc
   #+begin_src emacs-lisp
     (add-to-list 'load-path "~/emacs")
     (load "gjg-functions")
