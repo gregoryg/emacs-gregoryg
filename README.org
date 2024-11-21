@@ -908,16 +908,28 @@
      (custom-set-variables '(default-input-method 'latin-postfix))
    #+end_src
 ** Visual line wrapping
-   There is a way to make this usable without =auto-fill-mode= being on, as I have had for
+   There is a way to make this usable without =auto-fill-mode= being on, as I did for
    years (as of [2023-09-30 Sat]).
 
-   The combination of =visual-line-mode= and =visual-fill-column=  - leads to bliss -
+   The combination of =visual-line-mode= and =visual-fill-column= leads to bliss -
    one without the other is not great.
 
    There is some initialization magic that happens when the modes start in a buffer, and an order (=visual-line-mode= should be executed prior to =visual-fill-column=)
 
    So ... here are two helper functions to reliably disable and enable the combo
    #+begin_src emacs-lisp
+     (defun gjg/highlight-visual-line ()
+       (save-excursion
+         (cons (progn (beginning-of-visual-line) (point))
+               (progn (end-of-visual-line) (point)))))
+     (setq hl-line-range-function 'gjg/highlight-visual-line)
+     ;; Highlight current row
+     (global-hl-line-mode t) ;; highlight current line - turn off when figuring out faces
+
+     ;; ;; To *visually* wrap lines
+     ;; (global-visual-line-mode t)
+
+     (use-package visual-fill-column :straight t)
      (defun gjg/disable-visual-line-with-fill ()
        "Disable `visual-fill-column-mode' using the function, followed by disabling `visual-line-mode' using the function."
        (visual-fill-column-mode -1)
@@ -933,7 +945,6 @@
 
    Therefore, let's set this maybe for Org and =text-mode=
      #+begin_src emacs-lisp
-       (use-package visual-fill-column :straight t)
        ;; (global-visual-line-mode 1)
        ;; (add-hook 'text-mode-hook #'gjg/enable-visual-line-with-fill)
        ;; (add-hook 'org-mode-hook #'visual-line-mode)
