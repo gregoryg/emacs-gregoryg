@@ -191,7 +191,7 @@ A sort-of package with customization framework.  The famed =gjg= package.
    :PROPERTIES:
    :ID:       d08013df-17b2-4faa-b429-e91493625897
    :END:
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      ;; tags are being used only at file level for now (#+FILETAGS)
      (defun gjg/parse-org-buffer-for-rdf (&optional SIMPLE-LIST)
        "Parse current Org buffer, returning elements for my ontology.
