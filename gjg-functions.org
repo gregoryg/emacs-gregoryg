@@ -560,7 +560,7 @@ A sort-of package with customization framework.  The famed =gjg= package.
      do-capitalize: t means run text through capitalize function, nil will respect CamelCase
      "
        (save-excursion
-         (setq case-fold-search nil)
+         (setq-local case-fold-search nil)
          (downcase
           (replace-regexp-in-string
            "[^A-Z]" ""
