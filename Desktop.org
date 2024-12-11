@@ -95,6 +95,7 @@
    #+begin_src bash
      sudo apt update
      sudo apt -y install \
+          acpi \
           autorandr \
           blueman \
           cifs-utils \
@@ -132,6 +133,7 @@
           net-tools \
           nm-tray \
           network-manager-openvpn-gnome \
+          numlockx \
           pdsh \
           playerctl \
           policykit-1-gnome \
