@@ -56,10 +56,10 @@
      (custom-set-variables '(inhibit-splash-screen t))
 
      ;; tab indents - if line is already indented, try to auto-complete
-     (custom-set-variables '
-      (tab-always-indent 'complete)
-      (indent-tabs-mode nil)
-      (tab-width 4))
+     (custom-set-variables
+      '(tab-always-indent 'complete)
+      '(indent-tabs-mode nil)
+      '(tab-width 4))
 
      ;; (setq-default indent-tabs-mode nil)
      ;; (setq-default tab-width 4)
