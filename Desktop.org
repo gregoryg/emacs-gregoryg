@@ -838,7 +838,7 @@
      [Desktop Entry]
      Name=Home Assistant
      Comment=Home Assistant of 2 Moonz
-     Exec=xdg-open http://erebor.magichome:8123/
+     Exec=xdg-open http://homeassistant.magichome:8123/
      Icon= /home/gregj/.local/share/pixmaps/homeassistant.png
      Terminal=false
      Type=Application
