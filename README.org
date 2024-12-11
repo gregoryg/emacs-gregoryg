@@ -2164,7 +2164,7 @@
          (add-to-list 'org-babel-tangle-lang-exts '("cypher" . "cypher")))
      #+end_src
 ** SPARQL
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (straight-use-package
       '(sparql-mode :type git :host github :repo "ljos/sparql-mode"
                     :fork (:host github :branch "stardog-babel" :repo "gregoryg/sparql-mode")))
