@@ -2277,7 +2277,6 @@
       'org-babel-load-languages
       (append org-babel-load-languages
               '(
-                (sparql . t)
                 (clojure . t)
                 (http . t) ;; curl
                 (js . t)
