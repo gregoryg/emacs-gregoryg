@@ -225,6 +225,13 @@
              Option "AccelSpeed" "0.3"
      EndSection
    #+end_src
+** Touchscreen scrolling
+   To =/etc/security/pam_env.conf= add
+   #+begin_src conf
+     MOZ_USE_XINPUT2 DEFAULT=1
+   #+end_src
+
+   Log out and back in
 * Fix problems with conflicting DE features and applications
 ** Symptom: C-: brings up a text entry popup
    This interferes with my key binding for =dired-open=.  The same mechanism offers other
