@@ -380,9 +380,7 @@ A sort-of package with customization framework.  The famed =gjg= package.
       (interactive)
       (if (get-process "polybar")
           (call-process-shell-command "polybar-msg cmd toggle")
-        (start-process-shell-command "polybar" nil (concat "polybar --config=~/.config/polybar/config-fancy floating -r -l warning"))
-        )
-      )
+        (start-process-shell-command "polybar" nil (concat "polybar --config=~/.config/polybar/config-fancy floating -r -l warning"))))
 
     (defun gjg/kill-polybar ()
       (interactive)
