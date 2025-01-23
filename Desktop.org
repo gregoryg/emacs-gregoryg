@@ -42,16 +42,15 @@
      # The arguments for this script:
      if [ -z "$1" ]; then
          echo "\
-     Usage: $0 [output, up, down, mute, unmute, togmute, next-sink, sync]"
+     Usage: $0 [output, up, down, mute, unmute, togmute, next-node, sync]"
          exit 0
      fi
      ~/bin/pulseaudio-control \
          --icons-volume " , " \
          --icon-muted " " \
-         --sink-nicknames-from "device.description" \
-         --sink-nickname "alsa_output.pci-0000_00_1f.3.analog-stereo:  Speakers" \
-         --sink-nickname "bluez_sink.38_18_4C_3E_36_51.a2dp_sink:  Headphones" \
-         --sink-nickname "bluez_sink.BC_F2_92_A7_29_EC.a2dp_sink: Earpiece" \
+         --node-nicknames-from "device.description" \
+         --node-nickname "alsa_output.pci-0000_00_1f.3.analog-stereo:  Speakers" \
+         --node-nickname "bluez_output.AC_BF_71_F5_46_BE.1: High of the Low" \
          $1
    #+end_src
 ** Laptop battery level notifications
@@ -880,8 +879,8 @@
 ** Jupyter Lab - local server
    + tangle startup script
      #+begin_src bash :tangle ~/bin/start_jupyterlab.sh
-       # Requires c.ServerApp.allow_remote_access = True in ~/.jupyter/jupyter_lab_config.py
-       # Set password with `jupyter-lab password` ; stored in ~/.jupyter/jupyter_server_config.json
+       # Requires c.ServerApp.allow_remote_access = True in ~/.config/jupyter/jupyter_lab_config.py
+       # Set password with `jupyter-lab password` ; stored in ~/.config/jupyter/jupyter_server_config.json
        jupyter-lab --no-browser --ip=jupyter.127.0.0.1.nip.io --port=8442
        # jupyter-lab --ip=jupyter.127.0.0.1.nip.io --port=8442
      #+end_src
