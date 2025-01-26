@@ -911,6 +911,19 @@
      Type=Application
      Categories=Office;Networking;Social
    #+end_src
+** LM Studio
+   This crazy thing is distributed as an AppImage
+   #+begin_src conf :tangle ~/.local/share/applications/lm-studio.desktop
+     [Desktop Entry]
+     Name=LM Studio
+     Comment=LLM AI
+     Exec=/opt/lmstudio/lms
+     Icon=/home/gregj/.local/share/pixmaps/lm-studio-logo.png
+     Terminal=false
+     Type=Application
+     Categories=Development;AI;LLM;
+   #+end_src
+
 ** Google Calendar
    #+begin_src conf :tangle ~/.local/share/applications/gcalendar.desktop
      [Desktop Entry]
