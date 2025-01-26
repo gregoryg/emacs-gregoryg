@@ -839,17 +839,6 @@
      Type=Application
      Categories=InstantMessaging;
    #+end_src
-** HBO Max
-   #+begin_src conf :tangle ~/.local/share/applications/hbomax.desktop
-     [Desktop Entry]
-     Name=HBO Max
-     Comment=HBO Max in Browser
-     Exec=xdg-open https://play.hbomax.com/
-     Icon=/home/gregj/.local/share/pixmaps/hbomax.png
-     Terminal=false
-     Type=Application
-     Categories=Entertainment;
-   #+end_src
 ** Home Assistant
    #+begin_src conf :tangle ~/.local/share/applications/home-assistant.desktop
      [Desktop Entry]
