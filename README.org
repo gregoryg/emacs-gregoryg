@@ -1962,6 +1962,10 @@
      ;;     (setq counsel-describe-variable-function #'helpful-variable)))
    #+end_src
 
+** Config files (.ini and such)
+   #+begin_src emacs-lisp
+     (add-to-list 'auto-mode-alist '("\\.service$" . conf-mode))
+   #+end_src
 ** CSV - Clumsy Stupid Varmint
     #+begin_src emacs-lisp
       (use-package csv-mode :straight t)
