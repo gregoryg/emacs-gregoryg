@@ -1159,6 +1159,7 @@
         :models '("codellama/CodeLlama-70b-Instruct-hf"
                   "tiiuae/falcon-40b-instruct"
                   "codellama/CodeLlama-34b-Instruct-hf"
+                  "deepseek-ai/DeepSeek-R1"
                   "mistralai/Mixtral-8x7B-Instruct-v0.1"
                   "mistralai/Mixtral-8x22B-Instruct-v0.1"
                   "meta-llama/llama-2-70b-chat-hf"
