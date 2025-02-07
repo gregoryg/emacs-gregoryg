@@ -1001,13 +1001,16 @@
 
    #+begin_src conf :tangle ~/.local/share/applications/org-protocol.desktop
      [Desktop Entry]
-     Name=Org-Protocol
-     Exec=emacsclient %u
-     Icon= ~/emacs/pixmaps/org-roam.png
+     Name=org-protocol
+     Comment=Intercept calls from emacsclient to trigger custom actions
+     Categories=Other;Editor;
+     Keywords=org-protocol;
+     Icon=~/emacs/pixmaps/org-roam.png
      Type=Application
+     Exec=emacsclient -- %u
      Terminal=false
-     MimeType=x-scheme-handler/org-protocol
-     Categories=Roam
+     StartWMClass=Emacs
+     MimeType=x-scheme-handler/org-protocol;
    #+end_src
 
    Activate this by running
