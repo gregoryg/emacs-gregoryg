@@ -1259,7 +1259,7 @@
           (setq gptel-directives (gjg/gptel-build-directives "~/projects/ai/AIPIHKAL/system-prompts/")
                 gptel-system-message (alist-get 'default gptel-directives))))
     #+end_src
-*** And my supplementos
+*** And my supplements
 **** Functions to use in hooks
 ***** Return Gptel backend + model
       I find it useful to indicate model and provider service (OpenAI, ollama, together.ai etc) at the beginning of each LLM response.
@@ -1285,7 +1285,10 @@
         (defun gjg/gptel-insert-model-in-chat-buffers (response-begin-pos response-end-pos)
           "This function adds the backend and model in dedicated chat buffers.
         Can be used with the `gptel-post-response-functions' hook."
-          (let* ((inserted-string (format "%s %s\n" (alist-get 'org-mode gptel-prompt-prefix-alist) (gjg/gptel-backend-and-model)))
+          (let* ((gptel-org-prefix (alist-get 'org-mode gptel-prompt-prefix-alist))
+                 (inserted-string (format "%s %s\n"
+                                          (substring gptel-org-prefix 0 (string-match " " gptel-org-prefix))
+                                          (gjg/gptel-backend-and-model)))
                  (len-inserted (length inserted-string )))
             (goto-char response-begin-pos)
             (insert inserted-string)
