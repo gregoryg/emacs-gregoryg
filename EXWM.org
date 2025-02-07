@@ -213,7 +213,8 @@ This entire file provides my configuration, required Emacs supporting packages a
       (defun gjg/exwm-select-or-launch-spotify ()
         "Select the running Spotify window in EXWM, or launch the app"
         (interactive)
-        (gjg/exwm-switch-to-buffer-or-launch "Spotify" "com.spotify.Client"))
+        ;; (gjg/exwm-switch-to-buffer-or-launch "Spotify" "com.spotify.Client") ;; flatpak
+        (gjg/exwm-switch-to-buffer-or-launch "Spotify" "spotify"))
     #+end_src
 *** Function to switch quickly to Zoom Meeting
     #+begin_src
