@@ -1390,7 +1390,7 @@
      Name=YouTube
      Comment=
      Exec=xdg-open https://youtube.com
-     Icon= /home/gregj/.local/share/pixmaps/youtube-kids-new-logo.png
+     Icon= /home/gregj/.local/share/pixmaps/youtube-logo.png
      Terminal=false
      Type=Application
      Categories=Video;yt
