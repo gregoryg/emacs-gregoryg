@@ -3412,7 +3412,6 @@
 
     (use-package org-fc
       :straight t
-      :load-path "~/projects/emacs/org-fc"
       :custom (org-fc-directories '("~/projects/private-orgmode/learning/"))
       :config
       (require 'org-fc-hydra)
