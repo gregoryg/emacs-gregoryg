@@ -217,15 +217,11 @@ This entire file provides my configuration, required Emacs supporting packages a
         (gjg/exwm-switch-to-buffer-or-launch "Spotify" "spotify"))
     #+end_src
 *** Function to switch quickly to Zoom Meeting
-    #+begin_src
-
-*** Assistant: #+begin_src emacs-lisp
 #+begin_src emacs-lisp
 (defun gjg/exwm-select-or-launch-zoom ()
         "Select the running Zoom meeting window in EXWM, or launch the Zoom app"
         (interactive)
         (gjg/exwm-switch-to-buffer-or-launch "Zoom Meeting" "zoom"))
-#+end_src
 #+end_src
 
 This function first checks if there is already a Zoom meeting window
