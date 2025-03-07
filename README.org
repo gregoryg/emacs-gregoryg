@@ -726,10 +726,9 @@
     deliimters when using =rainbow-delimiters-mode=.  So without going down the rabbit
     hole to modify all the rainbow-delimiters faces, I'm just nudging the background and
     foreground colors very slightly.
-    #+begin_src emacs-lisp
-      ;; make the modus themes act more like my brutalist theme in Org
+    #+begin_src emacs-lisp :tangle no
+      ;; tweak the modus themes to act more like my brutalist theme in Org
       ;; load the dark theme - (load-theme is equivalent to 'require) - so we have vars and funcs
-      (load-theme (intern gjg/preferred-dark-theme))
       (defun gjg/my-modus-themes-custom-faces ()
         "Tweak faces"
         (message "Setting custom org-habit face for Modus themes")
@@ -763,9 +762,13 @@
               (fg-heading-4 "#f4a460")
               (bg-hl-line "#262626")))
     #+end_src
+#+begin_src emacs-lisp
+  ;; load the dark theme - (load-theme is equivalent to 'require) - so we have vars and funcs
+  (load-theme (intern gjg/preferred-dark-theme))
+#+end_src
 *** Load default theme
     Deferred here until all theme tweaks have been applied
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle no
       (gjg/go-dark)
       ;; (let ((hour (nth 2 (decode-time))))
       ;;   (if (or (< hour 9) (> hour 16))
