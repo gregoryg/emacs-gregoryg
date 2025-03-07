@@ -2371,7 +2371,7 @@
       ;; Squid caching patterns
       (highlight-regexp "[A-Z_]*_HIT[A-Z_]*" 'hi-green)
       (highlight-regexp "[A-Z_]*_MISS[A-Z_]*" 'hi-pink)
-      (highlight-regexp "[A-Z_]*_UNMODIFIED[A-Z_]*" 'hi-green)
+      ;; (highlight-regexp "[A-Z_]*_UNMODIFIED[A-Z_]*" 'hi-green)
       (highlight-regexp "application/[-a-z0-9A-Z]+" 'hi-yellow)
       (highlight-regexp "/[^/]+\.rpm" 'hi-black-b)
       (highlight-regexp "/[^/]+\.deb" 'hi-black-b))
