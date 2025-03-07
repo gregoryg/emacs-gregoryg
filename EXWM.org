@@ -529,12 +529,6 @@ system.
 	 ;; (require 'exwm-systemtray)
 	 ;; (exwm-systemtray-enable)
        #+end_src
-** Start up xrandr to react to display changes
-       GJG: deprecated?
-       #+begin_src emacs-lisp :tangle no
-	 (exwm-randr-enable)
-       #+end_src
-
 ** Deal with brightness and volume, since we don't have a DE
    There is a =desktop-environment= package on Melpa, but it's overkill for what I need.
    TODO: Figure out how to specify these keys and modify =exwm-input-global-keys=
