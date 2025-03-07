@@ -378,7 +378,7 @@ system.
                 (,(kbd "<XF86AudioMute>") . (lambda () (interactive) (gjg/volume "togmute")))
                 (,(kbd "<XF86AudioPlay>") . playerctl-play-pause-song)
                 ([?\s--] . gjg/exwm-select-zoom-meeting)
-                ([?\s-=] . gjg/exwm-select-teams-meeting)
+                ([?\s-=] . gjg/exwm-select-or-launch-home-assistant)
                 ([?\s-.] . (lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
                 ([?\s-,] . gjg/polybar-start-or-toggle)
 

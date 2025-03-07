@@ -252,11 +252,10 @@
     (global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
     (global-set-key (kbd "s-g") 'gjg/exwm-select-or-launch-logseq)
     (global-set-key (kbd "s-g") 'gjg/exwm-select-slack)
-    (global-set-key (kbd "s-h") 'gjg/exwm-select-or-launch-home-assistant)
     (global-set-key (kbd "s-'") 'gjg/add-person-from-table)
     (global-set-key (kbd "s-y") 'gjg/exwm-select-or-launch-spotify)
     (global-set-key (kbd "s--")  'gjg/exwm-select-zoom-meeting)
-    (global-set-key (kbd "s-=")  'gjg/exwm-select-teams-meeting)
+    (global-set-key (kbd "s-=")  'gjg/exwm-select-or-launch-home-assistant)
 
     (global-set-key [f1] 'delete-other-windows)
     (global-set-key [f2] 'gjg/switch-to-other-buffer)
@@ -586,7 +585,7 @@
      (bind-key "M-s-<right>" 'windmove-delete-right)
      (bind-key "s-p" 'playerctl-play-pause-song)
      (bind-key "s-q" 'bury-buffer)
-     (bind-key "s-h" 'gjg/exwm-select-or-launch-home-assistant)
+     (bind-key "s-=" 'gjg/exwm-select-or-launch-home-assistant)
      (bind-key "s-t" 'toggle-truncate-lines)
      (bind-key "s-'" 'gjg/add-person-from-table)
      (bind-key "s-y" 'gjg/exwm-select-or-launch-spotify)
