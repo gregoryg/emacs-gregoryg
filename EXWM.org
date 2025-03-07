@@ -230,11 +230,11 @@ finds one, it switches focus to it. If it doesn't find one, it calls the
 =zoom= command to launch a new instance of the Zoom app. The =zoom=
 command must be mapped to the appropriate command to launch Zoom on your
 system.
-emacs-lisp
-      (defun gjg/exwm-select-zoom-meeting ()
-        "Select the running Zoom Meeting window if it's running."
-        (interactive)
-        (gjg/exwm-switch-to-buffer-or-launch "Zoom Meeting"))
+   #+begin_src emacs-lisp
+     (defun gjg/exwm-select-zoom-meeting ()
+       "Select the running Zoom Meeting window if it's running."
+       (interactive)
+       (gjg/exwm-switch-to-buffer-or-launch "Zoom Meeting"))
     #+end_src
 *** Function to switch quickly to Microsoft Teams in Edge
     #+begin_src emacs-lisp
