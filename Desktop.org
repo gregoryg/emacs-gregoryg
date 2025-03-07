@@ -199,7 +199,7 @@
    This is for use with LightDM Slick Greeter - look for a =badges= directory for
    whichever DM you use
    #+begin_src bash
-     sudo cp -v ~/emacs/pixmaps/emacs-icon-22x22.png /usr/share/slick-greeter/badges/emacs.png
+     sudo cp -v ~/emacs/pixmaps/emacs-512x512.png /usr/share/slick-greeter/badges/emacs.png
    #+end_src
 ** Touchpad and external mouse settings
    These configs set up my preference for scrolling direction with the touchpad and an
