@@ -488,7 +488,7 @@ system.
                        (exwm-workspace-rename-buffer exwm-class-name)))))
          (add-hook 'exwm-update-title-hook
                    (lambda ()
-                     (let ((browsers '(("Mozilla Firefox" . "firefox")
+                     (let ((browsers '(("Mozilla Firefox" . "fox")
                                        ("Personal - Microsoft​ Edge" . "edge")
                                        ("Google Chrome" . "chrome")
                                        ("Chromium" . "chromium"))))
