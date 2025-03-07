@@ -878,7 +878,7 @@
      [Desktop Entry]
      Name=Jupyter Lab
      Comment=Browse local Jupyter Lab server
-     Exec=xdg-open http://jupyter.127.0.0.1.nip.io:8442
+     Exec=xdg-open http://aziriphale.magichome:8442
      Icon= /home/gregj/.local/share/pixmaps/1200px-Jupyter_logo.svg.png
      Terminal=false
      Type=Application
