@@ -530,7 +530,8 @@ system.
 	 ;; (exwm-systemtray-enable)
        #+end_src
 ** Start up xrandr to react to display changes
-       #+begin_src emacs-lisp
+       GJG: deprecated?
+       #+begin_src emacs-lisp :tangle no
 	 (exwm-randr-enable)
        #+end_src
 
