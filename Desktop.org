@@ -72,8 +72,8 @@
      TARGET_STOP_NAGGING=85 # stop nagging on full battery after this threshold
      BATTERY_PATH=$(upower -e | grep battery_BAT0)
      LINE_POWER_PATH=$(upower -e | grep line_power_AC)
-     BATTERY_PERCENTAGE=$(upower -i $BATTERY_PATH | grep 'percentage:' | awk '{ print $2 }' | sed 's/%//')
-     CABLE_PLUGGED=$(upower -i $LINE_POWER_PATH | grep -A2 'line-power' | grep online | awk '{ print $2 }')
+     BATTERY_PERCENTAGE=${BATTERY_PERCENTAGE:-$(upower -i $BATTERY_PATH | grep 'percentage:' | awk '{ print $2 }' | sed 's/%//')}
+     CABLE_PLUGGED=${CABLE_PLUGGED:-$(upower -i $LINE_POWER_PATH | grep -A2 'line-power' | grep online | awk '{ print $2 }')}
 
      if [[ $CABLE_PLUGGED == 'yes' ]]; then
          if [ $BATTERY_PERCENTAGE -ge ${TARGET_MAX} ] && [ $BATTERY_PERCENTAGE -lt ${TARGET_STOP_NAGGING} ] ; then
@@ -85,6 +85,14 @@
          fi
      fi
    #+end_src
+*** Test battery low
+    #+begin_src bash
+      CABLE_PLUGGED=no BATTERY_PERCENTAGE=18 ~/bin/notify-battery-levels.sh
+#+end_src
+*** Test battery high
+    #+begin_src bash
+      CABLE_PLUGGED=yes BATTERY_PERCENTAGE=81 ~/bin/notify-battery-levels.sh
+#+end_src
 * OS Applications
   The shell scripts here expect certain applications to be installed, so let's take care
   of those
