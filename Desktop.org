@@ -873,6 +873,18 @@
      StartupWMClass=jetbrains-idea-ce
    #+end_src
 
+** Jellyfin media server
+   #+begin_src conf :tangle ~/.local/share/applications/jellyfin.desktop
+     [Desktop Entry]
+     Name=Jellyfin
+     Comment=Jellyfin media server
+     Exec=xdg-open http://jellyfin.magichome:8096
+     Icon=/home/gregj/.local/share/pixmaps/jellyfin-icon-256x256-rjpwup8s.png
+     Terminal=false
+     Type=Application
+     Categories=Media;Music;Video
+   #+end_src
+
 ** Jupyter Lab - local server
    + tangle startup script
      #+begin_src bash :tangle ~/bin/start_jupyterlab.sh
