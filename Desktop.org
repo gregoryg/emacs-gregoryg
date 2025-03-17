@@ -728,7 +728,7 @@
      [Desktop Entry]
      Name=Cockpit
      Comment=Red Hat RHEL Web Console on protomolecule
-     Exec=xdg-open http://protomolecule.magichome:9090
+     Exec=xdg-open http://cockpit.magichome:9090
      Icon= /home/gregj/.local/share/pixmaps/org.cockpit_project.CockpitClient-512x512.png
      Terminal=false
      Type=Application
