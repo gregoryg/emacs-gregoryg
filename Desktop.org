@@ -1170,17 +1170,6 @@
      Type=Application
      Categories=InstantMessaging;
    #+end_src
-** Solaar Logitech
-   #+begin_src conf :tangle ~/.local/share/applications/Solaar.desktop
-     [Desktop Entry]
-     Name=Solaar Logitech
-     Comment=Logitech Unifying software
-     Exec=solaar
-     Icon=/home/gregj/.local/share/pixmaps/solaar.svg
-     Terminal=false
-     Type=Application
-     Categories=Utility
-   #+end_src
 ** Spotify
    #+begin_src conf :tangle no
  ~/.local/share/applications/spotify.desktop
