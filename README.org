@@ -1411,6 +1411,210 @@
 
      #+end_src
 
+*** Custom tools (experimenting)
+**** Create a text file - from gptel docs
+     #+begin_src emacs-lisp
+       (gptel-make-tool
+        :name "create_file"                    ; javascript-style  snake_case name
+        :function (lambda (path filename content)   ; the function that runs
+                    (let ((full-path (expand-file-name filename path)))
+                      (with-temp-buffer
+                        (insert content)
+                        (write-file full-path))
+                      (format "Created file %s in %s" filename path)))
+        :description "Create a new file with the specified content"
+        :args (list '(:name "path"             ; a list of argument specifications
+       	                 :type string
+       	                 :description "The directory where to create the file")
+                    '(:name "filename"
+       	                 :type string
+       	                 :description "The name of the file to create")
+                    '(:name "content"
+       	                 :type string
+       	                 :description "The content to write to the file"))
+        :category "filesystem")                ; An arbitrary label for grouping
+#+end_src
+**** Get weather forecast
+     #+begin_src emacs-lisp
+       ;; (gptel-make-tool
+       ;;  :name "weather_forecast"
+       ;;  :function (lambda ()
+
+       ;;              (let* ((buf (url-retrieve-synchronously "http://dataservice.accuweather.com/forecasts/v1/daily/5day/2201318?apikey=0xdeadbeefdeadbeef&details=true"))
+       ;;                     (weather (if buf
+       ;;                                  (with-current-buffer buf
+       ;;                                    (buffer-substring-no-properties (point-min) (point-max)))
+       ;;                                ("no weather forecast found"))))
+       ;;                weather))
+       ;;  :description "Get today's weather forecast for Conifer, Colorado."
+       ;;  :category "home"
+       ;;  :include t)
+
+       (defun gjg/weather-com-forecast (&optional days location)
+         "Get the weather forecast from weather.com.
+       DAYS defaults to 1 (can be up to 3 for the free API).
+       LOCATION defaults to zipcode 80433."
+         (let ((apikey
+                (encode-coding-string
+                 (funcall
+                  (plist-get
+                   (car
+                    (auth-source-search :host "api.weatherapi.com" :user "apikey" :require '(:secret)))
+                   :secret))
+                 'utf-8))
+               (url "http://api.weatherapi.com/v1/forecast.json")
+               (days (or days 1))
+               (location (or location "80433")))
+           (with-current-buffer (url-retrieve-synchronously (format "%s?key=%s&q=%s&days=%d&aqi=no&alerts=no" url apikey location days))
+             ;; skip the headers
+             (goto-char (point-min))
+             (re-search-forward "^$" nil 'move)
+             (delete-region (point-min) (point))
+             (buffer-string ))))
+
+       (gptel-make-tool
+        ;; :function (lambda ()
+        ;;             (let ((apikey
+        ;;                    (encode-coding-string
+        ;;                     (funcall
+        ;;                      (plist-get
+        ;;                       (car
+        ;;                        (auth-source-search :host "api.weatherapi.com" :user "apikey" :require '(:secret)))
+        ;;                       :secret))
+        ;;                     'utf-8))))
+        ;;             (url-retrieve-synchronously "http://api.weatherapi.com/v1/forecast.json?key=0xdeadbeefdeadbeef&q=80433&days=3&aqi=no&alerts=no"))
+        :function #'gjg/weather-com-forecast
+        :name "get_weather"
+        :description "Get the current weather at home. Report on Fahrenheit and Imperical measures. Call with no arguments"
+        :category "home"
+        :include t)
+
+       ;; :args (list '(:name "location"
+       ;;                        :type string
+       ;;                        :description "The city and state, e.g. San Francisco, CA")
+       ;;             '(:name "unit"
+       ;;                        :type string
+       ;;                        :enum ["celsius" "farenheit"]
+       ;;                        :description
+       ;;                        "The unit of temperature, either 'celsius' or 'fahrenheit'. Defaults to fahrenheit"
+       ;;                        :optional t))
+
+#+end_src
+**** Answer questions about Casa Ranona
+#+begin_src emacs-lisp
+  (gptel-make-tool
+   :name "house_guide"
+   :include t
+   :function (lambda () "The house name is Casona Ranona, due to its occupants' love of frogs.  Curly-headed Rozi and curmodgeonly Gortsleigh live there.  Towels, sheets, pillow cases and bed linens are found in the upstairs guest bathroom.  Home can be controlled both by Google Nest and Home Assistant.  The guest wifi pass phrase is shmeedleypep321.  The older black and white wooly mammoth cat is Molly, the blue-eyed friendly world-famous boy Siamese cat is Charlie.") ; TBD
+   :description "Answer questions about the house / home / Casa Ranona including persons, cats, location of home items for guests.  Returns known facts about the home. Just pick out the facts relevant to the question you were asked. Called with no arguments"
+   :category "home")
+#+end_src
+**** Return source for an Emacs package
+     Search for and return source code for an Emacs package.
+
+     To stay within reasonable token constraints, return only the primary source code file unless all source files are requested by the LLM.
+
+     #+begin_src emacs-lisp
+       (defun gjg/extract-emacs-package-source (package &optional FULL)
+         "Extract and return a simple structured text document with the primary source for package PACKAGE.
+       If FULL is not nil, return all source files."
+         (if (stringp package)
+             (let* ((library-path (find-library-name package))q
+                    (all-elisp (directory-files (f-dirname library-path) t ".*\\.el\\(\\.gz\\)?$")))
+               (with-temp-buffer
+                 ;; run through the list of .el files
+                 ;; start with the "primary" .el file, returned by =find-library-name=
+
+                 (goto-char (point-min))
+                 (insert (format "\n* file %s (primary)\n" library-path))
+                 (insert "#+begin_src emacs-lisp\n")
+                 (insert-file library-path)
+                 (goto-char (point-max))
+                 (insert "\n#+end_src\n")
+                 (when FULL
+                   (dolist (file (remove library-path all-elisp))
+                   (insert (format "\n* file %s\n" file))
+                   (insert "#+begin_src emacs-lisp\n")
+                   (insert-file file)
+                   (goto-char (point-max))
+                   (insert "\n#+end_src\n")))          (buffer-string)))
+           (warn "Package must be the package name as a string.")))
+
+       (gptel-make-tool
+        :name "emacs_package_source"
+        :description "Fetch all source code for the given Emacs package, using `find-library'."
+        :category "coding"
+        :include t
+        :function #'gjg/extract-emacs-package-source
+        :args (list '(:name "package_name"
+                            :type string
+                            :description "Name of the Emacs package."
+                            :optional nil)
+                    '(:name "full_source"
+                            :type boolean
+                            :description "If true/t, return source from ALL source code files in the package, not just the primary source file. Let this default in most cases to save on tokens!"
+                            :optional t)))
+#+end_src
+**** Return function source
+     #+begin_src emacs-lisp
+       (defun gjg/extract-function-source (function-name)
+         "Extract and return the source code of a callable FUNCTION-NAME, if possible."
+         (when (fboundp (intern function-name))
+           (let ((source))
+             (condition-case err
+                 ;; `find-function-noselect' returns the buffer and position.
+                 (let ((buf-pos (find-function-noselect :function-name)))
+                   (when buf-pos
+                     (let ((buffer (car buf-pos))
+                           (pos (cdr buf-pos)))
+                       (with-current-buffer buffer
+                         (save-excursion
+                           (goto-char pos)
+                           (let ((start (point)))
+                             ;; Move to the end of the function definition.
+                             (end-of-defun)
+                             ;; Extract source code.
+                             (setq source (buffer-substring-no-properties start (point)))))))))
+               (error
+                ;; Handle errors gracefully by printing a message.
+                (message "Error finding source for %s: %s" function-name (error-message-string err))))
+             source)))
+
+       ;; Usage example
+       ;; (my-extract-callable-source 'your-function-name)
+
+       (gptel-make-tool
+        :name "emacs_function_source"
+        :include t
+        :function #'gjg/extract-function-source
+        :description "Return source code for Emacs functions, be they written in Emacs Lisp (Elisp) or C"
+        :category "coding"
+        :args (list '(:name "function_name"
+                            :type string
+                            :description "the function name"
+                            :optional nil))
+        :category "coding")
+#+end_src
+**** Summarize all known Info manuals
+     Info manuals do not have a tightly prescribed structure for metadata, so just use the =dir= files for this purpose.
+
+     #+begin_src emacs-lisp
+       (defun gjg/get-info-manuals-with-description ()
+         "Return text of all Info manuals with their simple descriptions.
+       This is what you see when you evoke C-h i or run (info)."
+         (with-temp-buffer
+           (Info-insert-dir)
+           (buffer-substring-no-properties (point-min) (point-max))))
+
+       (gptel-make-tool
+        :name "emacs_info_manuals"
+        :include t
+        :function #'gjg/get-info-manuals-with-description
+        :description "Get text showing all known Info manuals with their description. Format is human-readable manual name, info manual short file name in parens, description."
+        :category "information")
+#+end_src
+
+
 * Commonly used modes
 
 ** Vertico (will it replace Selectrum which replaced Ivy which replaced Ido?)
