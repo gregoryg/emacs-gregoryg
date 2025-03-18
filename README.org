@@ -1167,6 +1167,7 @@
                   "mistralai/Mixtral-8x22B-Instruct-v0.1"
                   "meta-llama/llama-2-70b-chat-hf"
                   "meta-llama/Llama-3-70b-chat-hf"
+                  "meta-llama/Llama-3.3-70B-Instruct-Turbo"
                   "microsoft/WizardLM-2-8x22B"
                   ))
      #+end_src
