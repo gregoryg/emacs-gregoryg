@@ -1613,7 +1613,29 @@
         :description "Get text showing all known Info manuals with their description. Format is human-readable manual name, info manual short file name in parens, description."
         :category "information")
 #+end_src
+**** Find list of man pages on system
+     #+begin_src emacs-lisp
+       (defun gjg/list-linux-man-pages (&optional s)
+         "Return text showing installed Linux man pages with descriptions - optionally provide a substring match to limit the number of results."
+         (let ((s (or s ""))
+               (shell-command-dont-erase-buffer nil))
+           (with-current-buffer "*man-pages*"
+             (delete-region (point-min) (point-max))
+             (shell-command (format "LANG=en_US.UTF-8 /usr/bin/man -k \"%s\"" s) t)
+             (buffer-string)
+             )))
 
+       (gptel-make-tool
+        :name "list_man_pages"
+        :description "Return list of installed Linux man pages with descriptions - optionally provide a substring match to limit the number of results."
+        :include nil
+        :function #'gjg/list-linux-man-pages
+        :category "coding"
+        :args (list '(:name "search_substring"
+                            :type string
+                            :optional t
+                            :description "A substring to limit results of all man pages.  e.g. \"media\" or \"office\"")))
+#+end_src
 
 * Commonly used modes
 
