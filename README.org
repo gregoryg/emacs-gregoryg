@@ -1487,7 +1487,7 @@
         :name "get_weather"
         :description "Get the current weather at home. Report on Fahrenheit and Imperical measures. Call with no arguments"
         :category "home"
-        :include t)
+        :include nil)
 
        ;; :args (list '(:name "location"
        ;;                        :type string
@@ -1544,7 +1544,7 @@
         :name "emacs_package_source"
         :description "Fetch all source code for the given Emacs package, using `find-library'."
         :category "coding"
-        :include t
+        :include nil
         :function #'gjg/extract-emacs-package-source
         :args (list '(:name "package_name"
                             :type string
@@ -1608,7 +1608,7 @@
 
        (gptel-make-tool
         :name "emacs_info_manuals"
-        :include t
+        :include nil
         :function #'gjg/get-info-manuals-with-description
         :description "Get text showing all known Info manuals with their description. Format is human-readable manual name, info manual short file name in parens, description."
         :category "information")
