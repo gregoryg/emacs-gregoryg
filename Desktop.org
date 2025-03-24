@@ -85,13 +85,13 @@
          fi
      fi
    #+end_src
-*** Test battery low
-    #+begin_src bash
-      CABLE_PLUGGED=no BATTERY_PERCENTAGE=18 ~/bin/notify-battery-levels.sh
-#+end_src
 *** Test battery high
     #+begin_src bash
       CABLE_PLUGGED=yes BATTERY_PERCENTAGE=81 ~/bin/notify-battery-levels.sh
+#+end_src
+*** Test battery low
+    #+begin_src bash
+      CABLE_PLUGGED=no BATTERY_PERCENTAGE=18 ~/bin/notify-battery-levels.sh
 #+end_src
 * OS Applications
   The shell scripts here expect certain applications to be installed, so let's take care
@@ -1417,6 +1417,31 @@
      Categories=Cooking;Recipes
    #+end_src
 
+** Zen Browser
+   Add to browsers in alternatives system, and preferred to handle webby mime types
+
+   #+begin_src bash
+     sudo update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/zen 100
+     xdg-mime default zen-browser.desktop text/html
+     xdg-mime default zen-browser.desktop application/xhtml+xml
+     xdg-mime default zen-browser.desktop x-scheme-handler/http
+     xdg-mime default zen-browser.desktop x-scheme-handler/https
+#+end_src
+
+
+   #+begin_src conf :tangle ~/.local/share/applications/zen-browser.desktop
+     [Desktop Entry]
+     Name=Zen Web Browser
+     GenericName=Zen
+     Comment=Open source browser
+     Exec=/usr/local/bin/zen %U
+     Icon=/home/gregj/.local/share/pixmaps/zen-browser-icon-128x128.png
+     Terminal=false
+     Type=Application
+     Categories=Network;Browser;WebBrowser
+     # StartupNotify=True
+     MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;
+#+end_src
 ** Zoom
    Use this if you are not using the OS package manager installation - set =:tangle no= if
    you are
@@ -1427,8 +1452,9 @@
    #+end_src
 
    Set that in =~/.config/zoomus.conf= or similar
+   ~/.local/share/applications/zoom.desktop
+
    #+begin_src conf :tangle no
- ~/.local/share/applications/zoom.desktop
      [Desktop Entry]
      Encoding=UTF-8
      Name=Zoom
@@ -1440,3 +1466,4 @@
      Type=Application
      Categories=Application;Network;Productivity;
      StartupNotify=True
+#+end_src
