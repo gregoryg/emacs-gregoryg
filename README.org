@@ -1627,7 +1627,8 @@
                             :optional nil)))
 #+end_src
 #+end_src
-**** Summarize all known Info manuals
+
+***** Summarize all installed Info manuals
      Info manuals do not have a tightly prescribed structure for metadata, so just use the =dir= files for this purpose.
 
      #+begin_src emacs-lisp
