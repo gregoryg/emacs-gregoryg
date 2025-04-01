@@ -1575,7 +1575,7 @@
        (gptel-make-tool
         :name "emacs_package_source"
         :description "Fetch all source code for the given Emacs package, using `find-library'."
-        :category "coding"
+        :category "reflection"
         :include nil
         :function #'gjg/extract-emacs-package-source
         :args (list '(:name "package_name"
@@ -1587,7 +1587,7 @@
                             :description "If true/t, return source from ALL source code files in the package, not just the primary source file. Let this default in most cases to save on tokens!"
                             :optional t)))
 #+end_src
-**** Return function source
+***** Return function source
      #+begin_src emacs-lisp
        (defun gjg/extract-function-source (function-name)
          "Extract and return the source code of a callable FUNCTION-NAME, if possible."
@@ -1620,12 +1620,12 @@
         :include t
         :function #'gjg/extract-function-source
         :description "Return source code for Emacs functions, be they written in Emacs Lisp (Elisp) or C"
-        :category "coding"
+        :category "reflection"
         :args (list '(:name "function_name"
                             :type string
                             :description "the function name"
-                            :optional nil))
-        :category "coding")
+                            :optional nil)))
+#+end_src
 #+end_src
 **** Summarize all known Info manuals
      Info manuals do not have a tightly prescribed structure for metadata, so just use the =dir= files for this purpose.
@@ -1643,9 +1643,9 @@
         :include nil
         :function #'gjg/get-info-manuals-with-description
         :description "Get text showing all known Info manuals with their description. Format is human-readable manual name, info manual short file name in parens, description."
-        :category "information")
+        :category "reflection")
 #+end_src
-**** Find list of man pages on system
+***** Find list of man pages on system
      #+begin_src emacs-lisp
        (defun gjg/list-linux-man-pages (&optional s)
          "Return text showing installed Linux man pages with descriptions - optionally provide a substring match to limit the number of results."
@@ -1662,7 +1662,7 @@
         :description "Return list of installed Linux man pages with descriptions - optionally provide a substring match to limit the number of results."
         :include nil
         :function #'gjg/list-linux-man-pages
-        :category "coding"
+        :category "reflection"
         :args (list '(:name "search_substring"
                             :type string
                             :optional t
