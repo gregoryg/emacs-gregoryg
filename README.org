@@ -1529,7 +1529,19 @@
    :description "Answer questions about the house / home / Casa Ranona including persons, cats, location of home items for guests.  Returns known facts about the home. Just pick out the facts relevant to the question you were asked. Called with no arguments"
    :category "home")
 #+end_src
-**** Return source for an Emacs package
+**** Prompts and settings to help with tool usage
+     We need to reduce confusion / unnecessary complexity
+
+     Including the results of tool calls in the context can confuse the model after a time (for example all the source code for a package)
+
+     One thing to set and prompt for is =:include auto= - set this per tool, and indicate to the LLM that it has the choice of whether to include the tool results in future context
+
+     Another thing I want to experiment with is telling the model to let me know when it would be helpful to "clear its mind" and remove certain content from the context.  I will then do so manually.  I suppose I could even add a tool called "ask-user-to-clear-some-context" with this explanation in the description
+
+**** Reflection / Inspection / Coding category
+     The "reflection" category includes references to using Emacs and Linux
+
+***** Return source for an Emacs package
      Search for and return source code for an Emacs package.
 
      To stay within reasonable token constraints, return only the primary source code file unless all source files are requested by the LLM.
