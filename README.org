@@ -1669,6 +1669,65 @@
                             :optional t
                             :description "A substring to limit results of all man pages.  e.g. \"media\" or \"office\"")))
 #+end_src
+**** Web / Internet / Online Research category
+***** Search the web and read a web page
+
+      Search and page read are placed into the same callable function which leverages =eww=
+
+      I'm making 2 separate tools out of the one function to make it simpler for LLMs to decide how to use the tools.
+
+
+#+begin_src emacs-lisp
+  (defun gjg/read-or-search-web (url)
+    "Read a webpage or search using EWW."
+    (condition-case err
+        (progn
+          (eww url)
+          (let ((content (with-current-buffer "*eww*"
+                           (buffer-string))))
+            (format "Opened %s in eww. Content retrieved for context.\n\n%s" url content)))
+      (warning (format "Error accessing %s: %s" url (error-message-string err)))
+      )
+    )
+
+  ;; (gptel-make-tool
+  ;;  :name "read_webpage"
+  ;;  :function #'gjg/read-or-search-web
+  ;;  :description "retrieve and read a webpage for context"
+  ;;  :include t
+  ;;  :category "web"
+  ;;  :args (list '(:name "url"
+  ;;                      :type string
+  ;;                      :description "URL of the webpage to read")))
+
+  (gptel-make-tool
+   :name "search_web"
+   :function #'gjg/read-or-search-web
+   :description "Search the web"
+   :include t
+   :category "web"
+   :args (list '(:name "url"
+                       :type string
+                       :description "Search terms / string to search on the web using %s" eww-search-prefix)))
+
+  ;; (gptel-make-tool
+  ;;  :name "web_search"
+  ;;  :function (lambda (query &optional num-results)
+  ;;              (let* ((num (or num-results "5"))
+  ;;                     (search-url (format "https://www.google.com/search?q=%s&num=%s"
+  ;;                                         (url-hexify-string query) num))
+  ;;                     (buf (eww search-url)))
+  ;;                (format "Performed Google search for '%s' in eww" query)))
+  ;;  :description "search the web using Google"
+  ;;  :args (list '(:name "query"
+  ;;                      :type string
+  ;;                      :description "search query to send to Google")
+  ;;              '(:name "num-results"
+  ;;                      :type string
+  ;;                      :description "number of results to display"
+  ;;                      :optional t))
+  ;;  :category "web")
+#+end_src
 
 * Commonly used modes
 
