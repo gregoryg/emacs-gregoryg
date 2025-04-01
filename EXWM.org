@@ -496,28 +496,28 @@ system.
                                        ("Personal - Microsoft​ Edge" . "edge")
                                        ("Mozilla Firefox" . "fox")
                                        ("Zen Browser" . "zen"))))
-                           (cond
-                            ;; Browser titles
-                            ((s-starts-with-p "Mail - Greg Grubbs - Outlook - " exwm-title)
-                             (exwm-workspace-rename-buffer "email - outlook"))
-                            ((s-starts-with-p "Calendar - Greg Grubbs - Outlook" exwm-title)
-                             (exwm-workspace-rename-buffer "calendar - outlook"))
-                            ((s-starts-with-p "Google Hangouts - " exwm-title)
-                             (exwm-workspace-rename-buffer "hangouts"))
-                            ((s-matches? ".?Chat .+ mail.google.com" exwm-title)
-                             (exwm-workspace-rename-buffer (s-replace "Chat " "GChat " exwm-title)))
-                            ;; standalone apps
-                            ((string= "kitty" exwm-class-name)
-                             (exwm-workspace-rename-buffer (concat "kitty - " exwm-title)))
-                            ((string= "Slack" exwm-class-name)
-                             (exwm-workspace-rename-buffer (concat "slack stardog" "- " exwm-title)))
-                            ((string= "Logseq" exwm-class-name)
-                             (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name " App")))
-                            ((member exwm-class-name '("Eom" "Eog" "zoom" "Spotify" ))
-                             (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
-                            (:else
-                             (exwm-workspace-rename-buffer
-                              (s-replace-all browsers exwm-title)))))))
+                       (cond
+                        ;; Browser titles
+                        ((s-starts-with-p "Mail - Greg Grubbs - Outlook - " exwm-title)
+                         (exwm-workspace-rename-buffer "email - outlook"))
+                        ((s-starts-with-p "Calendar - Greg Grubbs - Outlook" exwm-title)
+                         (exwm-workspace-rename-buffer "calendar - outlook"))
+                        ((s-starts-with-p "Google Hangouts - " exwm-title)
+                         (exwm-workspace-rename-buffer "hangouts"))
+                        ((s-matches? ".?Chat .+ mail.google.com" exwm-title)
+                         (exwm-workspace-rename-buffer (s-replace "Chat " "GChat " exwm-title)))
+                        ;; standalone apps
+                        ((string= "kitty" exwm-class-name)
+                         (exwm-workspace-rename-buffer (concat "kitty - " exwm-title)))
+                        ((string= "Slack" exwm-class-name)
+                         (exwm-workspace-rename-buffer (concat "slack stardog" "- " exwm-title)))
+                        ((string= "Logseq" exwm-class-name)
+                         (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name " App")))
+                        ((member exwm-class-name '("Eom" "Eog" "zoom" "Spotify" ))
+                         (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
+                        (:else
+                         (exwm-workspace-rename-buffer
+                          (s-replace-all browsers exwm-title)))))))
        #+end_src
 *** Clean up on exit
     #+begin_src emacs-lisp
