@@ -1506,12 +1506,26 @@
        ;;                        :optional t))
 
 #+end_src
-**** Answer questions about Casa Ranona
+***** Answer questions about Casona Ranona
 #+begin_src emacs-lisp
   (gptel-make-tool
    :name "house_guide"
    :include t
-   :function (lambda () "The house name is Casona Ranona, due to its occupants' love of frogs.  Curly-headed Rozi and curmodgeonly Gortsleigh live there.  Towels, sheets, pillow cases and bed linens are found in the upstairs guest bathroom.  Home can be controlled both by Google Nest and Home Assistant.  The guest wifi pass phrase is shmeedleypep321.  The older black and white wooly mammoth cat is Molly, the blue-eyed friendly world-famous boy Siamese cat is Charlie.") ; TBD
+   :function (lambda () "
+  The house name is Casona Ranona, due to its occupants' love of frogs.
+
+  Curly-headed Rozi and curmodgeonly Gortsleigh live there.
+
+  Towels, sheets, pillow cases and bed linens are found in the upstairs guest bathroom.
+
+  Home devices can be controlled both by Google Nest and Home Assistant.
+
+  The guest wifi pass phrase is shmeedleypep321.
+
+  The older black and white wooly mammoth cat is Molly, the blue-eyed friendly world-famous boy Siamese cat is Charlie.
+
+  Whole house music is provided using Heos speakers - connect using DLNA or Heos app or Spotify Connect or Music Assistant or the Jellyfin server!
+  ") ; TBD
    :description "Answer questions about the house / home / Casa Ranona including persons, cats, location of home items for guests.  Returns known facts about the home. Just pick out the facts relevant to the question you were asked. Called with no arguments"
    :category "home")
 #+end_src
