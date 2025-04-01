@@ -490,10 +490,12 @@ system.
                        (exwm-workspace-rename-buffer exwm-class-name)))))
          (add-hook 'exwm-update-title-hook
                    (lambda ()
-                     (let ((browsers '(("Mozilla Firefox" . "fox")
-                                       ("Personal - Microsoft​ Edge" . "edge")
+                     (let ((browsers '(
                                        ("Google Chrome" . "chrome")
-                                       ("Chromium" . "chromium"))))
+                                       ("Chromium" . "chromium")
+                                       ("Personal - Microsoft​ Edge" . "edge")
+                                       ("Mozilla Firefox" . "fox")
+                                       ("Zen Browser" . "zen"))))
                            (cond
                             ;; Browser titles
                             ((s-starts-with-p "Mail - Greg Grubbs - Outlook - " exwm-title)
