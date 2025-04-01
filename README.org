@@ -3,7 +3,7 @@
 #+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:nil
 #+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
 #+OPTIONS: timestamp:t title:t toc:nil todo:t |:t
-#+TITLE: gregoryg's Emacs Initialization in Org-Mode - BACK TO BASICS 2023
+#+TITLE: gregoryg's Emacs Initialization in Org-Mode
 #+DATE: <2023-10-03 Tue>
 #+AUTHOR: Greg Grubbs
 #+EMAIL: gregory.grubbs@gmail.com
