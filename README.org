@@ -1439,7 +1439,8 @@
        	                 :description "The content to write to the file"))
         :category "filesystem")                ; An arbitrary label for grouping
 #+end_src
-**** Get weather forecast
+**** Home and local category
+***** Get weather forecast
      #+begin_src emacs-lisp
        ;; (gptel-make-tool
        ;;  :name "weather_forecast"
@@ -1492,7 +1493,7 @@
         :name "get_weather"
         :description "Get the current weather at home. Report on Fahrenheit and Imperical measures. Call with no arguments"
         :category "home"
-        :include nil)
+        :include t)
 
        ;; :args (list '(:name "location"
        ;;                        :type string
