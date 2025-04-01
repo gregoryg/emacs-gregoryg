@@ -2045,7 +2045,8 @@
 
 
   (defun gjg/open-remote-shell ()
-    "If current buffer is remote, open a new uniquely named shell based on host name"
+    "Open a new uniquely named shell in current directory.
+  Name is based on directory if local, or on hostname if remote."
     (interactive)
     (if (file-remote-p default-directory)
         (progn
