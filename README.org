@@ -1411,8 +1411,13 @@
 
      #+end_src
 
-*** Custom tools (experimenting)
-**** Create a text file - from gptel docs
+*** Custom tools
+    These are a collection of tools that can be provided to gptel
+
+    Most of these tools use a separately defined callable function rather than a lambda form.  Partly because the functions may have use outside of gptel, partly because =gptel-make-tool= does not update once the tool slot has been created (as of <2025-03-23 Sun>)
+
+**** Files and repositories category
+***** Create a text file - from gptel docs
      #+begin_src emacs-lisp
        (gptel-make-tool
         :name "create_file"                    ; javascript-style  snake_case name
