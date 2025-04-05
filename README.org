@@ -667,6 +667,7 @@
                              (mode . json-mode)))
               ("Code" (derived-mode .  prog-mode))
               ("Images" (mode . image-mode))
+              ("Epub / Books" (mode . nov-mode))
               ("Magit" (or (mode . magit-diff-mode)
                            (mode . magit-status-mode)
                            (mode . magit-process-mode)
