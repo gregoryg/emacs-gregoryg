@@ -1552,7 +1552,7 @@
          "Extract and return a simple structured text document with the primary source for package PACKAGE.
        If FULL is not nil, return all source files."
          (if (stringp package)
-             (let* ((library-path (find-library-name package))q
+             (let* ((library-path (find-library-name package))
                     (all-elisp (directory-files (f-dirname library-path) t ".*\\.el\\(\\.gz\\)?$")))
                (with-temp-buffer
                  ;; run through the list of .el files
