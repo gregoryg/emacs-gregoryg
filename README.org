@@ -3770,6 +3770,15 @@
        (gjg/enable-visual-line-with-fill))
      (add-hook 'nov-mode-hook 'gjg/nov-mode-buffer-setup)
    #+end_src
+*** Set nice epub reading face in current buffer
+    #+begin_src emacs-lisp
+      (defun gjg/set-nice-reading-face ()
+        "Use a variable pitch font for reading pleasure in current buffer."
+        (interactive)
+        ;; (setq-local face-remapping-alist '((default :family "Noto Serif" :height 1.2)))
+        (setq-local face-remapping-alist '((default . shr-text))))
+
+    #+end_src
 * Final steps
 #+begin_src emacs-lisp
 (shell (get-buffer-create "sh1"))
