@@ -1084,7 +1084,7 @@
         (pdf-view-use-imagemagick t))
       (add-to-list 'auto-mode-alist '("\\.pdf" . pdf-view-mode))
     #+end_src
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package org-noter :straight t
        :custom
        (org-noter-always-create-frame nil))
