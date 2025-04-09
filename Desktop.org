@@ -873,7 +873,6 @@
      Terminal=false
      StartupWMClass=jetbrains-idea-ce
    #+end_src
-
 ** Jellyfin media server
    #+begin_src conf :tangle ~/.local/share/applications/jellyfin.desktop
      [Desktop Entry]
@@ -885,7 +884,6 @@
      Type=Application
      Categories=Media;Music;Video
    #+end_src
-
 ** Jupyter Lab - local server
    + tangle startup script
      #+begin_src bash :tangle ~/bin/start_jupyterlab.sh
@@ -905,7 +903,6 @@
      Type=Application
      Categories=Automation;
    #+end_src
-
 ** Lefty Loosey
    #+begin_src bash :tangle ~/bin/lefty
      xmodmap -e "pointer = 3 2 1"
@@ -920,7 +917,6 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
-
 ** LinkedIn
    #+begin_src conf :tangle ~/.local/share/applications/linkedin.desktop
      [Desktop Entry]
@@ -944,7 +940,6 @@
      Type=Application
      Categories=Development;AI;LLM;
    #+end_src
-
 ** Google Calendar
    #+begin_src conf :tangle ~/.local/share/applications/gcalendar.desktop
      [Desktop Entry]
@@ -956,7 +951,6 @@
      Type=Application
      Categories=Office;Calendar;
    #+end_src
-
 ** Google Gmail - Personal
    #+begin_src conf :tangle ~/.local/share/applications/gmail-personal.desktop
      [Desktop Entry]
@@ -991,7 +985,6 @@
      Type=Application
      Categories=Communication
    #+end_src
-
 ** Monitor change
    Run when external monitor is connected/disconnected
    #+begin_src conf :tangle ~/.local/share/applications/autorandr-monitor.desktop
@@ -1038,7 +1031,6 @@
    #+begin_src bash
      xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
    #+end_src
-
 ** Polybar panel
    We can choose between simple and fancy
    #+begin_src conf :tangle ~/.local/share/applications/polybar-starter.desktop
@@ -1063,7 +1055,6 @@
      Categories=Ontologies;Graph
    #+end_src
 
-
 ** Rancher Homelab
    #+begin_src conf :tangle ~/.local/share/applications/rancher-homelab.desktop
          [Desktop Entry]
@@ -1075,7 +1066,6 @@
          Type=Application
          Categories=Kubernetes;Administration;Awesomeness
    #+end_src
-
 ** Rancher Public
    #+begin_src conf :tangle ~/.local/share/applications/rancher.desktop
      [Desktop Entry]
@@ -1087,7 +1077,6 @@
      Type=Application
      Categories=Kubernetes;Administration;Awesomeness
    #+end_src
-
 ** Lemmy
    #+begin_src conf :tangle ~/.local/share/applications/freddit.desktop
      [Desktop Entry]
@@ -1217,7 +1206,6 @@
      Type=Application
      Categories=Cloud;Productivity
    #+end_src
-
 ** Stardog Cloud
    #+begin_src conf :tangle ~/.local/share/applications/stardog-cloud.desktop
      [Desktop Entry]
@@ -1251,7 +1239,6 @@
      Type=Application
      Categories=Database;Graph;dh
    #+end_src
-
 ** Stardog Studio
    #+begin_src conf :tangle ~/.local/share/applications/stardog-studio.desktop
      [Desktop Entry]
@@ -1306,7 +1293,6 @@
      Type=Application
      Categories=Office;Productivity;
    #+end_src
-
 
 ** TigerGraph Test Drives
    #+begin_src conf :tangle ~/.local/share/applications/tigergraph-testdrives.desktop
