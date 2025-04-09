@@ -751,7 +751,8 @@
    #+end_src
 
 ** DNS Restarter
-   #+begin_src conf :tangle ~/.local/share/applications/dns-restarter.desktop
+# :tangle ~/.local/share/applications/dns-restarter.desktop
+   #+begin_src conf :tangle no
      [Desktop Entry]
      Name=DNS Restarter
      Comment=Restart resolver service on stupid Ubuntu
