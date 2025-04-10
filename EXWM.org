@@ -220,14 +220,15 @@ This entire file provides my configuration, required Emacs supporting packages a
       (defun gjg/exwm-select-or-launch-google-chat ()
         "Select the running Google Chat window in EXWM, or launch the app"
         (interactive)
-        (gjg/exwm-switch-to-buffer-or-launch "GChat" "google-chat"))
+        (gjg/exwm-switch-to-buffer-or-launch "Chat [mail.google.com]" "google-chat"))
     #+end_src
 *** Function to select or launch Home Assistant
     #+begin_src emacs-lisp
       (defun gjg/exwm-select-or-launch-home-assistant ()
         "Select the running Home Assistant window in EXWM, or launch the app"
         (interactive)
-        (gjg/exwm-switch-to-buffer-or-launch "homeassistant.magichome" "home-assistant"))
+        (gjg/exwm-switch-to-buffer-or-launch (list "homeassistant.magichome" (concat "homeassistant." gjg/tailscale-tailnet-domain))
+                                             "home-assistant"))
     #+end_src
 
 *** Function to select or launch Logseq
