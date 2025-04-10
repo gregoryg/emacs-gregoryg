@@ -146,16 +146,45 @@ This entire file provides my configuration, required Emacs supporting packages a
 *** Function =gjg/exwm-switch-to-buffer-or-launch=
 
     #+begin_src emacs-lisp
-      (defun gjg/exwm-switch-to-buffer-or-launch (searchstring &optional application)
-        "Switch to the first buffer matching SEARCHSTRING as a substring
-         If no matching buffer is found, launch the APPLICATION using gtk-launch."
-        (let
-            ((mybuf (car (cl-remove-if-not (lambda (row) (cl-search searchstring (buffer-name row))) (buffer-list)))))
+      (defun gjg/exwm-switch-to-buffer-or-launch (search-input &optional application)
+        "Switch to buffer matching SEARCH-INPUT or launch APPLICATION.
+
+          SEARCH-INPUT can be:
+          1. A single string: Switch to the first buffer whose name contains this string.
+          2. A list of strings: Switch to the first buffer whose name contains *any* of these strings.
+
+          If no matching buffer is found and APPLICATION is set, launch APPLICATION using gtk-launch."
+        (require 'cl-lib)
+        ;; Normalize the input to always be a list
+        (let* ((search-terms (if (listp search-input)
+                                 search-input
+                               (list search-input)))
+               (buffer-name-matches-p
+                ;; This predicate checks if the buffer name contains *any* of the search terms
+                (lambda (buffer)
+                  (let ((name (buffer-name buffer)))
+                    ;; Use cl-some to check if any term in the list matches
+                    (cl-some (lambda (term) (and term (stringp term) (cl-search term name)))
+                             search-terms))))
+               ;; Find the first buffer that satisfies the predicate
+
+               (mybuf (car (cl-remove-if-not buffer-name-matches-p (buffer-list)))))
+
           (if mybuf
-              (switch-to-buffer mybuf)
+              (progn
+                (message "Switching to buffer: %s" (buffer-name mybuf))
+                (switch-to-buffer mybuf))
             (if application
-                (call-process-shell-command (concat "gtk-launch " application))
-              (message "No \"%s\" window is running." searchstring)))))
+                (progn
+                  (message "No buffer matching %S found. Launching %s..." search-terms application)
+                  (call-process-shell-command (concat "gtk-launch " application " &"))) ;; Added '&' for background launch
+              (message "No buffer matching %S found." search-terms)))))
+
+      ;; Example Usage:
+      ;; (gjg/exwm-switch-to-buffer-or-launch "Firefox") ; Single string
+      ;; (gjg/exwm-switch-to-buffer-or-launch
+      ;;  '("homeassistant.local" "my-ha.duckdns.org") ; List of strings
+      ;;  "firefox")
     #+end_src
 *** Shell script to select corporate Gmail window with unread threads
     This shell script can be called from Polybar (my config includes a button that
