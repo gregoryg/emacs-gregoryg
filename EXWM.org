@@ -505,7 +505,7 @@ system.
                         ((s-starts-with-p "Google Hangouts - " exwm-title)
                          (exwm-workspace-rename-buffer "hangouts"))
                         ((s-matches? ".?Chat .+ mail.google.com" exwm-title)
-                         (exwm-workspace-rename-buffer (s-replace "Chat " "GChat " exwm-title)))
+                         (exwm-workspace-rename-buffer (s-replace "Chat " "Chat [mail.google.com] " exwm-title)))
                         ;; standalone apps
                         ((string= "kitty" exwm-class-name)
                          (exwm-workspace-rename-buffer (concat "kitty - " exwm-title)))
