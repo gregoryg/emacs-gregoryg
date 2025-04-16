@@ -682,6 +682,17 @@
      Type=Application
      Categories=Fun;Web
    #+end_src
+** Canvas Credit Union
+   #+begin_src conf :tangle ~/.local/share/applications/canvas-cu.desktop
+     [Desktop Entry]
+     Name=Canvas CU
+     Comment=That's right
+     Exec=xdg-open https://digital.canvas.org/
+     Icon=/home/gregj/.local/share/pixmaps/canvas-cu-logo-512x512.png
+     Terminal=false
+     Type=Application
+     Categories=Bank
+   #+end_src
 ** Capsctrl
    #+begin_src conf :tangle ~/.local/share/applications/capsctrl.desktop
      [Desktop Entry]
