@@ -254,7 +254,8 @@
 
 * Set default applications
   Here's what =mimeapps.list= looks like after a year of use on Debian
-  #+begin_src conf :tangle ~/.config/mimeapps.list
+  #+begin_src conf :tangle no
+    # :tangle ~/.config/mimeapps.list
     [Default Applications]
     text/html=microsoft-edge.desktop
     x-scheme-handler/http=microsoft-edge.desktop
