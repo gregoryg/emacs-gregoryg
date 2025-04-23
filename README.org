@@ -1601,8 +1601,9 @@
                    (insert "#+begin_src emacs-lisp\n")
                    (insert-file file)
                    (goto-char (point-max))
-                   (insert "\n#+end_src\n")))          (buffer-string)))
-           (warn "Package must be the package name as a string.")))
+                   (insert "\n#+end_src\n")))
+                 (buffer-string)))
+           (warn "PACKAGE must be the package name as a string.")))
 
        (gptel-make-tool
         :name "emacs_package_source"
@@ -2241,12 +2242,17 @@
     (interactive)
     (let* ((project (project-current t))
            (project-root (if project (project-root project) default-directory))
-           (files '("README.org" "readme.org" "README.md" "readme.md" "README" "readme"))
-           (file-path (seq-find (lambda (file) (file-exists-p (expand-file-name file project-root))) files)))
+           (file-path (gjg/locate-readme-in-directory project-root)))
       (if file-path
           (find-file (expand-file-name file-path project-root))
         (dired project-root))))
 
+
+  (defun gjg/locate-readme-in-directory (dir)
+    "Find common README files in a given DIR.  Return path or nil if none found."
+    (let* ((files '("README.org" "readme.org" "README.md" "readme.md" "README" "readme"))
+           (file-path (seq-find (lambda (file) (file-exists-p (expand-file-name file dir))) files)))
+      file-path))
 #+end_src
 
    #+begin_src emacs-lisp
@@ -2848,7 +2854,8 @@
          ;; ;; Python, YAML, Heredoc seem to require that Org not format source code blocks
          ;; (setq org-src-preserve-indentation nil)
          (setq org-src-window-setup 'current-window)
-         (setq org-structure-template-alist '(("C" . "comment")
+         (setq org-structure-template-alist '(("c" . "center")
+                                              ("C" . "comment")
                                               ("e" . "example")
                                               ("E" . "export")
                                               ("h" . "export html")
@@ -3084,10 +3091,9 @@
      #+begin_src emacs-lisp
        (push
         '("i" "inbox" entry
-          (file "~/projects/private-orgmode/inbox.org")
+          (file "~/projects/private-orgmode/agenda-files/inbox.org")
           "* TODO %?\n  :LOGBOOK:\n  CREATED: %U\n  :END:")
-        org-capture-templates
-        )
+        org-capture-templates)
      #+end_src
 
 **** Phone/meeting/task - the heart of it all
@@ -3132,7 +3138,7 @@
      #+begin_src emacs-lisp
        (push
         '             ("t" "Regular todo" entry
-                       (file "~/projects/private-orgmode/inbox.org")
+                       (file "~/projects/private-orgmode/agenda-files/inbox.org")
                        "* TODO %? \n  DEADLINE: %^T\n  :LOGBOOK:\n  CREATED: %U\n  :END:\n%i\n " :prepend nil :time-prompt t)
         org-capture-templates)
      #+end_src
@@ -3270,12 +3276,13 @@
                                         org-agenda-file-regexp)))
       (global-set-key (kbd "C-c a") 'org-agenda)
       (setq gjg/org-agenda-directory "~/projects/private-orgmode/")
-      (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/notes.org"
-                                            "~/projects/private-orgmode/learning.org"
-                                            "~/projects/private-orgmode/inbox.org"
-                                            "~/projects/private-orgmode/someday.org"
-                                            "~/projects/private-orgmode/projects.org"
-                                            "~/projects/private-orgmode/habits.org"))
+      (setq gjg/personal-org-agenda-files '("~/projects/private-orgmode/agenda-files/notes.org"
+                                            "~/projects/private-orgmode/agenda-files/learning.org"
+                                            "~/projects/private-orgmode/agenda-files/inbox.org"
+                                            "~/projects/private-orgmode/agenda-files/gwennie.org"
+                                            "~/projects/private-orgmode/agenda-files/someday.org"
+                                            "~/projects/private-orgmode/agenda-files/projects.org"
+                                            "~/projects/private-orgmode/agenda-files/habits.org"))
       (setq org-agenda-files gjg/personal-org-agenda-files)
       (add-to-list 'gjg/agenda-contexts-alist `(home ,gjg/personal-org-agenda-files))
       (add-to-list 'gjg/agenda-contexts-alist `(fitness ,(list "~/projects/private-orgmode/fitness/fitness.org")))
@@ -3298,7 +3305,8 @@
                          (string= dir (substring basename 0 (length dir))))
                 (setq engagement-files (cons file engagement-files)))))
           (add-to-list 'engagement-files gjg/employer-org-file t)
-          (add-to-list 'engagement-files "~/projects/private-orgmode/inbox.org" t)))
+          (add-to-list 'engagement-files "~/projects/private-orgmode/agenda-files/inbox.org" t)
+          (add-to-list 'engagement-files "~/projects/private-orgmode/agenda-files/gwennie.org" t)))
 
       (add-to-list 'gjg/agenda-contexts-alist `(work ,(gjg/get-work-agenda-files)))
 
@@ -3503,7 +3511,7 @@
                         (
                          ;; Work / Laptop Habits section
                          ;; (agenda ""
-                         ;;         ((org-agenda-files '("~/projects/private-orgmode/work-habits.org"))
+                         ;;         ((org-agenda-files '("~/projects/private-orgmode/ywork-habits.org"))
                          ;;          (org-agenda-start-with-log-mode nil)
                          ;;          (org-agenda-start-with-clockreport-mode nil)
                          ;;          (org-agenda-overriding-header "Work/Laptop Morning Tasks")))
