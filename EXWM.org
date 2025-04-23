@@ -224,6 +224,11 @@ This entire file provides my configuration, required Emacs supporting packages a
     #+end_src
 *** Function to select or launch Home Assistant
     #+begin_src emacs-lisp
+      (defcustom gjg/tailscale-tailnet-domain ""
+        "My super secret tailnet."
+        :type 'string
+        :group 'gjg)
+
       (defun gjg/exwm-select-or-launch-home-assistant ()
         "Select the running Home Assistant window in EXWM, or launch the app"
         (interactive)
