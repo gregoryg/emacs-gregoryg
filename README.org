@@ -1735,6 +1735,9 @@
 
       I'm making 2 separate tools out of the one function to make it simpler for LLMs to decide how to use the tools.
 
+      TODO: Think about switching this to use MCP to improve readability and precision for the LLM
+         ref: [[https://github.com/karthink/gptel/issues/787]]
+
 
 #+begin_src emacs-lisp
   (defun gjg/read-or-search-web (url)
@@ -1769,6 +1772,16 @@
                        :type string
                        :description "Search terms / string to search on the web using %s" eww-search-prefix)))
 
+  (gptel-make-tool
+   :name "read_webpage"
+   :function #'gjg/read-or-search-web
+   :description "Read the content of a URL"
+   :include t
+   :category "web"
+   :args (list '(:name "url"
+                       :type string
+                       :description "URL to read" eww-search-prefix)))
+
   ;; (gptel-make-tool
   ;;  :name "web_search"
   ;;  :function (lambda (query &optional num-results)
@@ -1787,6 +1800,7 @@
   ;;                      :optional t))
   ;;  :category "web")
 #+end_src
+***** Open a web page for the putative human
 
 * Commonly used modes
 
