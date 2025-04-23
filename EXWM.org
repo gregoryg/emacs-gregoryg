@@ -402,6 +402,7 @@ system.
                 ([?\s-3] . gjg/split-window-right)
                 ;; ([?\s-c] . (lambda () (interactive) (call-process-shell-command "invert-color.sh")))
                 ([?\s-j] . org-clock-goto)
+                ([?\s-m] . gjg/exwm-select-music-window)
                 ([?\s-p] . playerctl-play-pause-song)
                 ([?\s-t] . toggle-truncate-lines)
                 ([?\s-g] . gjg/exwm-select-or-launch-logseq)

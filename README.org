@@ -583,6 +583,7 @@
      (bind-key "M-s-<down>" 'windmove-delete-down)
      (bind-key "M-s-<left>" 'windmove-delete-left)
      (bind-key "M-s-<right>" 'windmove-delete-right)
+     (bind-key "s-m" 'gjg/exwm-select-music-window)
      (bind-key "s-p" 'playerctl-play-pause-song)
      (bind-key "s-q" 'bury-buffer)
      (bind-key "s-=" 'gjg/exwm-select-or-launch-home-assistant)
