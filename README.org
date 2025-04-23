@@ -1543,6 +1543,36 @@
 **** Reflection / Inspection / Coding category
      The "reflection" category includes references to using Emacs and Linux
 
+***** Return README for an Emacs package
+      #+begin_src emacs-lisp
+        (defun gjg/extract-emacs-package-readme (package)
+          "Extract and return the README file for package PACKAGE.
+        Return `nil' if no README was found."
+          (if (stringp package)
+              (let* ((library-path (file-truename (find-library-name package)))
+                     (library-path (when (f-file-p library-path) (file-name-directory library-path)))
+                     (readme-file (gjg/locate-readme-in-directory library-path)))
+                (when readme-file
+                  (with-temp-buffer
+                    (goto-char (point-min))
+                    (insert (format "README file for package %s:\n\n" package))
+                    (insert-file (format "%s/%s" library-path readme-file))
+                    (buffer-string))))
+            (warn "PACKAGE must be the package name as a string.")))
+
+        (gptel-make-tool
+         :name "emacs_package_readme"
+         :description "Return the README file for a package - please use this to understand what a package does prior to deciding whether to pull the package source code."
+         :category "reflection"
+         :include t
+         :function #'gjg/extract-emacs-package-readme
+         :args (list '(:name "package_name"
+                             :type string
+                             :description "Name of the Emacs package."
+                             :optional nil)))
+      #+end_src
+
+
 ***** Return source for an Emacs package
      Search for and return source code for an Emacs package.
 
