@@ -1628,6 +1628,33 @@
                             :description "the function name"
                             :optional nil)))
 #+end_src
+***** Return Emacs variable value and documentation
+        check this baby out (get 'symbol 'variable-documentation)
+      #+begin_src emacs-lisp
+        (get 'gptel-tools 'variable-documentation)
+
+        (gptel-make-tool
+         :name "emacs_variable_properties"
+         :include t
+         :function (lambda (variable)
+                     (let ((variable (if (symbolp variable)
+                                         variable
+                                       (intern variable)
+                                       )))
+                       (if (boundp variable)
+                           (symbol-plist variable)
+                         (format "Variable %s is not bound" variable))))
+
+         :description "Get properties on an Emacs variable.  Use this to get documentation string for variables, as well as more obscure properties such as safety as local variable etc."
+         :category "reflection"
+         :args (list '(:name "variable"
+                             :type string
+                             :description "the symbol")))
+#+end_src
+
+        To see all properties defined on a symbol:
+        #+begin_src emacs-lisp
+          (symbol-plist 'gptel-tools)
 #+end_src
 
 ***** Summarize all installed Info manuals
