@@ -3511,7 +3511,7 @@
                         (
                          ;; Work / Laptop Habits section
                          ;; (agenda ""
-                         ;;         ((org-agenda-files '("~/projects/private-orgmode/ywork-habits.org"))
+                         ;;         ((org-agenda-files '("~/projects/private-orgmode/work-habits.org"))
                          ;;          (org-agenda-start-with-log-mode nil)
                          ;;          (org-agenda-start-with-clockreport-mode nil)
                          ;;          (org-agenda-overriding-header "Work/Laptop Morning Tasks")))
