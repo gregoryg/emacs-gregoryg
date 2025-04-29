@@ -1741,27 +1741,21 @@
 
 
 #+begin_src emacs-lisp
-  (defun gjg/read-or-search-web (url)
+  (defcustom gjg/gptel-search-prefix
+    (if (and (boundp 'eww-search-prefix) eww-search-prefix) eww-search-prefix "https://duckduckgo.com/html?q=")
+    "Base URL used for searching the web using gptel tools.
+  Falls back to duckduckgo if EWW is not loaded."
+    :type 'string)
+
+  (defun gjg/read-or-search-web (url-or-query)
     "Read a webpage or search using EWW."
     (condition-case err
         (progn
-          (eww url)
+          (eww url-or-query)
           (let ((content (with-current-buffer "*eww*"
                            (buffer-string))))
-            (format "Opened %s in eww. Content retrieved for context.\n\n%s" url content)))
-      (warning (format "Error accessing %s: %s" url (error-message-string err)))
-      )
-    )
-
-  ;; (gptel-make-tool
-  ;;  :name "read_webpage"
-  ;;  :function #'gjg/read-or-search-web
-  ;;  :description "retrieve and read a webpage for context"
-  ;;  :include t
-  ;;  :category "web"
-  ;;  :args (list '(:name "url"
-  ;;                      :type string
-  ;;                      :description "URL of the webpage to read")))
+            (format "Opened %s in eww. Content retrieved for context.\n\n%s" url-or-query content)))
+      (warning (format "Error accessing %s: %s" url-or-query (error-message-string err)))))
 
   (gptel-make-tool
    :name "search_web"
@@ -1769,9 +1763,9 @@
    :description "Search the web"
    :include t
    :category "web"
-   :args (list '(:name "url"
+   :args (list `(:name "query"
                        :type string
-                       :description "Search terms / string to search on the web using %s" eww-search-prefix)))
+                       :description ,(format "Search terms / string to search on the web using %s" gjg/gptel-search-prefix))))
 
   (gptel-make-tool
    :name "read_webpage"
@@ -1781,7 +1775,7 @@
    :category "web"
    :args (list '(:name "url"
                        :type string
-                       :description "URL to read" eww-search-prefix)))
+                       :description "URL to read")))
 
   ;; (gptel-make-tool
   ;;  :name "web_search"
