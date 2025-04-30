@@ -3848,7 +3848,7 @@
    #+end_src
 *** Set nice epub reading face in current buffer
     #+begin_src emacs-lisp
-      (defun gjg/set-nice-reading-face ()
+      (defun gjg/set-nice-reading-font ()
         "Use a variable pitch font for reading pleasure in current buffer."
         (interactive)
         ;; (setq-local face-remapping-alist '((default :family "Noto Serif" :height 1.2)))
