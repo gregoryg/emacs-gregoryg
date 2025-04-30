@@ -1749,19 +1749,21 @@
   Falls back to duckduckgo if EWW is not loaded."
     :type 'string)
 
-  (defun gjg/read-or-search-web (url-or-query)
-    "Read a webpage or search using EWW."
+  (defun gjg/search-web (query)
+    "Initiate a web search using the search engine defined in `gjg/gptel-search-prefix'."
     (condition-case err
-        (progn
-          (eww url-or-query)
-          (let ((content (with-current-buffer "*eww*"
-                           (buffer-string))))
-            (format "Opened %s in eww. Content retrieved for context.\n\n%s" url-or-query content)))
-      (warning (format "Error accessing %s: %s" url-or-query (error-message-string err)))))
+        (let* ((url-with-query
+               (url-encode-url (concat gjg/gptel-search-prefix query)))
+              (content (shell-command-to-string
+                        (format "lynx -dump -list_inline %s" url-with-query))))
+          (format "Content pulled from %s\n\n%s" query content))
+      (warning (format "Error accessing %s: %s" query (error-message-string err)))))
+
+  (defun gjg/)
 
   (gptel-make-tool
    :name "search_web"
-   :function #'gjg/read-or-search-web
+   :function #'gjg/search-web
    :description "Search the web"
    :include t
    :category "web"
