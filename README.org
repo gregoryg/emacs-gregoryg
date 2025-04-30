@@ -1753,13 +1753,21 @@
     "Initiate a web search using the search engine defined in `gjg/gptel-search-prefix'."
     (condition-case err
         (let* ((url-with-query
-               (url-encode-url (concat gjg/gptel-search-prefix query)))
-              (content (shell-command-to-string
-                        (format "lynx -dump -list_inline %s" url-with-query))))
+                (url-encode-url (concat gjg/gptel-search-prefix query)))
+               (content (shell-command-to-string
+                         (format "lynx -dump -list_inline %s" url-with-query))))
           (format "Content pulled from %s\n\n%s" query content))
       (warning (format "Error accessing %s: %s" query (error-message-string err)))))
 
-  (defun gjg/)
+
+  (defun gjg/read-web (url)
+    "Pull in a web page with plain text and links."
+    (condition-case err
+        (let ((content (shell-command-to-string
+                         (format "lynx -dump -list_inline %s" url))))
+          (format "Content pulled from %s\n\n%s" url content))
+      (warning (format "Error accessing %s: %s" url (error-message-string err)))))
+
 
   (gptel-make-tool
    :name "search_web"
@@ -1773,7 +1781,7 @@
 
   (gptel-make-tool
    :name "read_webpage"
-   :function #'gjg/read-or-search-web
+   :function #'gjg/read-web
    :description "Read the content of a URL"
    :include t
    :category "web"
