@@ -1788,24 +1788,6 @@
    :args (list '(:name "url"
                        :type string
                        :description "URL to read")))
-
-  ;; (gptel-make-tool
-  ;;  :name "web_search"
-  ;;  :function (lambda (query &optional num-results)
-  ;;              (let* ((num (or num-results "5"))
-  ;;                     (search-url (format "https://www.google.com/search?q=%s&num=%s"
-  ;;                                         (url-hexify-string query) num))
-  ;;                     (buf (eww search-url)))
-  ;;                (format "Performed Google search for '%s' in eww" query)))
-  ;;  :description "search the web using Google"
-  ;;  :args (list '(:name "query"
-  ;;                      :type string
-  ;;                      :description "search query to send to Google")
-  ;;              '(:name "num-results"
-  ;;                      :type string
-  ;;                      :description "number of results to display"
-  ;;                      :optional t))
-  ;;  :category "web")
 #+end_src
 ***** Open a web page for the putative human
 
