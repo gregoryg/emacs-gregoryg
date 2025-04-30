@@ -1133,6 +1133,7 @@
      (setq gptel-default-mode 'org-mode
            gptel-expert-commands t
            gptel-track-media t
+           gptel-include-reasoning 'ignore
            gptel-model 'gpt-4o
            gptel--debug nil)
      ;; defer nothing
