@@ -2238,7 +2238,7 @@
 
   (defun gjg/locate-readme-in-directory (dir)
     "Find common README files in a given DIR.  Return path or nil if none found."
-    (let* ((files '("README.org" "readme.org" "README.md" "readme.md" "README" "readme"))
+    (let* ((files '("README.org" "readme.org" "README.md" "readme.md" "README" "readme" "README.rst" "readme.rst"))
            (file-path (seq-find (lambda (file) (file-exists-p (expand-file-name file dir))) files)))
       file-path))
 #+end_src
