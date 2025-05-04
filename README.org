@@ -599,6 +599,7 @@
      ;; (bind-key "M-SPC" #'(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
      (bind-key "M-SPC" 'gjg/launch-rofi)
      (bind-key "s-\\" 'switch-to-buffer)
+     (bind-key "s-<XF86AudioMute>" #'gjg/toggle-microphone-mute)
      ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
      (define-key ctl-x-4-map "t" 'toggle-window-split)
    #+end_src
