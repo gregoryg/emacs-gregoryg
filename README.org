@@ -227,6 +227,8 @@
   #+end_src
 ** Key (and mouse) bindings
 ** Audio and media
+*** Volume and media keys
+    + Shell wrapper for pulseaudio generated in [[file:Desktop.org][Desktop.org]]
    #+begin_src emacs-lisp
      (defun gjg/volume (volcmd)
        "Control volume with pulseaudio script."
@@ -234,9 +236,40 @@
          (call-process-shell-command (concat audioctl " " volcmd))))
      (bind-key (kbd "<XF86AudioLowerVolume>") (lambda () (interactive) (gjg/volume "down")))
      (bind-key (kbd "<XF86AudioRaiseVolume>") (lambda () (interactive) (gjg/volume "up")))
+
+
+
      (bind-key (kbd "<XF86AudioMute>") (lambda () (interactive) (gjg/volume "togmute")))
      (bind-key (kbd "<XF86AudioPlay>") (lambda () (interactive) (call-process-shell-command "/usr/bin/playerctl play-pause") ))
    #+end_src
+    + Microphone muting
+      #+begin_src bash :tangle ~/bin/toggle-microphone-mute.sh
+        #!/usr/bin/env bash
+
+        maybe_on=$(amixer get Capture | grep '\[on\]')
+        maybe_off=$(amixer get Capture | grep '\[off\]')
+
+        if [ -n "${maybe_on}" ]; then
+            echo "Muting"
+            amixer set Capture nocap > /dev/null
+        elif [ -n "${maybe_off}" ]; then
+            echo "Unmuting"
+            amixer set Capture cap > /dev/null
+        else
+            emacsclient -e '(message "Unknown microphone state")'
+        fi
+#+end_src
+#+begin_src emacs-lisp
+  (defun gjg/toggle-microphone-mute ()
+    "Mute/unmute the default microphone."
+    (interactive)
+    ;; (shell-command "pactl set-source-mute @DEFAULT_SOURCE@ toggle")
+    (shell-command "toggle-microphone-mute.sh"))
+
+  (bind-key "s-<XF86AudioMute>" #'gjg/toggle-microphone-mute)
+#+end_src
+
+
 ** Big blob of various key bindings
   #+begin_src emacs-lisp
     (global-set-key [home] (lambda () (interactive) (goto-char (point-min))))
@@ -599,7 +632,6 @@
      ;; (bind-key "M-SPC" #'(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
      (bind-key "M-SPC" 'gjg/launch-rofi)
      (bind-key "s-\\" 'switch-to-buffer)
-     (bind-key "s-<XF86AudioMute>" #'gjg/toggle-microphone-mute)
      ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
      (define-key ctl-x-4-map "t" 'toggle-window-split)
    #+end_src

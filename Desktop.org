@@ -514,16 +514,6 @@
          nohup compton &
      fi
    #+end_src
-** Toggle default microphone
-   #+begin_src emacs-lisp
-     (defun gjg/toggle-microphone-mute ()
-       "Mute/unmute the default microphone."
-       (interactive)
-       ;; (shell-command "pactl set-source-mute @DEFAULT_SOURCE@ toggle")
-       (shell-command "toggle-microphone-mute.sh"))
-
-     (bind-key "s-<")
-   #+end_src
 * Autorandr setup
   The config to start with is set up using =autorandr --save <profile>= with and without
   monitors attached.  I create =laptop-only=, =dual-monitor= and =monitor-only= profiles
