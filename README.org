@@ -2305,22 +2305,31 @@
    Project.el is built-in
 
 #+begin_src emacs-lisp
-  (defun gjg/project-open-readme-or-root ()
-    "Open README file from the project root or dired if none are found."
-    (interactive)
-    (let* ((project (project-current t))
-           (project-root (if project (project-root project) default-directory))
-           (file-path (gjg/locate-readme-in-directory project-root)))
-      (if file-path
-          (find-file (expand-file-name file-path project-root))
-        (dired project-root))))
-
+    (defun gjg/project-open-readme-or-root ()
+      "Open README file from the project root or dired if none are found."
+      (interactive)
+      (let* ((project (project-current t))
+             (project-root (if project (project-root project) default-directory))
+             (file-path (gjg/locate-readme-in-directory project-root)))
+        (if file-path
+            (find-file (expand-file-name file-path project-root))
+          (dired project-root))))
 
   (defun gjg/locate-readme-in-directory (dir)
-    "Find common README files in a given DIR.  Return path or nil if none found."
-    (let* ((files '("README.org" "readme.org" "README.md" "readme.md" "README" "readme" "README.rst" "readme.rst"))
-           (file-path (seq-find (lambda (file) (file-exists-p (expand-file-name file dir))) files)))
-      file-path))
+    "Find the first regular file in DIR whose name starts with 'readme' (case-insensitive).
+  Return the full path to the file, or nil if no such file is found
+  or if DIR is not a valid directory."
+    (when (file-directory-p dir)
+      (let* ((case-fold-search t)
+             (readme-filename (seq-find (lambda (fname)
+                                          (and (string-match-p "^readme" fname)
+                                               (file-regular-p (expand-file-name fname dir))))
+                                        ;; Get directory contents, excluding "." and ".."
+                                        (directory-files dir nil "[^.]")))) ; Use dir arg
+
+        ;; If suitable file was found, return its full path
+        (when readme-filename
+          (expand-file-name readme-filename dir)))))
 #+end_src
 
    #+begin_src emacs-lisp
