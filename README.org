@@ -387,6 +387,7 @@
    #+end_src
 
 * Encryption
+** GnuPG and epa-file
   =epa-file= is a built-in
 
   Set value of =epg-gpg-program= to location on local system
@@ -398,10 +399,30 @@
 ;; (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
 (epa-file-enable)
 (setq epg-pinentry-mode 'loopback)
+  #+end_src
+** Org-crypt
+#+begin_src emacs-lisp
 (require 'org-crypt)
 (org-crypt-use-before-save-magic)
-
   #+end_src
+** Helper function for auth-source
+   #+begin_src emacs-lisp
+     (defun gjg/authinfo-secret (host &optional user)
+       "Lookup the secret (a password or an API key, for example).
+       HOST must be passed, USER is optional.
+       Returns nil (with a message) if no secret found."
+       (let* ((args (list :host host :require '(:secret)))
+              (args (if user (append args (list :user user)) args))
+              (plist (car (apply #'auth-source-search args)))
+              (secret (plist-get plist :secret)))
+         (cond
+          ((functionp secret)
+           (encode-coding-string (funcall secret) 'utf-8))
+          (secret secret)
+          (t
+           (message "No secret found in auth source for host %s." host)
+           nil))))
+#+end_src
 * Window/buffer management
 ** Text movement
 
