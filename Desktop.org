@@ -735,7 +735,7 @@
    #+end_src
 
 ** Cockpit / Red Hat Web Console
-   #+begin_src conf :tangle ~/.local/share/applications/cloudflare.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/cockpit.desktop
      [Desktop Entry]
      Name=Cockpit
      Comment=Red Hat RHEL Web Console on protomolecule
@@ -1404,7 +1404,7 @@
    #+end_src
 
 ** Yummy Sauce - mealie
-   #+begin_src conf :tangle ~/.local/share/applications/yummysauce.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/yummy-sauce.desktop
      [Desktop Entry]
      Name=Yummy Sauce Recipes
      Comment=
