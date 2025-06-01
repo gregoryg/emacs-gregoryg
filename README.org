@@ -1497,6 +1497,41 @@
        	                 :description "The content to write to the file"))
         :category "filesystem")                ; An arbitrary label for grouping
 #+end_src
+***** List files and directories
+      Give access to entire filesystem
+      #+begin_src emacs-lisp
+        (defun gjg/list-directory (dir &optional details lsflags limit)
+          "List contents of DIR.
+           DETAILS true is equivalent to `ls -l'
+        LSFLAGS can be a string with `ls' compatible flags - use this to sort for example
+        Return only LIMIT results when set to a positive integer.
+        Assumes `ls' command in path."
+
+          (let* ((cmd
+                  (concat "ls " (when details "-l") " " (when lsflags lsflags) " " (when (and limit (integerp limit))) " " dir  (format "|head -n %d" (1+ limit)))))
+            (shell-command-to-string cmd)))
+
+        (gptel-make-tool
+         :name "fs_list_directory"
+         :function #'gjg/list-directory
+         :description "List contents of a directory."
+         :category "filesystem"
+         :args (list '(:name "dir"
+                             :type string
+                             :description "path to a directory on the filesystem")
+                     '(:name "full_details"
+                             :type boolean
+                             :description "if true, return details for each file/directory/symlink including date, time, user, group and size in bytes"
+                             :optional t)
+                     '(:name "lsflags"
+                             :type string
+                             :description "additional flags to add to the `ls' command"
+                             :optional t)
+                     '(:name "limit"
+                             :type number
+                             :description "limit the number of results returned"
+                             :optional t)))
+      #+end_src
 **** Home and local category
 ***** Get weather forecast
      #+begin_src emacs-lisp
