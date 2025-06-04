@@ -3462,6 +3462,7 @@
                                             "~/projects/private-orgmode/agenda-files/gwennie.org"
                                             "~/projects/private-orgmode/agenda-files/someday.org"
                                             "~/projects/private-orgmode/agenda-files/projects.org"
+                                            "~/projects/private-orgmode/agenda-files/creative.org"
                                             "~/projects/private-orgmode/agenda-files/habits.org"))
       (setq org-agenda-files gjg/personal-org-agenda-files)
       (add-to-list 'gjg/agenda-contexts-alist `(home ,gjg/personal-org-agenda-files))
