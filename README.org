@@ -42,6 +42,10 @@
    + If it's a function (line starts with almost anything other than =setq=, set the point
      in the function name and hit "C-h f"
    #+begin_src emacs-lisp
+     ;; danger danger
+     (require 'desktop)
+     (desktop-save-mode 1)
+
      ;; When I want transient mark mode, I'll beat it out of you
      (transient-mark-mode -1)
      ;; (do not) display time and battery status in the mode line
