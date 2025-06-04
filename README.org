@@ -1920,6 +1920,7 @@
 #+end_src
 ***** Open a web page for the putative human
 ** mcp.el - Model Context Protocol
+*** Configure MCP servers
    #+begin_src emacs-lisp
      (add-to-list 'load-path "~/projects/emacs/mcp.el")
      (require 'mcp-hub)
@@ -1927,13 +1928,25 @@
      (setq mcp-hub-servers
            `(("filesystem" . (:command "npx"
                                        :args
-                                       ("-y" "@modelcontextprotocol/server-filesystem" "~/Downloads" "~/Videos" "~/projects/ai" "~/projects/emacs" )))
+                                       ("-y" "@modelcontextprotocol/server-filesystem" "~/Downloads" "~/Videos" "~/projects/ai" "~/projects/emacs" "~/gregj-notes/newprojects" )))
+             ("brave-search" . (:command "npx"
+                                         :args ("-y" "@modelcontextprotocol/server-brave-search")
+                                         :env (:BRAVE_API_KEY ,(gjg/authinfo-secret "brave-search-key"))))
+             ("github" . (:command "docker"
+                                   :args ("run"
+                                          "--name" "github-mcp"
+                                          "--interactive"
+                                          "--rm"
+                                          "--env"
+                                          "GITHUB_PERSONAL_ACCESS_TOKEN"
+                                          "ghcr.io/github/github-mcp-server")
+                                   :env (:GITHUB_PERSONAL_ACCESS_TOKEN ,(gjg/authinfo-secret "mcp-server-github" "gregoryg"))))
              ("memory" . (:command "npx"
                                    :args ("-y" "@modelcontextprotocol/server-memory")))
 
-             ;; ("everything" . (:command "npx"
-             ;;                           :args
-             ;;                           ("-y" "@modelcontextprotocol/server-everything")))
+             ("everything" . (:command "npx"
+                                       :args
+                                       ("-y" "@modelcontextprotocol/server-everything")))
              ;; see https://github.com/neo4j-contrib/mcp-neo4j/?tab=readme-ov-file
              ;; ("neo4j" . (:command "~/.local/python-venvs/boodle/bin/uvx"
              ;;                      :args
@@ -1948,7 +1961,7 @@
              ("mariadb-readonly" . (:command "~/.local/python-venvs/boodle/bin/uvx"
                                              :args ("mcp-server-mariadb" "--host" "protomolecule.magichome" "--port" "3306" "--user" "gregj" "--password" ,(gjg/authinfo-secret "homelab-mysql" "gregj") "--database" "teslafi")))
              ("movies-neo4j" . (:command "~/.local/python-venvs/boodle/bin/uvx"
-                                         :args ("mcp-neo4j-cypher@0.2.1")
+                                          :args ("mcp-neo4j-cypher@0.2.1")
                                          :env (
                                                :NEO4J_URI "neo4j+s://demo.neo4jlabs.com"
                                                :NEO4J_USERNAME "recommendations"
@@ -1961,7 +1974,6 @@
                                            :args ("@gongrzhe/server-travelplanner-mcp")
                                            :env (:GOOGLE_MAPS_API_KEY ,(gjg/authinfo-secret "api.googlemaps.travel-planner.key"))))))
 #+end_src
-
 
 * Commonly used modes
 
