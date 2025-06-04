@@ -1641,20 +1641,9 @@
 
 ***** Return README for an Emacs package
       #+begin_src emacs-lisp
-        (defun gjg/extract-emacs-package-readme (package)
-          "Extract and return the README file for package PACKAGE.
-        Return `nil' if no README was found."
-          (if (stringp package)
-              (let* ((library-path (file-truename (find-library-name package)))
-                     (library-path (when (f-file-p library-path) (file-name-directory library-path)))
-                     (readme-file (gjg/locate-readme-in-directory library-path)))
-                (when readme-file
-                  (with-temp-buffer
-                    (goto-char (point-min))
-                    (insert (format "README file for package %s:\n\n" package))
-                    (insert-file (format "%s/%s" library-path readme-file))
-                    (buffer-string))))
-            (warn "PACKAGE must be the package name as a string.")))
+        (defun gjg/extract-emacs-package-readme (package-name)
+          "Extract and return the README file for package PACKAGE-NAME.
+        This version attempts to robustly find the source directory for
 
         (gptel-make-tool
          :name "emacs_package_readme"
