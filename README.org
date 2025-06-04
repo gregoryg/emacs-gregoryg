@@ -1884,7 +1884,7 @@
         (let* ((url-with-query
                 (url-encode-url (concat gjg/gptel-search-prefix query)))
                (content (shell-command-to-string
-                         (format "lynx -dump -list_inline %s" url-with-query))))
+                         (format "lynx -dump -list_inline '%s'" url-with-query))))
           (format "Content pulled from %s\n\n%s" query content))
       (warning (format "Error accessing %s: %s" query (error-message-string err)))))
 
