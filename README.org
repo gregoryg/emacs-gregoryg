@@ -1644,6 +1644,52 @@
         (defun gjg/extract-emacs-package-readme (package-name)
           "Extract and return the README file for package PACKAGE-NAME.
         This version attempts to robustly find the source directory for
+        packages, including those managed by straight.el.
+        Return =nil' if no README was found."
+          (if (stringp package-name)
+              (let* (;; 1. Get the path to the library file as Emacs knows it (e.g., .../straight/build/PKG/PKG.el)
+                     (library-file-in-load-path (find-library-name package-name))
+
+                     ;; 2. Get the canonical, true path to this library file.
+                     ;; For straight.el, if library-file-in-load-path is a symlink like
+                     ;; .../build/PKG/PKG.el -> .../repos/PKG/PKG.el,
+                     ;; this will resolve to .../repos/PKG/PKG.el.
+                     (true-library-file-path (when library-file-in-load-path
+                                               (file-truename library-file-in-load-path)))
+
+                     ;; 3. Get the directory containing the true library file.
+                     ;; This should be the actual source directory (e.g., .../straight/repos/PKG/).
+                     (package-source-dir (when true-library-file-path
+                                           (file-name-directory true-library-file-path)))
+
+                     ;; 4. Locate the README within this source directory using your helper.
+                     ;; gjg/locate-readme-in-directory returns an absolute path.
+                     (readme-full-path (when (and package-source-dir (file-directory-p package-source-dir))
+                                         (gjg/locate-readme-in-directory package-source-dir))))
+
+                (if readme-full-path
+                    (with-temp-buffer
+                      (goto-char (point-min))
+                      (insert (format "README file for package %s (from directory %s):\n\n"
+                                      package-name
+                                      ;; Show the directory where the README was actually found
+                                      (file-name-directory readme-full-path))) ; This is package-source-dir
+                      (insert-file-contents readme-full-path)
+                      (buffer-string))
+                  (progn
+                    ;; More detailed warning for debugging
+                    (warn (format (concat "No README file found for package '%s'.\n"
+                                          "  Searched in directory: %s\n"
+                                          "  Library file in load-path: %s\n"
+                                          "  Resolved true library file path: %s")
+                                  package-name
+                                  (or package-source-dir "unknown or not a directory")
+                                  (or library-file-in-load-path "not found by find-library-name")
+                                  (or true-library-file-path "could not be resolved by file-truename")))
+                    nil)))
+            (progn
+              (warn "PACKAGE-NAME argument must be the package name as a string.")
+              nil)))
 
         (gptel-make-tool
          :name "emacs_package_readme"
