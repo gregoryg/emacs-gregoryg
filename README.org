@@ -1935,6 +1935,16 @@
              ("brave-search" . (:command "npx"
                                          :args ("-y" "@modelcontextprotocol/server-brave-search")
                                          :env (:BRAVE_API_KEY ,(gjg/authinfo-secret "brave-search-key"))))
+             ;; https://github.com/bhouston/mcp-server-text-editor - same functionality as Claude's text editor
+             ;; PSA: this service requires absolute paths to be used by the LLM
+             ("mcp-server-text-editor" . (:command "npx"
+                                                    :args ("-y" "mcp-server-text-editor")))
+
+             ;; ("text-editor" . (:command "~/.local/python-venvs/boodle/bin/uvx"
+             ;;                            :args ("mcp-text-editor")))
+             ;; ;; ref https://github.com/dhamidi/texted
+             ;; ("texted" . (:command "~/go/bin/texted"
+             ;;                       :args ("mcp")))
              ("github" . (:command "docker"
                                    :args ("run"
                                           "--name" "github-mcp"
