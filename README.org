@@ -849,12 +849,15 @@
      (add-to-list 'display-buffer-alist '("^magit:" display-buffer-same-window))
      ;; gptel
      (add-to-list 'display-buffer-alist '(".*ChatGPT\\*" display-buffer-same-window))
+     ;; mcp-hub
+     (add-to-list 'display-buffer-alist '(".*Mcp-Hub\\*" display-buffer-same-window))
+
      ;; All interactive SQL modes
      (add-to-list 'display-buffer-alist
-		  '((lambda (buffer action)
-		      (with-current-buffer buffer
-			(derived-mode-p 'sql-interactive-mode)))
-		    display-buffer-same-window))
+          '((lambda (buffer action)
+              (with-current-buffer buffer
+        	(derived-mode-p 'sql-interactive-mode)))
+            display-buffer-same-window))
    #+end_src
 
    + Here's an example of wrangling a window to display in a direction, with width and
