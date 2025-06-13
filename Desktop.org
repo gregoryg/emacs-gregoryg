@@ -1305,6 +1305,17 @@
      Categories=Office;Productivity;
    #+end_src
 
+** Tailscale
+   #+begin_src conf :tangle ~/.local/share/applications/tailscale.desktop
+     [Desktop Entry]
+     Name=TailScale
+     Comment=
+     Exec=xdg-open https://tailscale.com/admin
+     Icon= /home/gregj/.local/share/pixmaps/tailscale-icon-512x512.png
+     Terminal=false
+     Type=Application
+     Categories=Networking;VPN
+   #+end_src
 ** TigerGraph Test Drives
    #+begin_src conf :tangle ~/.local/share/applications/tigergraph-testdrives.desktop
      [Desktop Entry]
