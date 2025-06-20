@@ -870,6 +870,17 @@
      Type=Application
      Categories=Automation;
    #+end_src
+** Home Assistant Community Website
+   #+begin_src conf :tangle ~/.local/share/applications/home-assistant-community.desktop
+     [Desktop Entry]
+     Name=Home Assistant Community Site
+     Comment=Nerd community Homeass
+     Exec=xdg-open https://community.home-assistant.io
+     Icon= /home/gregj/.local/share/pixmaps/community-512x512.png
+     Terminal=false
+     Type=Application
+     Categories=Automation;
+   #+end_src
 ** IntelliJ IDEA Community Edition
    # :tangle ~/.local/share/applications/jetbrains-idea-ce.desktop
    #+begin_src conf :tangle no
