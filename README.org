@@ -1196,6 +1196,7 @@
            gptel-track-media t
            gptel-include-reasoning 'ignore
            gptel-model 'gpt-4o
+           gptel-log-level 'info
            gptel--debug nil)
      ;; defer nothing
      (require 'gptel)
