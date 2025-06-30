@@ -93,6 +93,18 @@
     #+begin_src bash
       CABLE_PLUGGED=no BATTERY_PERCENTAGE=18 ~/bin/notify-battery-levels.sh
 #+end_src
+*** Scriptifically install user crontab
+    + Write the crontab
+    #+begin_src bash :results none
+      crontab -l | tee /tmp/mycrontab
+      echo '*/2 * * * * /home/gregj/bin/notify-battery-levels.sh' | tee -a /tmp/mycrontab
+      crontab /tmp/mycrontab
+    #+end_src
+    + Check out user crontab contents
+      #+begin_src bash :results value verbatim
+crontab -e
+      #+end_src
+
 * OS Applications
   The shell scripts here expect certain applications to be installed, so let's take care
   of those
