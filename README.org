@@ -1763,7 +1763,7 @@
            (let ((source))
              (condition-case err
                  ;; `find-function-noselect' returns the buffer and position.
-                 (let ((buf-pos (find-function-noselect :function-name)))
+                 (let ((buf-pos (find-function-noselect (intern function-name))))
                    (when buf-pos
                      (let ((buffer (car buf-pos))
                            (pos (cdr buf-pos)))
