@@ -1272,6 +1272,7 @@
      (require 'gptel)
      (require 'gptel-curl)
      (require 'gptel-transient)
+     (require 'gptel-integrations)
    #+end_src
 *** SIDE JOURNEY: keep track of LLM model charateristics and location somehow
     | model family | model name                    | ollama              | together.ai                             | tokens   | pricing | ref                                                         |
