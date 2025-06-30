@@ -1864,6 +1864,20 @@
                             :optional t
                             :description "A substring to limit results of all man pages.  e.g. \"media\" or \"office\"")))
 #+end_src
+***** Cheat sheet for Org Mode synta
+      As LLMs today in 2025+ can produce Org Mode easily, I like to circumvent gptel's markdown-to-org mode conversion
+      #+begin_src emacs-lisp
+        (gptel-make-tool
+         :name "org_mode_cheatsheet"
+         :description "Quick and easy to read cheat sheet for Org Mode syntax - refer to this whenever you start a project or session requiring org mode syntax production, and whenver you want to make use of advanced features."
+         :include t
+         :function (lambda ()
+                     (with-temp-buffer
+                       (insert-file-contents "~/projects/ai/AIPIHKAL/org-mode-syntax-cheat-sheet-for-llms.txt")
+                       (buffer-string)))
+         :category: "reflection")
+#+end_src
+
 **** Web / Internet / Online Research category
 ***** Search the web and read a web page
 
