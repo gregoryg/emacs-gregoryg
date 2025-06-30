@@ -1969,7 +1969,7 @@
                                           "GITHUB_PERSONAL_ACCESS_TOKEN"
                                           "ghcr.io/github/github-mcp-server")
                                    :env (:GITHUB_PERSONAL_ACCESS_TOKEN ,(gjg/authinfo-secret "mcp-server-github" "gregoryg"))))
-             
+
              ("private-journal" . (:command "npx"
                                             :args ("github:obra/private-journal-mcp")))
              ("memory" . (:command "npx"
@@ -2935,6 +2935,7 @@
                 (js . t)
                 (latex . t)
                 (lisp . t)
+                ;; (mermaid . t)
                 ;;                (jupyter . t) ;; makes Emacs core dump??? (related to compiled zmq)
                 (plantuml . t)
                 (lilypond . t)
