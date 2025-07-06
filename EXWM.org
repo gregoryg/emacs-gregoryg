@@ -17,6 +17,10 @@
 
 This entire file provides my configuration, required Emacs supporting packages and function, and
 
+* Set lexical binding cookie in tangled file
+  #+begin_src emacs-lisp :comments no
+;;; ...  -*- lexical-binding: t -*-
+  #+end_src
 * Load EXWM and dependencies
   #+begin_src emacs-lisp
     ;; (straight-use-package

@@ -1,3 +1,4 @@
+;;; ...  -*- lexical-binding: t -*-
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
 ;;   On MacOS, define the meta key up front for usability when init does not load fully
