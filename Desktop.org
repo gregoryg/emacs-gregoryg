@@ -101,8 +101,8 @@
       crontab /tmp/mycrontab
     #+end_src
     + Check out user crontab contents
-      #+begin_src bash :results value verbatim
-crontab -e
+      #+begin_src sh :results verbatim
+        crontab -l
       #+end_src
 
 * OS Applications
