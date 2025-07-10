@@ -35,7 +35,7 @@
 
   evil-mode gives you Vim-like keybindings in Emacs.  I would recommend starting with Emacs key
   bindings - more difficult to start with, but it will always work and you may adapt and may even
-  come to love it.
+  come to love it, as I have ♥️.
 * Make reasonable and comfortable defaults
    So many defaults in Emacs make no sense.  If starting out with Emacs, consider these
    settings to make your first experiences nicer.
@@ -1168,6 +1168,12 @@
              ("brave-search" . (:command "npx"
                                          :args ("-y" "@modelcontextprotocol/server-brave-search")
                                          :env (:BRAVE_API_KEY ,(gjg/authinfo-secret "brave-search-key"))))
+             ;; from https://github.com/danielpodrazka/editor-mcp
+             ;; install must be done manually
+             ("editor-mcp" . (:command "editor-mcp"
+                                       :env (:MAX_SELECT_LINES 100
+                                             :ENABLE_JS_SYNTAX_CHECK: 1
+                                             :PROTECTED_PATHS "*.env,.env*,config*.json,*secret,authinfo*")))
              ;; https://github.com/bhouston/mcp-server-text-editor - same functionality as Claude's text editor
              ;; PSA: this service requires absolute paths to be used by the LLM
              ("mcp-server-text-editor" . (:command "npx"
@@ -1278,6 +1284,23 @@
      (require 'gptel-transient)
      (require 'gptel-integrations)
    #+end_src
+*** Load jwiegley/gptel-prompts for prompt composability
+    #+begin_src emacs-lisp :tangle no
+      (use-package gptel-prompts
+        :straight nil
+        :load-path "~/projects/emacs/gptel-prompts"
+        :after (gptel)
+        :demand t
+        :config
+        (custom-set-variables '(gptel-prompts-directory "~/projects/ai/AIPIHKAL/composable-prompts"))
+        (gptel-prompts-update)
+        ;; ensure prompts are updated if prompt files change
+        (gptel-prompts-add-update-watchers))
+
+      ;; '(sparql-mode :type git :host github :repo "jwiegley/gptel-prompts"
+      ;; :fork (:host github :branch "main" :repo "gregoryg/gptel-prompts")
+
+#+end_src
 *** SIDE JOURNEY: keep track of LLM model charateristics and location somehow
     | model family | model name                    | ollama              | together.ai                             | tokens   | pricing | ref                                                         |
     |--------------+-------------------------------+---------------------+-----------------------------------------+----------+---------+-------------------------------------------------------------|
@@ -1405,7 +1428,71 @@
           (setq gptel-directives (gjg/gptel-build-directives "~/projects/ai/AIPIHKAL/system-prompts/")
                 gptel-system-message (alist-get 'default gptel-directives))))
     #+end_src
-*** And my supplements
+*** An experiment in composable prompts using presets
+    Let's make a list of all directories that prompts may be found in - note that this is a subset of the =gptel-prompts= package by @jwiegley that I only discovered today [2025-07-03 Thu], but it suits my needs.
+
+    We have a function that will work with 2 streams in my AIPIHKAL project
+    #+begin_src emacs-lisp
+      (defcustom gjg/prompt-segment-directories
+        '("~/projects/ai/AIPIHKAL/composable-prompts/" "~/projects/ai/AIPIHKAL/system-prompts")
+        "A list of directories to search for gptel prompt segments.
+      The search is performed in the order of the directories in this list."
+        :type '(repeat string)
+        :group 'gptel)
+
+      (defun gjg/find-prompt-file (slug)
+        "Find the full path for a prompt segment SLUG.
+
+      Searches in =gjg/prompt-segment-directories= for a file that
+      matches the SLUG. The filename may be prefixed with numbers (e.g.,
+      \"00-\") and have an extension of .org, .md, or .txt.
+
+      For example, the slug \"roles\" could match
+      \"~/path/to/prompts/00-roles.org\".
+
+      If multiple files match, a warning is issued and the first found
+      file is returned."
+        ;; Use =cl-loop= to concisely search across multiple directories.
+        (let ((found-files
+               (cl-loop for dir in gjg/prompt-segment-directories
+                        for expanded-dir = (expand-file-name dir)
+                        when (file-directory-p expanded-dir)
+                        nconc (cl-loop for file in (directory-files expanded-dir)
+                                       for full-path = (expand-file-name file expanded-dir)
+                                       ;; Construct a regexp to find files like '00-slug.org'
+                                       when (string-match-p
+                                             (format "\\(?:[0-9]+-\\)?%s\\.\\(org\\|md\\|txt\\)\\'"
+                                                     (regexp-quote slug))
+                                             file)
+                                       collect full-path))))
+
+          (when (> (length found-files) 1)
+            (warn "Found multiple files for slug '%s': %s. Using the first one."
+                  slug found-files))
+
+          (car found-files)))
+
+      (defun gjg/build-system-prompt (slugs)
+        "Build a system prompt by concatenating files matching SLUGS.
+
+      For each slug in the list SLUGS, this function finds a
+      corresponding prompt file using =gjg/find-prompt-file=,
+      reads its content, and concatenates all contents together,
+      separated by double newlines for clarity."
+        (let* ((files (mapcar #'gjg/find-prompt-file slugs))
+               (valid-files (cl-remove-if-not #'identity files))
+               (contents (mapcar #'f-read-text valid-files)))
+          (mapconcat #'identity contents "\n\n")))
+
+#+end_src
+*** Python coder
+    #+begin_src emacs-lisp
+      (gptel-make-preset 'python-coder
+        :description "Full prompt for a python coder partner."
+        :system (gjg/build-system-prompt
+                 '("roles" "use-org-mode" "project-context" "documentation" "task-management" "tool-usage" "code-structure" "coding-behavior-rules" "human-coding-partner" "python-style-conventions" "python-tests")))
+#+end_src
+*** Add my supplemental functions
 **** Functions to use in hooks
 ***** Return Gptel backend + model
       I find it useful to indicate model and provider service (OpenAI, ollama, together.ai etc) at the beginning of each LLM response.
