@@ -35,7 +35,7 @@
 
   evil-mode gives you Vim-like keybindings in Emacs.  I would recommend starting with Emacs key
   bindings - more difficult to start with, but it will always work and you may adapt and may even
-  come to love it, as I have ♥️.
+  come to love it.
 * Make reasonable and comfortable defaults
    So many defaults in Emacs make no sense.  If starting out with Emacs, consider these
    settings to make your first experiences nicer.
