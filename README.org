@@ -3550,6 +3550,7 @@
        ;; (setq org-agenda-start-with-clockreport-mode nil)
        (setq org-agenda-category-icon-alist
              `(
+               ("care" "~/emacs/pixmaps/barber-fabulous-cut-512x512.png" nil nil :ascent center :height 48)
                ("charity" "~/emacs/pixmaps/charity.png" nil nil :ascent center :height 48)
                ("coding" "~/emacs/pixmaps/math-function.png" nil nil :ascent center :height 48)
                ("emacs" "~/emacs/pixmaps/emacs-512x512.png" nil nil :ascent center :height 48)
