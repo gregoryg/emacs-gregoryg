@@ -1164,7 +1164,7 @@
      (setq mcp-hub-servers
            `(("filesystem" . (:command "npx"
                                        :args
-                                       ("-y" "@modelcontextprotocol/server-filesystem" "~/Downloads" "~/Videos" "~/projects/ai" "~/projects/emacs" "~/gregj-notes/newprojects" )))
+                                       ("-y" "@modelcontextprotocol/server-filesystem" "~/Downloads" "~/Videos" "~/projects/ai" "~/projects/emacs")))
              ("brave-search" . (:command "npx"
                                          :args ("-y" "@modelcontextprotocol/server-brave-search")
                                          :env (:BRAVE_API_KEY ,(gjg/authinfo-secret "brave-search-key"))))
