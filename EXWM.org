@@ -471,7 +471,7 @@ system.
         (exwm-xsettings-mode 1)
 
         ;; Enable EXWM
-        (exwm-enable)
+        (exwm-wm-mode 1)
         ;; ;; Configure Ido
         ;; (exwm-config-ido)
         ;; Other configurations
@@ -578,9 +578,9 @@ system.
 ** Start up the window manager
    As noted above, I do not use the EXWM system tray.
        #+begin_src emacs-lisp
-	 (exwm-enable)
-	 ;; (require 'exwm-systemtray)
-	 ;; (exwm-systemtray-enable)
+         (exwm-wm-mode 1)
+         ;; (require 'exwm-systemtray)
+         ;; (exwm-systemtray-enable)
        #+end_src
 ** Deal with brightness and volume, since we don't have a DE
    There is a =desktop-environment= package on Melpa, but it's overkill for what I need.
