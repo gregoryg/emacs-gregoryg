@@ -500,18 +500,27 @@ system.
        #+begin_src emacs-lisp
          (require 'exwm-randr)
          ;; (setq exwm-randr-workspace-monitor-plist '(0 "DP-1")) ;; DP-1 is the big monitor, if connected
-         (setq exwm-randr-workspace-monitor-plist '(0 "DP-3" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
+         (setq exwm-randr-workspace-monitor-plist '(0 "DP-3-8" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
 
          (add-hook 'exwm-randr-screen-change-hook
                    (lambda()
+                     ;; "Let's try a thing.  If the big external monitor is detected, initiate monitor-only profile."
                      (message "Starting exwm-randr-screen-change-hook")
+                     ;; (let*
+                     ;;     ((xrandr-output (shell-command-to-string "xrandr --listmonitors"))
+                     ;;      (external-monitor-detected (string-match "DP-3" xrandr-output))
+                     ;;      (cmd (if external-monitor-detected
+                     ;;               "autorandr --load monitor-only"
+                     ;;             "autorandr --change")))
+                     ;;   (start-process-shell-command "autorandr" nil cmd))
                      (start-process-shell-command
                       "autorandr" nil "autorandr --change ; autorandr"
                       ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
                       ;; WORKS WHEN ADDING MONITOR, NOT WHEN DISCONNECTING "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
                       ;; and here's how I might get a mirrored setup
                       ;; xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --mode 1920x1080 --same-as eDP-1
-                      )))
+                      ))
+                   )
        #+end_src
 *** Intelligently rename new buffers
    By default, each new window's buffer is named by the 'class name': So Firefox, Slack,
