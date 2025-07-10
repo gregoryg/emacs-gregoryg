@@ -1170,10 +1170,10 @@
                                          :env (:BRAVE_API_KEY ,(gjg/authinfo-secret "brave-search-key"))))
              ;; from https://github.com/danielpodrazka/editor-mcp
              ;; install must be done manually
-             ("editor-mcp" . (:command "editor-mcp"
-                                       :env (:MAX_SELECT_LINES 100
-                                             :ENABLE_JS_SYNTAX_CHECK: 1
-                                             :PROTECTED_PATHS "*.env,.env*,config*.json,*secret,authinfo*")))
+             ;; ("editor-mcp" . (:command "editor-mcp"
+             ;;                           :env (:MAX_SELECT_LINES 100
+             ;;                                 :ENABLE_JS_SYNTAX_CHECK: 1
+             ;;                                 :PROTECTED_PATHS "*.env,.env*,config*.json,*secret,authinfo*")))
              ;; https://github.com/bhouston/mcp-server-text-editor - same functionality as Claude's text editor
              ;; PSA: this service requires absolute paths to be used by the LLM
              ("mcp-server-text-editor" . (:command "npx"
