@@ -1467,7 +1467,7 @@
      GenericName=Zen
      Comment=Open source browser
      Exec=/usr/local/bin/zen %U
-     Icon=/home/gregj/.local/share/pixmaps/zen-browser-icon-128x128.png
+     Icon= /home/gregj/.local/share/pixmaps/zen-browser-logo-colorful-512x512.png
      Terminal=false
      Type=Application
      Categories=Network;Browser;WebBrowser
