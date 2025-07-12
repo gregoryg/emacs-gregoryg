@@ -1436,6 +1436,17 @@
      Type=Application
      Categories=Video;yt
    #+end_src
+** YouTube - My Channel
+   #+begin_src conf :tangle ~/.local/share/applications/youtube-channel.desktop
+     [Desktop Entry]
+     Name=YouTube Channel
+     Comment=
+     Exec=xdg-open https://studio.youtube.com/channel/UCiJCWrG9_BFY5hwH3D-2D-Q
+     Icon= /home/gregj/.local/share/pixmaps/rock-star-clipart-md-512x512.png
+     Terminal=false
+     Type=Application
+     Categories=Video;yt
+   #+end_src
 
 ** Yummy Sauce - mealie
    #+begin_src conf :tangle ~/.local/share/applications/yummy-sauce.desktop
