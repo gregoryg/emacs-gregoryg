@@ -3651,6 +3651,7 @@
                ("ai"    "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 48)
                ("ideas" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 48)
                ("creative" "~/emacs/pixmaps/creativity-4-512x512.png" nil nil :ascent center :height 48)
+               ("grandkids" "~/emacs/pixmaps/zaide-ellie-computer-icon-01.png" nil nil :ascent center :height 48)
                ("inbox" "~/emacs/pixmaps/office-inbox-512x512.png" nil nil :ascent center :height 48)
                ("journal" "~/emacs/pixmaps/mindmap-icon-512x512.png" nil nil :ascent center :height 48)
                ("languages" ,(list (all-the-icons-fileicon "moment-tz" )) nil nil :ascent center :height 48)
