@@ -1335,6 +1335,7 @@
                   "meta-llama/Llama-3-70b-chat-hf"
                   "meta-llama/Llama-3.3-70B-Instruct-Turbo"
                   "microsoft/WizardLM-2-8x22B"
+                  "moonshotai/Kimi-K2-Instruct"
                   ))
      #+end_src
 *** Configure Anthropic Claude
