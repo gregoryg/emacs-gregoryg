@@ -1323,7 +1323,9 @@
         :host "api.together.xyz"
         :protocol "https"
         :endpoint "/v1/chat/completions"
-        :models '("Qwen/Qwen3-235B-A22B-fp8-tput"
+        :models '("moonshotai/Kimi-K2-Instruct"
+                  "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8"
+                  "Qwen/Qwen3-235B-A22B-fp8-tput"
                   "codellama/CodeLlama-70b-Instruct-hf"
                   "tiiuae/falcon-40b-instruct"
                   "codellama/CodeLlama-34b-Instruct-hf"
@@ -1335,7 +1337,6 @@
                   "meta-llama/Llama-3-70b-chat-hf"
                   "meta-llama/Llama-3.3-70B-Instruct-Turbo"
                   "microsoft/WizardLM-2-8x22B"
-                  "moonshotai/Kimi-K2-Instruct"
                   ))
      #+end_src
 *** Configure Anthropic Claude
