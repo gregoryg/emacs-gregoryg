@@ -485,7 +485,7 @@
        "Prompt to select a minor mode and then switch to a buffer with that minor mode enabled."
        (interactive)
        (let* ((active-modes (active-minor-modes))
-              (mode (intern (completing-read "Select minor mode: " active-modes nil t)))
+              (mode (intern (completing-read "Select minor mode: " active-modes nil nil)))
               (buffers (buffers-with-minor-mode mode)))
          (if buffers
              (switch-to-buffer (completing-read "Select buffer: " (mapcar 'buffer-name buffers) nil t))
