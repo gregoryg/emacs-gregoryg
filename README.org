@@ -1163,9 +1163,11 @@
      (require 'mcp-hub)
 
      (setq mcp-hub-servers
-           `(("filesystem" . (:command "npx"
+           `(
+             ;; NB: I am pulling from my clone to get the latest version ; otherwise use "@modelcontextprotocol/server-filesystem@latest"
+             ("filesystem" . (:command "npx"
                                        :args
-                                       ("-y" "@modelcontextprotocol/server-filesystem" "~/Downloads" "~/Videos" "~/projects/ai" "~/projects/emacs")))
+                                       ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem" "~/Downloads" "~/Videos" "~/projects/ai" "~/projects/emacs")))
              ("brave-search" . (:command "npx"
                                          :args ("-y" "@modelcontextprotocol/server-brave-search")
                                          :env (:BRAVE_API_KEY ,(gjg/authinfo-secret "brave-search-key"))))
