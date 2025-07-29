@@ -967,6 +967,7 @@
 
    #+begin_src emacs-lisp
      (when gjg/exwm-needed-p
+       (call-process-shell-command "autorandr --change" nil nil nil)
        ;(org-babel-tangle-file "~/emacs-gregoryg/EXWM.org")
        (load "~/.emacs.d/launch-exwm"))
    #+end_src
