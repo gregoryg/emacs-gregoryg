@@ -2752,6 +2752,22 @@
     (use-package command-log-mode :straight t :defer t)
   #+end_src
 * Programming language modes
+** Use tree-sitter where we can
+   These *override* auto-mode-alist
+   #+begin_src emacs-lisp
+     (setq major-mode-remap-alist
+           '((yaml-mode . yaml-ts-mode)
+             (bash-mode . bash-ts-mode)
+             (sh-mode   . bash-ts-mode)
+             (js2-mode . js-ts-mode)
+             (js-mode  . js-ts-mode)
+             (javascript-mode . js-ts-mode)
+             (dockerfile-mode . dockerfile-ts-mode)
+             (typescript-mode . typescript-ts-mode)
+             (json-mode . json-ts-mode)
+             (css-mode . css-ts-mode)
+             (python-mode . python-ts-mode)))
+   #+end_src
 ** All modes derived from =prog-mode=
   #+begin_src emacs-lisp
     (add-hook 'prog-mode-hook
