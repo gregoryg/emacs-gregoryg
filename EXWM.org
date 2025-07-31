@@ -330,6 +330,8 @@ system.
    #+begin_src emacs-lisp
      (set-opacity 90)
      (async-start-process "wallpaper-thang"  "nohup" nil (expand-file-name "~/bin/schedule-rotate-wallpapers.sh") "&")
+     (require 'exwm)
+     (require 'exwm-randr)
    #+end_src
 ** My specific config function
    I did not want =ido= integration and wanted to evolve my config.  So I copied the
@@ -500,8 +502,7 @@ system.
        #+begin_src emacs-lisp
          (require 'exwm-randr)
          ;; (setq exwm-randr-workspace-monitor-plist '(0 "DP-1")) ;; DP-1 is the big monitor, if connected
-         (setq exwm-randr-workspace-monitor-plist '(0 "DP-3-8" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
-
+         (setq exwm-randr-workspace-monitor-plist '(0 "HDMI-1" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
          (add-hook 'exwm-randr-screen-change-hook
                    (lambda()
                      ;; "Let's try a thing.  If the big external monitor is detected, initiate monitor-only profile."
@@ -514,13 +515,15 @@ system.
                      ;;             "autorandr --change")))
                      ;;   (start-process-shell-command "autorandr" nil cmd))
                      (start-process-shell-command
-                      "autorandr" nil "autorandr --change ; autorandr"
+                      "autorandr" nil "autorandr --change"
                       ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
                       ;; WORKS WHEN ADDING MONITOR, NOT WHEN DISCONNECTING "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
                       ;; and here's how I might get a mirrored setup
                       ;; xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --mode 1920x1080 --same-as eDP-1
                       ))
                    )
+         (exwm-randr-mode 1)
+         (exwm-randr-refresh)
        #+end_src
 *** Intelligently rename new buffers
    By default, each new window's buffer is named by the 'class name': So Firefox, Slack,
