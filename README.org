@@ -267,9 +267,11 @@
         if [ -n "${maybe_on}" ]; then
             echo "Muting"
             amixer set Capture nocap > /dev/null
+            notify-send -u low -t 2000 "Laptop Microphone" "Mic muted"
         elif [ -n "${maybe_off}" ]; then
             echo "Unmuting"
             amixer set Capture cap > /dev/null
+            notify-send -u low -t 2000 "Laptop Microphone" "Mic enabled"
         else
             emacsclient -e '(message "Unknown microphone state")'
         fi
