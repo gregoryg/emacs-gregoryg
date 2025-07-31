@@ -123,6 +123,10 @@
      (custom-set-variables '(pixel-scroll-precision-mode t))
      ;; file name completion is case insensitive
      (custom-set-variables '(read-file-name-completion-ignore-case t))
+     ;; Make right-click do something sensible
+     (when (display-graphic-p)
+       (context-menu-mode))
+     (blink-cursor-mode -1) ; steady cursor
    #+end_src
 * Start emacs server
   #+begin_src emacs-lisp
