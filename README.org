@@ -121,6 +121,8 @@
      (custom-set-variables '(resize-mini-windows t))
      ;; as of Emacs 29
      (custom-set-variables '(pixel-scroll-precision-mode t))
+     ;; file name completion is case insensitive
+     (custom-set-variables '(read-file-name-completion-ignore-case t))
    #+end_src
 * Start emacs server
   #+begin_src emacs-lisp
