@@ -2773,7 +2773,6 @@
              (javascript-mode . js-ts-mode)
              (dockerfile-mode . dockerfile-ts-mode)
              (typescript-mode . typescript-ts-mode)
-             (json-mode . json-ts-mode)
              (css-mode . css-ts-mode)
              (python-mode . python-ts-mode)))
    #+end_src
