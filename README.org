@@ -1340,6 +1340,25 @@
                   microsoft/WizardLM-2-8x22B
                   ))
      #+end_src
+*** Configure Openrouter
+    #+begin_src emacs-lisp
+      (gptel-make-openai "OpenRouter"
+        :stream t
+        :host "openrouter.ai"
+        :endpoint "/api/v1/chat/completions"
+        :key #'gptel-api-key
+        :models '(
+                  openrouter/horizon-beta
+                  openrouter/auto
+                  google/gemini-2.0-flash-lite-preview-02-05:free
+                  deepseek/deepseek-r1:free deepseek/deepseek-chat:free
+                  z-ai/glm-4.5
+                  qwen/qwen3-coder
+                  moonshotai/kimi-k2
+                  google/gemini-2.5-pro
+                  anthropic/claude-sonnet-4
+                  ))
+#+end_src
 *** Configure Anthropic Claude
 
       #+begin_src emacs-lisp
