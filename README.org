@@ -1227,6 +1227,11 @@
              ;;                       "--password"
              ;;                       "<your-password>")))
              ;; see https://github.com/neo4j-contrib/mcp-neo4j/tree/main/servers/mcp-neo4j-cypher
+
+             ;; Terminal / shell commands
+             ("mcp-shell-server" . (:command "~/.local/python-venvs/boodle/bin/uvx"
+                                             :args ("mcp-shell-server")
+                                             :env (:ALLOW_COMMANDS "ls,cat,echo,grep,rg,wc,find,psql,git,jq,pwd")))
              ("mariadb-readonly" . (:command "~/.local/python-venvs/boodle/bin/uvx"
                                              :args ("mcp-server-mariadb" "--host" "protomolecule.magichome" "--port" "3306" "--user" "gregj" "--password" ,(gjg/authinfo-secret "homelab-mysql" "gregj") "--database" "teslafi")))
              ("movies-neo4j" . (:command "~/.local/python-venvs/boodle/bin/uvx"
