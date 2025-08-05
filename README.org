@@ -1322,20 +1322,22 @@
         :host "api.together.xyz"
         :protocol "https"
         :endpoint "/v1/chat/completions"
-        :models '("moonshotai/Kimi-K2-Instruct"
-                  "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8"
-                  "Qwen/Qwen3-235B-A22B-fp8-tput"
-                  "codellama/CodeLlama-70b-Instruct-hf"
-                  "tiiuae/falcon-40b-instruct"
-                  "codellama/CodeLlama-34b-Instruct-hf"
-                  "deepseek-ai/DeepSeek-R1"
-                  "deepseek-ai/DeepSeek-V3"
-                  "mistralai/Mixtral-8x7B-Instruct-v0.1"
-                  "mistralai/Mixtral-8x22B-Instruct-v0.1"
-                  "meta-llama/llama-2-70b-chat-hf"
-                  "meta-llama/Llama-3-70b-chat-hf"
-                  "meta-llama/Llama-3.3-70B-Instruct-Turbo"
-                  "microsoft/WizardLM-2-8x22B"
+        :models '(zai-org/GLM-4.5-Air-FP8
+                  moonshotai/Kimi-K2-Instruct
+                  Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8
+                  Qwen/Qwen3-235B-A22B-fp8-tput
+                  codellama/CodeLlama-70b-Instruct-hf
+                  tiiuae/falcon-40b-instruct
+                  codellama/CodeLlama-34b-Instruct-hf
+                  deepseek-ai/DeepSeek-R1
+                  deepseek-ai/DeepSeek-V3
+                  mistralai/Mixtral-8x7B-Instruct-v0.1
+                  mistralai/Mixtral-8x22B-Instruct-v0.1
+                  meta-llama/llama-2-70b-chat-hf
+                  meta-llama/Llama-3-70b-chat-hf
+                  meta-llama/Llama-3.3-70B-Instruct-Turbo
+                  meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo
+                  microsoft/WizardLM-2-8x22B
                   ))
      #+end_src
 *** Configure Anthropic Claude
