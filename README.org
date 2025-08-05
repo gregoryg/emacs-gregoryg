@@ -1260,26 +1260,6 @@
     sessions, an active GitHub. A dedication to keeping everything in plain text
     (without metadata markup)
 
-*** Pricing
-    Chart stolen on <2025-02-07 Fri> from [[https://www.youtube.com/watch?v=8otpw68_C0Q][Gemini 2.0 blew me away - YouTube ≫ www.youtube.com]]
-
-    | Provider console | Model                 | Input/M tokens | Output/M | Notes | pricing site        | context size | modalities |
-    |------------------+-----------------------+----------------+----------+-------+---------------------+--------------+------------|
-    | [[https://platform.openai.com/usage][OpenAI]]           | gpt-4o                |           2.50 |    10.00 |       |                     |              |            |
-    |                  | gpt-4o-mini           |           0.15 |     0.60 |       |                     |              |            |
-    |                  | o1                    |          15.00 |    60.00 |       |                     |              |            |
-    |                  | o3-mini               |           1.10 |     4.40 |       |                     |              |            |
-    |------------------+-----------------------+----------------+----------+-------+---------------------+--------------+------------|
-    | [[https://console.anthropic.com/settings/billing][Anthropic]]        | claude-3.5-sonnet     |           3.00 |    15.00 |       | [[https://www.anthropic.com/pricing#anthropic-api][Pricing \ Anthropic]] |              |            |
-    |------------------+-----------------------+----------------+----------+-------+---------------------+--------------+------------|
-    | DeepSeek         | DeepSeek v3           |           0.27 |     1.10 |       |                     |              |            |
-    |                  | DeepSeek r1           |           0.55 |     2.19 |       |                     |              |            |
-    |------------------+-----------------------+----------------+----------+-------+---------------------+--------------+------------|
-    | [[https://console.cloud.google.com/billing/017FA4-A90173-22D6ED/reports?project=gort-dev&invt=Abo-Sw][Google]]           | gemini-2.0-flash      |           0.10 |     0.40 |       |                     |              |            |
-    |                  | gemini-2.0-flash-lite |          0.075 |     0.30 |       |                     |              |            |
-    |------------------+-----------------------+----------------+----------+-------+---------------------+--------------+------------|
-    | [[https://api.together.ai/settings/billing][Together.ai]]      | 41B-70B chat models   |           0.90 |     0.90 |       | [[https://www.together.ai/pricing][Together Pricing]]    |              |            |
-
 *** Load gptel using straight.el with my fork
    Because I want to augment, tweak and contribute to this package, I tell
    =straight-use-package= to pull from my fork and my =gregoryg= branch.
