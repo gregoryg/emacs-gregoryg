@@ -1276,6 +1276,8 @@
            gptel-model 'gpt-4o
            gptel-log-level 'info
            gptel--debug nil)
+     ;; add-to-list instead of setf for alists https://emacs.stackexchange.com/a/3402/418
+     (add-to-list 'gptel-prompt-prefix-alist `(org-mode . ,(concat "*** gjg " (format-time-string "[%Y-%m-%d]") "\n")))
      ;; defer nothing
      (require 'gptel)
      (require 'gptel-curl)
