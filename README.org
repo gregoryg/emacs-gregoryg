@@ -1177,26 +1177,19 @@
              ;; NB: I am pulling from my clone to get the latest version ; otherwise use "@modelcontextprotocol/server-filesystem@latest"
              ("filesystem" . (:command "npx"
                                        :args
-                                       ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem" "~/Downloads" "~/Videos" "~/projects/ai" "~/projects/emacs")))
+                                       ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
+                                        ,(if (boundp 'mcp-filesystem-server-project-root)
+                                             (string-join mcp-filesystem-server-project-root " ")
+                                           "/tmp"
+                                           ))))
+             ("filesystem-bf" . (:command "npx"
+                                       :args
+                                       ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
+                                        "~/projects/coding/bartenders-friend/")))
+             ;; web search - uses API key
              ("brave-search" . (:command "npx"
                                          :args ("-y" "@modelcontextprotocol/server-brave-search")
                                          :env (:BRAVE_API_KEY ,(gjg/authinfo-secret "brave-search-key"))))
-             ;; from https://github.com/danielpodrazka/editor-mcp
-             ;; install must be done manually
-             ;; ("editor-mcp" . (:command "editor-mcp"
-             ;;                           :env (:MAX_SELECT_LINES 100
-             ;;                                 :ENABLE_JS_SYNTAX_CHECK: 1
-             ;;                                 :PROTECTED_PATHS "*.env,.env*,config*.json,*secret,authinfo*")))
-             ;; https://github.com/bhouston/mcp-server-text-editor - same functionality as Claude's text editor
-             ;; PSA: this service requires absolute paths to be used by the LLM
-             ("mcp-server-text-editor" . (:command "npx"
-                                                    :args ("-y" "mcp-server-text-editor")))
-
-             ;; ("text-editor" . (:command "~/.local/python-venvs/boodle/bin/uvx"
-             ;;                            :args ("mcp-text-editor")))
-             ;; ;; ref https://github.com/dhamidi/texted
-             ;; ("texted" . (:command "~/go/bin/texted"
-             ;;                       :args ("mcp")))
              ("github" . (:command "docker"
                                    :args ("run"
                                           "--name" "github-mcp"
