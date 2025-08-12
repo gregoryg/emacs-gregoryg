@@ -1314,6 +1314,13 @@
     | Phi          |                               |                     |                                         |          |         |                                                             |
 *** Create custom Together.AI backend
     This makes use of the [[https://docs.together.ai/docs/openai-api-compatibility][OpenAI-compatible API]], which makes the backend generation super simple!
+**** Model capabilities
+     It's difficult to find model capabilities on the models' pages instead.  Try looking in these areas
+***** Tool use
+      [[https://docs.together.ai/docs/function-calling#supported-models][Function Calling - Together.ai Docs ≫ docs.together.ai]]
+***** JSON structred output
+
+    [[https://docs.together.ai/docs/json-mode#supported-models][Structured Outputs - Together.ai Docs ≫ docs.together.ai]]
 
      #+begin_src emacs-lisp
        (gptel-make-openai ; but for Togeher.AI compatible API
