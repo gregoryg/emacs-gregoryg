@@ -6,6 +6,7 @@ elpa/
 .emacs.d/org-persist/
 .emacs.d/persist/
 .emacs.d/nov-places
+.emacs.d/tree-sitter/
 .emacs.d/ensime/
 .emacs.d/games/
 .emacs.d/session.*
