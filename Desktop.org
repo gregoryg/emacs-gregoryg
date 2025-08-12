@@ -1401,6 +1401,18 @@
          Categories=Office;Productivity;
    #+end_src
 
+** Ubiquiti Unifi Site Manager
+
+    #+begin_src conf :tangle ~/.local/share/applications/ubiquiti-unifi.desktop
+      [Desktop Entry]
+      Name=Ubiquiti Unifi Site Manager
+      Comment=
+      Exec=xdg-open https://unifi.ui.com/
+      Icon= /home/gregj/.local/share/pixmaps/ubiquiti-unifi-01.png
+      Terminal=false
+      Type=Application
+      Categories=Homelab;Networking;
+    #+end_src
 ** Vterm
    Emacs vterm!
    #+begin_src conf :tangle ~/.local/share/applications/vterm.desktop
