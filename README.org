@@ -1331,9 +1331,20 @@
         :host "api.together.xyz"
         :protocol "https"
         :endpoint "/v1/chat/completions"
-        :models '(zai-org/GLM-4.5-Air-FP8
-                  moonshotai/Kimi-K2-Instruct
-                  Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8
+        :models '((openai/gpt-oss-120b
+                   :description "OpenAI OSS 120b parameter model"
+                   :capabilities (tool json url)
+                   :input-cost 0.15 :output-cost 0.60)
+                  (zai-org/GLM-4.5-Air-FP8
+                   :description "The GLM-4.5 series models are foundation models designed for intelligent agents. GLM-4.5 has 355 billion total parameters with 32 billion active parameters, while GLM-4.5-Air adopts a more compact design with 106 billion total parameters and 12 billion active parameters. GLM-4.5 models unify reasoning, coding, and intelligent agent capabilities to meet the complex demands of intelligent agent applications."
+                   :capabilities (tool json url)
+                   :input-cost 0.20 :output-cost 1.10)
+                  (moonshotai/Kimi-K2-Instruct
+                   :capabilities (tool json url)
+                   :input-cost 1.00 :output-cost 3.00)
+                  (Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8
+                   :capabilities (tool json url)
+                   :input-cost 2.00 :output-cost 2.00)
                   Qwen/Qwen3-235B-A22B-fp8-tput
                   codellama/CodeLlama-70b-Instruct-hf
                   tiiuae/falcon-40b-instruct
@@ -1357,7 +1368,22 @@
         :endpoint "/api/v1/chat/completions"
         :key #'gptel-api-key
         :models '(
-                  openrouter/horizon-beta
+                  (openai/gpt-oss-120b
+                   :description "gpt-oss-120b is an open-weight, 117B-parameter Mixture-of-Experts (MoE) language model from OpenAI designed for high-reasoning, agentic, and general-purpose production use cases. It activates 5.1B parameters per forward pass and is optimized to run on a single H100 GPU with native MXFP4 quantization. The model supports configurable reasoning depth, full chain-of-thought access, and native tool use, including function calling, browsing, and structured output generation."
+                   :capabilities (media tool json url)
+                   :mime-types ("image/jpeg" "image/png" "image/gif" "image/webp")
+                   :input-cost 0.09  :output-cost 0.45)
+                  (openai/gpt-5-mini
+                   :description "GPT-5 Mini is a compact version of GPT-5, designed to handle lighter-weight reasoning tasks. It is the successor to o4-mini"
+                   :capabilities (media tool json url)
+                   :mime-types ("image/jpeg" "image/png" "image/gif" "image/webp")
+                   :input-cost 0.25 :output-cost 2)
+                  (openai/gpt-5
+                   :description "THE MEGILLAH"
+                   :capabilities (media tool json url)
+                   :mime-types
+                   ("image/jpeg" "image/png" "image/gif" "image/webp")
+                   :input-cost 1.25 :output-cost 10)
                   openrouter/auto
                   google/gemini-2.0-flash-lite-preview-02-05:free
                   deepseek/deepseek-r1:free deepseek/deepseek-chat:free
