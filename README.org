@@ -13,7 +13,7 @@
 #+setupfile: ~/projects/emacs/org-themes/src/readtheorg_inline/readtheorg_inline.theme
 
 #+property: header-args:emacs-lisp :tangle ~/.emacs.d/emacs-init.el :results none
-#+property: header-args:bash :comments both :shebang #!/usr/bin/env bash :results non
+#+property: header-args:bash :comments both :shebang #!/usr/bin/env bash :results none
 * Set lexical binding cookie in tangled file
   #+begin_src emacs-lisp :comments no
     ;;; ...  -*- lexical-binding: t -*-
