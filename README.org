@@ -2766,8 +2766,7 @@
    These *override* auto-mode-alist
    #+begin_src emacs-lisp
      (setq major-mode-remap-alist
-           '((yaml-mode . yaml-ts-mode)
-             (bash-mode . bash-ts-mode)
+           '((bash-mode . bash-ts-mode)
              (sh-mode   . bash-ts-mode)
              (js2-mode . js-ts-mode)
              (js-mode  . js-ts-mode)
