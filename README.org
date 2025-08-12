@@ -1169,7 +1169,7 @@
 ** mcp.el - Model Context Protocol
 *** Configure MCP servers
    #+begin_src emacs-lisp
-     (add-to-list 'load-path "~/projects/emacs/mcp.el")
+     (add-to-list 'load-path "~/projects/emacs/ai/mcp.el")
      (require 'mcp-hub)
 
      (setq mcp-hub-servers
@@ -1281,7 +1281,7 @@
     #+begin_src emacs-lisp :tangle no
       (use-package gptel-prompts
         :straight nil
-        :load-path "~/projects/emacs/gptel-prompts"
+        :load-path "~/projects/emacs/ai/gptel-prompts"
         :after (gptel)
         :demand t
         :config
