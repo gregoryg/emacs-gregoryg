@@ -574,22 +574,30 @@
      ;; the existing keys will work in Emacs buffers, but not in EXWM X buffers; the SUPER combos work everywhere
      (global-unset-key (kbd "M-]")) ; next-buffer
      (global-unset-key (kbd "M-[")) ; previous-buffer
+     (defun gjg/hacky-other-buffer ()
+       "In the year 2025, other-buffer cannot stay alive"
+       (nth 1
+            (seq-filter
+             (lambda (buf) (and (not (minibufferp buf))
+                                (not (get-buffer-window buf))))
+             (buffer-list))))
+
      (defun gjg/switch-to-other-buffer ()
        (interactive)
-       (switch-to-buffer (other-buffer))
+       (switch-to-buffer (gjg/hacky-other-buffer))
        (message "Switched to other-buffer"))
      (defun gjg/split-window-below ()
        "Split window below, switch to the new window AND switch buffer in that window"
        (interactive)
        (split-window-below)
        (other-window 1)
-       (switch-to-buffer (other-buffer)))
+       (switch-to-buffer (gjg/hacky-other-buffer)))
      (defun gjg/split-window-right ()
        "Split window right, switch to the new window AND switch buffer in that window"
        (interactive)
        (split-window-right)
        (other-window 1)
-       (switch-to-buffer (other-buffer)))
+       (switch-to-buffer (gjg/hacky-other-buffer)))
 
      (defun toggle-window-split ()
        "Toggle the window layout between horizontal and vertical splits for exactly two windows in the current frame.
