@@ -1396,12 +1396,18 @@
                    :mime-types
                    ("image/jpeg" "image/png" "image/gif" "image/webp")
                    :input-cost 1.25 :output-cost 10)
+                  (qwen/qwen3-coder
+                   :description "Qwen3-Coder-480B-A35B-Instruct is a Mixture-of-Experts (MoE) code generation model developed by the Qwen team. It is optimized for agentic coding tasks such as function calling, tool use, and long-context reasoning over repositories. The model features 480 billion total parameters, with 35 billion active per forward pass (8 out of 160 experts)."
+                   :mime-types ("image/jpeg" "image/png" "image/gif" "image/webp")
+                   :input-cost 0.45 :output-cost 1.50)
+                  (moonshotai/kimi-k2
+                   :description "Kimi K2 Instruct is a large-scale Mixture-of-Experts (MoE) language model developed by Moonshot AI, featuring 1 trillion total parameters with 32 billion active per forward pass. It is optimized for agentic capabilities, including advanced tool use, reasoning, and code synthesis. Kimi K2 excels across a broad range of benchmarks, particularly in coding (LiveCodeBench, SWE-bench), reasoning (ZebraLogic, GPQA), and tool-use (Tau2, AceBench) tasks. It supports long-context inference up to 128K tokens and is designed with a novel training stack that includes the MuonClip optimizer for stable large-scale MoE training."
+                   :mime-types ("image/jpeg" "image/png" "image/gif" "image/webp")
+                   :input-cost 0.60 :output-cost 2.50)
                   openrouter/auto
                   google/gemini-2.0-flash-lite-preview-02-05:free
                   deepseek/deepseek-r1:free deepseek/deepseek-chat:free
                   z-ai/glm-4.5
-                  qwen/qwen3-coder
-                  moonshotai/kimi-k2
                   google/gemini-2.5-pro
                   anthropic/claude-sonnet-4
                   ))
