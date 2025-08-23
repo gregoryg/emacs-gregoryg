@@ -1251,6 +1251,8 @@
                                                :NEO4J_USERNAME "recommendations"
                                                :NEO4J_PASSWORD "recommendations"
                                                :NEO4J_DATABASE "recommendations")))
+             ("playwright" . (:command "npx"
+                                       :args ("-y" "@executeautomation/playwright-mcp-server")))
              ("terminal-controller" . (:command "~/.local/python-venvs/boodle/bin/uvx"
                                                 :args ("terminal_controller")))
 
