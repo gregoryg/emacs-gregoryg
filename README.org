@@ -3067,9 +3067,9 @@
 
 *** Postgresql
     + Allow for alternative port
-     #+begin_src emacs-lisp :tangle no
+      Oddly, the variable sql-port sets the default port for MySQL *and* Postgresql!
+     #+begin_src emacs-lisp
        (setq sql-postgres-login-params '(user password server database port))
-       ;; (setq sql-port 3306)
      #+end_src
 ** FINAL step after all language modes have been configured
    #+begin_src emacs-lisp
