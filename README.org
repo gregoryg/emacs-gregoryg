@@ -569,6 +569,10 @@
               ))
    #+end_src
 ** GJG Window splitting
+   Somewhere in the a pre-release 31.0.50 Emacs build, `other-window' stopped working in regular
+   Emacs buffers (ie, non-EXWM buffers).  It started consistently returning the current buffer!
+   gjg/hacky-other-buffer is my workaround
+
    #+begin_src emacs-lisp
      ;; unbind some keys in favor of my functions bound to SUPER- combinations
      ;; the existing keys will work in Emacs buffers, but not in EXWM X buffers; the SUPER combos work everywhere
@@ -576,11 +580,13 @@
      (global-unset-key (kbd "M-[")) ; previous-buffer
      (defun gjg/hacky-other-buffer ()
        "In the year 2025, other-buffer cannot stay alive"
-       (nth 1
+       (if (eq (current-buffer) (other-buffer))
+           (nth 1
             (seq-filter
              (lambda (buf) (and (not (minibufferp buf))
                                 (not (get-buffer-window buf))))
-             (buffer-list))))
+             (buffer-list)))
+         (other-buffer)))
 
      (defun gjg/switch-to-other-buffer ()
        (interactive)
