@@ -1694,67 +1694,9 @@
 
     Most of these tools use a separately defined callable function rather than a lambda form.  Partly because the functions may have use outside of gptel, partly because =gptel-make-tool= does not update once the tool slot has been created (as of <2025-03-23 Sun>)
 
-**** Files and repositories category
-***** Create a text file - from gptel docs
-     #+begin_src emacs-lisp
-       (gptel-make-tool
-        :name "create_file"                    ; javascript-style  snake_case name
-        :function (lambda (path filename content)   ; the function that runs
-                    (let ((full-path (expand-file-name filename path)))
-                      (with-temp-buffer
-                        (insert content)
-                        (write-file full-path))
-                      (format "Created file %s in %s" filename path)))
-        :description "Create a new file with the specified content"
-        :args (list '(:name "path"             ; a list of argument specifications
-       	                 :type string
-       	                 :description "The directory where to create the file")
-                    '(:name "filename"
-       	                 :type string
-       	                 :description "The name of the file to create")
-                    '(:name "content"
-       	                 :type string
-       	                 :description "The content to write to the file"))
-        :category "filesystem")                ; An arbitrary label for grouping
-#+end_src
-***** List files and directories
-      Give access to entire filesystem
-      #+begin_src emacs-lisp
-        (defun gjg/list-directory (dir &optional details lsflags limit)
-          "List contents of DIR.
-           DETAILS true is equivalent to `ls -l'
-        LSFLAGS can be a string with `ls' compatible flags - use this to sort for example
-        Return only LIMIT results when set to a positive integer.
-        Assumes `ls' command in path."
-
-          (let* ((cmd
-                  (concat "ls " (when details "-l") " " (when lsflags lsflags) " " (when (and limit (integerp limit))) " " dir  (format "|head -n %d" (1+ limit)))))
-            (shell-command-to-string cmd)))
-
-        (gptel-make-tool
-         :name "fs_list_directory"
-         :function #'gjg/list-directory
-         :description "List contents of a directory."
-         :category "filesystem"
-         :args (list '(:name "dir"
-                             :type string
-                             :description "path to a directory on the filesystem")
-                     '(:name "full_details"
-                             :type boolean
-                             :description "if true, return details for each file/directory/symlink including date, time, user, group and size in bytes"
-                             :optional t)
-                     '(:name "lsflags"
-                             :type string
-                             :description "additional flags to add to the `ls' command"
-                             :optional t)
-                     '(:name "limit"
-                             :type number
-                             :description "limit the number of results returned"
-                             :optional t)))
-      #+end_src
 **** Home and local category
 ***** Get weather forecast
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp : tangle no
        ;; (gptel-make-tool
        ;;  :name "weather_forecast"
        ;;  :function (lambda ()
