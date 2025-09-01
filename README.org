@@ -1396,6 +1396,13 @@
                    :mime-types
                    ("image/jpeg" "image/png" "image/gif" "image/webp")
                    :input-cost 1.25 :output-cost 10)
+                  (deepseek/deepseek-chat-v3.1
+                   :description "DeepSeek-V3.1 is a large hybrid reasoning model (671B parameters, 37B active) that supports both thinking and non-thinking modes via prompt templates. It extends the DeepSeek-V3 base with a two-phase long-context training process, reaching up to 128K tokens, and uses FP8 microscaling for efficient inference. Users can control the reasoning behaviour with the reasoning enabled boolean. Learn more in our docs
+
+      The model improves tool use, code generation, and reasoning efficiency, achieving performance comparable to DeepSeek-R1 on difficult benchmarks while responding more quickly. It supports structured tool calling, code agents, and search agents, making it suitable for research, coding, and agentic workflows."
+                   :capabilities (media tool json url)
+                   :mime-types ("image/jpeg" "image/png" "image/gif" "image/webp")
+                   :input-cost 0.55 :output-cost 1.66)
                   (qwen/qwen3-coder
                    :description "Qwen3-Coder-480B-A35B-Instruct is a Mixture-of-Experts (MoE) code generation model developed by the Qwen team. It is optimized for agentic coding tasks such as function calling, tool use, and long-context reasoning over repositories. The model features 480 billion total parameters, with 35 billion active per forward pass (8 out of 160 experts)."
                    :mime-types ("image/jpeg" "image/png" "image/gif" "image/webp")
