@@ -1324,15 +1324,6 @@
       ;; :fork (:host github :branch "main" :repo "gregoryg/gptel-prompts")
 
 #+end_src
-*** SIDE JOURNEY: keep track of LLM model charateristics and location somehow
-    | model family | model name                    | ollama              | together.ai                             | tokens   | pricing | ref                                                         |
-    |--------------+-------------------------------+---------------------+-----------------------------------------+----------+---------+-------------------------------------------------------------|
-    | Llama2       | CodeLlama-34b-Instruct        |                     | togethercomputer/CodeLlama-34b-Instruct |          | .776/1M | https://about.fb.com/news/2023/08/code-llama-ai-for-coding/ |
-    |              | CodeLlama-7b                  | codellama:7b        |                                         |          |         | https://ollama.ai/library/codellama                         |
-    | Mistral      | mistral-7b                    | mistral:7b-instruct |                                         |          |         |                                                             |
-    |              | yarn-mistral 64 or 128K token | yarn-mistral:7b-64k |                                         | 64K,128K |         |                                                             |
-    |              | Mixtral-8x7B-Instruct         | mixtral:instruct    | mistralai/Mixtral-8x7B-Instruct-v0.1    |          | .6/1M   | https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1 |
-    | Phi          |                               |                     |                                         |          |         |                                                             |
 *** Create custom Together.AI backend
     This makes use of the [[https://docs.together.ai/docs/openai-api-compatibility][OpenAI-compatible API]], which makes the backend generation super simple!
 **** Model capabilities
