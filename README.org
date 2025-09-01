@@ -1421,7 +1421,7 @@
 #+end_src
 *** Configure Anthropic Claude
 
-      #+begin_src emacs-lisp
+      #+begin_src emacs-lisp :tangle no
         (gptel-make-anthropic "Anthropic"
           :stream t
           :key gptel-api-key)
