@@ -1289,8 +1289,9 @@
 
      ;; Use :nonrecursive to avoid straight.el's mishandling of submodules - the only submodule used is 'test'
      ;; see https://github.com/karthink/gptel/issues/716
-     (use-package gptel
-       :straight (:host github :repo "karthink/gptel" :nonrecursive t))
+     ;; (use-package gptel
+     ;;   :straight (:host github :repo "karthink/gptel" :nonrecursive t))
+     (use-package gptel :straight t)
      (setq gptel-default-mode 'org-mode
            gptel-expert-commands t
            gptel-track-media t
