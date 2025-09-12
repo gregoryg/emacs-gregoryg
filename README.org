@@ -1204,7 +1204,11 @@
              ("filesystem-bf" . (:command "npx"
                                        :args
                                        ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
-                                        "~/projects/coding/bartenders-friend/")))
+                                        "~/projects/coding/bartenders-friend/" "~/projects/coding/bf-ui/")))
+             ("filesystem-bf-ui" . (:command "npx"
+                                       :args
+                                       ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
+                                         "~/projects/coding/bf-ui/")))
              ("filesystem-cryptogrammer" . (:command "npx"
                                        :args
                                        ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
