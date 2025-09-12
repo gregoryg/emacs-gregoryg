@@ -147,6 +147,7 @@
           libnotify-bin \
           libtool-bin \
           lightdm \
+          lynx \t
           keychain \
           locate \
           net-tools \
