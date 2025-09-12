@@ -2094,6 +2094,22 @@
                        :description "URL to read")))
 #+end_src
 ***** Open a web page for the putative human
+** Dictation, Text-to-Speech
+   #+begin_src emacs-lisp
+     (straight-use-package
+      '(whisper :type git :host github :repo "natrys/whisper.el"
+                :fork (:host github :branch "master" :repo "gregoryg/whisper.el")))
+      ;; :config
+      ;; (setq whisper-install-directory "/tmp/"
+      ;;        whisper-model "base"
+      ;;        whisper-language "en"
+      ;;        whisper-translate nil
+      ;;        whisper-use-threads (/ (num-processors) 2)))
+
+      ;; :bind ("C-H-r" . whisper-run)
+
+     (global-set-key (kbd "C-s-r") #'whisper-run)
+#+end_src
 * Commonly used modes
 
 ** Vertico (will it replace Selectrum which replaced Ivy which replaced Ido?)
