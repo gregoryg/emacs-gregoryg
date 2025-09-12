@@ -3087,7 +3087,7 @@
       ; docker build
       (highlight-regexp "Step [0-9]+/[0-9]+ : [A-Z]+" 'hi-aquamarine)
       ; podman build
-      (highlight-regexp "\[[0-9]+/[0-9]+\] STEP [0-9]+/[0-9]+: [A-Z]+" 'hi-aquamarine)
+      (highlight-regexp "STEP [0-9]+/[0-9]+: ?[A-Z]+" 'hi-aquamarine)
       ; Ansible
       (highlight-regexp "\\(RUNNING\\|STAGE\\|TASK\\|PLAY\\) .+" 'hi-black-b))
 
