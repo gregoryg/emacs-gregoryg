@@ -837,6 +837,18 @@
      Type=Application
      Categories=Development;Coding
    #+end_src
+** Google AI Studio - Gemini Dashboard
+   #+begin_src bash  :tangle ~/.local/share/applications/gcp.desktop
+     [Desktop Entry]
+     Name=Google AI Studio
+     Comment=Gemini and Nano Banana
+     Exec=xdg-open https://aistudio.google.com/usage
+     Icon= /home/gregj/.local/share/pixmaps/google-ai-studio-logo-1.png
+     Terminal=false
+     Type=Application
+     Categories=AI;LLM;Development
+   #+end_src
+
 ** Google Cloud Platform
    #+begin_src bash  :tangle ~/.local/share/applications/gcp.desktop
      [Desktop Entry]
