@@ -236,6 +236,7 @@
              Option "NaturalScrolling" "on"
              Option "Tapping" "on"
              Option "ClickMethod" "clickfinger"
+             Option "DisableWhileTyping" "on"
      EndSection
      Section "InputClass"
              Identifier "libinput pointer gorto"
@@ -695,6 +696,18 @@
      Type=Application
      Categories=Fun;Web
    #+end_src
+** Bartender's Friend
+   + generic browser, specified by update-alternatives x-www-browser *or* xdg-settings
+   #+begin_src conf :tangle ~/.local/share/applications/bartenders-friend.desktop
+     [Desktop Entry]
+     Name=Bartender's Friend
+     Comment=
+     Exec=xdg-open https://bartenders-friend.magichome/
+     Icon= /home/gregj/.local/share/pixmaps/bartenders-friend-mottled-01-512x512.png
+     Terminal=false
+     Type=Application
+     Categories=Fun;Web;Recipes
+   #+end_src
 ** Canvas Credit Union
    #+begin_src conf :tangle ~/.local/share/applications/canvas-cu.desktop
      [Desktop Entry]
@@ -758,6 +771,17 @@
      Type=Application
      Categories=Administration;sysadmin
    #+end_src
+** Cryptogrammer
+   #+begin_src conf :tangle ~/.local/share/applications/cryptogrammer.desktop
+          [Desktop Entry]
+          Name=Cryptogrammer
+          Comment=Substitution cipher helper app
+          Exec= xdg-open https://cryptogrammer.magichome/
+          Icon= /home/gregj/.local/share/pixmaps/cryptogrammer-01-512x512.png
+          Terminal=false
+          Type=Application
+          Categories=Development;Coding;Homelab
+   #+end_src
 ** Dired
    #+begin_src conf :tangle ~/.local/share/applications/emacs-dired.desktop
      # Stolen from https://emacs.stackexchange.com/a/16394/418
@@ -800,13 +824,25 @@
 ** Erebor Synology
    #+begin_src conf :tangle ~/.local/share/applications/erebor.desktop
      [Desktop Entry]
-     Name=Erebor Synology DSM
+     Name=Erebor Synology DSM NAS
      Comment=Erebor
-     Exec=xdg-open https://erebor.magichome:5001
+     Exec=xdg-open https://nas.magichome
      Icon= /home/gregj/.local/share/pixmaps/synology.png
      Terminal=false
      Type=Application
      Categories=Storage
+   #+end_src
+
+** Excalidraw -
+   #+begin_src conf :tangle ~/.local/share/applications/excalidraw.desktop
+          [Desktop Entry]
+          Name=Excalidraw
+          Comment=
+          Exec= xdg-open https://excalidraw.magichome/
+          Icon= /home/gregj/.local/share/pixmaps/excalidraw-logo-512x512.png
+          Terminal=false
+          Type=Application
+          Categories=Development;Coding;Homelab
    #+end_src
 ** Firefox
    Use this if you are not using the OS package manager installation - set =:tangle no= if
@@ -825,6 +861,17 @@
           Categories=Application;Network;WebBrowser;
           MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;
           StartupNotify=True
+   #+end_src
+** Gitea - self-hosted github
+   #+begin_src conf :tangle ~/.local/share/applications/gitea.desktop
+          [Desktop Entry]
+          Name=Gitea
+          Comment=Self-hosted github
+          Exec= xdg-open https://gitea.magichome/
+          Icon= /home/gregj/.local/share/pixmaps/gitea-logo-512x512.png
+          Terminal=false
+          Type=Application
+          Categories=Development;Coding;Homelab
    #+end_src
 ** GitHub
    #+begin_src bash  :tangle ~/.local/share/applications/github.desktop
@@ -889,7 +936,7 @@
      [Desktop Entry]
      Name=Home Assistant
      Comment=Home Assistant of 2 Moonz
-     Exec=xdg-open http://homeassistant.magichome:8123/
+     Exec=xdg-open https://homeassistant.magichome
      Icon= /home/gregj/.local/share/pixmaps/homeassistant.png
      Terminal=false
      Type=Application
@@ -998,6 +1045,17 @@
      Type=Application
      Categories=Office;Calendar;
    #+end_src
+** Google Gmail - Dynapse
+   #+begin_src conf :tangle ~/.local/share/applications/gmail-dynapse.desktop
+     [Desktop Entry]
+     Name=Gmail Dynapse Mail
+     Comment=Google EMail in Browser
+     Exec=xdg-open https://mail.google.com/mail/u/1/#search/in:inbox+is:unread
+     Icon= /home/gregj/.local/share/pixmaps/gmail-logo.png
+     Terminal=false
+     Type=Application
+     Categories=Office;Mail;
+   #+end_src
 ** Google Gmail - Personal
    #+begin_src conf :tangle ~/.local/share/applications/gmail-personal.desktop
      [Desktop Entry]
@@ -1043,6 +1101,19 @@
      Terminal=false
      Type=Application
      Categories=Office;Productivity;
+   #+end_src
+** N8n workflow thing
+   #+begin_src conf :tangle ~/.local/share/applications/n8n.desktop
+          [Desktop Entry]
+          Name=N8n
+          Comment=Workflow thingie
+          Exec= xdg-open https://n8n.magichome/
+          Icon= /home/gregj/.local/share/pixmaps/n8n-color-512x512.png
+          Terminal=false
+          Type=Application
+          Categories=Development;Workflow;Automation
+   #+end_src
+
    #+end_src
 ** Neo4j Desktop
    #+begin_src conf :tangle ~/.local/share/applications/neo4j-desktop.desktop
@@ -1194,18 +1265,6 @@
      Terminal=false
      Type=Application
      Categories=Messaging
-   #+end_src
-** Slack
-   #+begin_src conf :tangle no
- ~/.local/share/applications/slack.desktop
-     [Desktop Entry]
-     Name=Slack
-     Comment=Slack
-     Exec=flatpak run com.slack.Slack
-     Icon=/home/gregj/.local/share/pixmaps/slack.jpeg
-     Terminal=false
-     Type=Application
-     Categories=InstantMessaging;
    #+end_src
 ** Spotify
    #+begin_src conf :tangle no
@@ -1478,7 +1537,7 @@
      [Desktop Entry]
      Name=Yummy Sauce Recipes
      Comment=
-     Exec=xdg-open http://yummy-sauce.magichome:9925/
+     Exec=xdg-open https://yummy-sauce.magichome/
      Icon= /home/gregj/.local/share/pixmaps/mealie-favicon.png
      Terminal=false
      Type=Application
