@@ -300,8 +300,7 @@
     (global-set-key (kbd "C-z") 'undo)
     (global-unset-key (kbd "M-]")) ; unset one next-buffer binding
     (global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
-    (global-set-key (kbd "s-g") 'gjg/exwm-select-or-launch-logseq)
-    (global-set-key (kbd "s-g") 'gjg/exwm-select-slack)
+    (global-set-key (kbd "s-g") 'gjg/exwm-select-or-launch-gitea)
     (global-set-key (kbd "s-'") 'gjg/add-person-from-table)
     (global-set-key (kbd "s-y") 'gjg/exwm-select-or-launch-spotify)
     (global-set-key (kbd "s--")  'gjg/exwm-select-zoom-meeting)
