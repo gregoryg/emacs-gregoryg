@@ -1236,6 +1236,9 @@
                                           "GITHUB_PERSONAL_ACCESS_TOKEN"
                                           "ghcr.io/github/github-mcp-server")
                                    :env (:GITHUB_PERSONAL_ACCESS_TOKEN ,(gjg/authinfo-secret "mcp-server-github" "gregoryg"))))
+     (global-set-key (kbd "C-s-r") #'whisper-run)
+#+end_src
+* Commonly used modes
 
              ("private-journal" . (:command "npx"
                                             :args ("github:obra/private-journal-mcp")))
