@@ -952,6 +952,9 @@
       :custom
       (minions-mode-line-lighter ""))
 
+    ;; (use-package nyan-mode :straight t
+    ;;   :config
+    ;;   (nyan-mode 1))
   #+end_src
 
 ** Hide the little bleeder altogether
