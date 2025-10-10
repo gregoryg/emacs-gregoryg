@@ -1243,9 +1243,14 @@
              ("private-journal" . (:command "npx"
                                             :args ("github:obra/private-journal-mcp")))
              ("memory" . (:command "npx"
-                                   :args ("-y" "@modelcontextprotocol/server-memory")))
+** Vertico (will it replace Selectrum which replaced Ivy which replaced Ido?)
+   #+begin_src emacs-lisp
+     (use-package vertico
+       :straight (:files (:defaults "extensions/"))
+       :init
+       (vertico-mode)
+       (vertico-multiform-mode +1))
 
-             ;; PSA: keep the "everything" server commented to avoid getting *Messages* buffer spammed
              ;; ("everything" . (:command "npx"
              ;;                           :args
              ;;                           ("-y" "@modelcontextprotocol/server-everything")))
