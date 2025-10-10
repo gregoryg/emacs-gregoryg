@@ -1209,7 +1209,7 @@
              ("filesystem-frontend-playground" . (:command "npx"
                                        :args
                                        ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
-                                        "~/projects/coding/frontend-playground/" "~/projects/coding/python/cryptogrammer/")))
+      ;; :bind ("C-H-r" . whisper-run)
 
              ("filesystem-bf" . (:command "npx"
                                        :args
