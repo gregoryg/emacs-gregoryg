@@ -181,7 +181,7 @@ This entire file provides my configuration, required Emacs supporting packages a
             (if application
                 (progn
                   (message "No buffer matching %S found. Launching %s..." search-terms application)
-                  (call-process-shell-command (concat "gtk-launch " application " &"))) ;; Added '&' for background launch
+                  (call-process-shell-command (concat "gtk-launch " application " &")))
               (message "No buffer matching %S found." search-terms)))))
 
       ;; Example Usage:
@@ -282,12 +282,12 @@ system.
         (interactive)
         (gjg/exwm-switch-to-buffer-or-launch "Microsoft Teams classic ≫ teams.microsoft.com"))
     #+end_src
-*** Function to switch quickly to good ole Slack
+*** Function to switch quickly to homelab Gitea page
     #+begin_src emacs-lisp
-      (defun gjg/exwm-select-slack ()
-        "Select the running Slack window if it's running, otherwise launch."
+      (defun gjg/exwm-select-or-launch-gitea ()
+        "Select the running Gitea window if it's running, otherwise launch."
         (interactive)
-        (gjg/exwm-switch-to-buffer-or-launch "slack stardog" "com.slack.Slack"))
+        (gjg/exwm-switch-to-buffer-or-launch "gitea.magichome" "gitea"))
     #+end_src
 ** Update Spotify's buffer name when song changes
    If running EXWM, let's keep Spotify's buffer name hip
@@ -411,8 +411,7 @@ system.
                 ([?\s-m] . gjg/exwm-select-music-window)
                 ([?\s-p] . playerctl-play-pause-song)
                 ([?\s-t] . toggle-truncate-lines)
-                ([?\s-g] . gjg/exwm-select-or-launch-logseq)
-                ([?\s-k] . gjg/exwm-select-slack)
+                ([?\s-g] . gjg/exwm-select-or-launch-gitea)
                 ([?\s-c] . gjg/exwm-select-or-launch-google-chat)
                 ([?\s-y] . gjg/exwm-select-or-launch-spotify)
                 (,(kbd "<XF86MonBrightnessUp>") . (lambda () (interactive) (call-process-shell-command "gjg-bright.sh +5")))
