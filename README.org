@@ -1184,9 +1184,17 @@
    #+end_src
 ** mcp.el - Model Context Protocol
 *** Configure MCP servers
+** Dictation, Text-to-Speech
    #+begin_src emacs-lisp
-     (add-to-list 'load-path "~/projects/emacs/ai/mcp.el")
-     (require 'mcp-hub)
+     (straight-use-package
+      '(whisper :type git :host github :repo "natrys/whisper.el"
+                :fork (:host github :branch "master" :repo "gregoryg/whisper.el")))
+      ;; :config
+      ;; (setq whisper-install-directory "/tmp/"
+      ;;        whisper-model "base"
+      ;;        whisper-language "en"
+      ;;        whisper-translate nil
+      ;;        whisper-use-threads (/ (num-processors) 2)))
 
      (setq mcp-hub-servers
            `(
