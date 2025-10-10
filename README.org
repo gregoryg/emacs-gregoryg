@@ -580,7 +580,7 @@
      (defun gjg/hacky-other-buffer ()
        "In the year 2025, other-buffer cannot stay alive"
        (if (eq (current-buffer) (other-buffer))
-           (nth 1
+           (nth 0
             (seq-filter
              (lambda (buf) (and (not (minibufferp buf))
                                 (not (get-buffer-window buf))))
