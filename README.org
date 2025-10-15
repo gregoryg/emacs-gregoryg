@@ -1373,10 +1373,13 @@
 *** Tweak remote bash shell prompt PS1
     if used, tangle to  ~/.emacs.d/init_bash.sh
 
-    #+begin_src bash :tangle no
+    NB: It is important for shell completion in Vertico to have a shell prompt that does not look like a path (tramp's default
+    /ssh:username@machine ....
+
+        #+begin_src bash :tangle ~/.emacs.d/init_bash.sh
       # Reset the prompt for remote TRAMP shells.
       if [ "${INSIDE_EMACS/*tramp*/tramp}" == "tramp" ] ; then
-        PS1="[\u@\h \w]$ "
+        PS1="\u@\h \w $ "
          # PS1="[$(echo $PS1 | cut -d':' -f 1-2 ):\w]$ "
       fi
     #+end_src
