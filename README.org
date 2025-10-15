@@ -2583,11 +2583,13 @@
           "Return gptel backend and model (if any)."
           (let ((backend (if  (boundp 'gptel-backend)  (aref gptel-backend 1)))
                 (model (if  (boundp 'gptel-model) gptel-model)))
-            (format "(%s %s)" backend model)))
+            (format "%s %s" backend model)))
       #+end_src
 ***** Insert backend+model as first string in a response buffer
       This function is added as a hook to use with non-chat buffers.  In my org-mode chat buffers, I handle the model attribution differently (as part of my markdown->org function).
       #+begin_src emacs-lisp
+        (advice-add 'gptel-send :before #'org-timer-start)
+
         (defun gjg/gptel-insert-model-in-non-gptel-buffers ()
           "This function will add the backend and model in the \"dynamic\" buffers, not in dedicated chat buffers.
         To be used in `gptel-pre-response-hook'."
@@ -2601,13 +2603,16 @@
           "This function adds the backend and model in dedicated chat buffers.
         Can be used with the `gptel-post-response-functions' hook."
           (let* ((gptel-org-prefix (alist-get 'org-mode gptel-prompt-prefix-alist))
-                 (inserted-string (format "%s %s\n"
+                 (elapsed-time (org-timer nil t))
+                 (inserted-string (format "%s %s (%s)\n"
                                           (substring gptel-org-prefix 0 (string-match " " gptel-org-prefix))
-                                          (gjg/gptel-backend-and-model)))
+                                          (gjg/gptel-backend-and-model)
+                                          (if (not (string= "0:00:00 " elapsed-time)) elapsed-time "" )))
                  (len-inserted (length inserted-string )))
             (goto-char response-begin-pos)
             (insert inserted-string)
-            (goto-char (+ response-end-pos len-inserted))))
+            (goto-char (+ response-end-pos len-inserted)))
+          (org-timer-stop))
         (add-hook 'gptel-post-response-functions 'gjg/gptel-insert-model-in-chat-buffers)
       #+end_src
 **** Convert Markdown LLM responses to Org Mode using Pandoc
