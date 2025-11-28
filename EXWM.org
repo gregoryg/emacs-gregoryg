@@ -561,7 +561,7 @@ system.
                         ((string= "kitty" exwm-class-name)
                          (exwm-workspace-rename-buffer (concat "kitty - " exwm-title)))
                         ((string= "Slack" exwm-class-name)
-                         (exwm-workspace-rename-buffer (concat "slack stardog" "- " exwm-title)))
+                         (exwm-workspace-rename-buffer (concat "slack" "- " exwm-title)))
                         ((string= "Logseq" exwm-class-name)
                          (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name " App")))
                         ((member exwm-class-name '("Eom" "Eog" "zoom" "Spotify" ))
