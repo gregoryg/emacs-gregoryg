@@ -885,9 +885,9 @@
      Categories=Development;Coding
    #+end_src
 ** Google AI Studio - Gemini Dashboard
-   #+begin_src bash  :tangle ~/.local/share/applications/gcp.desktop
+   #+begin_src bash  :tangle ~/.local/share/applications/ai-studio.desktop
      [Desktop Entry]
-     Name=Google AI Studio
+     Name=Google Gemini AI Studio
      Comment=Gemini and Nano Banana
      Exec=xdg-open https://aistudio.google.com/usage
      Icon= /home/gregj/.local/share/pixmaps/google-ai-studio-logo-1.png
@@ -1301,12 +1301,12 @@
      Type=Application
      Categories=Image;Art;Media
    #+end_src
-** Stardog AWS Console
+** Gortsleigh AWS Console
    #+begin_src conf :tangle ~/.local/share/applications/stardog-aws-console.desktop
      [Desktop Entry]
-     Name=Amazon Web Services Console - Stardog
+     Name=Amazon Web Services Console - Gortsleigh Dynapse
      Comment=
-     Exec=xdg-open https://stardog-solutions.signin.aws.amazon.com/console
+     Exec=xdg-open https://dynapse.signin.aws.amazon.com/console
      Icon= /home/gregj/.local/share/pixmaps/aws.png
      Terminal=false
      Type=Application
