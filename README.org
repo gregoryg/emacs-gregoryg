@@ -2171,42 +2171,71 @@
            `(
              ;; NB: I am pulling from my clone to get the latest version ; otherwise use "@modelcontextprotocol/server-filesystem@latest"
              ;; https://developer.chrome.com/blog/chrome-devtools-mcp
+             ;; FILESYSTEM configs
              ("filesystem" . (:command "npx"
                                        :args
-                                       ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
+                                       ("-y" "@modelcontextprotocol/server-filesystem"
                                         ,(if (boundp 'mcp-filesystem-server-project-root)
                                              (string-join mcp-filesystem-server-project-root " ")
                                            "/tmp"
                                            ))))
              ("filesystem-reverse-proxy" . (:command "npx"
                                                            :args
-                                                           ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
+                                                           ("-y" "@modelcontextprotocol/server-filesystem"
                                                             "~/mnt/protomolecule-data/homelab/reverse-proxy/" )))
-
+             ("filesystem-k8s-solve-woes" . (:command "npx"
+                                                           :args
+                                                           ("-y" "@modelcontextprotocol/server-filesystem"
+                                                            "~/projects/selfhost-resources/solve-homelab-woes-w-k8s/" )))
+             ("filesystem-mirantis" . (:command "npx"
+                                                           :args
+                                                           ("-y" "@modelcontextprotocol/server-filesystem"
+                                                            "~/projects/selfhost-resources/k0s-k0rdent-learning/" )))
              ("filesystem-frontend-playground" . (:command "npx"
                                                            :args
-                                                           ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
+                                                           ("-y" "@modelcontextprotocol/server-filesystem"
                                                             "~/projects/coding/frontend-playground/" "~/projects/coding/python/cryptogrammer/")))
              ("filesystem-bf" . (:command "npx"
                                           :args
-                                          ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
-                                           "~/projects/coding/bartenders-friend/" "~/projects/coding/bf-ui/")))
+                                          ("-y" "@modelcontextprotocol/server-filesystem"
+                                           "~/projects/bartenders-friend-complete/bartenders-friend-api/")))
              ("filesystem-bf-ui" . (:command "npx"
                                              :args
-                                             ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
-                                              "~/projects/coding/bf-ui/")))
+                                             ("-y" "@modelcontextprotocol/server-filesystem"
+                                              "~/projects/bartenders-friend-complete/bf-ui/")))
+             ("filesystem-bf-ui2" . (:command "npx"
+                                             :args
+                                             ("-y" "@modelcontextprotocol/server-filesystem"
+                                              "~/projects/bartenders-friend-complete/bartenders-friend-ui2/")))
              ("filesystem-cocktail-ui" . (:command "npx"
                                              :args
-                                             ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
+                                             ("-y" "@modelcontextprotocol/server-filesystem"
                                               "~/projects/coding/cocktail-ui/")))
              ("filesystem-cryptogrammer" . (:command "npx"
                                                      :args
-                                                     ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
+                                                     ("-y" "@modelcontextprotocol/server-filesystem"
                                                       "~/projects/coding/python/cryptogrammer/")))
              ("filesystem-cryptogrammer-ui" . (:command "npx"
                                                      :args
-                                                     ("-y" "~/projects/ai/ModelContextProtocol/servers/src/filesystem"
+                                                     ("-y" "@modelcontextprotocol/server-filesystem"
                                                       "~/projects/coding/cryptogrammer-ui/")))
+             ;; META MCP: rubber ducks galore
+             ("rubber-duck" . (:command "node"
+                                        :args ("/home/gregj/projects/ai/ModelContextProtocol/mcp-rubber-duck/dist/index.js")
+                                        :env (
+                                              :MCP_SERVER "true"
+                                                          :OPENAI_API_KEY ,(gjg/authinfo-secret "api.openai.com")
+                                                          :OPENAI_DEFAULT_MODEL "gpt-5.1"
+                                                          :GEMINI_API_KEY ,(gjg/authinfo-secret "generativelanguage.googleapis.com")
+                                                          :GEMINI_DEFAULT_MODEL "gemini-3-pro-preview"
+                                                          :CUSTOM_ANTHROPIC_API_KEY ,(gjg/authinfo-secret "openrouter.ai")
+                                                          :CUSTOM_ANTHROPIC_BASE_URL "https://openrouter.ai/api/v1"
+                                                          :CUSTOM_ANTHROPIC_DEFAULT_MODEL "anthropic/claude-opus-4.5"
+                                                          :CUSTOM_ANTHROPIC_NICKNAME "Anthropic Opus 4.5 via OpenRouter"
+                                                          :DEFAULT_PROVIDER "openai"
+                                                          :LOG_LEVEL "info"
+
+                                                          )))
              ;; web search - uses API key
              ("brave-search" . (:command "npx"
                                          :args ("-y" "@modelcontextprotocol/server-brave-search")
