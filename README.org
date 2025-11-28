@@ -2659,8 +2659,22 @@
             (insert inserted-string)
             (goto-char (+ response-end-pos len-inserted)))
           (org-timer-stop))
+
         (add-hook 'gptel-post-response-functions 'gjg/gptel-insert-model-in-chat-buffers)
       #+end_src
+***** Add a very long buffer-specific timout for mcp.el
+      mcp.el/mcp-hub does not alter the default jsonrpc timeout of 10 seconds.  So if any mcp call takes more than 10 seconds to return, we end up with a hung tool call
+
+      One area where this bites us in the collective arse is when using thinking LLMs in MCP calls (as with mcp-rubber-duck).
+
+      So ... let's make a buffer-local substantial modification to the global default timeout of 10 seconds!
+
+      #+begin_src emacs-lisp
+        (add-hook 'gptel-mode-hook
+                  (lambda ()
+                    (setq-local jsonrpc-default-request-timeout 600))) ;; 10 minutes, just to be safe
+      #+end_src
+
 **** Convert Markdown LLM responses to Org Mode using Pandoc
      This ultimately replaces the Markdown -> Org Mode conversion built in to =gptel=
 
