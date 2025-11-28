@@ -2476,8 +2476,6 @@
 
     If OpenAI makes new models available, the package may lag behind - so specify what models you want to use here
 
-    As of [2024-07-21 Sun] the only models I'm interested in using from Open AI are: gpt-4o-mini  gpt-4o
-
      #+begin_src emacs-lisp :tangle no
        ;; do this by overriding var `gptel--openai'
        (setq gptel--openai
