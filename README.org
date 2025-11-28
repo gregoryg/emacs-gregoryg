@@ -2274,7 +2274,7 @@
              ;; Terminal / shell commands
              ("mcp-shell-server" . (:command "~/.local/python-venvs/boodle/bin/uvx"
                                              :args ("mcp-shell-server")
-                                             :env (:ALLOW_COMMANDS "bc,cat,chmod,curl,date,echo,find,git,grep,head,jq,ls,npm,psql,pwd,rg,sed,tail,wc")))
+                                             :env (:ALLOW_COMMANDS "bc,cat,chmod,curl,date,echo,find,git,grep,head,jq,kubectl,ls,lynx,npm,psql,pwd,python,rg,sed,tail,wc")))
              ("mariadb-readonly" . (:command "~/.local/python-venvs/boodle/bin/uvx"
                                              :args ("mcp-server-mariadb" "--host" "protomolecule.magichome" "--port" "3306" "--user" "gregj" "--password" ,(gjg/authinfo-secret "homelab-mysql" "gregj") "--database" "teslafi")))
              ("movies-neo4j" . (:command "~/.local/python-venvs/boodle/bin/uvx"
