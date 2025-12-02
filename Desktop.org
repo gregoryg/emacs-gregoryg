@@ -684,6 +684,18 @@
      Type=Application
      Categories=Shopping;Retail;
    #+end_src
+** ArgoCD
+      #+begin_src conf :tangle ~/.local/share/applications/argocd.desktop
+        [Desktop Entry]
+        Name=ArgoCD for k3s
+        Comment=ArgoCD for homelab
+        Exec=xdg-open https://argocd.magichome/
+        Icon= /home/gregj/.local/share/pixmaps/argocd-original-512x512.png
+        Terminal=false
+        Type=Application
+        Categories=Devops;CICD;Kubernetes;
+   #+end_src
+
 ** Browser
    + generic browser, specified by update-alternatives x-www-browser *or* xdg-settings
    #+begin_src conf :tangle ~/.local/share/applications/browser-generic.desktop
