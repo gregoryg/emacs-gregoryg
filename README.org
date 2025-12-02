@@ -2241,10 +2241,18 @@
                                                           :CUSTOM_ANTHROPIC_BASE_URL "https://openrouter.ai/api/v1"
                                                           :CUSTOM_ANTHROPIC_DEFAULT_MODEL "anthropic/claude-opus-4.5"
                                                           :CUSTOM_ANTHROPIC_NICKNAME "Anthropic Opus 4.5 via OpenRouter"
-                                                          :DEFAULT_PROVIDER "openai"
-                                                          :LOG_LEVEL "info"
+                                                          :CUSTOM_GROK_API_KEY ,(gjg/authinfo-secret "openrouter.ai")
+                                                          :CUSTOM_GROK_BASE_URL "https://openrouter.ai/api/v1"
+                                                          :CUSTOM_GROK_DEFAULT_MODEL "x-ai/grok-4"
+                                                          :CUSTOM_GROK_NICKNAME "Grok Shmok via OpenRouter"
+                                                          :MCP_BRIDGE_ENABLED "true"
+                                                          :MCP_SERVER_BRAVESEARCH_TYPE "stdio"
+                                                          :MCP_SERVER_BRAVESEARCH_COMMAND "python"
+                                                          :MCP_SERVER_BRAVESEARCH_ARGS "/blah"
+                                                          :MCP_SERVER_BRAVESEARCH_ENABLED "true"
 
-                                                          )))
+                                                          :DEFAULT_PROVIDER "openai"
+                                                          :LOG_LEVEL "info")))
              ;; web search - uses API key
              ("brave-search" . (:command "npx"
                                          :args ("-y" "@modelcontextprotocol/server-brave-search")
