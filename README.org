@@ -2183,6 +2183,11 @@
                                                            :args
                                                            ("-y" "@modelcontextprotocol/server-filesystem"
                                                             "~/mnt/protomolecule-data/homelab/reverse-proxy/" )))
+             ("filesystem-llm-council" . (:command "npx"
+                                                           :args
+                                                           ("-y" "@modelcontextprotocol/server-filesystem"
+                                                            "~/projects/ai/AAndrej-llm-council/")))
+
              ("filesystem-k8s-solve-woes" . (:command "npx"
                                                            :args
                                                            ("-y" "@modelcontextprotocol/server-filesystem"
@@ -2207,6 +2212,10 @@
                                              :args
                                              ("-y" "@modelcontextprotocol/server-filesystem"
                                               "~/projects/bartenders-friend-complete/bartenders-friend-ui2/")))
+             ("filesystem-mesoamerica" . (:command "npx"
+                                             :args
+                                             ("-y" "@modelcontextprotocol/server-filesystem"
+                                              "~/projects/history/mesoamerica/")))
              ("filesystem-cocktail-ui" . (:command "npx"
                                              :args
                                              ("-y" "@modelcontextprotocol/server-filesystem"
