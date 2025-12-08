@@ -1040,7 +1040,7 @@
      [Desktop Entry]
      Name=LM Studio
      Comment=LLM AI
-     Exec=/opt/lmstudio/lms
+     Exec=/opt/LMStudio/LM_Studio.AppImage --no-sandbox
      Icon=/home/gregj/.local/share/pixmaps/lm-studio-logo.png
      Terminal=false
      Type=Application
