@@ -67,3 +67,4 @@
 ;;(setq gc-cons-threshold 134217728)
 ;;   (setq gc-cons-threshold 33554432)
 (setq file-name-handler-alist file-name-handler-alist-original)
+(put 'dired-find-alternate-file 'disabled nil)
