@@ -4306,8 +4306,11 @@
              ))
    #+end_src
 ** E-books in Epub format
+*** nov.el
    #+begin_src emacs-lisp
+
      (use-package nov :straight t)
+     ;; (load-file "~/projects/emacs/nov.el/nov.el")
      (setq nov-text-width t
            visual-fill-column-center-text t)
      (add-to-list 'auto-mode-alist '("\\.\\(epub\\|kepub\\)$" . nov-mode))
@@ -4319,13 +4322,33 @@
        (gjg/enable-visual-line-with-fill))
      (add-hook 'nov-mode-hook 'gjg/nov-mode-buffer-setup)
    #+end_src
+*** nov-x.el, my extensions to nov-mode
+    These are some extensions written December 2025 with help from Opus 4.5
+
+    They support highlighting, annotations and more
+
+    #+begin_src emacs-lisp
+      (load-file "~/projects/emacs/librarian.el/librarian.el")
+      (load-file "~/projects/emacs/nov-x/nov-x.el")
+
+      ;; use customizable tooltip face if the windowing system supports it
+      ;; see documentation for `use-system-tooltips`
+      (when (member window-system '(x pgtk ns haiku))
+        (custom-set-variables '(use-system-tooltips nil)))
+
+
+    #+end_src
 *** Set nice epub reading face in current buffer
     #+begin_src emacs-lisp
       (defun gjg/set-nice-reading-font ()
         "Use a variable pitch font for reading pleasure in current buffer."
         (interactive)
         ;; (setq-local face-remapping-alist '((default :family "Noto Serif" :height 1.2)))
-        (setq-local face-remapping-alist '((default . shr-text))))
+        (setq-local face-remapping-alist '(
+                                           (default . shr-text)
+                                           (line-height . 1.4)
+                                           )
+                    ))
 
     #+end_src
 * Final steps
