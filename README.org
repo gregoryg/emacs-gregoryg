@@ -80,6 +80,9 @@
 
      (custom-set-variables '(confirm-kill-emacs 'y-or-n-p)) ;; confirm to exit emacs
 
+     ;; it may be slower, but it helps when developing
+     (custom-set-variables '(load-prefer-newer t))
+
      ;; dippy bird FTW - single character y-n for all yes/no question dialogs
      (fset 'yes-or-no-p 'y-or-n-p)
      (custom-set-variables '(shell-file-name "bash"))
