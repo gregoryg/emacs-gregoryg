@@ -2182,10 +2182,14 @@
                                              (string-join mcp-filesystem-server-project-root " ")
                                            "/tmp"
                                            ))))
-             ("filesystem-reverse-proxy" . (:command "npx"
+             ("filesystem-mcp-el" . (:command "npx"
                                                            :args
                                                            ("-y" "@modelcontextprotocol/server-filesystem"
-                                                            "~/mnt/protomolecule-data/homelab/reverse-proxy/" )))
+                                                            "~/projects/emacs/ai/mcp.el" "~/projects/emacs/ai/gptel/")))
+             ("filesystem-nov-el" . (:command "npx"
+                                                           :args
+                                                           ("-y" "@modelcontextprotocol/server-filesystem"
+                                                            "~/projects/emacs/nov-x/" "~/projects/emacs/nov.el/" )))
              ("filesystem-llm-council" . (:command "npx"
                                                            :args
                                                            ("-y" "@modelcontextprotocol/server-filesystem"
@@ -2199,10 +2203,6 @@
                                                            :args
                                                            ("-y" "@modelcontextprotocol/server-filesystem"
                                                             "~/projects/selfhost-resources/k0s-k0rdent-learning/" )))
-             ("filesystem-frontend-playground" . (:command "npx"
-                                                           :args
-                                                           ("-y" "@modelcontextprotocol/server-filesystem"
-                                                            "~/projects/coding/frontend-playground/" "~/projects/coding/python/cryptogrammer/")))
              ("filesystem-bf" . (:command "npx"
                                           :args
                                           ("-y" "@modelcontextprotocol/server-filesystem"
@@ -2219,10 +2219,6 @@
                                              :args
                                              ("-y" "@modelcontextprotocol/server-filesystem"
                                               "~/projects/history/mesoamerica/")))
-             ("filesystem-cocktail-ui" . (:command "npx"
-                                             :args
-                                             ("-y" "@modelcontextprotocol/server-filesystem"
-                                              "~/projects/coding/cocktail-ui/")))
              ("filesystem-cryptogrammer" . (:command "npx"
                                                      :args
                                                      ("-y" "@modelcontextprotocol/server-filesystem"
