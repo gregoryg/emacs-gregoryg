@@ -2256,7 +2256,7 @@
              ("brave-search" . (:command "npx"
                                          :args ("-y" "@modelcontextprotocol/server-brave-search")
                                          :env (:BRAVE_API_KEY ,(gjg/authinfo-secret "brave-search-key"))))
-             ("github" . (:command "docker"
+             ("github" . (:command "podman"
                                    :args ("run"
                                           "--name" "github-mcp"
                                           "--interactive"
