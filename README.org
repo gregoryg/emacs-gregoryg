@@ -4291,13 +4291,29 @@
      (setq org-loop-over-headlines-in-active-region t)
    #+end_src
 * Learning / researching / knowledge flow
+** Combobulate: Structured editing dependent on tree-sitter
 
+   #+begin_src emacs-lisp :tangle no
+     (use-package combobulate
+       :straight (:type git :host github :repo "mickeynp/combobulate")
+       :preface
+       ;; You can customize Combobulate's key prefix here.
+       ;; Note that you may have to restart Emacs for this to take effect!
+       (setq combobulate-key-prefix "C-c B")
+       :hook ((python-ts-mode . combobulate-mode)
+              (js-ts-mode . combobulate-mode)
+              (css-ts-mode . combobulate-mode)
+              (yaml-ts-mode . combobulate-mode)
+              (typescript-ts-mode . combobulate-mode)
+              (json-ts-mode . combobulate-mode)
+              (tsx-ts-mode . combobulate-mode)))
+   #+end_src
 ** Flaschcards
    Enable when in frequent use
   #+begin_src bash
     sudo apt-get -y install gawk
   #+end_src
-  #+begin_src emacs-lisp :tangle no
+  #+begin_src emacs-lisp
     (use-package hydra :straight t)
 
 
