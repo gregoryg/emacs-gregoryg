@@ -1847,6 +1847,22 @@
     (use-package command-log-mode :straight t :defer t)
   #+end_src
 * Programming language modes
+** Eglot (LSP)
+   We are now Eglot-centric. It is built-in (mostly) and minimal.
+   #+begin_src emacs-lisp
+     (use-package eglot
+       :straight t
+       :bind (:map eglot-mode-map
+              ("C-c r" . eglot-rename)
+              ("C-c o" . eglot-code-action-organize-imports)
+              ("C-c h" . eglot-inlay-hints-mode))
+       :config
+       (add-to-list 'eglot-server-programs
+                    '(python-ts-mode . ("pylsp")))
+       (setq eglot-autoshutdown t)
+       (setq eglot-events-buffer-size 0))
+   #+end_src
+
 ** Use tree-sitter where we can
    These *override* auto-mode-alist
    #+begin_src emacs-lisp
@@ -1915,6 +1931,10 @@
 
    #+end_src
 ** Javascript including JSON
+   #+begin_src emacs-lisp
+     (add-hook 'js-ts-mode-hook 'eglot-ensure)
+     (add-hook 'typescript-ts-mode-hook 'eglot-ensure)
+   #+end_src
 *** Prefer json-mode to built-in package
     #+begin_src emacs-lisp
       (use-package json-mode :straight t)
@@ -1996,7 +2016,8 @@
                    (setq indent-tabs-mode nil)
                    (setq python-indent-offset 4)
                    (setq tab-width 4)
-                   (pyvenv-mode t))))
+                   (pyvenv-mode t)
+                   (eglot-ensure))))
      (use-package pyvenv :straight t
        :config
        (setenv "WORKON_HOME" (expand-file-name "~/.local/python-venvs/")))
