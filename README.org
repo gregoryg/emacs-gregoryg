@@ -2704,7 +2704,7 @@
 
       So ... let's make a buffer-local substantial modification to the global default timeout of 10 seconds!
 
-      #+begin_src emacs-lisp
+      #+begin_src emacs-lisp :tangle no
         (add-hook 'gptel-mode-hook
                   (lambda ()
                     (setq-local jsonrpc-default-request-timeout 600))) ;; 10 minutes, just to be safe
@@ -2795,7 +2795,7 @@
 
 **** Home and local category
 ***** Get weather forecast
-     #+begin_src emacs-lisp : tangle no
+     #+begin_src emacs-lisp :tangle no
        ;; (gptel-make-tool
        ;;  :name "weather_forecast"
        ;;  :function (lambda ()
@@ -3071,7 +3071,7 @@
 #+end_src
 
         To see all properties defined on a symbol:
-        #+begin_src emacs-lisp :results verbatim list :tangle no
+        #+begin_src emacs-lisp  :tangle no
           (message (symbol-plist 'gptel--gemini-models))
 #+end_src
 
@@ -4405,9 +4405,7 @@
         ;; (setq-local face-remapping-alist '((default :family "Noto Serif" :height 1.2)))
         (setq-local face-remapping-alist '(
                                            (default . shr-text)
-                                           (line-height . 1.4)
-                                           )
-                    ))
+                                           (line-height . 1.4))))
 
     #+end_src
 * Final steps
