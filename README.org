@@ -4320,18 +4320,34 @@
     sudo apt-get -y install gawk
   #+end_src
   #+begin_src emacs-lisp
-    (use-package hydra :straight t)
+        (use-package hydra :straight t)
 
 
-    (use-package org-fc
-      :straight t
-      :custom (org-fc-directories '("~/projects/private-orgmode/learning/"))
-      :config
-      (require 'org-fc-hydra)
-      (define-key org-fc-review-rate-mode-map "1" 'org-fc-review-rate-hard)
-      (define-key org-fc-review-rate-mode-map "2" 'org-fc-review-rate-good)
-      (define-key org-fc-review-rate-mode-map "3" 'org-fc-review-rate-easy))
-    (use-package org-drill :straight t)
+        (use-package org-fc
+          :straight t
+          :custom (org-fc-directories '("~/projects/private-orgmode/learning/"))
+          :config
+          (require 'org-fc-hydra)
+          (define-key org-fc-review-rate-mode-map "1" 'org-fc-review-rate-hard)
+          (define-key org-fc-review-rate-mode-map "2" 'org-fc-review-rate-good)
+          (define-key org-fc-review-rate-mode-map "3" 'org-fc-review-rate-easy))
+    ;;    (use-package org-drill :straight t)
+#+end_src
+#+begin_src emacs-lisp :tangle no
+  (use-package fsrs
+    :straight t
+    :ensure t
+    :defer t)
+
+  (straight-use-package
+   '(org-srs :type git :host github :repo "bohonghuang/org-srs"
+   :defer t
+   :hook (org-mode . org-srs-embed-overlay-mode)
+   :bind (:map org-mode-map
+               ("<f5>" . org-srs-review-rate-easy)
+               ("<f6>" . org-srs-review-rate-good)
+               ("<f7>" . org-srs-review-rate-hard)
+               ("<f8>" . org-srs-review-rate-again))))
 #+end_src
 ** Language Translation
    #+begin_src emacs-lisp
