@@ -18,6 +18,10 @@
 
 A sort-of package with customization framework.  The famed =gjg= package.
 
+* Set lexical binding cookie in tangled file
+  #+begin_src emacs-lisp :comments no
+    ;;; ...  -*- lexical-binding: t -*-
+  #+end_src
 * Variables with =defcustom=
   :PROPERTIES:
   :ID:       a0ef1a1a-59f5-4ba8-ac37-013ad307011e
