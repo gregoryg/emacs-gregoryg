@@ -3216,6 +3216,12 @@
 
      (require 'agent-shell)
    #+end_src
+** ECA - Emacs AI Code/Coding Assistant
+    #+begin_src emacs-lisp :tangle no
+      (straight-use-package
+       '(eca :type git :host github :repo "editor-code-assistant/eca-emacs"
+                     :fork (:host github :branch "master" :repo "gregoryg/eca-emacs")))
+    #+end_src
 * Devops
 ** Working with containers
    This is largely a function of TRAMP.  I have added simple ways to
