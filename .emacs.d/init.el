@@ -2,11 +2,8 @@
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
 ;;   On MacOS, define the meta key up front for usability when init does not load fully
-(setq frame-inhibit-implied-resize t) ; https://tony-zorman.com/posts/2022-10-22-emacs-potpourri.html
-(setq ns-command-modifier (quote meta))
 (setq garbage-collection-messages t)
 ;; (setq gc-cons-threshold 64000000)
-(setq package-enable-at-startup nil)
 
 ;; keep customized variables in a separate file
 (setq custom-file "~/.emacs.d/emacs-custom.el")
@@ -16,10 +13,7 @@
 ;; (setq gc-cons-threshold 1000000000) ;; ref https://github.com/MatthewZMD/.emacs.d#defer-garbage-collection (x 10)
 (defvar file-name-handler-alist-original file-name-handler-alist)
 (setq file-name-handler-alist nil)
-(setq site-run-file nil)
-(menu-bar-mode -1)
-(push '(tool-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
+
 ;; (defvar better-gc-cons-threshold 335544320 ; 512MB
 ;;   "The default value to use for `gc-cons-threshold'.
 ;; ;; If you experience freezing, decrease this.  If you experience stuttering, increase this.")
@@ -45,6 +39,7 @@
       .
       [(meta shift -)])))
 (load "~/projects/emacs/straight.el/bootstrap")
+(add-to-list 'straight-built-in-pseudo-packages 'org)
 (straight-use-package 'use-package)
 (use-package bind-key :straight t :defer nil)
 (require 'shortdoc)
