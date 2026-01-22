@@ -2210,7 +2210,7 @@
              ("filesystem-nov-el" . (:command "npx"
                                                            :args
                                                            ("-y" "@modelcontextprotocol/server-filesystem"
-                                                            "~/projects/emacs/nov-x/" "~/projects/emacs/nov.el/" )))
+                                                            "~/projects/emacs/gregoryg-packages/nov-x/" "~/projects/emacs/nov.el/" "~/projects/emacs/gregoryg-packages/librarian/" )))
              ("filesystem-llm-council" . (:command "npx"
                                                            :args
                                                            ("-y" "@modelcontextprotocol/server-filesystem"
