@@ -4458,6 +4458,7 @@
         (custom-set-variables '(use-system-tooltips nil)))
 
 
+      (bind-key "s-l" #'librarian-list)
     #+end_src
 *** Set nice epub reading face in current buffer
     #+begin_src emacs-lisp
