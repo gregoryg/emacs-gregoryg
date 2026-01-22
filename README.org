@@ -2773,18 +2773,34 @@
 
 **** Get context for a phrase in any language
      #+begin_src emacs-lisp
-       (defun gjg/llm-explain (myphrase)
-         (gptel-request
-             myphrase
-             :system "explain this phrase, give examples of its use if appropriate, historical context if appropriate.  Reply only in the language of the phrase."
-           :callback (lambda (response info)
-             (if (stringp response)
-                 (let ((posn (marker-position (plist-get info :position)))
-                       (buf (buffer-name (plist-get info :buffer))))
-                   (message "Heya - the LLM responsded to request from %S at %d: %s"
-                            buf posn response))
-               (message "gptel-request failed with message: %s" (plist-get info :status))))
-           :buffer (get-buffer-create "*GORT*")))
+       (defvar gjg/gptel-request-callback-done nil)
+       (defun gjg/llm-explain (&optional myphrase)
+         (let ((myphrase (cond
+                          (myphrase myphrase)
+                          ((region-active-p) (buffer-substring-no-properties (region-beginning) (region-end)))
+                          (t (read-string "Phrase to expand with context: "))))
+               (gjg/gptel-request-callback-done nil)
+               (gptel-backend (alist-get "google-gemini" gptel--known-backends nil nil #'equal))
+               (gptel-model 'gemini-flash-latest)
+               (gptel-use-context 'system))
+           (gptel-request
+                        myphrase
+                      :system "explain this phrase concisely, give examples of its use only if appropriate, historical context only if appropriate.  Reply only in the language of the phrase."
+                      :callback (lambda (response info)
+                                  (if (stringp response)
+                                      (let ((posn (marker-position (plist-get info :position)))
+                                            (buf (buffer-name (plist-get info :buffer))))
+                                        (message "Heya - the LLM responded: check buffer *GORT*")
+                                        (save-current-buffer
+                                          (set-buffer (get-buffer-create "*GORT*"))
+                                          (goto-char (point-max))
+                                          (insert (format "\n%s\n" response))
+                                          (setq gjg/gptel-request-callback-done t))
+                                        response)
+                                    (message "gptel-request failed with message: %s" (plist-get info :status))))
+                      (while (not gjg/gptel-request-callback-done) (sleep-for 1))
+                      )))
+
 
      #+end_src
 
