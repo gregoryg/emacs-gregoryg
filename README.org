@@ -4313,6 +4313,19 @@
      (setq org-loop-over-headlines-in-active-region t)
    #+end_src
 * Learning / researching / knowledge flow
+** Denote menu
+   #+begin_src emacs-lisp
+     (use-package denote-menu
+       :straight t
+       :config
+       (defalias 'denote-menu 'list-denotes)
+       ;; filters
+       (define-key denote-menu-mode-map (kbd "/ /") #'denote-menu-clear-filters)
+       (define-key denote-menu-mode-map (kbd "/ r") #'denote-menu-filter)
+       (define-key denote-menu-mode-map (kbd "/ k") #'denote-menu-filter-by-keyword)
+       (define-key denote-menu-mode-map (kbd "/ DEL") #'denote-menu-filter-out-keyword))
+
+   #+end_src
 ** Combobulate: Structured editing dependent on tree-sitter
 
    #+begin_src emacs-lisp :tangle no
