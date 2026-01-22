@@ -2254,7 +2254,7 @@
                                         :env (
                                               :MCP_SERVER "true"
                                                           :OPENAI_API_KEY ,(gjg/authinfo-secret "api.openai.com")
-                                                          :OPENAI_DEFAULT_MODEL "gpt-5.1"
+                                                          :OPENAI_DEFAULT_MODEL "gpt-5.2"
                                                           :GEMINI_API_KEY ,(gjg/authinfo-secret "generativelanguage.googleapis.com")
                                                           :GEMINI_DEFAULT_MODEL "gemini-3-pro-preview"
                                                           :CUSTOM_ANTHROPIC_API_KEY ,(gjg/authinfo-secret "openrouter.ai")
@@ -2269,7 +2269,7 @@
                                                           :MCP_SERVER_BRAVESEARCH_TYPE "stdio"
                                                           :MCP_SERVER_BRAVESEARCH_COMMAND "python"
                                                           :MCP_SERVER_BRAVESEARCH_ARGS "/blah"
-                                                          :MCP_SERVER_BRAVESEARCH_ENABLED "true"
+                                                          :MCP_SERVER_BRAVESEARCH_ENABLED "false"
 
                                                           :DEFAULT_PROVIDER "openai"
                                                           :LOG_LEVEL "info")))
