@@ -908,6 +908,32 @@
    #+begin_src emacs-lisp
      (window-divider-mode 1)
    #+end_src
+* EXWM
+  Emacs as tiling window manager for X11
+** Determine whether to launch
+   My configuration tests for the existence of a window manager.  If one is already
+   running, just skip all the EXWM setup and bring up a "normal" Emacs instance.
+
+   I shared this solution in an Emacs Stackexchange question: [[https://emacs.stackexchange.com/a/60455/418][Launch EXWM only when no another WM or DE are being used]]
+   #+begin_src emacs-lisp
+     (when (get-buffer "*window-manager*")
+       (kill-buffer "*window-manager*"))
+     (when (get-buffer "*window-manager-error*")
+       (kill-buffer "*window-manager-error*"))
+     (when (executable-find "wmctrl")
+       (progn
+         (shell-command "wmctrl -m ; echo $?" "*window-manager*" "*window-manager-error*")))
+     (setq gjg/exwm-needed-p
+           (and (get-buffer "*window-manager-error*")
+                (eq window-system 'x)))
+   #+end_src
+
+   #+begin_src emacs-lisp
+     (when gjg/exwm-needed-p
+       (call-process-shell-command "autorandr --change" nil nil nil)
+       ;(org-babel-tangle-file "~/emacs-gregoryg/EXWM.org")
+       (load "~/.emacs.d/launch-exwm"))
+   #+end_src
 * Modeline
 ** Doom modeline
   #+begin_src emacs-lisp
@@ -973,33 +999,6 @@
   #+begin_src emacs-lisp
     (use-package hide-mode-line :straight t)
   #+end_src
-* EXWM
-  Emacs as tiling window manager for X11
-** Determine whether to launch
-   My configuration tests for the existence of a window manager.  If one is already
-   running, just skip all the EXWM setup and bring up a "normal" Emacs instance.
-
-   I shared this solution in an Emacs Stackexchange question: [[https://emacs.stackexchange.com/a/60455/418][Launch EXWM only when no another WM or DE are being used]]
-   #+begin_src emacs-lisp
-     (when (get-buffer "*window-manager*")
-       (kill-buffer "*window-manager*"))
-     (when (get-buffer "*window-manager-error*")
-       (kill-buffer "*window-manager-error*"))
-     (when (executable-find "wmctrl")
-       (progn
-         (shell-command "wmctrl -m ; echo $?" "*window-manager*" "*window-manager-error*")))
-     (setq gjg/exwm-needed-p
-           (and (get-buffer "*window-manager-error*")
-                (eq window-system 'x)))
-   #+end_src
-
-   #+begin_src emacs-lisp
-     (when gjg/exwm-needed-p
-       (call-process-shell-command "autorandr --change" nil nil nil)
-       ;(org-babel-tangle-file "~/emacs-gregoryg/EXWM.org")
-       (load "~/.emacs.d/launch-exwm"))
-   #+end_src
-
 * Text / reading / note taking
 ** Keyboard input method
    #+begin_src emacs-lisp
@@ -4410,5 +4409,7 @@
     #+end_src
 * Final steps
 #+begin_src emacs-lisp
-(shell (get-buffer-create "sh1"))
+  (shell (get-buffer-create "sh1"))
+  (gjg/set-frame-font)
+
 #+end_src

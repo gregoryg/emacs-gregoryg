@@ -485,98 +485,6 @@ system.
    (require 'exwm)
    (gjg/exwm-config)
  #+end_src
-** Configure hooks
-*** Deal with displays
-   When an external monitor is connected or disconnected, =exwm-randr-screen-change-hook=
-   is called.
-
-   The single command I currently run adds my external widescreen monitor to the left of
-   the internal display.
-
-   Disconnecting the external monitor was not working well until I started using
-   =autorandr= with a laptop-only and a monitor-connected profile.  I allow autodetection
-   of the appropriate profile with the =--change= parameter.  The solution came from a
-   [[https://www.reddit.com/r/emacs/comments/j0zda7/exwm_randr_config_for_laptop_disconnect/?utm_source=share&utm_medium=web2x&context=3][post on /r/emacs]]
-
-       #+begin_src emacs-lisp
-         (require 'exwm-randr)
-         ;; (setq exwm-randr-workspace-monitor-plist '(0 "DP-1")) ;; DP-1 is the big monitor, if connected
-         (setq exwm-randr-workspace-monitor-plist '(0 "HDMI-1" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
-         (add-hook 'exwm-randr-screen-change-hook
-                   (lambda()
-                     ;; "Let's try a thing.  If the big external monitor is detected, initiate monitor-only profile."
-                     (message "Starting exwm-randr-screen-change-hook")
-                     ;; (let*
-                     ;;     ((xrandr-output (shell-command-to-string "xrandr --listmonitors"))
-                     ;;      (external-monitor-detected (string-match "DP-3" xrandr-output))
-                     ;;      (cmd (if external-monitor-detected
-                     ;;               "autorandr --load monitor-only"
-                     ;;             "autorandr --change")))
-                     ;;   (start-process-shell-command "autorandr" nil cmd))
-                     (start-process-shell-command
-                      "autorandr" nil "autorandr --change"
-                      ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
-                      ;; WORKS WHEN ADDING MONITOR, NOT WHEN DISCONNECTING "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
-                      ;; and here's how I might get a mirrored setup
-                      ;; xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --mode 1920x1080 --same-as eDP-1
-                      ))
-                   )
-         (exwm-randr-mode 1)
-         (exwm-randr-refresh)
-       #+end_src
-*** Intelligently rename new buffers
-   By default, each new window's buffer is named by the 'class name': So Firefox, Slack,
-   Alacritty and so on.  This means that I will get similar buffer names for each new
-   Firefox window: Firefox<1>, Firefox<2>....
-
-   Examining both =exwm-class-name= and =exwm-title= allows us to rename the buffers so
-   that navigation via regular Emacs commands is made easy.
-
-       #+begin_src emacs-lisp
-         ;; Make class name the buffer name
-         (add-hook 'exwm-update-class-hook
-                   (lambda ()
-                     (cond
-                      (:else
-                       (exwm-workspace-rename-buffer exwm-class-name)))))
-         (add-hook 'exwm-update-title-hook
-                   (lambda ()
-                     (let ((browsers '(
-                                       ("Google Chrome" . "chrome")
-                                       ("Chromium" . "chromium")
-                                       ("Personal - Microsoft​ Edge" . "edge")
-                                       ("Mozilla Firefox" . "fox")
-                                       ("Zen Browser" . "zen"))))
-                       (cond
-                        ;; Browser titles
-                        ((s-starts-with-p "Mail - Greg Grubbs - Outlook - " exwm-title)
-                         (exwm-workspace-rename-buffer "email - outlook"))
-                        ((s-starts-with-p "Calendar - Greg Grubbs - Outlook" exwm-title)
-                         (exwm-workspace-rename-buffer "calendar - outlook"))
-                        ((s-starts-with-p "Google Hangouts - " exwm-title)
-                         (exwm-workspace-rename-buffer "hangouts"))
-                        ((s-matches? ".?Chat .+ mail.google.com" exwm-title)
-                         (exwm-workspace-rename-buffer (s-replace "Chat " "Chat [mail.google.com] " exwm-title)))
-                        ;; standalone apps
-                        ((string= "kitty" exwm-class-name)
-                         (exwm-workspace-rename-buffer (concat "kitty - " exwm-title)))
-                        ((string= "Slack" exwm-class-name)
-                         (exwm-workspace-rename-buffer (concat "slack" "- " exwm-title)))
-                        ((string= "Logseq" exwm-class-name)
-                         (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name " App")))
-                        ((member exwm-class-name '("Eom" "Eog" "zoom" "Spotify" ))
-                         (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
-                        (:else
-                         (exwm-workspace-rename-buffer
-                          (s-replace-all browsers exwm-title)))))))
-       #+end_src
-*** Clean up on exit
-    #+begin_src emacs-lisp
-      (add-hook 'exwm-exit-hook
-                (lambda ()
-                  (async-start-process "exwm-exit" "pkill" nil "-f" "schedule-rotate-wallpapers.sh" )))
-    #+end_src
-
 ** Start up the window manager
    As noted above, I do not use the EXWM system tray.
        #+begin_src emacs-lisp
@@ -670,6 +578,98 @@ system.
          ;; (message "Rofi launched with type %d and style %d " (car selected) (nth 1 selected))
          ))
    #+end_src
+** Configure hooks
+*** Deal with displays
+   When an external monitor is connected or disconnected, =exwm-randr-screen-change-hook=
+   is called.
+
+   The single command I currently run adds my external widescreen monitor to the left of
+   the internal display.
+
+   Disconnecting the external monitor was not working well until I started using
+   =autorandr= with a laptop-only and a monitor-connected profile.  I allow autodetection
+   of the appropriate profile with the =--change= parameter.  The solution came from a
+   [[https://www.reddit.com/r/emacs/comments/j0zda7/exwm_randr_config_for_laptop_disconnect/?utm_source=share&utm_medium=web2x&context=3][post on /r/emacs]]
+
+       #+begin_src emacs-lisp :tangle no
+         (require 'exwm-randr)
+         ;; (setq exwm-randr-workspace-monitor-plist '(0 "DP-1")) ;; DP-1 is the big monitor, if connected
+         (setq exwm-randr-workspace-monitor-plist '(0 "HDMI-1" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
+         (add-hook 'exwm-randr-screen-change-hook
+                   (lambda()
+                     ;; "Let's try a thing.  If the big external monitor is detected, initiate monitor-only profile."
+                     (message "Starting exwm-randr-screen-change-hook")
+                     ;; (let*
+                     ;;     ((xrandr-output (shell-command-to-string "xrandr --listmonitors"))
+                     ;;      (external-monitor-detected (string-match "DP-3" xrandr-output))
+                     ;;      (cmd (if external-monitor-detected
+                     ;;               "autorandr --load monitor-only"
+                     ;;             "autorandr --change")))
+                     ;;   (start-process-shell-command "autorandr" nil cmd))
+                     (start-process-shell-command
+                      "autorandr" nil "autorandr --change"
+                      ;; "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal"
+                      ;; WORKS WHEN ADDING MONITOR, NOT WHEN DISCONNECTING "xrandr" nil "xrandr --output eDP-1 --mode 1920x1200 --pos 0x0 --rotate normal --output DP-3 --primary --mode 3440x1440 --left-of eDP-1 --rotate normal"
+                      ;; and here's how I might get a mirrored setup
+                      ;; xrandr --output eDP-1 --mode 1920x1080 --output DP-3 --mode 1920x1080 --same-as eDP-1
+                      ))
+                   )
+         (exwm-randr-mode 1)
+         (exwm-randr-refresh)
+       #+end_src
+*** Intelligently rename new buffers
+   By default, each new window's buffer is named by the 'class name': So Firefox, Slack,
+   Alacritty and so on.  This means that I will get similar buffer names for each new
+   Firefox window: Firefox<1>, Firefox<2>....
+
+   Examining both =exwm-class-name= and =exwm-title= allows us to rename the buffers so
+   that navigation via regular Emacs commands is made easy.
+
+       #+begin_src emacs-lisp
+         ;; Make class name the buffer name
+         (add-hook 'exwm-update-class-hook
+                   (lambda ()
+                     (cond
+                      (:else
+                       (exwm-workspace-rename-buffer exwm-class-name)))))
+         (add-hook 'exwm-update-title-hook
+                   (lambda ()
+                     (let ((browsers '(
+                                       ("Google Chrome" . "chrome")
+                                       ("Chromium" . "chromium")
+                                       ("Personal - Microsoft​ Edge" . "edge")
+                                       ("Mozilla Firefox" . "fox")
+                                       ("Zen Browser" . "zen"))))
+                       (cond
+                        ;; Browser titles
+                        ((s-starts-with-p "Mail - Greg Grubbs - Outlook - " exwm-title)
+                         (exwm-workspace-rename-buffer "email - outlook"))
+                        ((s-starts-with-p "Calendar - Greg Grubbs - Outlook" exwm-title)
+                         (exwm-workspace-rename-buffer "calendar - outlook"))
+                        ((s-starts-with-p "Google Hangouts - " exwm-title)
+                         (exwm-workspace-rename-buffer "hangouts"))
+                        ((s-matches? ".?Chat .+ mail.google.com" exwm-title)
+                         (exwm-workspace-rename-buffer (s-replace "Chat " "Chat [mail.google.com] " exwm-title)))
+                        ;; standalone apps
+                        ((string= "kitty" exwm-class-name)
+                         (exwm-workspace-rename-buffer (concat "kitty - " exwm-title)))
+                        ((string= "Slack" exwm-class-name)
+                         (exwm-workspace-rename-buffer (concat "slack" "- " exwm-title)))
+                        ((string= "Logseq" exwm-class-name)
+                         (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name " App")))
+                        ((member exwm-class-name '("Eom" "Eog" "zoom" "Spotify" ))
+                         (exwm-workspace-rename-buffer (concat exwm-title " - " exwm-class-name)))
+                        (:else
+                         (exwm-workspace-rename-buffer
+                          (s-replace-all browsers exwm-title)))))))
+       #+end_src
+*** Clean up on exit
+    #+begin_src emacs-lisp
+      (add-hook 'exwm-exit-hook
+                (lambda ()
+                  (async-start-process "exwm-exit" "pkill" nil "-f" "schedule-rotate-wallpapers.sh" )))
+    #+end_src
+
 ** Start the OS processes
    #+begin_src emacs-lisp
      (call-process-shell-command (expand-file-name "~/bin/emacswm.sh"))
