@@ -1218,6 +1218,17 @@
      Type=Application
      Categories=Stuff
    #+end_src
+** Reddit
+   #+begin_src conf :tangle ~/.local/share/applications/reddit.desktop
+     [Desktop Entry]
+     Name=Reddit
+     Comment=Reddit!
+     Exec=xdg-open https://reddit.com/
+     Icon= /home/gregj/.local/share/pixmaps/emotionless-reddit-512x512.png
+     Terminal=false
+     Type=Application
+     Categories=Social Media;Social;
+   #+end_src
 ** Reset compositor
    #+begin_src conf :tangle ~/.local/share/applications/reset-compositor.desktop
      [Desktop Entry]
