@@ -224,7 +224,7 @@ This entire file provides my configuration, required Emacs supporting packages a
       (defun gjg/exwm-select-or-launch-google-chat ()
         "Select the running Google Chat window in EXWM, or launch the app"
         (interactive)
-        (gjg/exwm-switch-to-buffer-or-launch "Chat [mail.google.com]" "google-chat"))
+        (gjg/exwm-switch-to-buffer-or-launch "chat.google.com" "google-chat"))
     #+end_src
 *** Function to select or launch Home Assistant
     #+begin_src emacs-lisp
