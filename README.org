@@ -25,7 +25,7 @@
   If reading this file on GitHub, use the =raw= view to see all the code markings and
   header parameters.
 
-* Should I use =evil-mode=?
+** Should I use =evil-mode=?
 
   evil-mode gives you Vim-like keybindings in Emacs.  I would recommend starting with Emacs key
   bindings - more difficult to start with, but it will always work and you may adapt and may even
@@ -100,6 +100,10 @@
 (put 'dired-find-alternate-file 'disabled nil)
   #+end_src
 
+* Set lexical binding cookie in tangled file
+  #+begin_src emacs-lisp :comments no
+    ;;; ...  -*- lexical-binding: t -*-
+  #+end_src
 * Make reasonable and comfortable defaults
    So many defaults in Emacs make no sense.  If starting out with Emacs, consider these
    settings to make your first experiences nicer.
@@ -1916,9 +1920,9 @@
      (use-package eglot
        :straight t
        :bind (:map eglot-mode-map
-              ("C-c r" . eglot-rename)
-              ("C-c o" . eglot-code-action-organize-imports)
-              ("C-c h" . eglot-inlay-hints-mode))
+                   ("C-c r" . eglot-rename)
+                   ("C-c o" . eglot-code-action-organize-imports)
+                   ("C-c h" . eglot-inlay-hints-mode))
        :config
        (add-to-list 'eglot-server-programs
                     '(python-ts-mode . ("pylsp")))
