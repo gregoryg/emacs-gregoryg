@@ -1783,6 +1783,7 @@
       ;; try some xterm coloring in shell buffers
       (setq comint-output-filter-functions
             (remove 'ansi-color-process-output comint-output-filter-functions))
+      (define-abbrev shell-mode-abbrev-table "kc" "kubectl config use-context ")
       (add-hook 'shell-mode-hook
             (lambda ()
               (abbrev-mode 1)
