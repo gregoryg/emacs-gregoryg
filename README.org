@@ -1845,7 +1845,7 @@
 
 ** Caddyfile
    #+begin_src emacs-lisp
-(use-package caddyfile-mode :straight t)
+     (use-package caddyfile-mode :straight t)
    #+end_src
 ** Config files (.ini and such)
    #+begin_src emacs-lisp
