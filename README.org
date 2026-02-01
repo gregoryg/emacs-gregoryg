@@ -118,85 +118,67 @@
      (require 'desktop)
      (desktop-save-mode 1)
 
-     ;; When I want transient mark mode, I'll beat it out of you
-     (transient-mark-mode -1)
-     ;; (do not) display time and battery status in the mode line
-     (display-time-mode 0)
-     (display-battery-mode 0)
-     ;; turn off that stupid toolbar
-     (tool-bar-mode -1)
-     ;; scroll bars?
-     (scroll-bar-mode -1)
-     (menu-bar-mode -1)
-     ;; don't do that stoopid splash screen
-     (custom-set-variables '(inhibit-splash-screen t))
-
-     ;; tab indents - if line is already indented, try to auto-complete
      (custom-set-variables
+      ;; When I want transient mark mode, I'll beat it out of you
+      '(transient-mark-mode -1)
+      ;; (do not) display time and battery status in the mode line
+      '(display-time-mode 0)
+      '(display-battery-mode 0)
+      ;; turn off that stupid toolbar
+      '(tool-bar-mode -1)
+      ;; scroll bars?
+      '(scroll-bar-mode -1)
+      '(menu-bar-mode -1)
+      ;; don't do that stoopid splash screen
+      '(inhibit-splash-screen t)
       '(tab-always-indent 'complete)
       '(indent-tabs-mode nil)
-      '(tab-width 4))
-
-     ;; (setq-default indent-tabs-mode nil)
-     ;; (setq-default tab-width 4)
-
-     ;; blink parens and similar delimiters
-     ;; Global identity on all machines - Emacs does not make good guesses here
-     (custom-set-variables '(user-full-name "Gregory Grubbs")
-                                            '(user-mail-address "gregory.grubbs@gmail.com"))
-
-     (custom-set-variables '(confirm-kill-emacs 'y-or-n-p)) ;; confirm to exit emacs
-
-     ;; it may be slower, but it helps when developing
-     (custom-set-variables '(load-prefer-newer t))
-
-     ;; dippy bird FTW - single character y-n for all yes/no question dialogs
-     (fset 'yes-or-no-p 'y-or-n-p)
-     (custom-set-variables '(shell-file-name "bash"))
-     ;; TODO: does setting shell-command-switch ever help?
-     ;; (setq shell-command-switch "-ic") ; source .bashrc to get aliases etc
-     (custom-set-variables '(explicit-shell-file-name shell-file-name))
-     ;; (setq explicit-bash-args '("--noediting" "-i"))
-
-     (temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows
-
-     (custom-set-variables '(fill-column 100)); good default for wider screens
-
-     ;; never split windows horizontally by default - this is personal preference
-     (custom-set-variables  '(split-width-threshold nil))
-     ;; Here's a choice one: stay in the same column while scrolling!
-     (custom-set-variables '(scroll-preserve-screen-position t))
-     ;; in Emacs23+, make line-move move by a line, ignoring wrapping
-     (custom-set-variables '(line-move-visual nil))
-     ;; enable hugely useful things that are disabled by default
-     (put 'narrow-to-region 'disabled nil)
-     (put 'set-goal-column 'disabled nil)
-     ;; echo quickly
-     (custom-set-variables '(echo-keystrokes 0.1))
-     ;; keep the screen from jumping wildly as I cursor down/up
-     (custom-set-variables '(scroll-conservatively 5))
+      '(tab-width 4)
+      '(user-full-name "Gregory Grubbs")
+      '(user-mail-address "gregory.grubbs@gmail.com")
+      '(confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
+      '(load-prefer-newer t)
+      '(shell-file-name "bash")
+      '(explicit-shell-file-name shell-file-name)
+      '(temp-buffer-resize-mode 1)  ;; crazy cool auto resizing of temp windows
+      '(fill-column 100); good default for wider screens
+      ;; never split windows horizontally by default - this is personal preference
+      '(split-width-threshold nil)
+      ;; Here's a choice one: stay in the same column while scrolling!
+      '(scroll-preserve-screen-position t)
+      ;; in Emacs23+, make line-move move by a line, ignoring wrapping
+      '(line-move-visual nil)
+      '(echo-keystrokes 0.1)
+      ;; keep the screen from jumping wildly as I cursor down/up
+      '(scroll-conservatively 5)
+      ;; dippy bird FTW - single character y-n for all yes/no question dialogs
+      '(yes-or-no-p 'y-or-n-p)
+      ;; enable hugely useful things that are disabled by default
+      '(narrow-to-region 'disabled nil)
+      '(set-goal-column 'disabled nil)
      ;; remember minibuffer history between sessions
-     (savehist-mode t)
+      '(savehist-mode t)
+      ;; if point is at end of line, keep it there for vertical movement
+      '(track-eol t)
+      '(align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
+      '(auth-source-save-behavior nil) ; NEVER store passwords
+      '(enable-recursive-minibuffers t)
+      ;; Allow Emacs to resize mini windows, otherwise Org Mode's org-use-fast-todo-selection 'expert does not work
+      '(resize-mini-windows t)
+      ;; as of Emacs 29
+      '(pixel-scroll-precision-mode t)
+      ;; file name completion is case insensitive
+      '(read-file-name-completion-ignore-case t)
+      '(blink-cursor-mode -1) ; steady cursor
+      )
+
      ;; https://emacs.stackexchange.com/a/9952/418 - same for shell and other comint buffers
      (use-package exec-path-from-shell :straight t)
      (exec-path-from-shell-initialize)
      (exec-path-from-shell-copy-env "HISTFILE")
-     ;; if point is at end of line, keep it there for vertical movement
-     (custom-set-variables
-      '(track-eol t)
-      '(align-to-tab-stop nil) ;; do not use tabs for align and align-regexp
-      '(auth-source-save-behavior nil) ; NEVER store passwords
-      '(enable-recursive-minibuffers t))
-     ;; Allow Emacs to resize mini windows, otherwise Org Mode's org-use-fast-todo-selection 'expert does not work
-     (custom-set-variables '(resize-mini-windows t))
-     ;; as of Emacs 29
-     (custom-set-variables '(pixel-scroll-precision-mode t))
-     ;; file name completion is case insensitive
-     (custom-set-variables '(read-file-name-completion-ignore-case t))
      ;; Make right-click do something sensible
      (when (display-graphic-p)
        (context-menu-mode))
-     (blink-cursor-mode -1) ; steady cursor
    #+end_src
 * Start emacs server
   #+begin_src emacs-lisp
@@ -252,11 +234,11 @@
    browser rather than just HTML in an Emacs buffer
    #+begin_src emacs-lisp
      (when (eq window-system 'x)
-       (setq org-file-apps
+       (custom-set-variables '(org-file-apps
              '((auto-mode . emacs)
                ("\\.mm\\'" . default)
                ("\\.x?html?\\'" . "/usr/bin/x-www-browser %s")
-               ("\\.pdf\\'" . default))))
+               ("\\.pdf\\'" . default)))))
    #+end_src
 ** Fonts
    Forever in search of the One True Holy and Apostolic Programmer Font.
@@ -421,14 +403,14 @@
 ** Backup files
   #+begin_src emacs-lisp
     ;; backup files
-    (setq
-     backup-by-copying t      ; don't clobber symlinks
-     backup-directory-alist
-     '(("." . "~/.emacs.d/backups"))    ; don't litter my fs tree
-     delete-old-versions t
-     kept-new-versions 5
-     kept-old-versions 5
-     version-control nil)
+    (custom-set-variables
+     '(backup-by-copying t)      ; don't clobber symlinks
+     '(backup-directory-alist
+       '(("." . "~/.emacs.d/backups")))    ; don't litter my fs tree
+     '(delete-old-versions t)
+     '(kept-new-versions 5)
+     '(kept-old-versions 5)
+     '(version-control nil))
   #+end_src
 
 ** Automatic typing
@@ -478,13 +460,13 @@
 
   Set value of =epg-gpg-program= to location on local system
   #+begin_src emacs-lisp
-;; let's get encryption established
-;; For gpg, disable external pinentry - let emacs handle pass phrase
-;; (setenv "GPG_AGENT_INFO" nil)
-(require 'epa-file)
-;; (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
-(epa-file-enable)
-(setq epg-pinentry-mode 'loopback)
+    ;; let's get encryption established
+    ;; For gpg, disable external pinentry - let emacs handle pass phrase
+    ;; (setenv "GPG_AGENT_INFO" nil)
+    (require 'epa-file)
+    ;; (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
+    (epa-file-enable)
+    (custom-set-variables '(epg-pinentry-mode 'loopback))
   #+end_src
 ** Org-crypt
 #+begin_src emacs-lisp
@@ -787,7 +769,7 @@
 ** Ibuffer FTW
 *** View customizations
     #+begin_src emacs-lisp
-      (setq ibuffer-formats
+      (custom-set-variables '(ibuffer-formats
             '((mark modified read-only locked " "
                     (name 50 50 :left :elide)  ; much wider buffer name column
                     " "
@@ -798,7 +780,7 @@
               (mark " "
                     (name 16 -1)
                     " " filename))
-            )
+            ))
     #+end_src
 *** Filter groups
    Saved filter groups provide a nice organization.
@@ -868,10 +850,11 @@
    #+begin_src emacs-lisp
      (autoload 'uniquify "uniquify" "unique buffer names dependent on file name")
      (with-eval-after-load 'uniquify
-       (setq uniquify-buffer-name-style 'reverse)
-       (setq uniquify-separator "/")
-       (setq uniquify-after-kill-buffer-p t)
-       (setq uniquify-ignore-buffers-re "^\\*"))
+       (custom-set-variables
+       '(uniquify-buffer-name-style 'reverse)
+       '(uniquify-separator "/")
+       '(uniquify-after-kill-buffer-p t)
+       '(uniquify-ignore-buffers-re "^\\*")))
    #+end_src
 ** Themes
 *** Modus themes
@@ -1283,9 +1266,9 @@
        :init
        ;; Configure a custom style dispatcher (see the Consult wiki)
        ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
-       (setq completion-styles '(orderless basic)
-             completion-category-defaults nil
-             completion-category-overrides '((file (styles partial-completion)))))
+       (custom-set-variables '(completion-styles '(orderless basic))
+                             '(completion-category-defaults nil)
+                             '(completion-category-overrides '((file (styles partial-completion))))))
 
      ;; To use vertico in shell buffers
      (use-package consult :straight t)
@@ -1640,11 +1623,10 @@
      (keymap-unset dired-mode-map "N") ;; run man on file????
      (keymap-set dired-mode-map "N" (lambda () (interactive) (dired-display-file) (dired-next-line)))
      ;; WARNING: Problematic switch - does not work on busybox ls!!! Do something like `apk add coreutils' to get full ls
-     (setq dired-listing-switches "-alh --group-directories-first --time-style=long-iso")
-
-     (setq dired-dwim-target t
-           dired-omit-files "^\\.?#\\|^\\..*"
-           delete-by-moving-to-trash nil)
+     (custom-set-variables '(dired-listing-switches "-alh --group-directories-first --time-style=long-iso")
+                           '(dired-dwim-target t)
+                           '(dired-omit-files "^\\.?#\\|^\\..*")
+                           '(delete-by-moving-to-trash nil))
 
      (require 'dired-x)
      (delete ".bin" dired-omit-extensions)
@@ -1665,7 +1647,7 @@
      ;; 	     (setq dired-x-hands-off-my-keys nil
      ;; 		   dired-bind-vm t))))
 
-     (setq auto-revert-verbose nil)
+     (custom-set-variables '(auto-revert-verbose nil))
      (add-hook 'dired-mode-hook
            (lambda ()
              (interactive)
@@ -1769,9 +1751,9 @@
 *** Config for comint mode
     #+begin_src emacs-lisp
       (defun gjg/turn-on-comint-history (history-file)
-        (setq comint-input-ring-file-name history-file)
-        (comint-read-input-ring 'silent))
-      (setq comint-input-ring-size 5000)
+        (custom-set-variables '(comint-input-ring-file-name history-file)
+                              '(comint-read-input-ring 'silent)
+                              '(comint-input-ring-size 5000)))
     #+end_src
 *** Hook in shell history
     #+begin_src emacs-lisp
@@ -1827,7 +1809,7 @@
 ** Help and helpful modes
 *** Add navigation to Help buffer
    #+begin_src emacs-lisp
-     (setq help-window-select t)
+     (custom-set-variables '(help-window-select t))
      (add-hook 'help-mode-hook
                (lambda ()
                  (local-set-key (kbd "M-p") 'help-go-back)
@@ -1933,7 +1915,7 @@
 ** Use tree-sitter where we can
    These *override* auto-mode-alist
    #+begin_src emacs-lisp
-     (setq major-mode-remap-alist
+     (custom-set-variables '(major-mode-remap-alist
            '((bash-mode . bash-ts-mode)
              (sh-mode   . bash-ts-mode)
              (js2-mode . js-ts-mode)
