@@ -1030,7 +1030,7 @@
     (use-package minions :straight t
       :hook (doom-modeline-mode . minions-mode)
       :custom
-      (minions-mode-line-lighter ""))
+      (minions-mode-line-lighter "👹"))
 
     ;; (use-package nyan-mode :straight t
     ;;   :config
