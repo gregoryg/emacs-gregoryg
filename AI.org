@@ -20,6 +20,26 @@
    #+begin_src emacs-lisp :comments no 
      ;;; ...  -*- lexical-binding: t -*-
    #+end_src
+** Support Skills a la Anthropic
+   #+begin_src bash :results verbatim :tangle ~/bin/list-skills-metadata.sh :shebang #!/usr/bin/env bash
+     skillsdir=$1
+
+     if [ -z "${skillsdir}" ]; then
+         echo "No skill directory was given"
+         exit 1
+     else
+         echo "My list of available skills for this session:"
+         for skillfile in "${skillsdir}/"*/SKILL.md
+         do
+             if [ -a "${skillfile}" ]; then
+                 head -5 "${skillfile}" | grep -E '^(name:|description:)'
+                 echo "location: ${skillfile}"
+                 echo "============="
+             fi
+         done
+     fi
+   #+end_src
+
 ** mcp.el - Model Context Protocol
 *** Configure MCP servers
    #+begin_src emacs-lisp
