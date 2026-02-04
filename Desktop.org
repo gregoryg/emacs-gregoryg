@@ -1218,6 +1218,17 @@
      Type=Application
      Categories=Stuff
    #+end_src
+** Patreon
+   #+begin_src conf :tangle ~/.local/share/applications/patreon.desktop
+     [Desktop Entry]
+     Name=Patreon
+     Comment=
+     Exec=xdg-open https://patreon.com
+     Icon= /home/gregj/.local/share/pixmaps/patreon-logo-png-transparent.png-512x512.png
+     Terminal=false
+     Type=Application
+     Categories=Stuff
+   #+end_src
 ** Reddit
    #+begin_src conf :tangle ~/.local/share/applications/reddit.desktop
      [Desktop Entry]
