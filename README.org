@@ -1078,8 +1078,10 @@
      ;; (global-visual-line-mode t)
 
      (use-package visual-fill-column :straight t)
+
      (defun gjg/disable-visual-line-with-fill ()
        "Disable `visual-fill-column-mode' using the function, followed by disabling `visual-line-mode' using the function."
+       (interactive)
        (visual-fill-column-mode -1)
        (visual-line-mode -1))
 
@@ -1089,6 +1091,10 @@
        (gjg/disable-visual-line-with-fill)
        (visual-line-mode 1)
        (visual-fill-column-mode 1))
+
+     (add-hook 'org-mode-hook #'gjg/enable-visual-line-with-fill)
+     (add-hook 'markdown-mode-hook #'gjg/enable-visual-line-with-fill)
+     (add-hook 'gfm-mode-hook #'gjg/enable-visual-line-with-fill)
    #+end_src
 
    Therefore, let's set this maybe for Org and =text-mode=
