@@ -51,6 +51,9 @@
              ("filesystem" . (:command "npx"
                                        :args
                                        ("-y" "@modelcontextprotocol/server-filesystem"
+                                        "/data/org-tmp/")
+                                       :roots ("/tmp/" )))
+             ;; META MCP: rubber ducks galore - use my git clone (with transcription additions)
              ("rubber-duck" . (:command "node"
                                         :args ("/home/gregj/projects/ai/ModelContextProtocol/mcp-rubber-duck/dist/index.js")
                                         :env (
