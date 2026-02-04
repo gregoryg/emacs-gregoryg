@@ -48,67 +48,9 @@
 
      (setq mcp-hub-servers
            `(
-             ;; NB: I am pulling from my clone to get the latest version ; otherwise use "@modelcontextprotocol/server-filesystem@latest"
-             ;; https://developer.chrome.com/blog/chrome-devtools-mcp
-             ;; FILESYSTEM configs
              ("filesystem" . (:command "npx"
                                        :args
                                        ("-y" "@modelcontextprotocol/server-filesystem"
-                                        ;; ,(if (boundp 'mcp-filesystem-server-project-root)
-                                        ;;      (string-join mcp-filesystem-server-project-root " ")
-                                        ;;    "/tmp"
-                                           )
-                                       :roots '("/data/org-tmp/")))
-             ("filesystem-mcp-el" . (:command "npx"
-                                                           :args
-                                                           ("-y" "@modelcontextprotocol/server-filesystem"
-                                                            "~/projects/emacs/ai/mcp.el" "~/projects/emacs/ai/gptel/")))
-             ("filesystem-nov-el" . (:command "npx"
-                                                           :args
-                                                           ("-y" "@modelcontextprotocol/server-filesystem"
-                                                            "~/projects/emacs/gregoryg-packages/nov-x/" "~/projects/emacs/nov.el/" "~/projects/emacs/gregoryg-packages/librarian/" )))
-             ;; ("filesystem-llm-council" . (:command "npx"
-             ;;                                               :args
-             ;;                                               ("-y" "@modelcontextprotocol/server-filesystem"
-             ;;                                                "~/projects/ai/AAndrej-llm-council/")))
-             ("filesystem-homeassistant" . (:command "npx"
-                                                           :args
-                                                           ("-y" "@modelcontextprotocol/server-filesystem"
-                                                            "~/projects/HomeAssistant/casona-ranona-config/")))
-
-             ;; ("filesystem-k8s-solve-woes" . (:command "npx"
-             ;;                                               :args
-             ;;                                               ("-y" "@modelcontextprotocol/server-filesystem"
-             ;;                                              "~/projects/selfhost-resources/solve-homelab-woes-w-k8s/" )))
-             ;; ("filesystem-mirantis" . (:command "npx"
-             ;;                                               :args
-             ;;                                               ("-y" "@modelcontextprotocol/server-filesystem"
-             ;;                                                "~/projects/selfhost-resources/k0s-k0rdent-learning/" )))
-             ("filesystem-bf" . (:command "npx"
-                                          :args
-                                          ("-y" "@modelcontextprotocol/server-filesystem"
-                                           "~/projects/bartenders-friend-complete/bartenders-friend-api/")))
-             ("filesystem-bf-ui" . (:command "npx"
-                                             :args
-                                             ("-y" "@modelcontextprotocol/server-filesystem"
-                                              "~/projects/bartenders-friend-complete/bf-ui/")))
-             ("filesystem-bf-ui2" . (:command "npx"
-                                             :args
-                                             ("-y" "@modelcontextprotocol/server-filesystem"
-                                              "~/projects/bartenders-friend-complete/bartenders-friend-ui2/")))
-             ("filesystem-mesoamerica" . (:command "npx"
-                                             :args
-                                             ("-y" "@modelcontextprotocol/server-filesystem"
-                                              "~/projects/history/mesoamerica/")))
-             ("filesystem-cryptogrammer" . (:command "npx"
-                                                     :args
-                                                     ("-y" "@modelcontextprotocol/server-filesystem"
-                                                      "~/projects/coding/python/cryptogrammer/")))
-             ("filesystem-cryptogrammer-ui" . (:command "npx"
-                                                     :args
-                                                     ("-y" "@modelcontextprotocol/server-filesystem"
-                                                      "~/projects/coding/cryptogrammer-ui/")))
-             ;; META MCP: rubber ducks galore
              ("rubber-duck" . (:command "node"
                                         :args ("/home/gregj/projects/ai/ModelContextProtocol/mcp-rubber-duck/dist/index.js")
                                         :env (
