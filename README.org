@@ -119,6 +119,7 @@
      (desktop-save-mode 1)
 
      (custom-set-variables
+      '(desktop-files-not-to-save "\\(\\`/[^/:]*:\\|(ftp)\\'\\|\\.gpg\\'\\)")
       ;; When I want transient mark mode, I'll beat it out of you
       '(transient-mark-mode -1)
       ;; (do not) display time and battery status in the mode line
@@ -170,6 +171,12 @@
       ;; file name completion is case insensitive
       '(read-file-name-completion-ignore-case t)
       '(blink-cursor-mode -1) ; steady cursor
+      '(Man-notify-method 'pushy)
+      '(confirm-kill-emacs 'y-or-n-p)
+      '(ispell-local-dictionary "en")
+      '(ispell-program-name "aspell")
+      '(minibuffer-message-clear-timeout 2)
+      '(visual-line-fringe-indicators '(nil right-curly-arrow))
       )
 
      ;; https://emacs.stackexchange.com/a/9952/418 - same for shell and other comint buffers
@@ -1121,6 +1128,9 @@
         (denote-directory (expand-file-name "~/gregj-notes/"))
         (denote-known-keywords '("journal" "projects" "ideas"))
         (denote-date-prompt-use-org-read-date t)
+        (denote-directories '("/home/gregj/gregj-notes/" "/home/gregj/Documents/vlog"))
+        (denote-dired-directories '("/home/gregj/gregj-notes/" "/home/gregj/Documents/vlog"))
+        (denote-menu-show-file-type nil)
         ;; (setq denote-prompts '(title subdirectory))
         )
       (require 'denote)
@@ -1246,14 +1256,24 @@
      (straight-use-package
       '(whisper :type git :host github :repo "natrys/whisper.el"
                 :fork (:host github :branch "master" :repo "gregoryg/whisper.el")))
-      ;; :config
-      ;; (setq whisper-install-directory "/tmp/"
-      ;;        whisper-model "base"
-      ;;        whisper-language "en"
-      ;;        whisper-translate nil
-      ;;        whisper-use-threads (/ (num-processors) 2)))
+     ;; :config
+     ;; (setq whisper-install-directory "/tmp/"
+     ;;        whisper-model "base"
+     ;;        whisper-language "en"
+     ;;        whisper-translate nil
+     ;;        whisper-use-threads (/ (num-processors) 2)))
 
-      ;; :bind ("C-H-r" . whisper-run)
+     ;; :bind ("C-H-r" . whisper-run)
+
+     (custom-set-variables
+      '(whisper-after-insert-hook ''(lambda nil (progn (goto-char (point-max) (insert)))))
+      '(whisper-install-whispercpp nil)
+      '(whisper-openai-api-baseurl "http://172.16.17.77:8000/")
+      '(whisper-openai-api-key "sk-ohai")
+      '(whisper-server-host "172.16/17.77")
+      '(whisper-server-mode 'local)
+      '(whisper-server-port 8000))
+
 
      (global-set-key (kbd "C-s-r") #'whisper-run)
 #+end_src
@@ -1632,6 +1652,7 @@
      (custom-set-variables '(dired-listing-switches "-alh --group-directories-first --time-style=long-iso")
                            '(dired-dwim-target t)
                            '(dired-omit-files "^\\.?#\\|^\\..*")
+                           '(dired-omit-verbose nil)
                            '(delete-by-moving-to-trash nil))
 
      (require 'dired-x)
@@ -1736,6 +1757,8 @@
     #+begin_src emacs-lisp
       (use-package vterm :straight t
         :ensure t
+        :custom
+        (vterm-buffer-name "*vterm-sh*")
         :config
         (define-key vterm-mode-map (kbd "M-p") nil)
         :bind (:map vterm-mode-map
@@ -1810,7 +1833,11 @@
       ;; (use-package magit-todos :straight t)
       (use-package magit :straight t
         :custom
-        (magit-clone-set-remote.pushDefault t))
+        (magit-clone-set-remote.pushDefault t)
+        (magit-delete-by-moving-to-trash nil)
+        ;; (magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
+
+        )
     #+end_src
 
 ** Help and helpful modes
@@ -1890,6 +1917,7 @@
           ("sparql" . "*.{sparql,rq}")
           ("rdf"    . "*.{ttl,turtle,rdf,owl,trig}")
           ("sms"    . "*.{sms,sms2}")))
+       (rg-buffer-name "rg-search")
        (rg-hide-command t))
    #+end_src
 * Presentation and screencasting
@@ -2756,6 +2784,7 @@
    my extension to the Dan Davison show-blah-tidily
    #+begin_src emacs-lisp
      (load-file "~/projects/emacs/gregoryg-packages/org-powerslides/org-powerslides.el")
+     (custom-set-variables '(org-powerslides-presentation-frame-font "Hack-28"))
    #+end_src
 ** Org Transclusion
    Super cool use found: put my very large People table from the main employer Org file,
