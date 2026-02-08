@@ -27,7 +27,9 @@ This entire file provides my configuration, required Emacs supporting packages a
     ;;  '(exwm :type git :host github :repo "emacs-exwm/exwm"
     ;;         :fork (:host github :branch "gregoryg" :repo "gregoryg/exwm")))
 
-    (use-package exwm :straight t)
+    (use-package exwm :straight t
+      :custom
+      (exwm-workspace-minibuffer-position nil))
   #+end_src
 
 * Warning about use with =winner-mode=
