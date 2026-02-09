@@ -1624,7 +1624,7 @@
      (require 'dired)
      (with-eval-after-load 'dired)
      ;; (use-package all-the-icons-dired :straight t)
-     (use-package all-the-icons :straight t) ;; currently ([2022-12-03 Sat]) being used for org-agenda-category-icon-alist and maybe doom-modelinea
+     (use-package all-the-icons :straight t) ;; currently ([2022-12-03 Sat]) being used for org-agenda-category-icon-alist and maybe doom-modeline
 
      ;; (use-package treemacs-icons-dired :straight t
      ;;   :hook
