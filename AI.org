@@ -13,11 +13,10 @@
 #+setupfile: ~/projects/emacs/org-themes/src/readtheorg_inline/readtheorg_inline.theme
 
 #+property: header-args:emacs-lisp :tangle ~/.emacs.d/emacs-ai-llm.el :results none
-#+property: header-args:bash :comments both :shebang #!/usr/bin/env bash :results none
 
 * AI / LLM interaction
 ** Set lexical binding cookie in tangled file
-   #+begin_src emacs-lisp :comments no 
+   #+begin_src emacs-lisp :comments no
      ;;; ...  -*- lexical-binding: t -*-
    #+end_src
 ** Support Skills a la Anthropic
