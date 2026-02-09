@@ -116,7 +116,7 @@
              ;; Terminal / shell commands
              ("mcp-shell-server" . (:command "uvx"
                                              :args ("mcp-shell-server")
-                                             :env (:ALLOW_COMMANDS "bc,cat,chmod,curl,date,echo,emacs,find,git,grep,gunzip,head,jq,kubectl,ls,lynx,npm,psql,pwd,python,rg,sed,sqlite3,tail,unzip,wc")))
+                                             :env (:ALLOW_COMMANDS "bash,bc,cat,chmod,curl,date,echo,emacs,find,git,grep,hass-cli,gunzip,head,jq,kubectl,ls,lynx,node,npm,opencode,psql,pwd,python,rg,sed,sqlite3,tail,unzip,wc")))
              ("mariadb-readonly" . (:command "uvx"
                                              :args ("mcp-server-mariadb" "--host" "protomolecule.magichome" "--port" "3306" "--user" "gregj" "--password" ,(gjg/authinfo-secret "homelab-mysql" "gregj") "--database" "teslafi")))
              ("movies-neo4j" . (:command "uvx"
