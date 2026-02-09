@@ -377,12 +377,6 @@
 
     (global-set-key [f9] 'bury-buffer)
     (global-set-key [f10] 'dired-omit-mode)
-    ;; (global-set-key [f11] 'mac-toggle-max-window)
-    (global-set-key [f11] 'gjg/toggle-max-frame)
-    (global-set-key [M-f11] 'gjg/toggle-max-frame)
-    ;; (global-set-key [f11] 'toggle-fullscreen)
-    ;; (global-set-key [f11] 'switch-full-screen)
-    ;; (global-set-key (kbd "C-<f11>") 'gjg/emacs-max-coolness)
     (global-set-key [f12] (lambda () (interactive) (message (or (buffer-file-name) "No file associated with this buffer."))))
     (global-set-key (kbd "<C-f12>") 'yow)
     (global-set-key [C-wheel-up] 'text-scale-increase)
