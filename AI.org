@@ -74,7 +74,7 @@
                                                           :MCP_SERVER_BRAVESEARCH_COMMAND "python"
                                                           :MCP_SERVER_BRAVESEARCH_ARGS "/blah"
                                                           :MCP_SERVER_BRAVESEARCH_ENABLED "false"
-
+                                                          :TRANSCRIPT_DIR "~/projects/history/mesoamerica/council_transcripts/"
                                                           :DEFAULT_PROVIDER "openai"
                                                           :LOG_LEVEL "info")
                                         :timeout 600))
