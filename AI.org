@@ -958,8 +958,24 @@
          :category: "reflection")
 #+end_src
 
-**** Web / Internet / Online Research category
-***** Search the web and read a web page
+*** Shell access
+    This became a Whole Thing(tm)
+
+    One needs to provide shell access when using gptel.  I had been making heavy use of [[https://github.com/tumf/mcp-shell-server][mcp-shell-server]], but it started hanging on execution and I decided that since this particular MCP is used *only* for gptel, I may as well provide the tool in gptel native format.
+
+    The result is [[file:gptel-native-shell.el][gptel-native-shell]], a package that can be configured to allow just what you want, with dynamic updates per session based on your needs.
+
+    This package then becomes a tool in gptel, giving us a more dynamically configurable and easily (for Emacs fans) hackable shell access model and tool.
+
+    Let's load that sucker now:
+    #+begin_src emacs-lisp
+      (load-file "~/emacs-gregoryg/gptel-native-shell.el")
+#+end_src
+
+
+
+*** Web / Internet / Online Research category
+**** Search the web and read a web page
 
       Search and page read are placed into the same callable function which leverages =eww=
 
