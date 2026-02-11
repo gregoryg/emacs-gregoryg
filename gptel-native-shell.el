@@ -57,7 +57,8 @@ Set to nil to disable truncation (not recommended)."
   "List of commands allowed to be executed by the shell tool.
 Only the base command name is checked (the first word of the command).
 This can be modified interactively during a session using
-`gptel-shell-allow-command' and `gptel-shell-disallow-command'."
+`gptel-shell-allow-command' and `gptel-shell-disallow-command' or by
+using the Customize framework."
   :type '(repeat string)
   :group 'gptel-native-shell)
 
