@@ -48,10 +48,9 @@ Set to nil to disable truncation (not recommended)."
   :group 'gptel-native-shell)
 
 (defcustom gptel-shell-allowed-commands
-  '("bash" "bc" "cat" "chmod" "curl" "date" "df" "diff" "du" "echo"
-    "emacs" "emacsclient" "env" "find" "git" "grep" "gunzip" "head"
-    "jq" "less" "ls" "lynx" "man" "mkdir" "mv" "node" "npm" "pandoc"
-    "psql" "pwd" "python" "python3" "rg" "rm" "sed" "sort" "sqlite3"
+  '("bc" "cat" "chmod" "date" "df" "diff" "du" "echo"
+    "find" "git" "grep" "gunzip" "head"
+    "jq" "less" "ls" "man" "pwd" "rg" "sort"
     "tail" "tar" "tee" "touch" "tr" "tree" "uniq" "unzip" "wc" "which"
     "xargs" "zip")
   "List of commands allowed to be executed by the shell tool.
