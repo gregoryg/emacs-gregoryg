@@ -14,7 +14,7 @@
 
 #+property: header-args:emacs-lisp :tangle ~/.emacs.d/emacs-ai-llm.el :results none
 
-* AI / LLM interaction
+* Set and support scripts
 ** Set lexical binding cookie in tangled file
    #+begin_src emacs-lisp :comments no
      ;;; ...  -*- lexical-binding: t -*-
@@ -39,7 +39,7 @@
      fi
    #+end_src
 
-** mcp.el - Model Context Protocol
+* Model Context Protocol - mcp.el
 *** Configure MCP servers
    #+begin_src emacs-lisp
      (add-to-list 'load-path "~/projects/emacs/ai/mcp.el")
@@ -143,48 +143,48 @@
              ))
 #+end_src
 
-** GPTEL - LLMs in Markdown and Org Mode
+* GPTEL - LLMs in Markdown and Org Mode
 
-  + [X] TODO: add completing-read with marginalia for =gptel-directives= (named prompts)
-  + [ ] TODO: indicate system prompt(s) and model(s) used in *gpt-mode* buffer
-  + ref: [[https://github.com/karthink/gptel][karthink/gptel: A no-frills ChatGPT client for Emacs ≫ github.com]] This package
-    has it all: auth-source, Org Mode buffers, Markdown mode or other-mode buffers if
-    you prefer, named prompts for special occasions, a transient mode interface, model
-    choice, temperature settings, streaming support, multiple APIs, multiple chat
-    sessions, an active GitHub. A dedication to keeping everything in plain text
-    (without metadata markup)
+ + [X] TODO: add completing-read with marginalia for =gptel-directives= (named prompts)
+ + [ ] TODO: indicate system prompt(s) and model(s) used in *gpt-mode* buffer
+ + ref: [[https://github.com/karthink/gptel][karthink/gptel: A no-frills ChatGPT client for Emacs ≫ github.com]] This package
+   has it all: auth-source, Org Mode buffers, Markdown mode or other-mode buffers if
+   you prefer, named prompts for special occasions, a transient mode interface, model
+   choice, temperature settings, streaming support, multiple APIs, multiple chat
+   sessions, an active GitHub. A dedication to keeping everything in plain text
+   (without metadata markup)
 
-*** Load gptel using straight.el with my fork
-   Because I want to augment, tweak and contribute to this package, I tell
-   =straight-use-package= to pull from my fork and my =gregoryg= branch.
+** Load gptel using straight.el with my fork
+  Because I want to augment, tweak and contribute to this package, I tell
+  =straight-use-package= to pull from my fork and my =gregoryg= branch.
 
-   #+begin_src emacs-lisp
-     ;; (straight-use-package
-     ;;  '(gptel :type git :host github :repo "karthink/gptel"
-     ;;          :fork (:host github :branch "gregoryg" :repo "gregoryg/gptel")))
+  #+begin_src emacs-lisp
+    ;; (straight-use-package
+    ;;  '(gptel :type git :host github :repo "karthink/gptel"
+    ;;          :fork (:host github :branch "gregoryg" :repo "gregoryg/gptel")))
 
-     ;; Use :nonrecursive to avoid straight.el's mishandling of submodules - the only submodule used is 'test'
-     ;; see https://github.com/karthink/gptel/issues/716
-     (use-package gptel
-       :straight (:host github :repo "karthink/gptel" :nonrecursive t))
-     ;; (use-package gptel :straight t)
-     (custom-set-variables '(gptel-default-mode 'org-mode)
-                           '(gptel-expert-commands t)
-                           '(gptel-track-media t)
-                           '(gptel-include-reasoning 'ignore)
-                           '(gptel-model 'gpt-5-mini)
-                           '(gptel-prompt-prefix-alist
-                             '((markdown-mode . "### ") (org-mode . "*** gjg\12") (text-mode . "### ")))
-                           '(gptel-log-level 'info)
-                           '(gptel--debug nil))
-     ;; add-to-list instead of setf for alists https://emacs.stackexchange.com/a/3402/418
-     (add-to-list 'gptel-prompt-prefix-alist `(org-mode . ,(concat "*** gjg " (format-time-string "[%Y-%m-%d]") "\n")))
-     ;; defer nothing
-     (require 'gptel)
-     ;; (require 'gptel-transient)
-     (require 'gptel-integrations)
-   #+end_src
-*** Load jwiegley/gptel-prompts for prompt composability
+    ;; Use :nonrecursive to avoid straight.el's mishandling of submodules - the only submodule used is 'test'
+    ;; see https://github.com/karthink/gptel/issues/716
+    (use-package gptel
+      :straight (:host github :repo "karthink/gptel" :nonrecursive t))
+    ;; (use-package gptel :straight t)
+    (custom-set-variables '(gptel-default-mode 'org-mode)
+                          '(gptel-expert-commands t)
+                          '(gptel-track-media t)
+                          '(gptel-include-reasoning 'ignore)
+                          '(gptel-model 'gpt-5-mini)
+                          '(gptel-prompt-prefix-alist
+                            '((markdown-mode . "### ") (org-mode . "*** gjg\12") (text-mode . "### ")))
+                          '(gptel-log-level 'info)
+                          '(gptel--debug nil))
+    ;; add-to-list instead of setf for alists https://emacs.stackexchange.com/a/3402/418
+    (add-to-list 'gptel-prompt-prefix-alist `(org-mode . ,(concat "*** gjg " (format-time-string "[%Y-%m-%d]") "\n")))
+    ;; defer nothing
+    (require 'gptel)
+    ;; (require 'gptel-transient)
+    (require 'gptel-integrations)
+  #+end_src
+** Load jwiegley/gptel-prompts for prompt composability
     #+begin_src emacs-lisp :tangle no
       (use-package gptel-prompts
         :straight nil
@@ -201,55 +201,55 @@
       ;; :fork (:host github :branch "main" :repo "gregoryg/gptel-prompts")
 
 #+end_src
-*** Create custom Together.AI backend
-    This makes use of the [[https://docs.together.ai/docs/openai-api-compatibility][OpenAI-compatible API]], which makes the backend generation super simple!
-**** Model capabilities
-     It's difficult to find model capabilities on the models' pages instead.  Try looking in these areas
-***** Tool use
-      [[https://docs.together.ai/docs/function-calling#supported-models][Function Calling - Together.ai Docs ≫ docs.together.ai]]
-***** JSON structred output
+** Create custom Together.AI backend
+   This makes use of the [[https://docs.together.ai/docs/openai-api-compatibility][OpenAI-compatible API]], which makes the backend generation super simple!
+*** Model capabilities
+    It's difficult to find model capabilities on the models' pages instead.  Try looking in these areas
+**** Tool use
+     [[https://docs.together.ai/docs/function-calling#supported-models][Function Calling - Together.ai Docs ≫ docs.together.ai]]
+**** JSON structred output
 
-    [[https://docs.together.ai/docs/json-mode#supported-models][Structured Outputs - Together.ai Docs ≫ docs.together.ai]]
+   [[https://docs.together.ai/docs/json-mode#supported-models][Structured Outputs - Together.ai Docs ≫ docs.together.ai]]
 
-     #+begin_src emacs-lisp
-       (gptel-make-openai ; but for Togeher.AI compatible API
-        "together.ai"
-        :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key )))))
-        :key gptel-api-key
-        :stream t
-        :host "api.together.xyz"
-        :protocol "https"
-        :endpoint "/v1/chat/completions"
-        :models '((openai/gpt-oss-120b
-                   :description "OpenAI OSS 120b parameter model"
-                   :capabilities (tool json url)
-                   :input-cost 0.15 :output-cost 0.60)
-                  (zai-org/GLM-4.5-Air-FP8
-                   :description "The GLM-4.5 series models are foundation models designed for intelligent agents. GLM-4.5 has 355 billion total parameters with 32 billion active parameters, while GLM-4.5-Air adopts a more compact design with 106 billion total parameters and 12 billion active parameters. GLM-4.5 models unify reasoning, coding, and intelligent agent capabilities to meet the complex demands of intelligent agent applications."
-                   :capabilities (tool json url)
-                   :input-cost 0.20 :output-cost 1.10)
-                  (moonshotai/Kimi-K2-Instruct
-                   :capabilities (tool json url)
-                   :input-cost 1.00 :output-cost 3.00)
-                  (Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8
-                   :capabilities (tool json url)
-                   :input-cost 2.00 :output-cost 2.00)
-                  Qwen/Qwen3-235B-A22B-fp8-tput
-                  codellama/CodeLlama-70b-Instruct-hf
-                  tiiuae/falcon-40b-instruct
-                  codellama/CodeLlama-34b-Instruct-hf
-                  deepseek-ai/DeepSeek-R1
-                  deepseek-ai/DeepSeek-V3
-                  mistralai/Mixtral-8x7B-Instruct-v0.1
-                  mistralai/Mixtral-8x22B-Instruct-v0.1
-                  meta-llama/llama-2-70b-chat-hf
-                  meta-llama/Llama-3-70b-chat-hf
-                  meta-llama/Llama-3.3-70B-Instruct-Turbo
-                  meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo
-                  microsoft/WizardLM-2-8x22B
-                  ))
-     #+end_src
-*** Configure Openrouter
+    #+begin_src emacs-lisp
+      (gptel-make-openai ; but for Togeher.AI compatible API
+       "together.ai"
+       :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key )))))
+       :key gptel-api-key
+       :stream t
+       :host "api.together.xyz"
+       :protocol "https"
+       :endpoint "/v1/chat/completions"
+       :models '((openai/gpt-oss-120b
+                  :description "OpenAI OSS 120b parameter model"
+                  :capabilities (tool json url)
+                  :input-cost 0.15 :output-cost 0.60)
+                 (zai-org/GLM-4.5-Air-FP8
+                  :description "The GLM-4.5 series models are foundation models designed for intelligent agents. GLM-4.5 has 355 billion total parameters with 32 billion active parameters, while GLM-4.5-Air adopts a more compact design with 106 billion total parameters and 12 billion active parameters. GLM-4.5 models unify reasoning, coding, and intelligent agent capabilities to meet the complex demands of intelligent agent applications."
+                  :capabilities (tool json url)
+                  :input-cost 0.20 :output-cost 1.10)
+                 (moonshotai/Kimi-K2-Instruct
+                  :capabilities (tool json url)
+                  :input-cost 1.00 :output-cost 3.00)
+                 (Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8
+                  :capabilities (tool json url)
+                  :input-cost 2.00 :output-cost 2.00)
+                 Qwen/Qwen3-235B-A22B-fp8-tput
+                 codellama/CodeLlama-70b-Instruct-hf
+                 tiiuae/falcon-40b-instruct
+                 codellama/CodeLlama-34b-Instruct-hf
+                 deepseek-ai/DeepSeek-R1
+                 deepseek-ai/DeepSeek-V3
+                 mistralai/Mixtral-8x7B-Instruct-v0.1
+                 mistralai/Mixtral-8x22B-Instruct-v0.1
+                 meta-llama/llama-2-70b-chat-hf
+                 meta-llama/Llama-3-70b-chat-hf
+                 meta-llama/Llama-3.3-70B-Instruct-Turbo
+                 meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo
+                 microsoft/WizardLM-2-8x22B
+                 ))
+    #+end_src
+** Configure Openrouter
     #+begin_src emacs-lisp
       (gptel-make-openai "OpenRouter"
         :stream t
@@ -313,97 +313,97 @@
                   anthropic/claude-sonnet-4
                   ))
 #+end_src
-*** Configure Anthropic Claude
-
-      #+begin_src emacs-lisp :tangle no
-        (gptel-make-anthropic "Anthropic"
-          :stream t
-          :key gptel-api-key)
-      #+end_src
-
-*** Optionally modify OpenAI setup
-
-    If OpenAI makes new models available, the package may lag behind - so specify what models you want to use here
-
-     #+begin_src emacs-lisp :tangle no
-       ;; do this by overriding var `gptel--openai'
-       (setq gptel--openai
-             (gptel-make-openai
-                 "ChatGPT"
-               :key 'gptel-api-key
-               :stream t
-               :models '(gpt-4o-mini
-                         gpt-4o)))
-     #+end_src
-*** Add Ollama backend if Ollama API server is accessible
-    This queries all installed models
+** Configure Anthropic Claude
 
      #+begin_src emacs-lisp
-       (setq gjg/ollama-api-endpoint "http://172.16.17.77:11434")
-       (defun gjg/get-ollama-models ()
-         "Return a list of Ollama models from the API, or nil if the API is not available."
-         (when-let*
-             ((url (url-generic-parse-url gjg/ollama-api-endpoint))
-              (host (url-host url))
-              (port (url-port url))
-              ;; Use short timeout with curl to assure API port is open
-              (maybe-ollama-models (s-split "\n"
-                                            (shell-command-to-string (concat "curl -s --connect-timeout 0.5 '"
-                                                                             gjg/ollama-api-endpoint "/api/tags' | jq -r '.models[].name'"))))
-              (my-ollama-models (seq-filter (lambda (s) (not (string= s "")))
-                                            maybe-ollama-models)))
-           (gptel-make-ollama
-            "Ollama"
-            :host (concat host ":" (number-to-string port))
-            :models my-ollama-models
-            :stream nil)
-           my-ollama-models))
-
-       ;; set globally, as ollama-models is relevant to more than gptel
-       (setq ollama-models (gjg/get-ollama-models))
-
-       ;; if API port was not found, remove backend
-       (unless ollama-models
-         (setq gptel--known-backends
-               (assoc-delete-all "Ollama" gptel--known-backends #'equal)))
+       (gptel-make-anthropic "Anthropic"
+         :stream t
+         :key gptel-api-key)
      #+end_src
-*** Add Ollama as OpenAI API
-    Ollama supports OpenAI-compatible API for LLMs as of [2024-02-13 Tue]
 
-    So let's use that
+** Optionally modify OpenAI setup
+
+   If OpenAI makes new models available, the package may lag behind - so specify what models you want to use here
+
     #+begin_src emacs-lisp :tangle no
-      (when ollama-models  ;; set in previous code
-        (gptel-make-openai ; but for Ollama's newer compatible API
-            "ollama-compatible"
-          ;; :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key )))))
-          ;; :key gptel-api-key
-          :stream t
-          :host "172.16.17.77:11434"
-          :protocol "http"
-          :endpoint "/v1/chat/completions"
-          :models ollama-models))
+      ;; do this by overriding var `gptel--openai'
+      (setq gptel--openai
+            (gptel-make-openai
+                "ChatGPT"
+              :key 'gptel-api-key
+              :stream t
+              :models '(gpt-4o-mini
+                        gpt-4o)))
     #+end_src
-*** Add Google Gemini
-    + [[https://aistudio.google.com/app/apikey][API keys ≫ aistudio.google.com]]
+** Add Ollama backend if Ollama API server is accessible
+   This queries all installed models
+
     #+begin_src emacs-lisp
-      (gptel-make-gemini
-          "google-gemini"
-        :stream t
-        :key 'gptel-api-key)
-        ;; :models '("gemini-pro" "gemini-1.5-pro-latest" "gemini-1.5-flash"))
+      (setq gjg/ollama-api-endpoint "http://172.16.17.77:11434")
+      (defun gjg/get-ollama-models ()
+        "Return a list of Ollama models from the API, or nil if the API is not available."
+        (when-let*
+            ((url (url-generic-parse-url gjg/ollama-api-endpoint))
+             (host (url-host url))
+             (port (url-port url))
+             ;; Use short timeout with curl to assure API port is open
+             (maybe-ollama-models (s-split "\n"
+                                           (shell-command-to-string (concat "curl -s --connect-timeout 0.5 '"
+                                                                            gjg/ollama-api-endpoint "/api/tags' | jq -r '.models[].name'"))))
+             (my-ollama-models (seq-filter (lambda (s) (not (string= s "")))
+                                           maybe-ollama-models)))
+          (gptel-make-ollama
+           "Ollama"
+           :host (concat host ":" (number-to-string port))
+           :models my-ollama-models
+           :stream nil)
+          my-ollama-models))
+
+      ;; set globally, as ollama-models is relevant to more than gptel
+      (setq ollama-models (gjg/get-ollama-models))
+
+      ;; if API port was not found, remove backend
+      (unless ollama-models
+        (setq gptel--known-backends
+              (assoc-delete-all "Ollama" gptel--known-backends #'equal)))
     #+end_src
-*** Load my custom system prompts (directives)
-    This makes use of my AIPIKHAL package (AI Prompts I Have Known And Loved)
-    #+begin_src emacs-lisp
-      ;; Use the system prompt builder function
-      (let ((build-directives-fun "~/projects/ai/AIPIHKAL/gptel-build-directives.el"))
-        (when (f-exists-p build-directives-fun)
-          (load build-directives-fun)
-          ;; (custom-set-variables '(gptel-directives
-          (setq gptel-directives (gjg/gptel-build-directives "~/projects/ai/AIPIHKAL/system-prompts/")
-                gptel-system-message (alist-get 'default gptel-directives))))
-    #+end_src
-*** An experiment in composable prompts using presets
+** Add Ollama as OpenAI API
+   Ollama supports OpenAI-compatible API for LLMs as of [2024-02-13 Tue]
+
+   So let's use that
+   #+begin_src emacs-lisp :tangle no
+     (when ollama-models  ;; set in previous code
+       (gptel-make-openai ; but for Ollama's newer compatible API
+           "ollama-compatible"
+         ;; :header (lambda () `(("Authorization" . ,(concat "Bearer " (gptel--get-api-key )))))
+         ;; :key gptel-api-key
+         :stream t
+         :host "172.16.17.77:11434"
+         :protocol "http"
+         :endpoint "/v1/chat/completions"
+         :models ollama-models))
+   #+end_src
+** Add Google Gemini
+   + [[https://aistudio.google.com/app/apikey][API keys ≫ aistudio.google.com]]
+   #+begin_src emacs-lisp
+     (gptel-make-gemini
+         "google-gemini"
+       :stream t
+       :key 'gptel-api-key)
+       ;; :models '("gemini-pro" "gemini-1.5-pro-latest" "gemini-1.5-flash"))
+   #+end_src
+** Load my custom system prompts (directives)
+   This makes use of my AIPIKHAL package (AI Prompts I Have Known And Loved)
+   #+begin_src emacs-lisp
+     ;; Use the system prompt builder function
+     (let ((build-directives-fun "~/projects/ai/AIPIHKAL/gptel-build-directives.el"))
+       (when (f-exists-p build-directives-fun)
+         (load build-directives-fun)
+         ;; (custom-set-variables '(gptel-directives
+         (setq gptel-directives (gjg/gptel-build-directives "~/projects/ai/AIPIHKAL/system-prompts/")
+               gptel-system-message (alist-get 'default gptel-directives))))
+   #+end_src
+** An experiment in composable prompts using presets
     Let's make a list of all directories that prompts may be found in - note that this is a subset of the =gptel-prompts= package by @jwiegley that I only discovered today [2025-07-03 Thu], but it suits my needs.
 
     We have a function that will work with 2 streams in my AIPIHKAL project
@@ -460,169 +460,169 @@
           (mapconcat #'identity contents "\n\n")))
 
 #+end_src
-*** Python coder
+** Python coder
     #+begin_src emacs-lisp :tangle no
       (gptel-make-preset 'python-coder
         :description "Full prompt for a python coder partner."
         :system (gjg/build-system-prompt
                  '("roles" "use-org-mode" "project-context" "documentation" "task-management" "tool-usage" "code-structure" "coding-behavior-rules" "human-coding-partner" "python-style-conventions" "python-tests")))
 #+end_src
-*** Add my supplemental functions
-**** Functions to use in hooks
-***** Return Gptel backend + model
-      I find it useful to indicate model and provider service (OpenAI, ollama, together.ai etc) at the beginning of each LLM response.
-      #+begin_src emacs-lisp
-        (defun gjg/gptel-backend-and-model ()
-          "Return gptel backend and model (if any)."
-          (let ((backend (if  (boundp 'gptel-backend)  (aref gptel-backend 1)))
-                (model (if  (boundp 'gptel-model) gptel-model)))
-            (format "%s %s" backend model)))
-      #+end_src
-***** Insert backend+model as first string in a response buffer
-      This function is added as a hook to use with non-chat buffers.  In my org-mode chat buffers, I handle the model attribution differently (as part of my markdown->org function).
-      #+begin_src emacs-lisp
-        ;; (advice-add 'gptel-send :before #'org-timer-start)
+** Add my supplemental functions
+*** Functions to use in hooks
+**** Return Gptel backend + model
+     I find it useful to indicate model and provider service (OpenAI, ollama, together.ai etc) at the beginning of each LLM response.
+     #+begin_src emacs-lisp
+       (defun gjg/gptel-backend-and-model ()
+         "Return gptel backend and model (if any)."
+         (let ((backend (if  (boundp 'gptel-backend)  (aref gptel-backend 1)))
+               (model (if  (boundp 'gptel-model) gptel-model)))
+           (format "%s %s" backend model)))
+     #+end_src
+**** Insert backend+model as first string in a response buffer
+     This function is added as a hook to use with non-chat buffers.  In my org-mode chat buffers, I handle the model attribution differently (as part of my markdown->org function).
+     #+begin_src emacs-lisp
+       ;; (advice-add 'gptel-send :before #'org-timer-start)
 
-        (defun gjg/gptel-insert-model-in-non-gptel-buffers ()
-          "This function will add the backend and model in the \"dynamic\" buffers, not in dedicated chat buffers.
-        To be used in `gptel-pre-response-hook'."
-          (unless (member 'gptel-mode local-minor-modes)
-            (goto-char (point-max))
-            (insert (format "\n%s: " (gjg/gptel-backend-and-model)))
-            (goto-char (point-max))))
-        (add-hook 'gptel-pre-response-hook 'gjg/gptel-insert-model-in-non-gptel-buffers)
+       (defun gjg/gptel-insert-model-in-non-gptel-buffers ()
+         "This function will add the backend and model in the \"dynamic\" buffers, not in dedicated chat buffers.
+       To be used in `gptel-pre-response-hook'."
+         (unless (member 'gptel-mode local-minor-modes)
+           (goto-char (point-max))
+           (insert (format "\n%s: " (gjg/gptel-backend-and-model)))
+           (goto-char (point-max))))
+       (add-hook 'gptel-pre-response-hook 'gjg/gptel-insert-model-in-non-gptel-buffers)
 
-        (defun gjg/gptel-insert-model-in-chat-buffers (response-begin-pos response-end-pos)
-          "This function adds the backend and model in dedicated chat buffers.
-        Can be used with the `gptel-post-response-functions' hook."
-          (let* ((gptel-org-prefix (alist-get 'org-mode gptel-prompt-prefix-alist))
-                 (elapsed-time (org-timer nil t))
-                 (inserted-string (format "%s %s (%s)\n"
-                                          (substring gptel-org-prefix 0 (string-match " " gptel-org-prefix))
-                                          (gjg/gptel-backend-and-model)
-                                          (if (not (string= "0:00:00 " elapsed-time)) elapsed-time "" )))
-                 (len-inserted (length inserted-string )))
-            (goto-char response-begin-pos)
-            (insert inserted-string)
-            (goto-char (+ response-end-pos len-inserted)))
-          (org-timer-stop))
+       (defun gjg/gptel-insert-model-in-chat-buffers (response-begin-pos response-end-pos)
+         "This function adds the backend and model in dedicated chat buffers.
+       Can be used with the `gptel-post-response-functions' hook."
+         (let* ((gptel-org-prefix (alist-get 'org-mode gptel-prompt-prefix-alist))
+                (elapsed-time (org-timer nil t))
+                (inserted-string (format "%s %s (%s)\n"
+                                         (substring gptel-org-prefix 0 (string-match " " gptel-org-prefix))
+                                         (gjg/gptel-backend-and-model)
+                                         (if (not (string= "0:00:00 " elapsed-time)) elapsed-time "" )))
+                (len-inserted (length inserted-string )))
+           (goto-char response-begin-pos)
+           (insert inserted-string)
+           (goto-char (+ response-end-pos len-inserted)))
+         (org-timer-stop))
 
-        (add-hook 'gptel-post-response-functions 'gjg/gptel-insert-model-in-chat-buffers)
-      #+end_src
-***** Add a very long buffer-specific timout for mcp.el
-      mcp.el/mcp-hub does not alter the default jsonrpc timeout of 10 seconds.  So if any mcp call takes more than 10 seconds to return, we end up with a hung tool call
+       (add-hook 'gptel-post-response-functions 'gjg/gptel-insert-model-in-chat-buffers)
+     #+end_src
+**** Add a very long buffer-specific timout for mcp.el
+     mcp.el/mcp-hub does not alter the default jsonrpc timeout of 10 seconds.  So if any mcp call takes more than 10 seconds to return, we end up with a hung tool call
 
-      One area where this bites us in the collective arse is when using thinking LLMs in MCP calls (as with mcp-rubber-duck).
+     One area where this bites us in the collective arse is when using thinking LLMs in MCP calls (as with mcp-rubber-duck).
 
-      So ... let's make a buffer-local substantial modification to the global default timeout of 10 seconds!
-
-      #+begin_src emacs-lisp :tangle no
-        (add-hook 'gptel-mode-hook
-                  (lambda ()
-                    (setq-local jsonrpc-default-request-timeout 600))) ;; 10 minutes, just to be safe
-      #+end_src
-
-**** Convert Markdown LLM responses to Org Mode using Pandoc
-     This ultimately replaces the Markdown -> Org Mode conversion built in to =gptel=
+     So ... let's make a buffer-local substantial modification to the global default timeout of 10 seconds!
 
      #+begin_src emacs-lisp :tangle no
-       ;; pandoc -f gfm -t org|sed '/:PROPERTIES:/,/:END:/d'
-
-       (defun gjg/gptel--convert-markdown->org (str)
-         "Convert string STR from markdown to org markup using Pandoc.
-         Remove the property drawers Pandoc insists on inserting for org output."
-         ;; point will be at the last user position - assistant response will be after that to the end of the buffer (hopefully without the next user prompt)
-         ;; So let's
-         (interactive)
-         (let* ((org-prefix (alist-get 'org-mode gptel-prompt-prefix-alist))
-                (shift-indent (progn (string-match "^\\(\\*+\\)" org-prefix) (length (match-string 1 org-prefix))))
-                (lua-filter (when (file-readable-p "~/.config/pandoc/gfm_code_to_org_block.lua")
-                              (concat "--lua-filter=" (expand-file-name "~/.config/pandoc/gfm_code_to_org_block.lua"))))
-                (temp-name (make-temp-name "gptel-convert-" ))
-                (sentence-end "\\([.?!
-         ]\\)"))
-           ;; TODO: consider placing original complete response in the kill ring
-           ;; (with-temp-buffer
-           (with-current-buffer (get-buffer-create (concat "*" temp-name "*"))
-             (insert str)
-             (write-region (point-min) (point-max) (concat "/tmp/" temp-name ".md" ))
-             (shell-command-on-region (point-min) (point-max)
-                                      (format "pandoc -f gfm -t org --shift-heading-level-by=%d %s|sed '/:PROPERTIES:/,/:END:/d'" shift-indent lua-filter)
-                                      nil ;; use current buffer
-                                      t   ;; replace the buffer contents
-                                      "*gptel-convert-error*")
-             (goto-char (point-min))
-             (insert (format "%sLLM %s: \n"
-                             (alist-get 'org-mode gptel-prompt-prefix-alist)
-                             (gjg/gptel-backend-and-model)))
-             (goto-char (point-max))
-             (buffer-string))))
-
-       (defun gjg/gptel-convert-org-with-pandoc (content buffer)
-         "Transform CONTENT acoording to required major-mode using `pandoc'.
-          Currenly only `org-mode' is supported
-          This depends on the `pandoc' binary only, not on the  Emacs Lisp `pandoc' package."
-         (pcase (buffer-local-value 'major-mode buffer)
-           ('org-mode (gjg/gptel--convert-markdown->org content))
-           (_ content)))
-
-       ;; (custom-set-variables '(gptel-response-filter-functions
-       ;;                         '(gjg/gptel-convert-org-with-pandoc)))
-     #+end_src
-**** Possibly useful function: insert cleaned text from URL into buffer
-     #+begin_src emacs-lisp
-       (defun gjg/insert-clean-website-text (url)
-         "Run a shell command to return clean body text from the given URL."
-         (interactive)
-         (if (executable-find "text-from-url.py")
-             (insert (shell-command-to-string (concat "text-from-url.py " url)))
-           (message "Command not found: text-from-url.py")
-           )
-         )
-     #+end_src
-*** Custom functions leveraging gptel
-   TODO: check out [[https://github.com/karthink/gptel-quick/blob/master/gptel-quick.el][gptel-quick]] package for sophisticated use of =gptel-request=
-
-**** Get context for a phrase in any language
-     #+begin_src emacs-lisp
-       (defvar gjg/gptel-request-callback-done nil)
-       (defun gjg/llm-explain (&optional myphrase)
-         (let ((myphrase (cond
-                          (myphrase myphrase)
-                          ((region-active-p) (buffer-substring-no-properties (region-beginning) (region-end)))
-                          (t (read-string "Phrase to expand with context: "))))
-               (gjg/gptel-request-callback-done nil)
-               (gptel-backend (alist-get "google-gemini" gptel--known-backends nil nil #'equal))
-               (gptel-model 'gemini-flash-latest)
-               (gptel-use-context 'system))
-           (gptel-request
-                        myphrase
-                      :system "explain this phrase concisely, give examples of its use only if appropriate, historical context only if appropriate.  Reply only in the language of the phrase."
-                      :callback (lambda (response info)
-                                  (if (stringp response)
-                                      (let ((posn (marker-position (plist-get info :position)))
-                                            (buf (buffer-name (plist-get info :buffer))))
-                                        (message "Heya - the LLM responded: check buffer *GORT*")
-                                        (save-current-buffer
-                                          (set-buffer (get-buffer-create "*GORT*"))
-                                          (goto-char (point-max))
-                                          (insert (format "\n%s\n" response))
-                                          (setq gjg/gptel-request-callback-done t))
-                                        response)
-                                    (message "gptel-request failed with message: %s" (plist-get info :status))))
-                      (while (not gjg/gptel-request-callback-done) (sleep-for 1))
-                      )))
-
-
+       (add-hook 'gptel-mode-hook
+                 (lambda ()
+                   (setq-local jsonrpc-default-request-timeout 600))) ;; 10 minutes, just to be safe
      #+end_src
 
-*** Custom tools
-    These are a collection of tools that can be provided to gptel
+*** Convert Markdown LLM responses to Org Mode using Pandoc
+    This ultimately replaces the Markdown -> Org Mode conversion built in to =gptel=
 
-    Most of these tools use a separately defined callable function rather than a lambda form.  Partly because the functions may have use outside of gptel, partly because =gptel-make-tool= does not update once the tool slot has been created (as of <2025-03-23 Sun>)
+    #+begin_src emacs-lisp :tangle no
+      ;; pandoc -f gfm -t org|sed '/:PROPERTIES:/,/:END:/d'
 
-**** Home and local category
-***** Get weather forecast
+      (defun gjg/gptel--convert-markdown->org (str)
+        "Convert string STR from markdown to org markup using Pandoc.
+        Remove the property drawers Pandoc insists on inserting for org output."
+        ;; point will be at the last user position - assistant response will be after that to the end of the buffer (hopefully without the next user prompt)
+        ;; So let's
+        (interactive)
+        (let* ((org-prefix (alist-get 'org-mode gptel-prompt-prefix-alist))
+               (shift-indent (progn (string-match "^\\(\\*+\\)" org-prefix) (length (match-string 1 org-prefix))))
+               (lua-filter (when (file-readable-p "~/.config/pandoc/gfm_code_to_org_block.lua")
+                             (concat "--lua-filter=" (expand-file-name "~/.config/pandoc/gfm_code_to_org_block.lua"))))
+               (temp-name (make-temp-name "gptel-convert-" ))
+               (sentence-end "\\([.?!
+        ]\\)"))
+          ;; TODO: consider placing original complete response in the kill ring
+          ;; (with-temp-buffer
+          (with-current-buffer (get-buffer-create (concat "*" temp-name "*"))
+            (insert str)
+            (write-region (point-min) (point-max) (concat "/tmp/" temp-name ".md" ))
+            (shell-command-on-region (point-min) (point-max)
+                                     (format "pandoc -f gfm -t org --shift-heading-level-by=%d %s|sed '/:PROPERTIES:/,/:END:/d'" shift-indent lua-filter)
+                                     nil ;; use current buffer
+                                     t   ;; replace the buffer contents
+                                     "*gptel-convert-error*")
+            (goto-char (point-min))
+            (insert (format "%sLLM %s: \n"
+                            (alist-get 'org-mode gptel-prompt-prefix-alist)
+                            (gjg/gptel-backend-and-model)))
+            (goto-char (point-max))
+            (buffer-string))))
+
+      (defun gjg/gptel-convert-org-with-pandoc (content buffer)
+        "Transform CONTENT acoording to required major-mode using `pandoc'.
+         Currenly only `org-mode' is supported
+         This depends on the `pandoc' binary only, not on the  Emacs Lisp `pandoc' package."
+        (pcase (buffer-local-value 'major-mode buffer)
+          ('org-mode (gjg/gptel--convert-markdown->org content))
+          (_ content)))
+
+      ;; (custom-set-variables '(gptel-response-filter-functions
+      ;;                         '(gjg/gptel-convert-org-with-pandoc)))
+    #+end_src
+*** Possibly useful function: insert cleaned text from URL into buffer
+    #+begin_src emacs-lisp
+      (defun gjg/insert-clean-website-text (url)
+        "Run a shell command to return clean body text from the given URL."
+        (interactive)
+        (if (executable-find "text-from-url.py")
+            (insert (shell-command-to-string (concat "text-from-url.py " url)))
+          (message "Command not found: text-from-url.py")
+          )
+        )
+    #+end_src
+** Custom functions leveraging gptel
+  TODO: check out [[https://github.com/karthink/gptel-quick/blob/master/gptel-quick.el][gptel-quick]] package for sophisticated use of =gptel-request=
+
+*** Get context for a phrase in any language
+    #+begin_src emacs-lisp
+      (defvar gjg/gptel-request-callback-done nil)
+      (defun gjg/llm-explain (&optional myphrase)
+        (let ((myphrase (cond
+                         (myphrase myphrase)
+                         ((region-active-p) (buffer-substring-no-properties (region-beginning) (region-end)))
+                         (t (read-string "Phrase to expand with context: "))))
+              (gjg/gptel-request-callback-done nil)
+              (gptel-backend (alist-get "google-gemini" gptel--known-backends nil nil #'equal))
+              (gptel-model 'gemini-flash-latest)
+              (gptel-use-context 'system))
+          (gptel-request
+                       myphrase
+                     :system "explain this phrase concisely, give examples of its use only if appropriate, historical context only if appropriate.  Reply only in the language of the phrase."
+                     :callback (lambda (response info)
+                                 (if (stringp response)
+                                     (let ((posn (marker-position (plist-get info :position)))
+                                           (buf (buffer-name (plist-get info :buffer))))
+                                       (message "Heya - the LLM responded: check buffer *GORT*")
+                                       (save-current-buffer
+                                         (set-buffer (get-buffer-create "*GORT*"))
+                                         (goto-char (point-max))
+                                         (insert (format "\n%s\n" response))
+                                         (setq gjg/gptel-request-callback-done t))
+                                       response)
+                                   (message "gptel-request failed with message: %s" (plist-get info :status))))
+                     (while (not gjg/gptel-request-callback-done) (sleep-for 1))
+                     )))
+
+
+    #+end_src
+
+** Custom tools in Emacs Lisp
+   These are a collection of tools that can be provided to gptel
+
+   Most of these tools use a separately defined callable function rather than a lambda form.  Partly because the functions may have use outside of gptel, partly because =gptel-make-tool= does not update once the tool slot has been created (as of <2025-03-23 Sun>)
+
+*** Home and local category
+**** Get weather forecast
      #+begin_src emacs-lisp :tangle no
        ;; (gptel-make-tool
        ;;  :name "weather_forecast"
@@ -688,7 +688,7 @@
        ;;                        :optional t))
 
 #+end_src
-***** Answer questions about Casona Ranona
+**** Answer questions about Casona Ranona
 #+begin_src emacs-lisp
   (gptel-make-tool
    :name "house_guide"
@@ -711,84 +711,84 @@
    :description "Answer questions about the house / home / Casa Ranona including persons, cats, location of home items for guests.  Returns known facts about the home. Just pick out the facts relevant to the question you were asked. Called with no arguments"
    :category "home")
 #+end_src
-**** Prompts and settings to help with tool usage
-     We need to reduce confusion / unnecessary complexity
+*** Prompts and settings to help with tool usage
+    We need to reduce confusion / unnecessary complexity
 
-     Including the results of tool calls in the context can confuse the model after a time (for example all the source code for a package)
+    Including the results of tool calls in the context can confuse the model after a time (for example all the source code for a package)
 
-     One thing to set and prompt for is =:include auto= - set this per tool, and indicate to the LLM that it has the choice of whether to include the tool results in future context
+    One thing to set and prompt for is =:include auto= - set this per tool, and indicate to the LLM that it has the choice of whether to include the tool results in future context
 
-     Another thing I want to experiment with is telling the model to let me know when it would be helpful to "clear its mind" and remove certain content from the context.  I will then do so manually.  I suppose I could even add a tool called "ask-user-to-clear-some-context" with this explanation in the description
+    Another thing I want to experiment with is telling the model to let me know when it would be helpful to "clear its mind" and remove certain content from the context.  I will then do so manually.  I suppose I could even add a tool called "ask-user-to-clear-some-context" with this explanation in the description
 
-**** Reflection / Inspection / Coding category
-     The "reflection" category includes references to using Emacs and Linux
+*** Reflection / Inspection / Coding category
+    The "reflection" category includes references to using Emacs and Linux
 
-***** Return README for an Emacs package
-      #+begin_src emacs-lisp
-        (defun gjg/extract-emacs-package-readme (package-name)
-          "Extract and return the README file for package PACKAGE-NAME.
-        This version attempts to robustly find the source directory for
-        packages, including those managed by straight.el.
-        Return =nil' if no README was found."
-          (if (stringp package-name)
-              (let* (;; 1. Get the path to the library file as Emacs knows it (e.g., .../straight/build/PKG/PKG.el)
-                     (library-file-in-load-path (find-library-name package-name))
+**** Return README for an Emacs package
+     #+begin_src emacs-lisp
+       (defun gjg/extract-emacs-package-readme (package-name)
+         "Extract and return the README file for package PACKAGE-NAME.
+       This version attempts to robustly find the source directory for
+       packages, including those managed by straight.el.
+       Return =nil' if no README was found."
+         (if (stringp package-name)
+             (let* (;; 1. Get the path to the library file as Emacs knows it (e.g., .../straight/build/PKG/PKG.el)
+                    (library-file-in-load-path (find-library-name package-name))
 
-                     ;; 2. Get the canonical, true path to this library file.
-                     ;; For straight.el, if library-file-in-load-path is a symlink like
-                     ;; .../build/PKG/PKG.el -> .../repos/PKG/PKG.el,
-                     ;; this will resolve to .../repos/PKG/PKG.el.
-                     (true-library-file-path (when library-file-in-load-path
-                                               (file-truename library-file-in-load-path)))
+                    ;; 2. Get the canonical, true path to this library file.
+                    ;; For straight.el, if library-file-in-load-path is a symlink like
+                    ;; .../build/PKG/PKG.el -> .../repos/PKG/PKG.el,
+                    ;; this will resolve to .../repos/PKG/PKG.el.
+                    (true-library-file-path (when library-file-in-load-path
+                                              (file-truename library-file-in-load-path)))
 
-                     ;; 3. Get the directory containing the true library file.
-                     ;; This should be the actual source directory (e.g., .../straight/repos/PKG/).
-                     (package-source-dir (when true-library-file-path
-                                           (file-name-directory true-library-file-path)))
+                    ;; 3. Get the directory containing the true library file.
+                    ;; This should be the actual source directory (e.g., .../straight/repos/PKG/).
+                    (package-source-dir (when true-library-file-path
+                                          (file-name-directory true-library-file-path)))
 
-                     ;; 4. Locate the README within this source directory using your helper.
-                     ;; gjg/locate-readme-in-directory returns an absolute path.
-                     (readme-full-path (when (and package-source-dir (file-directory-p package-source-dir))
-                                         (gjg/locate-readme-in-directory package-source-dir))))
+                    ;; 4. Locate the README within this source directory using your helper.
+                    ;; gjg/locate-readme-in-directory returns an absolute path.
+                    (readme-full-path (when (and package-source-dir (file-directory-p package-source-dir))
+                                        (gjg/locate-readme-in-directory package-source-dir))))
 
-                (if readme-full-path
-                    (with-temp-buffer
-                      (goto-char (point-min))
-                      (insert (format "README file for package %s (from directory %s):\n\n"
-                                      package-name
-                                      ;; Show the directory where the README was actually found
-                                      (file-name-directory readme-full-path))) ; This is package-source-dir
-                      (insert-file-contents readme-full-path)
-                      (buffer-string))
-                  (progn
-                    ;; More detailed warning for debugging
-                    (warn (format (concat "No README file found for package '%s'.\n"
-                                          "  Searched in directory: %s\n"
-                                          "  Library file in load-path: %s\n"
-                                          "  Resolved true library file path: %s")
-                                  package-name
-                                  (or package-source-dir "unknown or not a directory")
-                                  (or library-file-in-load-path "not found by find-library-name")
-                                  (or true-library-file-path "could not be resolved by file-truename")))
-                    nil)))
-            (progn
-              (warn "PACKAGE-NAME argument must be the package name as a string.")
-              nil)))
+               (if readme-full-path
+                   (with-temp-buffer
+                     (goto-char (point-min))
+                     (insert (format "README file for package %s (from directory %s):\n\n"
+                                     package-name
+                                     ;; Show the directory where the README was actually found
+                                     (file-name-directory readme-full-path))) ; This is package-source-dir
+                     (insert-file-contents readme-full-path)
+                     (buffer-string))
+                 (progn
+                   ;; More detailed warning for debugging
+                   (warn (format (concat "No README file found for package '%s'.\n"
+                                         "  Searched in directory: %s\n"
+                                         "  Library file in load-path: %s\n"
+                                         "  Resolved true library file path: %s")
+                                 package-name
+                                 (or package-source-dir "unknown or not a directory")
+                                 (or library-file-in-load-path "not found by find-library-name")
+                                 (or true-library-file-path "could not be resolved by file-truename")))
+                   nil)))
+           (progn
+             (warn "PACKAGE-NAME argument must be the package name as a string.")
+             nil)))
 
-        (gptel-make-tool
-         :name "emacs_package_readme"
-         :description "Return the README file for a package - please use this to understand what a package does prior to deciding whether to pull the package source code."
-         :category "reflection"
-         :include t
-         :function #'gjg/extract-emacs-package-readme
-         :args (list '(:name "package_name"
-                             :type string
-                             :description "Name of the Emacs package."
-                             :optional nil)))
-      #+end_src
+       (gptel-make-tool
+        :name "emacs_package_readme"
+        :description "Return the README file for a package - please use this to understand what a package does prior to deciding whether to pull the package source code."
+        :category "reflection"
+        :include t
+        :function #'gjg/extract-emacs-package-readme
+        :args (list '(:name "package_name"
+                            :type string
+                            :description "Name of the Emacs package."
+                            :optional nil)))
+     #+end_src
 
 
-***** Return source for an Emacs package
+**** Return source for an Emacs package
      Search for and return source code for an Emacs package.
 
      To stay within reasonable token constraints, return only the primary source code file unless all source files are requested by the LLM.
@@ -835,7 +835,7 @@
                             :description "If true/t, return source from ALL source code files in the package, not just the primary source file. Let this default in most cases to save on tokens!"
                             :optional t)))
 #+end_src
-***** Return function source
+**** Return function source
      #+begin_src emacs-lisp
        (defun gjg/extract-function-source (function-name)
          "Extract and return the source code of a callable FUNCTION-NAME, if possible."
@@ -874,7 +874,7 @@
                             :description "the function name"
                             :optional nil)))
 #+end_src
-***** Return Emacs variable value and documentation
+**** Return Emacs variable value and documentation
         check this baby out (get 'symbol 'variable-documentation)
       #+begin_src emacs-lisp
         (get 'gptel-tools 'variable-documentation)
@@ -903,7 +903,7 @@
           (message (symbol-plist 'gptel--gemini-models))
 #+end_src
 
-***** Summarize all installed Info manuals
+**** Summarize all installed Info manuals
      Info manuals do not have a tightly prescribed structure for metadata, so just use the =dir= files for this purpose.
 
      #+begin_src emacs-lisp
@@ -921,7 +921,7 @@
         :description "Get text showing all known Info manuals with their description. Format is human-readable manual name, info manual short file name in parens, description."
         :category "reflection")
 #+end_src
-***** Find list of man pages on system
+**** Find list of man pages on system
      #+begin_src emacs-lisp
        (defun gjg/list-linux-man-pages (&optional s)
          "Return text showing installed Linux man pages with descriptions - optionally provide a substring match to limit the number of results."
@@ -944,7 +944,7 @@
                             :optional t
                             :description "A substring to limit results of all man pages.  e.g. \"media\" or \"office\"")))
 #+end_src
-***** Cheat sheet for Org Mode synta
+**** Cheat sheet for Org Mode syntax
       As LLMs today in 2025+ can produce Org Mode easily, I like to circumvent gptel's markdown-to-org mode conversion
       #+begin_src emacs-lisp
         (gptel-make-tool
@@ -1016,8 +1016,8 @@
                        :type string
                        :description "URL to read")))
 #+end_src
-***** Open a web page for the putative human
-** Agentic work with agent-shell
+**** Open a web page for the putative human
+* Agentic work with agent-shell
    + [[https://xenodium.com/introducing-agent-shell][Introducing Emacs agent-shell (powered by ACP) ≫ xenodium.com]]
    + [[https://github.com/xenodium/agent-shell?tab=readme-ov-file][xenodium/agent-shell ≫ github.com]]
 
