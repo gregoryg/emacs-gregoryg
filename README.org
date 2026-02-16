@@ -158,7 +158,7 @@
       ;; keep the screen from jumping wildly as I cursor down/up
       '(scroll-conservatively 5)
       ;; dippy bird FTW - single character y-n for all yes/no question dialogs
-      '(yes-or-no-p 'y-or-n-p)
+      '(use-short-answers t) ;; as of Emacs 28
       ;; enable hugely useful things that are disabled by default
       '(narrow-to-region 'disabled nil)
       '(set-goal-column 'disabled nil)
