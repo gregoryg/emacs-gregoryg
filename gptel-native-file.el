@@ -45,13 +45,21 @@
       (copy-file path backup-path t)
       (message "gptel-file: Backed up %s to %s" path backup-path))))
 
-(defun gptel-file--get-json-prop (obj prop-string prop-symbol)
-  "Safely extract a property from a JSON object parsed by Emacs."
-  (cond
-   ((hash-table-p obj) (gethash prop-string obj))
-   ((listp obj) (or (cdr (assoc prop-string obj))
-                    (cdr (assoc prop-symbol obj))))
-   (t nil)))
+(defun gptel-file--get-json-prop (obj prop-string)
+  "Safely extract a property from a JSON object parsed by Emacs.
+OBJ can be a plist (gptel's default JSON parse format), a hash table,
+or an alist.  PROP-STRING is the JSON key name as a string, e.g. \"oldText\".
+The keyword form (e.g. :oldText) is derived automatically for plist lookup."
+  (let ((keyword (intern (concat ":" prop-string))))
+    (cond
+     ((hash-table-p obj) (gethash prop-string obj))
+     ;; plist check: starts with a keyword symbol
+     ((and (listp obj) (keywordp (car obj)))
+      (plist-get obj keyword))
+     ;; alist fallback
+     ((listp obj) (or (cdr (assoc prop-string obj))
+                      (cdr (assoc keyword obj))))
+     (t nil))))
 
 ;; Tool: read_file
 (gptel-make-tool
