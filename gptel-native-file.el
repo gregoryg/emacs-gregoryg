@@ -155,5 +155,15 @@
              '(:name "dryRun" :type boolean :description "If true, returns a diff without modifying the file" :optional t))
  :category "filesystem")
 
+
+;; Tool: list_allowed_directories
+(gptel-make-tool
+ :name "list_allowed_directories"
+ :function (lambda ()
+             (format "Allowed directories:\n%s"
+                     (mapconcat #'identity gptel-file-allowed-directories "\n")))
+ :description "List all directories the LLM is currently allowed to access. If a directory you need is not included in this list, stop and alert the human to run M-x gptel-file-allow-directory."
+ :category "filesystem")
+
 (provide 'gptel-native-file)
 ;;; gptel-native-file.el ends here
