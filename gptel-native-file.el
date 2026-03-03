@@ -151,7 +151,10 @@
                  (kill-buffer buffer))))
  :description "Make exact string-based edits to a text file. Supports dryRun to preview git-style diffs. Automatically creates a backup (~). Aborts entirely if ANY oldText fails to match exactly. If denied, ask the user to run M-x gptel-file-allow-directory."
  :args (list '(:name "path" :type string :description "Path to the file to edit")
-             '(:name "edits" :type array :description "Array of edit objects with 'oldText' and 'newText'")
+             '(:name "edits" :type array :description "Array of edit objects with 'oldText' and 'newText'"
+               :items (:type object
+                       :properties (:oldText (:type string :description "Text to search for")
+                                    :newText (:type string :description "Text to replace with"))))
              '(:name "dryRun" :type boolean :description "If true, returns a diff without modifying the file" :optional t))
  :category "filesystem")
 
