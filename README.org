@@ -1926,7 +1926,7 @@
 * Programming language modes
 ** Eglot (LSP)
    We are now Eglot-centric. It is built-in (mostly) and minimal.
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package eglot
        :straight t
        :bind (:map eglot-mode-map
@@ -1952,7 +1952,8 @@
              (dockerfile-mode . dockerfile-ts-mode)
              (typescript-mode . typescript-ts-mode)
              (css-mode . css-ts-mode)
-             (python-mode . python-ts-mode)))
+             ;; (python-mode . python-ts-mode)
+             )))
    #+end_src
 ** All modes derived from =prog-mode=
   #+begin_src emacs-lisp
@@ -2008,7 +2009,7 @@
 
    #+end_src
 ** Javascript including JSON
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (add-hook 'js-ts-mode-hook 'eglot-ensure)
      (add-hook 'typescript-ts-mode-hook 'eglot-ensure)
    #+end_src
@@ -2078,7 +2079,7 @@
       pip install python-lsp-server[all]
     #+end_src
 *** Python mode setup
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      ;; Python
 
      (use-package python :straight t
@@ -2094,7 +2095,8 @@
                    (setq python-indent-offset 4)
                    (setq tab-width 4)
                    (pyvenv-mode t)
-                   (eglot-ensure))))
+                   ;; (eglot-ensure)
+                   )))
      ;; (setq ansi-color-drop-regexp
      ;;       "\033\\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[Hf]\\|\\?[0-9]+[hl]\\|[0-9]+[CD]\\|J\\|6n\\)")
    #+end_src
