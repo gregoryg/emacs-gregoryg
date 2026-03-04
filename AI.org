@@ -972,10 +972,22 @@
 
     Let's load that sucker now:
     #+begin_src emacs-lisp
-      (load-file "~/emacs-gregoryg/gptel-native-shell.el")
+      (load-file "~/projects/emacs/gregoryg-packages/gptel-native-tools/gptel-native-shell.el")
 #+end_src
 
 
+
+*** File system
+    This replaces the Anthropic =filesystem= MCP server.
+
+    Load the library, then add a function to gptel-mode-hook to automatically add the CWD and (optionally) project.el root to the buffer-local list of allowed directories
+
+    #+begin_src emacs-lisp
+      (load-file "~/projects/emacs/gregoryg-packages/gptel-native-tools/gptel-native-file.el")
+      (add-hook 'gptel-mode-hook #'gptel-file-allow-buffer-directory)
+    #+end_src
+
+#+RESULTS:
 
 *** Web / Internet / Online Research category
 **** Search the web and read a web page
