@@ -145,7 +145,7 @@
       '(user-mail-address "gregory.grubbs@gmail.com")
       '(confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
       '(load-prefer-newer t)
-      '(shell-file-name "bash")
+      '(shell-file-name "/bin/bash")
       '(explicit-shell-file-name shell-file-name)
       '(fill-column 100); good default for wider screens
       ;; never split windows horizontally by default - this is personal preference
