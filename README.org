@@ -3347,6 +3347,43 @@
      (setq org-loop-over-headlines-in-active-region t)
    #+end_src
 * Learning / researching / knowledge flow
+** org-node - a note taking system
+   #+begin_src emacs-lisp
+     (use-package org-mem
+       :straight t
+       :defer t
+       ;; At least one of these two is needed
+       :custom
+       (org-mem-do-sync-with-org-id t)
+       (org-mem-watch-dirs
+             (list "~/org")) ;; Configure me
+       :config
+       (org-mem-updater-mode 1))
+
+     (use-package org-node
+       :straight t
+       :init
+       ;; Optional key bindings
+       ;; Tip: Try changing these to just "M-o"!
+       (keymap-global-set "M-o n" org-node-global-prefix-map)
+       (with-eval-after-load 'org
+         (keymap-set org-mode-map "M-o n" org-node-org-prefix-map))
+       :custom
+       (org-node-cache-mode 1))
+   #+end_src
+** ekg - an emacs llm note taking odd thingamajig
+   #+begin_src emacs-lisp :tangle no
+     (use-package ekg :straight t
+       :bind (([f11] . ekg-capture))
+       :init
+       (require 'ekg-embedding)
+       (ekg-embedding-on-save)
+       (require 'ekg-llm)
+       (require 'llm-openai)
+       (let ((my-provider (make-llm-openai :key "my-openai-api-key")))
+         (setq ekg-llm-provider my-provider
+               ekg-embedding-provider my-provider)))
+   #+end_src
 ** Denote menu
    #+begin_src emacs-lisp
      (use-package denote-menu
