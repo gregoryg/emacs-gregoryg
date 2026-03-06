@@ -1782,11 +1782,12 @@
       (add-hook 'shell-mode-hook
                 (lambda ()
                   (gjg/turn-on-comint-history (getenv "HISTFILE"))))
-      (add-hook 'kill-buffer-hook #'comint-write-input-ring)
-      (add-hook 'kill-emacs-hook
-                (lambda ()
-                  (--each (buffer-list)
-                    (with-current-buffer it (comint-write-input-ring)))))
+
+      ;; Save history after every command (local comint buffers only)
+      (add-hook 'comint-input-filter-functions
+                (lambda (path)
+                  (unless (file-remote-p default-directory)
+                    (comint-write-input-ring))))
     #+end_src
 *** Bash completions
     #+begin_src emacs-lisp
