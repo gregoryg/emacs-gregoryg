@@ -59,6 +59,23 @@
                 (setq file-name-handler-alist file-name-handler-alist-original)
                 (makunbound 'file-name-handler-alist-original)))
 
+    ;; set up package.el
+    (require 'package)
+
+    ;; 1. Define archives first
+    (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+    ;; 2. Initialize packages (activates what is already installed)
+    (package-initialize)
+
+    ;; 3. Only refresh if we haven't done it yet (fixes the slow startup)
+    (unless package-archive-contents
+      (package-refresh-contents))
+
+    ;; 4. Now load use-package
+    (require 'use-package)
+    (setq use-package-always-ensure t)
+
     (setq org-replace-disputed-keys t)
     (setq org-disputed-keys
        '(([(shift left)]
