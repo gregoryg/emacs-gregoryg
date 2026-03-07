@@ -1052,7 +1052,7 @@
   Set to hide globally, then bind a Super key to toggle only the current buffer. Super
   nice to use when screen sharing - provides ={global-}hide-mode-line-mode=
 
-  #+begin_src emacs-lisp :tangle no
+  #+begin_src emacs-lisp
     (use-package mask-mode-line
       :load-path "~/projects/emacs/mask-mode-line/")
   #+end_src
@@ -1795,7 +1795,7 @@
                               '(comint-input-ring-size 5000)))
     #+end_src
 *** Hook in shell history
-    #+begin_src emacs-lisp :tangle no
+    #+begin_src emacs-lisp
       (add-hook 'shell-mode-hook
                 (lambda ()
                   (gjg/turn-on-comint-history (getenv "HISTFILE"))))
@@ -1898,14 +1898,6 @@
 ** CSV - Clumsy Stupid Varmint
     #+begin_src emacs-lisp
       (use-package csv-mode)
-    #+end_src
-** TTL - Ticky Tacky Lunacy
-    #+begin_src emacs-lisp :tangle no
-      (use-package ttl-mode
-        :init
-        (add-to-list 'auto-mode-alist '("\\.\\(n3\\|sms\\|sms2\\|ttl\\|trig\\)\\'" . ttl-mode))
-        :custom
-        (ttl-indent-level 2))
     #+end_src
 ** YAML - You A Moth Licker
     #+begin_src emacs-lisp
@@ -2745,52 +2737,6 @@
      (setq org-speed-commands (delete '("a" . org-archive-subtree-default-with-confirmation) org-speed-commands))
    #+end_src
 
-   The square bracket "show heading tidily" shortcuts can be used as a flexible
-   slide show presentation.
-
-   The OG functions from Dan Davison are now included here [[https://orgmode.org/worg/org-hacks.html#sec-1-3-2][Org ad hoc code, quick hacks and workarounds ≫ orgmode.org]]
-
-   #+begin_src emacs-lisp :tangle no
-     ;; DAN DAVISON nifty speed commands
-     (defun ded/org-show-next-heading-tidily (&optional NO-NARROW)
-       "Show next subtree, keeping other entries closed. Narrow to the subtree unless NO-NARROW is true."
-       (interactive)
-       (widen)
-       (if (save-excursion (end-of-line) (outline-invisible-p))
-           (progn (org-show-entry) (outline-show-children))
-         (outline-next-heading)
-         (unless (and (bolp) (org-at-heading-p))
-           (org-up-heading-safe)
-           (outline-hide-subtree)
-           (error "Boundary reached"))
-         (org-overview)
-         (org-reveal t)
-         (org-show-entry)
-         (outline-show-children)
-         (unless NO-NARROW (org-narrow-to-subtree))))
-
-     (defun ded/org-show-previous-heading-tidily (&optional NO-NARROW)
-       "Show previous subtree, keeping other entries closed. Narrow to the subtree unless NO-NARROW is true."
-       (interactive)
-       (widen)
-       (let ((pos (point)))
-         (outline-previous-heading)
-         (unless (and (< (point) pos) (bolp) (org-at-heading-p))
-           (goto-char pos)
-           (outline-hide-subtree)
-           (error "Boundary reached"))
-         (org-overview)
-         (org-reveal t)
-         (org-show-entry)
-         (outline-show-children)
-         (unless NO-NARROW (org-narrow-to-subtree))))
-
-     (add-to-list 'org-speed-commands
-                  '("]" ded/org-show-next-heading-tidily))
-     (add-to-list 'org-speed-commands
-                  '("[" ded/org-show-previous-heading-tidily))
-     ;; END DAN DAVISON nifty speed commands
-   #+end_src
 ** Org Powerslides
    my extension to the Dan Davison show-blah-tidily
    #+begin_src emacs-lisp
