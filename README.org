@@ -877,7 +877,7 @@
     deliimters when using =rainbow-delimiters-mode=.  So without going down the rabbit
     hole to modify all the rainbow-delimiters faces, I'm just nudging the background and
     foreground colors very slightly.
-    #+begin_src emacs-lisp :tangle no
+    #+begin_src emacs-lisp
       ;; tweak the modus themes to act more like my brutalist theme in Org
       ;; load the dark theme - (load-theme is equivalent to 'require) - so we have vars and funcs
       (defun gjg/my-modus-themes-custom-faces ()
