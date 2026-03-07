@@ -27,7 +27,7 @@ This entire file provides my configuration, required Emacs supporting packages a
     ;;  '(exwm :type git :host github :repo "emacs-exwm/exwm"
     ;;         :fork (:host github :branch "gregoryg" :repo "gregoryg/exwm")))
 
-    (use-package exwm :straight t
+    (use-package exwm
       :custom
       (exwm-workspace-minibuffer-position nil))
   #+end_src
@@ -541,17 +541,17 @@ system.
           :type git
           :host github
           :repo "casouri/emacs-mission-control"))
-       (use-package mission-control :straight t
+       (use-package mission-control
          :config
          (mcon-c-tab-setup-binding))
      #+end_src
 ** Use Emacs as app launcher (with completions)
    [[file:img/emacs-app-launcher.png]]
-   #+begin_src emacs-lisp
-     (use-package app-launcher
-       :straight '(app-launcher :host github :repo "SebastienWae/app-launcher"))
-     (global-set-key (kbd "s-SPC") 'app-launcher-run-app)
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package xdg-launcher
+    :load-path "~/projects/emacs/xdg-launcher/")
+#+end_src
+
 ** Use Rofi as app launcher
 *** Generate the script that *should* be in the adi1090x repo
     #+begin_src bash :tangle ~/bin/launch-rofi.sh

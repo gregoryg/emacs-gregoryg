@@ -159,27 +159,24 @@
   =straight-use-package= to pull from my fork and my =gregoryg= branch.
 
   #+begin_src emacs-lisp
-    ;; (straight-use-package
-    ;;  '(gptel :type git :host github :repo "karthink/gptel"
-    ;;          :fork (:host github :branch "gregoryg" :repo "gregoryg/gptel")))
-
     ;; Use :nonrecursive to avoid straight.el's mishandling of submodules - the only submodule used is 'test'
     ;; see https://github.com/karthink/gptel/issues/716
     (use-package gptel
-      :straight (:host github :repo "karthink/gptel" :nonrecursive t))
-    ;; (use-package gptel :straight t)
-    (custom-set-variables '(gptel-default-mode 'org-mode)
-                          '(gptel-expert-commands t)
-                          '(gptel-track-media t)
-                          '(gptel-include-reasoning 'ignore)
-                          '(gptel-model 'gpt-5-mini)
-                          '(gptel-prompt-prefix-alist
-                            '((markdown-mode . "### ") (org-mode . "*** gjg\12") (text-mode . "### ")))
-                          '(gptel-log-level 'info)
-                          '(gptel--debug nil))
+      :load-path "~/projects/emacs/ai/gptel/"
+      :ensure t
+      :custom
+      (gptel-expert-commands t)
+      (gptel-track-media t)
+      (gptel-include-reasoning 'ignore)
+      (gptel-model 'gpt-5-mini)
+      (gptel-prompt-prefix-alist
+       '((markdown-mode . "### ") (org-mode . "*** gjg\12") (text-mode . "### ")))
+      (gptel-log-level 'info)
+      (gptel--debug nil)
+      (gptel-default-mode 'org-mode))
 
     (setq gptel-backend (gptel-make-gemini "gemini"
-                               :key gptel-api-key :stream t))
+                          :key gptel-api-key :stream t))
 
     ;; add-to-list instead of setf for alists https://emacs.stackexchange.com/a/3402/418
     (add-to-list 'gptel-prompt-prefix-alist `(org-mode . ,(concat "*** gjg " (format-time-string "[%Y-%m-%d]") "\n")))
@@ -191,7 +188,6 @@
 ** Load jwiegley/gptel-prompts for prompt composability
     #+begin_src emacs-lisp :tangle no
       (use-package gptel-prompts
-        :straight nil
         :load-path "~/projects/emacs/ai/gptel-prompts"
         :after (gptel)
         :demand t
@@ -1015,13 +1011,13 @@
    #+begin_src emacs-lisp :tangle no
      (add-to-list 'exec-path (expand-file-name "~/.nvm/versions/node/v24.7.0/bin"))
 
-     (use-package shell-maker :straight t)
+     (use-package shell-maker)
 
-     (straight-use-package
-      '(acp :type git :host github :repo "xenodium/acp.el"))
+     (use-package acp
+       :load-path "~/projects/emacs/ai/xenodium/acp.el")
 
-     (straight-use-package
-      '(agent-shell :type git :host github :repo "xenodium/agent-shell"))
+     (use-package agent-shell
+       :load-path "~/projects/emacs/ai/xenodium/agent-shell/")
 
      (setq agent-shell-anthropic-key
            (gjg/authinfo-secret "api.anthropic.com"))
@@ -1036,7 +1032,6 @@
    #+end_src
 * ECA - Emacs AI Code/Coding Assistant
     #+begin_src emacs-lisp :tangle no
-      (straight-use-package
-       '(eca :type git :host github :repo "editor-code-assistant/eca-emacs"
-                     :fork (:host github :branch "master" :repo "gregoryg/eca-emacs")))
+      (use-package
+        :load-path "~/projects/emacs/ai/eca-emacs/")
     #+end_src

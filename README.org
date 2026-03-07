@@ -90,18 +90,13 @@
          ([(control shift left)]
           .
           [(meta shift -)])))
-    (load "~/projects/emacs/straight.el/bootstrap")
-    (add-to-list 'straight-built-in-pseudo-packages 'org)
-    (straight-use-package 'use-package)
-    (use-package bind-key :straight t :defer nil)
+    (use-package bind-key :defer nil)
     (require 'shortdoc)
-    (use-package f :straight t)
-    (use-package s :straight t)
-    (straight-use-package 'gcmh) ;; garbage collection magic hack
+    (use-package f)
+    (use-package s)
+    (use-package gcmh)   ;; garbage collection magic hack
     (gcmh-mode 1)
-    ;; require use-package for byte-compiled init files ref https://github.com/jwiegley/use-package/issues/436
-    (require 'use-package)
-    ;(org-babel-tangle-file "~/emacs-gregoryg/README.org")
+
     (load "~/.emacs.d/emacs-init")
 
     ;; Message how long it took to load everything (minus packages)
@@ -197,7 +192,7 @@
       )
 
      ;; https://emacs.stackexchange.com/a/9952/418 - same for shell and other comint buffers
-     (use-package exec-path-from-shell :straight t)
+     (use-package exec-path-from-shell)
      (exec-path-from-shell-initialize)
      (exec-path-from-shell-copy-env "HISTFILE")
      ;; Make right-click do something sensible
@@ -214,8 +209,8 @@
 
 ** Do async things
    #+begin_src emacs-lisp
-     (use-package async :straight t)
-     (use-package ob-async :straight t)
+     (use-package async)
+     (use-package ob-async)
    #+end_src
 ** Revert buffer shortcut
   #+begin_src emacs-lisp
@@ -464,11 +459,11 @@
    Control whatever media is playing
    Requires =playerctl= OS package as well
    #+begin_src emacs-lisp
-     (use-package playerctl :straight t)
+     (use-package playerctl)
    #+end_src
 ** Rainbow delimiters
    #+begin_src emacs-lisp
-     (use-package rainbow-delimiters :straight t)
+     (use-package rainbow-delimiters)
    #+end_src
 
 * Encryption
@@ -602,7 +597,7 @@
    #+end_src
 ** Packages for window and buffer nav
    #+begin_src emacs-lisp
-     (use-package ace-window :straight t
+     (use-package ace-window
        :config
        (custom-set-faces
         '(aw-leading-char-face
@@ -610,7 +605,7 @@
           ))
        :bind
         (("C-x o" . ace-window)))
-     (use-package winum :straight t
+     (use-package winum
        :custom
        (winum-scope                       'frame-local)
        (winum-auto-assign-0-to-minibuffer nil)
@@ -1004,7 +999,7 @@
 * Modeline
 ** Doom modeline
   #+begin_src emacs-lisp
-    (use-package doom-modeline :straight t
+    (use-package doom-modeline
       :ensure t
       :after eshell     ;; Make sure it gets hooked after eshell
       :hook (after-init . doom-modeline-mode)
@@ -1043,12 +1038,12 @@
       ;;      ;; )
       ;;  )))
       )
-    (use-package minions :straight t
+    (use-package minions
       :hook (doom-modeline-mode . minions-mode)
       :custom
       (minions-mode-line-lighter "👹"))
 
-    ;; (use-package nyan-mode :straight t
+    ;; (use-package nyan-mode
     ;;   :config
     ;;   (nyan-mode 1))
   #+end_src
@@ -1058,13 +1053,12 @@
   nice to use when screen sharing - provides ={global-}hide-mode-line-mode=
 
   #+begin_src emacs-lisp :tangle no
-    (straight-use-package
-     '(mask-mode-line :type git :host github :repo "ricardoricho/mask-mode-line"
-                   :fork (:host github :branch "main" :repo "gregoryg/mask-mode-line")))
+    (use-package mask-mode-line
+      :load-path "~/projects/emacs/mask-mode-line/")
   #+end_src
 
   #+begin_src emacs-lisp
-    (use-package hide-mode-line :straight t)
+    (use-package hide-mode-line)
   #+end_src
 * Text / reading / note taking
 ** Keyboard input method
@@ -1093,7 +1087,7 @@
      ;; ;; To *visually* wrap lines
      ;; (global-visual-line-mode t)
 
-     (use-package visual-fill-column :straight t)
+     (use-package visual-fill-column)
 
      (defun gjg/disable-visual-line-with-fill ()
        "Disable `visual-fill-column-mode' using the function, followed by disabling `visual-line-mode' using the function."
@@ -1127,7 +1121,7 @@
 *** Initialize package
     Install and do initial configuration of Denote including Denote Dired
     #+begin_src emacs-lisp
-      (use-package denote :straight t
+      (use-package denote
         :defer nil
         :init
         (defun gjg/denote-project () (interactive) (project-switch-project "~/gregj-notes"))
@@ -1249,22 +1243,21 @@
    + can this be well integrated with denote?
 *** Install corrolary requirements
     #+begin_src emacs-lisp
-      (use-package pdf-tools :straight t
+      (use-package pdf-tools
         :custom
         (pdf-view-continuous nil)
         (pdf-view-use-imagemagick t))
       (add-to-list 'auto-mode-alist '("\\.pdf" . pdf-view-mode))
     #+end_src
    #+begin_src emacs-lisp :tangle no
-     (use-package org-noter :straight t
+     (use-package org-noter
        :custom
        (org-noter-always-create-frame nil))
    #+end_src
 ** Dictation, Text-to-Speech
    #+begin_src emacs-lisp
-     (straight-use-package
-      '(whisper :type git :host github :repo "natrys/whisper.el"
-                :fork (:host github :branch "master" :repo "gregoryg/whisper.el")))
+     (use-package whisper
+       :load-path "~/projects/whisper.el/")
      ;; :config
      ;; (setq whisper-install-directory "/tmp/"
      ;;        whisper-model "base"
@@ -1290,14 +1283,19 @@
 
 ** Vertico (will it replace Selectrum which replaced Ivy which replaced Ido?)
    #+begin_src emacs-lisp
+     ;; (use-package vertico
+     ;;   :straight (:files (:defaults "extensions/"))
+     ;;   :init
+     ;;   (vertico-mode)
+     ;;   (vertico-multiform-mode +1))
+
      (use-package vertico
-       :straight (:files (:defaults "extensions/"))
        :init
-       (vertico-mode)
-       (vertico-multiform-mode +1))
+       (vertico-mode))
+       ;; (vertico-multiform-mode +1))
 
 
-     (use-package orderless :straight t
+     (use-package orderless
        :init
        (setq completion-styles '(orderless basic)) ;; do not use customize - it will mess up a minimal config
        ;; Configure a custom style dispatcher (see the Consult wiki)
@@ -1307,7 +1305,7 @@
        (completion-category-overrides '((file (styles partial-completion)))))
 
      ;; To use vertico in shell buffers
-     (use-package consult :straight t)
+     (use-package consult)
      ;; Use `consult-completion-in-region' if Vertico is enabled.
      ;; Otherwise use the default `completion--in-region' function.
      (setq completion-in-region-function
@@ -1322,7 +1320,7 @@
    Yafolding mode is useful in code and (maybe even but probably not in) Org.  Let's keep
    Org mode's keys unmolested, and use an additional modifier to toggle hide/show
    #+begin_src emacs-lisp
-     (use-package yafolding :straight t
+     (use-package yafolding
        :init
        (unbind-key (kbd "<C-return>") yafolding-mode-map)
        (unbind-key (kbd "<C-S-return>") yafolding-mode-map)
@@ -1343,7 +1341,7 @@
        #+end_example
    #+begin_src emacs-lisp :tangle no
      (require 'dabbrev)
-     (use-package corfu :straight t
+     (use-package corfu
        ;; Optional customizations
        :custom
        ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
@@ -1371,7 +1369,7 @@
 
 
      ;; Add extensions
-     (use-package cape :straight t
+     (use-package cape
        :config
        (setq cape-dabbrev-check-other-buffers nil)
      ;;   ;; Bind dedicated completion commands
@@ -1410,14 +1408,14 @@
        )
 
 
-     ;; (use-package orderless :straight t
+     ;; (use-package orderless
      ;;   :init
      ;;   (setq completion-styles '(orderless basic)
      ;;     completion-category-defaults nil
      ;;     completion-category-overrides '((file (styles . (partial-completion))))))
 
      ;; A few more useful configurations...
-     ;; (use-package emacs :straight t
+     ;; (use-package emacs
      ;;
      ;;   :init
      ;;   ;; TAB cycle if there are only few candidates
@@ -1434,7 +1432,7 @@
    #+end_src
 ** Marginalia - crazy annotations for completions
    #+begin_src emacs-lisp
-     (use-package marginalia :straight t
+     (use-package marginalia
        :bind (("M-A" . marginalia-cycle)
               :map minibuffer-local-map
               ("M-A" . marginalia-cycle)
@@ -1446,7 +1444,7 @@
    It's common to have very long lines in Markdown text - so turn on =longlines-mode=
    with word wrapping only for those files.
    #+begin_src emacs-lisp
-     (use-package markdown-mode :straight t
+     (use-package markdown-mode
        :hook
        (markdown-mode . visual-line-mode)
      )
@@ -1641,14 +1639,14 @@
    #+begin_src emacs-lisp
      (require 'dired)
      (with-eval-after-load 'dired)
-     ;; (use-package all-the-icons-dired :straight t)
-     (use-package all-the-icons :straight t) ;; currently ([2022-12-03 Sat]) being used for org-agenda-category-icon-alist and maybe doom-modeline
+     ;; (use-package all-the-icons-dired)
+     (use-package all-the-icons) ;; currently ([2022-12-03 Sat]) being used for org-agenda-category-icon-alist and maybe doom-modeline
 
-     ;; (use-package treemacs-icons-dired :straight t
+     ;; (use-package treemacs-icons-dired
      ;;   :hook
      ;;   (dired-mode . treemacs-icons-dired-enable-once))
 
-     ;; (use-package treemacs-all-the-icons :straight t
+     ;; (use-package treemacs-all-the-icons
      ;;   :requires treemacs
      ;;   :config
      ;;   (treemacs-load-theme "all-the-icons"))
@@ -1751,7 +1749,7 @@
 #+end_src
 
    #+begin_src emacs-lisp
-     ;; (use-package project :straight t)
+     ;; (use-package project)
      (setq project-switch-commands
            '((project-find-file "Find file")
              (project-find-regexp "Find regexp")
@@ -1765,7 +1763,7 @@
    TODO: remove conflicting key bindings
 *** Vterm
     #+begin_src emacs-lisp
-      (use-package vterm :straight t
+      (use-package vterm
         :ensure t
         :custom
         (vterm-buffer-name "*vterm-sh*")
@@ -1778,7 +1776,7 @@
     This thing is magnificent.  It provides good-enough terminal emulation in my beloved
     old friend shell-mode windows.
     #+begin_src emacs-lisp
-      (use-package coterm :straight t
+      (use-package coterm
         :config
         (coterm-mode 1))
     #+end_src
@@ -1795,7 +1793,7 @@
                               '(comint-input-ring-size 5000)))
     #+end_src
 *** Hook in shell history
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle no
       (add-hook 'shell-mode-hook
                 (lambda ()
                   (gjg/turn-on-comint-history (getenv "HISTFILE"))))
@@ -1808,7 +1806,7 @@
     #+end_src
 *** Bash completions
     #+begin_src emacs-lisp
-      (use-package bash-completion :straight t
+      (use-package bash-completion
         :config
         (bash-completion-setup))
     #+end_src
@@ -1818,7 +1816,7 @@
     awesome.
 
     #+begin_src emacs-lisp
-      (use-package xterm-color :straight t)
+      (use-package xterm-color)
       (ansi-color-for-comint-mode-on)
       ;; try some xterm coloring in shell buffers
       (setq comint-output-filter-functions
@@ -1835,14 +1833,14 @@
     + Not really related to shell-mode, this assures our keychain is activated for things
       such as magit that fire off subproceess
       #+begin_src emacs-lisp
-        (use-package keychain-environment :straight t)
+        (use-package keychain-environment)
         (keychain-refresh-environment)
       #+end_src
 ** Magit
 *** Behavior
     #+begin_src emacs-lisp
-      ;; (use-package magit-todos :straight t)
-      (use-package magit :straight t
+      ;; (use-package magit-todos)
+      (use-package magit
         :custom
         (magit-clone-set-remote.pushDefault t)
         (magit-delete-by-moving-to-trash nil)
@@ -1863,7 +1861,7 @@
    #+end_src
 *** Use the Helpful package
    #+begin_src emacs-lisp
-     (use-package helpful :straight t
+     (use-package helpful
        :config
        (global-set-key (kbd "C-h f") #'helpful-callable)
        (global-set-key (kbd "C-h v") #'helpful-variable)
@@ -1889,7 +1887,7 @@
 
 ** Caddyfile
    #+begin_src emacs-lisp
-     (use-package caddyfile-mode :straight t)
+     (use-package caddyfile-mode)
    #+end_src
 ** Config files (.ini and such)
    #+begin_src emacs-lisp
@@ -1897,11 +1895,11 @@
    #+end_src
 ** CSV - Clumsy Stupid Varmint
     #+begin_src emacs-lisp
-      (use-package csv-mode :straight t)
+      (use-package csv-mode)
     #+end_src
 ** TTL - Ticky Tacky Lunacy
     #+begin_src emacs-lisp :tangle no
-      (use-package ttl-mode :straight t
+      (use-package ttl-mode
         :init
         (add-to-list 'auto-mode-alist '("\\.\\(n3\\|sms\\|sms2\\|ttl\\|trig\\)\\'" . ttl-mode))
         :custom
@@ -1909,7 +1907,7 @@
     #+end_src
 ** YAML - You A Moth Licker
     #+begin_src emacs-lisp
-      (use-package yaml-mode :straight t
+      (use-package yaml-mode
         :hook (yaml-mode . (lambda () (yafolding-mode 1)
                              (toggle-truncate-lines 1))))
       (add-hook 'conf-mode-hook
@@ -1921,7 +1919,7 @@
    + Switching from ag/Silver Searcher simply because ag is no longer in the default repos
      for Debian Trixie
    #+begin_src emacs-lisp
-     (use-package rg :straight t
+     (use-package rg
        :custom
        (rg-custom-type-aliases
         '(
@@ -1939,14 +1937,14 @@
 
   But for this one bitlet: echoing keystrokes during a screencast.
   #+begin_src emacs-lisp
-    (use-package command-log-mode :straight t :defer t)
+    (use-package command-log-mode :defer t)
   #+end_src
 * Programming language modes
 ** Eglot (LSP)
    We are now Eglot-centric. It is built-in (mostly) and minimal.
    #+begin_src emacs-lisp :tangle no
      (use-package eglot
-       :straight t
+
        :bind (:map eglot-mode-map
                    ("C-c r" . eglot-rename)
                    ("C-c o" . eglot-code-action-organize-imports)
@@ -2001,13 +1999,13 @@
 ** Clojure
    #+begin_src emacs-lisp
      ;; (add-hook 'cider-repl-mode-hook #'company-
-     (use-package clojure-mode :straight t
+     (use-package clojure-mode
        :mode "\\.clj[sc]?\\'"
        ;; :config
        ;; (add-hook 'clojure-mode-hook #'lispy-mode)
        )
 
-     (use-package cider :straight t
+     (use-package cider
        ;; :mode "\\.clj[sc]?\\'"
        )
      ;; ;; (add-to-list 'load-path "~/emacs/cider")
@@ -2033,7 +2031,7 @@
    #+end_src
 *** Prefer json-mode to built-in package
     #+begin_src emacs-lisp
-      (use-package json-mode :straight t)
+      (use-package json-mode)
     #+end_src
 *** Treat =.cue= as JSON or Bazel
     #+begin_src emacs-lisp
@@ -2053,7 +2051,7 @@
       (setq inferior-lisp-program "sbcl")
     #+end_src
     #+begin_src emacs-lisp
-      (use-package sly :straight t
+      (use-package sly
         :custom
         (inferior-lisp-program "sbcl")
         (org-babel-lisp-eval-fn 'sly-eval)
@@ -2064,28 +2062,28 @@
 *** Guile Scheme
    Setup for Guile Scheme - primarily for use on Guix system
    #+begin_src emacs-lisp :tangle no
-     (use-package geiser :straight t
+     (use-package geiser
        :custom
        (geiser-default-implementation 'guile)
        (geiser-active-implementations '(guile))
        (geiser-implementations-alist '(((regexp "\\.scm$") guile)))
        ;; geiser-repl-default-port 44555 ; for Gambit Scheme (from @daviwil)
              )
-     (use-package geiser-guile :straight t)
+     (use-package geiser-guile)
    #+end_src
 *** Racket Scheme
     :PROPERTIES:
     :ID:       4c49ed92-563b-488a-988a-de54a24dd7c1
     :END:
    #+begin_src emacs-lisp :tangle no
-     (use-package geiser :straight t
+     (use-package geiser
        :custom
        (geiser-default-implementation 'racket)
        (geiser-active-implementations '(racket))
        (geiser-implementations-alist '(((regexp "\\.scm$") racket)))
        ;; geiser-repl-default-port 44555 ; for Gambit Scheme (from @daviwil)
              )
-     (use-package geiser-racket :straight t  )
+     (use-package geiser-racket  )
      (with-eval-after-load 'eglot
        (add-to-list 'eglot-server-programs '(scheme-mode . ("racket" "-l" "racket-langserver"))))
    #+end_src
@@ -2100,7 +2098,7 @@
    #+begin_src emacs-lisp :tangle no
      ;; Python
 
-     (use-package python :straight t
+     (use-package python
        :custom
        (org-babel-python-command "python3")
        (python-shell-interpreter "ipython3")
@@ -2120,7 +2118,7 @@
    #+end_src
 *** Python virtual environment
 #+begin_src emacs-lisp
-  (use-package pyvenv :straight t
+  (use-package pyvenv
     :config
     (setenv "WORKON_HOME" (expand-file-name "~/.local/python-venvs/")))
 
@@ -2129,12 +2127,12 @@
 #+end_src
 ** R
    #+begin_src emacs-lisp :tangle no
-     (use-package polymode :straight t
+     (use-package polymode
        :config
        (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
        (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
        (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode)))
-     (use-package ess :straight t
+     (use-package ess
        :custom
        (ess-sas-edit-keys-toggle nil)
        :init (require 'ess-site))
@@ -2142,12 +2140,12 @@
 ** Cypher/OpenCypher for Neo4j
    + Cypher mode
      #+begin_src emacs-lisp
-       (use-package cypher-mode :straight t)
+       (use-package cypher-mode)
      #+end_src
    + ob-cypher
      #+begin_src emacs-lisp
        (use-package ob-cypher
-         :straight t
+
          :config
          (add-to-list 'org-babel-load-languages '(cypher . t))
          (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
@@ -2155,9 +2153,9 @@
      #+end_src
 ** SPARQL
    #+begin_src emacs-lisp :tangle no
-     (straight-use-package
-      '(sparql-mode :type git :host github :repo "ljos/sparql-mode"
-                    :fork (:host github :branch "stardog-babel" :repo "gregoryg/sparql-mode")))
+     (use-package sparql-mode
+       :load-path "~/projects/emacs/sparql-mode/")
+
      (add-to-list 'auto-mode-alist '("\\.\\(sparql\\|rq\\)\\'" . sparql-mode))
      (load-library "~/projects/emacs/stardog-sparql/stardog-sparql")
    #+end_src
@@ -2266,7 +2264,7 @@
      #+end_src
 ** FINAL step after all language modes have been configured
    #+begin_src emacs-lisp
-     (use-package ob-http :straight t)
+     (use-package ob-http)
      (org-babel-do-load-languages
       'org-babel-load-languages
       (append org-babel-load-languages
@@ -2454,7 +2452,7 @@
 ** Org tidy
    hides property drawers - good for use when presenting
    #+begin_src emacs-lisp
-     (use-package org-tidy :straight t)
+     (use-package org-tidy)
    #+end_src
 ** Org num mode
    #+begin_src emacs-lisp :tangle no
@@ -2467,13 +2465,13 @@
    #+end_src
 ** Org Superstar - appearance of headers
    #+begin_src emacs-lisp :tangle no
-     (use-package org-superstar :straight t
+     (use-package org-superstar
        :hook
        (org-mode . org-superstar-mode))
    #+end_src
 ** Org Modern - possible replacement for Org Superstar
    #+begin_src emacs-lisp
-     (use-package org-modern :straight t
+     (use-package org-modern
        :custom
        (org-modern-checkbox nil)
        (org-modern-hide-stars " ")
@@ -2536,8 +2534,8 @@
    For blogging especially, we want to quickly add web links and images.  2 packages from
    m?elpa help here
    #+begin_src emacs-lisp :tangle no
-     (use-package org-cliplink :straight t)
-     (use-package org-download :straight t)
+     (use-package org-cliplink)
+     (use-package org-download)
    #+end_src
 
    And here's a handy keyboard macro =gjg/url-grab-cliplink=
@@ -2719,9 +2717,9 @@
 	:END:
 	Wrap advice around any means of exporting HTML, including export-and-open
 #+begin_src emacs-lisp
-  (use-package material-theme :straight t)
-  (use-package ox-gfm :straight t)
-  (use-package htmlize :straight t)
+  (use-package material-theme)
+  (use-package ox-gfm)
+  (use-package htmlize)
   ;; export to html - use light theme for export
   ;; tip o' the hat to legoscia https://github.com/legoscia/dotemacs/blob/master/dotemacs.org#theme-for-org-html-export
   (defvar my-org-html-export-theme (intern gjg/preferred-light-theme))
@@ -2803,7 +2801,7 @@
 
    Works fast, loads fast, pretty great
    #+begin_src emacs-lisp
-     (use-package org-transclusion :straight t)
+     (use-package org-transclusion)
    #+end_src
 ** Org Agenda
 *** Initialize Org Agenda
@@ -3368,30 +3366,19 @@
 ** org-node - a note taking system
    #+begin_src emacs-lisp
      (use-package org-mem
-       :straight t
        :defer t
        ;; At least one of these two is needed
        :custom
        (org-mem-do-sync-with-org-id t)
        (org-mem-watch-dirs
-             (list "~/org")) ;; Configure me
+        (list "~/projects/private-orgmode/agenda-files/"
+              "~/gregj-notes/")) ;; Configure me
        :config
        (org-mem-updater-mode 1))
-
-     (use-package org-node
-       :straight t
-       :init
-       ;; Optional key bindings
-       ;; Tip: Try changing these to just "M-o"!
-       (keymap-global-set "M-o n" org-node-global-prefix-map)
-       (with-eval-after-load 'org
-         (keymap-set org-mode-map "M-o n" org-node-org-prefix-map))
-       :custom
-       (org-node-cache-mode 1))
    #+end_src
 ** ekg - an emacs llm note taking odd thingamajig
    #+begin_src emacs-lisp :tangle no
-     (use-package ekg :straight t
+     (use-package ekg
        :bind (([f11] . ekg-capture))
        :init
        (require 'ekg-embedding)
@@ -3405,7 +3392,7 @@
 ** Denote menu
    #+begin_src emacs-lisp
      (use-package denote-menu
-       :straight t
+
        :config
        (defalias 'denote-menu 'list-denotes)
        ;; filters
@@ -3438,38 +3425,39 @@
     sudo apt-get -y install gawk
   #+end_src
   #+begin_src emacs-lisp
-        (use-package hydra :straight t)
+        (use-package hydra)
 
 
         (use-package org-fc
-          :straight t
+          :load-path "~/projects/emacs/org-fc/"
           :custom (org-fc-directories '("~/projects/private-orgmode/learning/"))
           :config
           (require 'org-fc-hydra)
           (define-key org-fc-review-rate-mode-map "1" 'org-fc-review-rate-hard)
           (define-key org-fc-review-rate-mode-map "2" 'org-fc-review-rate-good)
           (define-key org-fc-review-rate-mode-map "3" 'org-fc-review-rate-easy))
-    ;;    (use-package org-drill :straight t)
+    ;;    (use-package org-drill)
 #+end_src
 #+begin_src emacs-lisp :tangle no
   (use-package fsrs
-    :straight t
+
     :ensure t
     :defer t)
 
-  (straight-use-package
-   '(org-srs :type git :host github :repo "bohonghuang/org-srs"
+  (use-package org-srs
+    :load-path "~/projects/emacs/org-srs/"
    :defer t
    :hook (org-mode . org-srs-embed-overlay-mode)
    :bind (:map org-mode-map
                ("<f5>" . org-srs-review-rate-easy)
                ("<f6>" . org-srs-review-rate-good)
                ("<f7>" . org-srs-review-rate-hard)
-               ("<f8>" . org-srs-review-rate-again))))
+               ("<f8>" . org-srs-review-rate-again)))
+
 #+end_src
 ** Language Translation
    #+begin_src emacs-lisp
-     (use-package google-translate :straight t)
+     (use-package google-translate)
      ;; "smooth" UI to save a keystroke or two
      (setq google-translate-translation-directions-alist
            '(("es" . "en")
@@ -3486,7 +3474,7 @@
 *** nov.el
    #+begin_src emacs-lisp
 
-     (use-package nov :straight t)
+     (use-package nov)
      ;; (load-file "~/projects/emacs/nov.el/nov.el")
      ;; (setq nov-text-width t
      ;;       visual-fill-column-center-text t)
