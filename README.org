@@ -740,6 +740,7 @@
      (bind-key "s-c" 'gjg/exwm-select-or-launch-google-chat)
      ;; (bind-key "s-c" #'(lambda () (interactive) (call-process-shell-command "invert-color.sh")))
      (bind-key "s-." #'(lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
+     (bind-key "s->" #'(lambda () (interactive) (find-file "~/emacs-gregoryg/AI.org")))
      (bind-key "s-," 'gjg/polybar-start-or-toggle)
      ;; (bind-key "s-]" 'ded/org-show-next-heading-tidily)
      ;; (bind-key "s-[" 'ded/org-show-previous-heading-tidily)
