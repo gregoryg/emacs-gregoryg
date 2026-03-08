@@ -173,7 +173,10 @@
        '((markdown-mode . "### ") (org-mode . "*** gjg\12") (text-mode . "### ")))
       (gptel-log-level 'info)
       (gptel--debug nil)
-      (gptel-default-mode 'org-mode))
+      (gptel-default-mode 'org-mode)
+      :hook
+      (gptel-pre-tool-call-functions . (lambda (tool-name &optional args)
+                                         (message "Calling tool: %s with args: %s" tool-name (or args "No args")))))
 
     (setq gptel-backend (gptel-make-gemini "gemini"
                           :key gptel-api-key :stream t))
