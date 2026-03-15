@@ -1750,7 +1750,6 @@
                                                (file-regular-p (expand-file-name fname dir))))
                                         ;; Get directory contents, excluding "." and ".."
                                         (directory-files dir nil "[^.]")))) ; Use dir arg
-
         ;; If suitable file was found, return its full path
         (when readme-filename
           (expand-file-name readme-filename dir)))))
