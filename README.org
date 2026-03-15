@@ -191,6 +191,10 @@
       '(visual-line-fringe-indicators '(nil right-curly-arrow))
       )
 
+     ;; clear last message in minibuffer after a timeout
+     ;; in emacs 31-ish the variable minibuffer-message-clear-timeout is not working
+     ;; use an explicit timer instead:
+     (run-with-idle-timer 4 t (lambda () (message "")))
      ;; https://emacs.stackexchange.com/a/9952/418 - same for shell and other comint buffers
      (use-package exec-path-from-shell)
      (exec-path-from-shell-initialize)
