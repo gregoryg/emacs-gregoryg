@@ -61,3 +61,4 @@ emacs/gjg-functions.el
 .emacs.d/sql-wallet.gpg
 .emacs.d/sql-wallet
 .emacs.d/eww-bookmarks
+/.agent-shell/
