@@ -1627,9 +1627,10 @@
    Bookmark a function, bookmark crazy things
    Note this package provides =bmkp-bmenu-buffer= useful to use for jumping to bookmarked TRAMP connections
 
+   Bookmark+ is an abandoned project, but straight.el cleaned up the files and moderned up the key bindings.  I'm loading the set copied from the straight.el repo
    #+begin_src emacs-lisp
      (use-package bookmark+
-       :load-path "~/projects/emacs/bookmark-plus/")
+       :load-path "~/projects/emacs/bookmark-plus-straight.el/")
    #+end_src
 ** Dired
    =dired-dwim-target= is just awesome.  Whenever you have 2 Dired
