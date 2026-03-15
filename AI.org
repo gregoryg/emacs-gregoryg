@@ -967,24 +967,19 @@
 
    Install comint helping dependency shell-maker, then acp and agent-shell
    #+begin_src emacs-lisp :tangle no
-     (add-to-list 'exec-path (expand-file-name "~/.nvm/versions/node/v24.7.0/bin"))
-
-     (use-package shell-maker)
-
-     (use-package acp
-       :load-path "~/projects/emacs/ai/xenodium/acp.el")
+     (use-package shell-maker
+       :load-path "~/projects/emacs/ai/xenodium/shell-maker/")
 
      (use-package agent-shell
        :load-path "~/projects/emacs/ai/xenodium/agent-shell/")
 
-     (setq agent-shell-anthropic-key
-           (gjg/authinfo-secret "api.anthropic.com"))
+     ;; (setq agent-shell-anthropic-key
+     ;;       (gjg/authinfo-secret "api.anthropic.com"))
+     ;; (setq agent-shell-google-key
+     ;;       (gjg/authinfo-secret "generativelanguage.googleapis.com"))
 
-     (setq agent-shell-google-key
-           (gjg/authinfo-secret "generativelanguage.googleapis.com"))
-
-     (setq agent-shell-openai-key
-           (gjg/authinfo-secret "api.openai.com"))
+     ;; (setq agent-shell-openai-key
+     ;;       (gjg/authinfo-secret "api.openai.com"))
 
      (require 'agent-shell)
    #+end_src
