@@ -1796,8 +1796,7 @@
 *** Config for comint mode
     #+begin_src emacs-lisp
       (defun gjg/turn-on-comint-history (history-file)
-        (custom-set-variables '(comint-input-ring-file-name history-file)
-                              '(comint-read-input-ring 'silent)
+        (custom-set-variables '(comint-read-input-ring 'silent)
                               '(comint-input-ring-size 5000)))
     #+end_src
 *** Hook in shell history
