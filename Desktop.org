@@ -984,7 +984,7 @@
      [Desktop Entry]
      Name=Jellyfin
      Comment=Jellyfin media server
-     Exec=xdg-open http://jellyfin.magichome:8096
+     Exec=xdg-open https://jellyfin.magichome
      Icon=/home/gregj/.local/share/pixmaps/jellyfin-icon-256x256-rjpwup8s.png
      Terminal=false
      Type=Application
