@@ -1138,6 +1138,20 @@
      Type=Application
      Categories=Database;
    #+end_src
+
+** Node RED workflow thing
+   #+begin_src conf :tangle ~/.local/share/applications/n8n.desktop
+          [Desktop Entry]
+          Name=Node RED
+          Comment=Workflow thingie
+          Exec= xdg-open https://node-red.magichome/
+          Icon= /home/gregj/.local/share/pixmaps/node-red-hexagon-512x512.png
+          Terminal=false
+          Type=Application
+          Categories=Development;Workflow;Automation
+   #+end_src
+
+   #+end_src
 ** Org Roam Protocol
    Org-roam provides extensions for capturing content from external applications such as
    the browser, via =org-protocol=.  Org-roam extends =org-protocol= with 2 protocols: the
