@@ -181,9 +181,9 @@
       :defer t
       :config
       (setq gptel-backend (gptel-make-gemini "gemini"
-                          :key gptel-api-key :stream t))
+                            :key gptel-api-key :stream t))
       (message "Package gptel loaded.")
-     ;; add-to-list instead of setf for alists https://emacs.stackexchange.com/a/3402/418
+      ;; add-to-list instead of setf for alists https://emacs.stackexchange.com/a/3402/418
       (add-to-list 'gptel-prompt-prefix-alist `(org-mode . ,(concat "*** gjg " (format-time-string "[%Y-%m-%d]") "\n")))
       :custom
       (gptel-expert-commands t)
@@ -196,9 +196,11 @@
       (gptel--debug nil)
       (gptel-default-mode 'org-mode)
       :hook
-      (gptel-pre-tool-call-functions . (lambda (tool-name &optional args)
-                                         (message "Calling tool: %s with args: %s" tool-name (or args "No args")))))
-
+      (gptel-pre-tool-call-functions . (lambda (tool-call-info)
+                                         (message "Calling tool: %s with args: %s"
+                                                  (plist-get tool-call-info :name)
+                                                  (or (plist-get tool-call-info :args) "No args"))
+                                         nil)))
 
     ;; defer nothing
     ;; (require 'gptel)
