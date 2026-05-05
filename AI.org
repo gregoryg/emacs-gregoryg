@@ -64,6 +64,8 @@
                                        ("-y" "@modelcontextprotocol/server-filesystem"
                                         "/data/org-tmp/")
                                        :roots ("/tmp/" )))
+             ("stitch-mcp" . (:url "https://stitch.googleapis.com/mcp"
+                                   :headers (("X-Goog-Api-Key" . ,(gjg/authinfo-secret "google-stitch")))))
              ;; META MCP: rubber ducks galore - use my git clone (with transcription additions)
              ("rubber-duck" . (:command "node"
                                         :args ("/home/gregj/projects/ai/ModelContextProtocol/mcp-rubber-duck/dist/index.js")
