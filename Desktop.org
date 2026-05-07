@@ -943,6 +943,18 @@
      Type=Application
      Categories=InstantMessaging;
    #+end_src
+** Hermes Agent UI
+   #+begin_src conf :tangle ~/.local/share/applications/google-chat.desktop
+     [Desktop Entry]
+     Name=Hermes AI Agent Web UI
+     Comment=Local Hermes
+     Exec=xdg-open https://hermes-ui.magichome/
+     Icon= /home/gregj/.local/share/pixmaps/hermesagent.png
+     Terminal=false
+     Type=Application
+     Categories=AI;LLM
+   #+end_src
+
 ** Home Assistant
    #+begin_src conf :tangle ~/.local/share/applications/home-assistant.desktop
      [Desktop Entry]
