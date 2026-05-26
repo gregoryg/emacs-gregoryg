@@ -1647,7 +1647,9 @@
 
    #+begin_src emacs-lisp
      (require 'dired)
-     (with-eval-after-load 'dired)
+     (with-eval-after-load 'dired
+       (require 'dired-x)
+       (delete ".bin" dired-omit-extensions))
      ;; (use-package all-the-icons-dired)
      (use-package all-the-icons) ;; currently ([2022-12-03 Sat]) being used for org-agenda-category-icon-alist and maybe doom-modeline
 
