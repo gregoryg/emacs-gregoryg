@@ -309,6 +309,17 @@
       ;;         :models '(gpt-4o-mini
       ;;                   gpt-4o)))
     #+end_src
+** Add local llama.cpp
+   #+begin_src emacs-lisp :tangle no
+     (setq gjg/llama-cpp-api-endpoint "172.16.17.77:8080")
+     (gptel-make-openai "llama-cpp"
+       :stream t
+       :protocol "http"
+       :host gjg/llama-cpp-api-endpoint
+       :models '("ggml-org/gemma-3-1b-it-GGUF:Q4_K_M" "unsloth/Qwen3.6-35B-A3B-GGUF:Q4_K_M"))
+
+       ;; :endpoint "/v1/chat/completions"
+#+end_src
 ** Add Ollama backend if Ollama API server is accessible
    This queries all installed models
 
