@@ -944,7 +944,7 @@
      Categories=InstantMessaging;
    #+end_src
 ** Hermes Agent UI
-   #+begin_src conf :tangle ~/.local/share/applications/google-chat.desktop
+   #+begin_src conf :tangle ~/.local/share/applications/hermes-agent-ui.desktop
      [Desktop Entry]
      Name=Hermes AI Agent Web UI
      Comment=Local Hermes
