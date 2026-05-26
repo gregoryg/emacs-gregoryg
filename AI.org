@@ -466,7 +466,7 @@
 **** Insert backend+model as first string in a response buffer
      This function is added as a hook to use with non-chat buffers.  In my org-mode chat buffers, I handle the model attribution differently (as part of my markdown->org function).
      #+begin_src emacs-lisp
-       ;; (advice-add 'gptel-send :before #'org-timer-start)
+       (advice-add 'gptel-send :before #'org-timer-start)
 
        (defun gjg/gptel-insert-model-in-non-gptel-buffers ()
          "This function will add the backend and model in the \"dynamic\" buffers, not in dedicated chat buffers.
