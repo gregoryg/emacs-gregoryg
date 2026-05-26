@@ -128,7 +128,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
            (modus-themes-load-theme (intern gjg/preferred-light-theme))
          (progn
            (load-theme (intern gjg/preferred-light-theme))
-           ((disable-theme gjg/preferred-dark-theme)))))
+           ((disable-theme gjg/preferred-dark-theme))))
+       (start-process "gsettings-color" nil "gsettings" "set" "org.gnome.desktop.interface" "color-scheme" "prefer-light")
+       (start-process "gsettings-color" nil "gsettings" "set" "org.gnome.desktop.interface" "gtk-theme" "Adwaita"))
    #+end_src
 * Register buffer name modeline segment for use in various modeline packages
   :PROPERTIES:
