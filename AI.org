@@ -492,7 +492,8 @@
            (goto-char (+ response-end-pos len-inserted)))
          (org-timer-stop))
 
-       (add-hook 'gptel-post-response-functions 'gjg/gptel-insert-model-in-chat-buffers)
+       (with-eval-after-load 'gptel
+         (add-hook 'gptel-post-response-functions 'gjg/gptel-insert-model-in-chat-buffers))
      #+end_src
 **** Add a very long buffer-specific timout for mcp.el
      mcp.el/mcp-hub does not alter the default jsonrpc timeout of 10 seconds.  So if any mcp call takes more than 10 seconds to return, we end up with a hung tool call
