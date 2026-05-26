@@ -743,42 +743,19 @@
        NOTE: I usually use an MCP server for this purpose (brave-search) because web search is not always free these days!
      + Read a web page
        I return plain text with inline hypertext links using =lynx -dump=
+* Agentic work with gptel-agent
+  + https://www.youtube.com/watch?v=k-sKO6xXgNk&t=90s
 
-    Let's load that sucker now:
-    #+begin_src emacs-lisp
-      (with-eval-after-load 'gptel
-        (load-file "~/projects/emacs/gregoryg-packages/gptel-native-tools/gptel-native-shell.el"))
-#+end_src
+  #+begin_src emacs-lisp :tangle no
+    ;; requires yaml (not yaml-mode); not indicated in the README
+    (use-package yaml)
 
+    (use-package gptel-agent
+      :load-path "~/projects/emacs/ai/gptel-agent/"
+      :config
+      (gptel-agent-update)) ; read files from agents; see gptel-agent-dirs
 
-
-*** File system
-    This replaces the Anthropic =filesystem= MCP server.
-
-    Load the library, then add a function to gptel-mode-hook to automatically add the CWD and (optionally) project.el root to the buffer-local list of allowed directories
-
-    #+begin_src emacs-lisp
-      (with-eval-after-load 'gptel
-          (load-file "~/projects/emacs/gregoryg-packages/gptel-native-tools/gptel-native-filesystem.el")
-          (add-hook 'gptel-mode-hook #'gptel-file-allow-buffer-directory))
-    #+end_src
-
-#+RESULTS:
-
-*** Web / Internet / Online Research category
-**** Search the web and read a web page
-
-      Search and page read are placed into the same callable function which leverages =eww=
-
-      I'm making 2 separate tools out of the one function to make it simpler for LLMs to decide how to use the tools.
-
-      NOTE: These tools have now been moved to ~/projects/emacs/gregoryg-packages/gptel-native-tools/gptel-native-web.el
-
-      #+begin_src emacs-lisp
-(load "~/projects/emacs/gregoryg-packages/gptel-native-tools/gptel-native-web.el")
-      #+end_src
-
-**** Open a web page for the putative human
+  #+end_src
 * Agentic work with agent-shell
    + [[https://xenodium.com/introducing-agent-shell][Introducing Emacs agent-shell (powered by ACP) ≫ xenodium.com]]
    + [[https://github.com/xenodium/agent-shell?tab=readme-ov-file][xenodium/agent-shell ≫ github.com]]
