@@ -809,6 +809,7 @@
                            '(ibuffer-human-readable-size t)
                            '(ibuffer-saved-filter-groups
                              '(("home"
+                                ("Gptel and Emacs AI" (predicate memq 'gptel-mode local-minor-modes))
                                 ("Org and Markdown" (or (mode . org-mode)
                                                         (mode . org-agenda-mode)
                                                         (mode . markdown-mode)))
