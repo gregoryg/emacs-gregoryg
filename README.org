@@ -2029,7 +2029,9 @@
    #+end_src
 *** Prefer json-mode to built-in package
     #+begin_src emacs-lisp
-      (use-package json-mode)
+      (use-package json-mode
+        :config
+        (setq tab-width 2))
     #+end_src
 *** Treat =.cue= as JSON or Bazel
     #+begin_src emacs-lisp
