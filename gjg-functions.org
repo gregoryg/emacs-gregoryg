@@ -117,7 +117,9 @@ A sort-of package with customization framework.  The famed =gjg= package.
            (modus-themes-load-theme (intern gjg/preferred-dark-theme))
          (progn
            (load-theme (intern gjg/preferred-dark-theme))
-           ((disable-theme gjg/preferred-light-theme)))))
+           ((disable-theme gjg/preferred-light-theme))))
+       (start-process "gsettings-color" nil "gsettings" "set" "org.gnome.desktop.interface" "color-scheme" "prefer-dark")
+       (start-process "gsettings-color" nil "gsettings" "set" "org.gnome.desktop.interface" "gtk-theme" "Adwaita-dark"))
 
      (defun gjg/go-light ()
        "switch to preferred light theme - currently specific to modus-themes."
