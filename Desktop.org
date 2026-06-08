@@ -932,6 +932,17 @@
      Categories=Maps;Navigation
    #+end_src
 
+** Gotify notifications
+   #+begin_src bash  :tangle ~/.local/share/applications/gotify.desktop
+     [Desktop Entry]
+     Name=Gotify notifications
+     Comment=
+     Exec=xdg-open https://gotify.magichome/
+     Icon= /home/gregj/.local/share/pixmaps/gotify-logo2.png-512x512.png
+     Terminal=false
+     Type=Application
+     Categories=Notification;Messaging;Self-hosted
+   #+end_src
 ** Hangouts / Google Chat
    #+begin_src conf :tangle ~/.local/share/applications/google-chat.desktop
      [Desktop Entry]
