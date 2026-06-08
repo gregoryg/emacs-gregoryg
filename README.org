@@ -3443,6 +3443,17 @@
        )
      (add-hook 'nov-mode-hook 'gjg/nov-mode-buffer-setup)
 
+     ;; change header line format for select titles
+     (defun gjg/nov-collection-header-maybe ()
+       (when
+           (and (boundp 'nov-metadata)
+                (string-match-p "The Murderbot Diaries: All Systems Red, Artificial Condition, Rogue Protocol, Exit Strategy, Network Effect, Fugitive Telemetry" (alist-get 'title nov-metadata)))
+         (setq-local nov-header-line-format "%c")))
+
+     (add-hook 'nov-mode-hook #'gjg/nov-collection-header-maybe)
+
+
+
      ;; experimental 2026-01-16 Fri
      ;; try detecting quotes and citations so they render differently
      ;; shr does not render css, only HTML
