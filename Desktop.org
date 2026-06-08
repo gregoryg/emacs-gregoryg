@@ -891,7 +891,7 @@
      Name=GitHub
      Comment=GitHub
      Exec=xdg-open https://github.com/gregoryg?tab=repositories
-     Icon= /home/gregj/.local/share/pixmaps/github4.jpg
+     Icon= /home/gregj/.local/share/pixmaps/github-11-xxl.png-512x512.png
      Terminal=false
      Type=Application
      Categories=Development;Coding
