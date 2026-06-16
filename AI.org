@@ -778,78 +778,100 @@
                    (string-match "\\`data:image/[^;]+;base64,\\(.+\\)\\'" data-url))
           (base64-decode-string (match-string 1 data-url))))
 
-      (defun gjg/generate-image-tool (prompt)
+      (defun gjg/generate-image--resolve-api-key ()
+        "Resolve the API key for OpenRouter image generation."
+        (let ((openrouter-backend
+               (and (boundp 'gptel--known-backends)
+                    (alist-get "openrouter" gptel--known-backends nil nil #'equal))))
+          (or (getenv "OPENAI_API_KEY")
+              (and openrouter-backend
+                   (gptel--get-api-key (gptel-backend-key openrouter-backend)))
+              (cond
+               ((functionp gptel-api-key)
+                (string-trim-right (funcall gptel-api-key) "[\n\r]+"))
+               ((stringp gptel-api-key)
+                (string-trim-right gptel-api-key "[\n\r]+"))
+               ((and (symbolp gptel-api-key) (boundp gptel-api-key))
+                (gptel--get-api-key (symbol-value gptel-api-key)))))))
+
+      (defun gjg/generate-image--handle-response (status output-file)
+        "Parse current buffer as an OpenRouter image response.
+
+      STATUS is the `url-retrieve' status plist.  OUTPUT-FILE is where the
+      PNG should be written.  Return a user-facing status string."
+        (if (plist-get status :error)
+            (format "Image generation failed: %s"
+                    (mapconcat #'gptel--to-string
+                               (plist-get status :error)
+                               " "))
+          (goto-char (point-min))
+          (re-search-forward "^$" nil 'move)
+          (forward-char)
+          (let* ((response (gptel--json-read))
+                 (error-info (plist-get response :error))
+                 (data-url (gjg/generate-image--extract-data-url response))
+                 (image-bytes (gjg/generate-image--decode-data-url data-url)))
+            (when error-info
+              (error "%s"
+                     (or (plist-get error-info :message)
+                         (prin1-to-string error-info))))
+            (unless image-bytes
+              (error "response did not contain image data"))
+            (with-temp-file output-file
+              (set-buffer-multibyte nil)
+              (insert image-bytes))
+            (format
+             (concat
+              "Success. Image saved to: %s\n"
+              "Org link: [[file:%s][generated image]]\n"
+              "Tell the user where it is, and if helpful include the Org link verbatim.")
+             output-file output-file))))
+
+      (defun gjg/generate-image-tool (callback prompt)
         "Generate an image from PROMPT using OpenRouter and save it locally.
 
-      Return a user-facing status string that includes the saved path and
-      an Org mode file link."
-        (let* ((openrouter-backend
-                (and (boundp 'gptel--known-backends)
-                     (alist-get "openrouter" gptel--known-backends nil nil #'equal)))
-               (api-key
-                (or (getenv "OPENAI_API_KEY")
-                    (and openrouter-backend
-                         (gptel--get-api-key (gptel-backend-key openrouter-backend)))
-                    (cond
-                     ((functionp gptel-api-key)
-                      (string-trim-right (funcall gptel-api-key) "[\n\r]+"))
-                     ((stringp gptel-api-key)
-                      (string-trim-right gptel-api-key "[\n\r]+"))
-                     ((and (symbolp gptel-api-key) (boundp gptel-api-key))
-                      (gptel--get-api-key (symbol-value gptel-api-key)))))))
-          (unless (and api-key (not (string-empty-p api-key)))
-            (user-error "Image generation failed: could not resolve OpenRouter API key"))
-          (let* ((url-request-method "POST")
-                 (url-request-extra-headers
-                  `(("Content-Type" . "application/json")
-                    ("Authorization" . ,(concat "Bearer " api-key))))
-                 (url-request-data
-                  (gptel--json-encode
-                   `(:model "openai/gpt-5-image-mini"
-                     :messages [(:role "user" :content ,prompt)]
-                     :modalities ["image" "text"]
-                     :stream :json-false)))
-                 (output-file
-                  (expand-file-name
-                   (format "img_%s.png" (format-time-string "%Y%m%d_%H%M%S"))
-                   temporary-file-directory))
-                 (response-buffer
-                  (url-retrieve-synchronously
-                   "https://openrouter.ai/api/v1/chat/completions" t t 60)))
-            (unless response-buffer
-              (user-error "Image generation failed: no response from OpenRouter"))
-            (unwind-protect
-                (with-current-buffer response-buffer
-                  (goto-char (point-min))
-                  (re-search-forward "^$" nil 'move)
-                  (forward-char)
-                  (let* ((response (gptel--json-read))
-                         (error-info (plist-get response :error))
-                         (data-url (gjg/generate-image--extract-data-url response))
-                         (image-bytes (gjg/generate-image--decode-data-url data-url)))
-                    (when error-info
-                      (user-error "Image generation failed: %s"
-                                  (or (plist-get error-info :message)
-                                      (prin1-to-string error-info))))
-                    (unless image-bytes
-                      (user-error
-                       "Image generation failed: response did not contain image data"))
-                    (with-temp-file output-file
-                      (set-buffer-multibyte nil)
-                      (insert image-bytes))
-                    (format
-                     (concat
-                      "Success. Image saved to: %s\n"
-                      "Org link: [[file:%s][generated image]]\n"
-                      "Tell the user where it is, and if helpful include the Org link verbatim.")
-                     output-file output-file)))
-              (kill-buffer response-buffer)))))
+      CALLBACK is the gptel async continuation.  Call it with a user-facing
+      status string that includes the saved path and an Org mode file link."
+        (let ((api-key (gjg/generate-image--resolve-api-key)))
+          (if (not (and api-key (not (string-empty-p api-key))))
+              (funcall callback
+                       "Image generation failed: could not resolve OpenRouter API key")
+            (let* ((url-request-method "POST")
+                   (url-request-extra-headers
+                    `(("Content-Type" . "application/json")
+                      ("Authorization" . ,(concat "Bearer " api-key))))
+                   (url-request-data
+                    (gptel--json-encode
+                     `(:model "openai/gpt-5-image-mini"
+                       :messages [(:role "user" :content ,prompt)]
+                       :modalities ["image" "text"]
+                       :stream :json-false)))
+                   (output-file
+                    (expand-file-name
+                     (format "img_%s.png" (format-time-string "%Y%m%d_%H%M%S"))
+                     temporary-file-directory)))
+              (url-retrieve
+               "https://openrouter.ai/api/v1/chat/completions"
+               (lambda (status)
+                 (let ((result
+                        (condition-case errdata
+                            (gjg/generate-image--handle-response status output-file)
+                          (error
+                           (format "Image generation failed: %s"
+                                   (error-message-string errdata))))))
+                   (unwind-protect
+                       (funcall callback result)
+                     (kill-buffer (current-buffer)))))
+               nil t)))))
 
       (gptel-make-tool
        :name "generate_image"
        :description "Generate an image using a text prompt and return the local path to the image file."
-       :variables '((prompt :type string :description "The detailed visual prompt for image generation"))
-       :fn #'gjg/generate-image-tool
+       :args (list '(:name "prompt"
+                     :type string
+                     :description "The detailed visual prompt for image generation"))
+       :function #'gjg/generate-image-tool
+       :async t
        :category "media")
     #+end_src
 * Agentic work with gptel-agent
