@@ -297,7 +297,7 @@
    If OpenAI makes new models available, the package may lag behind - so specify what models you want to use here
 
     #+begin_src emacs-lisp
-      (gptel-make-openai "chatgpt"
+      (gptel-make-openai "chatgpt API"
         :stream t
         :key gptel-api-key)
       ;; do this by overriding var `gptel--openai'
@@ -309,6 +309,13 @@
       ;;         :models '(gpt-4o-mini
       ;;                   gpt-4o)))
     #+end_src
+
+** Configure ChatGPT / Codex OAuth
+   #+begin_src emacs-lisp
+     (require 'gptel-openai-oauth)
+     (gptel-make-openai-oauth "ChatGPT Codex - sub")
+   #+end_src
+
 ** Add local llama.cpp
    #+begin_src emacs-lisp :tangle no
      (setq gjg/llama-cpp-api-endpoint "172.16.17.77:8080")
