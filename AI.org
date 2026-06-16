@@ -750,6 +750,108 @@
        NOTE: I usually use an MCP server for this purpose (brave-search) because web search is not always free these days!
      + Read a web page
        I return plain text with inline hypertext links using =lynx -dump=
+*** Image generation tool
+    #+begin_src emacs-lisp
+      (require 'json)
+      (require 'url)
+      (require 'url-http)
+      (require 'subr-x)
+
+      (defun gjg/generate-image--extract-data-url (response)
+        "Extract a base64 image data URL from OpenRouter RESPONSE.
+
+      RESPONSE is a plist parsed from JSON.  Return the first image data
+      URL found, or nil if none was present."
+        (or (map-nested-elt response '(:choices 0 :message :images 0 :image_url :url))
+            (map-nested-elt response '(:choices 0 :message :images 0 :imageUrl :url))
+            (let ((b64-json (map-nested-elt response '(:data 0 :b64_json))))
+              (when (stringp b64-json)
+                (concat "data:image/png;base64," b64-json)))))
+
+      (defun gjg/generate-image--decode-data-url (data-url)
+        "Decode image bytes from DATA-URL.
+
+      DATA-URL should be a string of the form
+      =data:image/png;base64,...=.  Return the decoded binary string, or
+      nil if DATA-URL is malformed."
+        (when (and (stringp data-url)
+                   (string-match "\\`data:image/[^;]+;base64,\\(.+\\)\\'" data-url))
+          (base64-decode-string (match-string 1 data-url))))
+
+      (defun gjg/generate-image-tool (prompt)
+        "Generate an image from PROMPT using OpenRouter and save it locally.
+
+      Return a user-facing status string that includes the saved path and
+      an Org mode file link."
+        (let* ((openrouter-backend
+                (and (boundp 'gptel--known-backends)
+                     (alist-get "openrouter" gptel--known-backends nil nil #'equal)))
+               (api-key
+                (or (getenv "OPENAI_API_KEY")
+                    (and openrouter-backend
+                         (gptel--get-api-key (gptel-backend-key openrouter-backend)))
+                    (cond
+                     ((functionp gptel-api-key)
+                      (string-trim-right (funcall gptel-api-key) "[\n\r]+"))
+                     ((stringp gptel-api-key)
+                      (string-trim-right gptel-api-key "[\n\r]+"))
+                     ((and (symbolp gptel-api-key) (boundp gptel-api-key))
+                      (gptel--get-api-key (symbol-value gptel-api-key)))))))
+          (unless (and api-key (not (string-empty-p api-key)))
+            (user-error "Image generation failed: could not resolve OpenRouter API key"))
+          (let* ((url-request-method "POST")
+                 (url-request-extra-headers
+                  `(("Content-Type" . "application/json")
+                    ("Authorization" . ,(concat "Bearer " api-key))))
+                 (url-request-data
+                  (gptel--json-encode
+                   `(:model "openai/gpt-5-image-mini"
+                     :messages [(:role "user" :content ,prompt)]
+                     :modalities ["image" "text"]
+                     :stream :json-false)))
+                 (output-file
+                  (expand-file-name
+                   (format "img_%s.png" (format-time-string "%Y%m%d_%H%M%S"))
+                   temporary-file-directory))
+                 (response-buffer
+                  (url-retrieve-synchronously
+                   "https://openrouter.ai/api/v1/chat/completions" t t 60)))
+            (unless response-buffer
+              (user-error "Image generation failed: no response from OpenRouter"))
+            (unwind-protect
+                (with-current-buffer response-buffer
+                  (goto-char (point-min))
+                  (re-search-forward "^$" nil 'move)
+                  (forward-char)
+                  (let* ((response (gptel--json-read))
+                         (error-info (plist-get response :error))
+                         (data-url (gjg/generate-image--extract-data-url response))
+                         (image-bytes (gjg/generate-image--decode-data-url data-url)))
+                    (when error-info
+                      (user-error "Image generation failed: %s"
+                                  (or (plist-get error-info :message)
+                                      (prin1-to-string error-info))))
+                    (unless image-bytes
+                      (user-error
+                       "Image generation failed: response did not contain image data"))
+                    (with-temp-file output-file
+                      (set-buffer-multibyte nil)
+                      (insert image-bytes))
+                    (format
+                     (concat
+                      "Success. Image saved to: %s\n"
+                      "Org link: [[file:%s][generated image]]\n"
+                      "Tell the user where it is, and if helpful include the Org link verbatim.")
+                     output-file output-file)))
+              (kill-buffer response-buffer)))))
+
+      (gptel-make-tool
+       :name "generate_image"
+       :description "Generate an image using a text prompt and return the local path to the image file."
+       :variables '((prompt :type string :description "The detailed visual prompt for image generation"))
+       :fn #'gjg/generate-image-tool
+       :category "media")
+    #+end_src
 * Agentic work with gptel-agent
   + https://www.youtube.com/watch?v=k-sKO6xXgNk&t=90s
 
