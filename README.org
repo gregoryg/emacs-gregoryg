@@ -1334,6 +1334,7 @@
        :ensure nil ; Built-in
        :init
        (unbind-key (kbd "C-'") org-mode-map)
+       :config
        (define-key hs-minor-mode-map (kbd "C-'") #'hs-toggle-hiding)
        :hook
        (prog-mode . hs-minor-mode)
@@ -1341,23 +1342,8 @@
        :custom
        (hs-indentation-respect-end-block t)
        (hs-display-lines-hidden t)
-       (hs-indentation-allow-nesting t))
+       (hs-allow-nesting t))
 
-   #+end_src
-** Yafolding Mode - replaced by hs-minor-mode (?)
-   Yafolding mode is useful in code and (maybe even but probably not in) Org.  Let's keep
-   Org mode's keys unmolested, and use an additional modifier to toggle hide/show
-   #+begin_src emacs-lisp :tangle no
-     (use-package yafolding
-       :init
-       (unbind-key (kbd "<C-return>") yafolding-mode-map)
-       (unbind-key (kbd "<C-S-return>") yafolding-mode-map)
-       (unbind-key (kbd "<C-M-return>") yafolding-mode-map)
-       (unbind-key (kbd "C-'") org-mode-map)
-       (define-key yafolding-mode-map (kbd "C-'") #'yafolding-toggle-element)
-       (define-key yafolding-mode-map (kbd "C-M-'") #'yafolding-toggle-all))
-       ;; (define-key yafolding-mode-map (kbd "<C-S-return>") #'yafolding-toggle-all)
-       ;; (define-key yafolding-mode-map (kbd "<C-M-return>") #'yafolding-toggle-element))
    #+end_src
 ** Corfu - in-buffer auto-complete and more
 
