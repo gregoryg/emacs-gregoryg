@@ -1322,10 +1322,32 @@
                     args)))
    #+end_src
 
-** Yafolding Mode
+** Hide-Show mode
+
+   This (re-written in Emacs 31) and hs-indentation-mode replace my use of yafolding
+
+   + [[https://www.reddit.com/r/emacs/comments/1uafbsn/underappreciated_emacs_builtins_hideshow_60/][Underappreciated Emacs built-ins: hideshow 6.0 : r/emacs - www.reddit.com]]
+
+
+   #+begin_src emacs-lisp
+     (use-package hideshow
+       :ensure nil ; Built-in
+       :init
+       (unbind-key (kbd "C-'") org-mode-map)
+       (define-key hs-minor-mode-map (kbd "C-'") #'hs-toggle-hiding)
+       :hook
+       (prog-mode . hs-minor-mode)
+       (hs-minor-mode . hs-indentation-mode)
+       :custom
+       (hs-indentation-respect-end-block t)
+       (hs-display-lines-hidden t)
+       (hs-indentation-allow-nesting t))
+
+   #+end_src
+** Yafolding Mode - replaced by hs-minor-mode (?)
    Yafolding mode is useful in code and (maybe even but probably not in) Org.  Let's keep
    Org mode's keys unmolested, and use an additional modifier to toggle hide/show
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package yafolding
        :init
        (unbind-key (kbd "<C-return>") yafolding-mode-map)
