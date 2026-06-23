@@ -550,3 +550,25 @@ Archived entries from file /home/gregj/emacs-gregoryg/README.org
         :custom
         (ttl-indent-level 2))
     #+end_src
+
+* Yafolding Mode - replaced by hs-minor-mode (?)
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2026-06-23 Tue 14:02
+  :ARCHIVE_FILE: ~/emacs-gregoryg/README.org
+  :ARCHIVE_OLPATH: Commonly used modes
+  :ARCHIVE_CATEGORY: README
+  :END:
+   Yafolding mode is useful in code and (maybe even but probably not in) Org.  Let's keep
+   Org mode's keys unmolested, and use an additional modifier to toggle hide/show
+   #+begin_src emacs-lisp :tangle no
+     (use-package yafolding
+       :init
+       (unbind-key (kbd "<C-return>") yafolding-mode-map)
+       (unbind-key (kbd "<C-S-return>") yafolding-mode-map)
+       (unbind-key (kbd "<C-M-return>") yafolding-mode-map)
+       (unbind-key (kbd "C-'") org-mode-map)
+       (define-key yafolding-mode-map (kbd "C-'") #'yafolding-toggle-element)
+       (define-key yafolding-mode-map (kbd "C-M-'") #'yafolding-toggle-all))
+       ;; (define-key yafolding-mode-map (kbd "<C-S-return>") #'yafolding-toggle-all)
+       ;; (define-key yafolding-mode-map (kbd "<C-M-return>") #'yafolding-toggle-element))
+   #+end_src
