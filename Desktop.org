@@ -1585,7 +1585,7 @@
      [Desktop Entry]
      Name=YouTube
      Comment=
-     Exec=xdg-open https://youtube.com
+     Exec=x-www-browser --new-window https://youtube.com
      Icon= /home/gregj/.local/share/pixmaps/youtube-logo.png
      Terminal=false
      Type=Application
