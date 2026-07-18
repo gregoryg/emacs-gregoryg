@@ -1919,9 +1919,10 @@
        :custom
        (rg-custom-type-aliases
         '(
-          ("sparql" . "*.{sparql,rq}")
-          ("rdf"    . "*.{ttl,turtle,rdf,owl,trig}")
-          ("sms"    . "*.{sms,sms2}")))
+          ("sparql"  . "*.{sparql,rq}")
+          ("rdf"     . "*.{ttl,turtle,rdf,owl,trig}")
+          ("sms"     . "*.{sms,sms2}")
+          ("desktop" . "*.desktop")))
        (rg-buffer-name "rg-search")
        (rg-hide-command t))
    #+end_src
