@@ -1263,25 +1263,15 @@
 ** Dictation, Text-to-Speech
    #+begin_src emacs-lisp
      (use-package whisper
-       :load-path "~/projects/whisper.el/")
-     ;; :config
-     ;; (setq whisper-install-directory "/tmp/"
-     ;;        whisper-model "base"
-     ;;        whisper-language "en"
-     ;;        whisper-translate nil
-     ;;        whisper-use-threads (/ (num-processors) 2)))
-
-     ;; :bind ("C-H-r" . whisper-run)
-
-     (custom-set-variables
-      '(whisper-after-insert-hook ''(lambda nil (progn (goto-char (point-max) (insert)))))
-      '(whisper-install-whispercpp nil)
-      '(whisper-openai-api-baseurl "http://172.16.17.77:8000/")
-      '(whisper-openai-api-key "sk-ohai")
-      '(whisper-server-host "172.16/17.77")
-      '(whisper-server-mode 'local)
-      '(whisper-server-port 8000))
-
+       :load-path "~/projects/emacs/whisper.el/"
+       :custom
+       (whisper-recording-timeout 8)
+       (whisper-return-cursor 'end)
+       (whisper-install-whispercpp nil)
+       (whisper-server-mode 'remote)
+       (whisper-openai-api-baseurl "http://172.16.17.77:8000/")
+       (whisper-openai-api-key "sk-ohai")
+       (whisper-server-baseurl "http://172.16.17.77:8000/"))
 
      (global-set-key (kbd "C-s-r") #'whisper-run)
 #+end_src
