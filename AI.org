@@ -323,7 +323,7 @@
        :stream t
        :protocol "http"
        :host gjg/llama-cpp-api-endpoint
-       :models '("ggml-org/gemma-3-1b-it-GGUF:Q4_K_M" "unsloth/Qwen3.6-35B-A3B-GGUF:Q4_K_M"))
+       :models '("ggml-org/gemma-3-1b-it-GGUF:Q4_K_M" "unsloth/Qwen3.6-35B-A3B-GGUF:Q4_K_M" "Shadow0482/mythos_fast:Q4_K_M"))
 
        ;; :endpoint "/v1/chat/completions"
 #+end_src
