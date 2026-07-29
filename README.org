@@ -816,6 +816,7 @@
                                 ("Epub / Books" (mode . nov-mode))
                                 ("Shells" (or (mode . shell-mode)
                                               (mode . vterm-mode)
+                                              (mode . ghostel-mode)
                                               (mode . eshell-mode)))
                                 ("EXWM X Apps" (mode . exwm-mode))
                                 ("Configs" (or (derived-mode .  conf-mode)
