@@ -593,10 +593,10 @@ system.
    of the appropriate profile with the =--change= parameter.  The solution came from a
    [[https://www.reddit.com/r/emacs/comments/j0zda7/exwm_randr_config_for_laptop_disconnect/?utm_source=share&utm_medium=web2x&context=3][post on /r/emacs]]
 
-       #+begin_src emacs-lisp :tangle no
+       #+begin_src emacs-lisp
          (require 'exwm-randr)
          ;; (setq exwm-randr-workspace-monitor-plist '(0 "DP-1")) ;; DP-1 is the big monitor, if connected
-         (setq exwm-randr-workspace-monitor-plist '(0 "HDMI-1" 1 "eDP-1")) ;; DP-3 is the big monitor, if connected
+         (setq exwm-randr-workspace-monitor-plist '(0 "HDMI-1" 1 "eDP-1")) ;; HDMI-1 is the big monitor, if connected
          (add-hook 'exwm-randr-screen-change-hook
                    (lambda()
                      ;; "Let's try a thing.  If the big external monitor is detected, initiate monitor-only profile."
