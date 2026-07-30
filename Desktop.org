@@ -148,7 +148,6 @@
           libtool-bin \
           lightdm \
           lynx \t
-          keychain \
           locate \
           net-tools \
           nm-tray \
@@ -209,6 +208,61 @@
    Install the above as an X Session alternative
    #+begin_src bash
      sudo update-alternatives --install /usr/share/xsessions/default.desktop default-xsession.desktop /usr/share/xsessions/emacs.desktop 20
+   #+end_src
+** OpenSSH agent for all user sessions
+   Use the OpenSSH agent supplied by =openssh-client= as a socket-activated
+   =systemd --user= service.  TTY, EXWM, and conventional desktop sessions all
+   use the stable socket at =$XDG_RUNTIME_DIR/openssh_agent=.  Agent keys expire
+   after eight hours by default.
+
+   Do not start agents from Emacs or =keychain=.  The GCR and GnuPG packages may
+   remain installed for GNOME and GPG, but their competing SSH-agent sockets are
+   masked for this user.
+
+   #+begin_src conf :tangle ~/.config/systemd/user/ssh-agent.service.d/override.conf
+     [Service]
+     ExecStart=
+     ExecStart=/usr/bin/ssh-agent -D -t 8h
+   #+end_src
+
+   #+begin_src conf :tangle ~/.config/environment.d/60-ssh-agent.conf
+     # Authentication agent for services launched by systemd --user.
+     SSH_AUTH_SOCK=${XDG_RUNTIME_DIR}/openssh_agent
+   #+end_src
+
+   Preserve an agent forwarded into an SSH login; otherwise use the local
+   socket-activated agent.  =SSH_AGENT_PID= is intentionally absent because
+   clients communicate through the stable socket rather than a daemon PID.
+
+   #+begin_src sh :tangle ~/.config/ssh-agent-env.sh
+     # Use the socket-activated OpenSSH agent unless this session has a live
+     # forwarded agent of its own.
+     if [ -z "${SSH_AUTH_SOCK:-}" ] || [ ! -S "$SSH_AUTH_SOCK" ]; then
+         SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/openssh_agent"
+         export SSH_AUTH_SOCK
+     fi
+
+     # A socket-activated agent has no stable PID for clients to track.
+     unset SSH_AGENT_PID
+   #+end_src
+
+   Login shells source the fragment from =~/.bash_profile=.  Debian Xsession
+   sources =~/.xsessionrc= before its optional SSH-agent wrapper.
+
+   #+begin_src sh :tangle ~/.xsessionrc
+     # Give X11 sessions the same socket-activated OpenSSH agent used by TTY and
+     # systemd user sessions.  This is sourced before Debian's optional Xsession
+     # ssh-agent wrapper.
+     . "$HOME/.config/ssh-agent-env.sh"
+   #+end_src
+
+   One-time system setup:
+
+   #+begin_src bash
+     systemctl --user mask --now gcr-ssh-agent.service gcr-ssh-agent.socket gpg-agent-ssh.socket
+     systemctl --user enable --now ssh-agent.socket
+     sudo sed -i '/^use-ssh-agent$/d' /etc/X11/Xsession.options
+     sudo apt purge keychain
    #+end_src
 ** Lightdm auto-login and default user behavior
    #+begin_src conf :tangle /sudo::/usr/share/lightdm/lightdm.conf.d/42-gregthang.conf
