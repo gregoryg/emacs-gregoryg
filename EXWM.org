@@ -335,6 +335,26 @@ system.
      (require 'exwm)
      (require 'exwm-randr)
    #+end_src
+** Exit the controlling EXWM session directly
+   Emacs normally binds =C-x C-c= to =save-buffers-kill-terminal=, which delegates
+   to =save-buffers-kill-emacs= on a non-client frame.  EXWM advises the former
+   command and adds a redundant terminal-kill confirmation before that delegation.
+
+   On the controlling EXWM frame, exit the Emacs process directly.  Preserve the
+   standard behavior for real emacsclient frames so =C-x C-c= closes only that
+   client connection.
+
+   #+begin_src emacs-lisp
+     (defun gjg/exwm-save-buffers-kill (&optional arg)
+       "Save buffers and exit EXWM, or close an Emacs client frame.
+With prefix ARG, silently save all file-visiting buffers."
+       (interactive "P")
+       (if (frame-parameter nil 'client)
+           (save-buffers-kill-terminal arg)
+         (save-buffers-kill-emacs arg)))
+
+     (global-set-key (kbd "C-x C-c") #'gjg/exwm-save-buffers-kill)
+   #+end_src
 ** My specific config function
    I did not want =ido= integration and wanted to evolve my config.  So I copied the
    default config function and commenced modifying
