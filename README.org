@@ -1776,7 +1776,12 @@
         :config
         (define-key vterm-mode-map (kbd "M-p") nil)
         :bind (:map vterm-mode-map
-                    (("M-p" . (lambda () (interactive) (vterm-insert  (kbd "<up>")))))))
+                    (
+                     ;; ("M-p" . (lambda () (interactive) (vterm-insert  (kbd "<up>"))))
+                     ;; simulate up/down the shell history with M-n/p from shell-mode
+                     ("M-p" . vterm-send-C-p)
+                     ("M-n" . vterm-send-C-n))))
+
     #+end_src
 *** Coterm - comint with terminal emulation
     This thing is magnificent.  It provides good-enough terminal emulation in my beloved
