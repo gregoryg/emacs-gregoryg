@@ -1834,13 +1834,6 @@
               (shell-dirtrack-mode 1)
               (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))
     #+end_src
-*** SSH Agent in subprocesses
-    + Not really related to shell-mode, this assures our keychain is activated for things
-      such as magit that fire off subproceess
-      #+begin_src emacs-lisp
-        (use-package keychain-environment)
-        (keychain-refresh-environment)
-      #+end_src
 ** Magit
 *** Behavior
     #+begin_src emacs-lisp
@@ -3317,6 +3310,62 @@
      (setq org-loop-over-headlines-in-active-region t)
    #+end_src
 * Learning / researching / knowledge flow
+** Hyperbole and HyWiki
+   + refs:
+     + [[https://www.youtube.com/watch?v=3zG3lRmi3Zg&t=976s][(1) HyWiki: Zero Markup Hypertext - YouTube - www.youtube.com]]
+       #+begin_src emacs-lisp :tangle no
+         ;; add elpa-devel to get the latest Hyperbole
+         (add-to-list
+          'package-archives
+          '("elpa-devel" . "https://elpa.gnu.org/devel/"))
+
+         ;; install Hyperbole from GNU ELPA-Devel
+         (use-package hyperbole
+           :load-path "~/projects/emacs/hyperbole/"
+           :init
+           ;; unsteal my org mode key
+           ;; (unbind-key (kbd "M-<return>") hyperbole-mode-map)
+           :config
+           ;; enable hyperbole-mode
+           (hyperbole-mode 1)
+
+           ;; enable hywiki-mode and make HyWikiWords appear everywhere
+           (hywiki-mode :all)
+
+           ;; make hyperbole's Action Key override org-mode's built-in
+           ;; keybinding
+           (customize-save-variable 'hsys-org-enable-smart-keys t))
+       #+end_src
+** browsel
+   #+begin_src emacs-lisp
+     (use-package websocket)
+     (use-package browsel
+       :load-path "~/projects/emacs/browsel/"
+       :custom
+       (browsel-tab-manager-confirm-close nil)
+       :config
+       (require 'browsel-www)         ; SAVE_PAGE
+       (require 'browsel-chatgpt)     ; CHATGPT
+       (require 'browsel-youtube)     ; YOUTUBE + YOUTUBE_TRANSCRIPT
+       (require 'browsel-babel)       ; org-babel browsel-js blocks
+       (require 'browsel-tab-manager) ; M-x browsel-tab-manager
+       (require 'browsel-url-handler) ; browsel-browse-url + browsel-url-routes
+       (browsel-start))
+   #+end_src
+** ghostel
+   #+begin_src emacs-lisp
+     ;; (use-package ghostel
+     ;;   :vc (:url "https://github.com/dakra/ghostel" :rev :newest))
+     (use-package ghostel
+       :load-path "~/projects/emacs/ghostel/lisp/")
+   #+end_src
+** Cool let-completion
+   Github: https://github.com/gggion/let-completion.el
+
+   #+begin_src emacs-lisp
+(use-package let-completion
+  :hook (emacs-lisp-mode . let-completion-mode))
+   #+end_src
 ** org-node - a note taking system
    #+begin_src emacs-lisp
      (use-package org-mem
