@@ -1266,7 +1266,7 @@
      (use-package whisper
        :load-path "~/projects/emacs/whisper.el/"
        :custom
-       (whisper-recording-timeout 8)
+       (whisper-recording-timeout 15)
        (whisper-return-cursor 'end)
        (whisper-install-whispercpp nil)
        (whisper-server-mode 'remote)
