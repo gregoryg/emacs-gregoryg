@@ -3570,6 +3570,44 @@
                                            (line-height . 1.4))))
 
     #+end_src
+** Podcasts
+   #+begin_src emacs-lisp
+     (use-package podcast-companion
+       :load-path "~/projects/media/podcast-companion/"
+       :config
+       (define-key org-mode-map (kbd "C-c p") #'podcast-companion-play)
+       :custom
+       (podcast-companion-file "~/projects/media/podcast-companion/podcasts.org"))
+   #+end_src
+Add some agenda views
+#+begin_src emacs-lisp
+  (add-to-list
+   'org-agenda-files
+   "~/projects/media/org-podcast-man/podcasts.org")
+  (add-to-list 'org-agenda-custom-commands '("P" . "Podcasts") t)
+  (add-to-list
+   'org-agenda-custom-commands
+   '("Pi" "Podcast inbox"
+     ((tags "+inbox-unplayable"
+            ((org-agenda-files
+              '("/home/gregj/projects/media/org-podcast-man/podcasts.org"))
+             (org-agenda-overriding-header "Playable podcast inbox")
+             (org-agenda-prefix-format '((tags . "  %b")))))
+      (tags "+inbox+unplayable"
+            ((org-agenda-files
+              '("/home/gregj/projects/media/org-podcast-man/podcasts.org"))
+             (org-agenda-overriding-header "Unavailable/private")
+             (org-agenda-prefix-format '((tags . "  %b")))))))
+   t)
+  (add-to-list
+   'org-agenda-custom-commands
+   '("Pl" "Podcasts by language" org-podcast-man-agenda-language "")
+   t)
+  (add-to-list
+   'org-agenda-custom-commands
+   '("Pr" "Recently added podcasts" org-podcast-man-agenda-recent "")
+   t)
+#+end_src
 * Final steps
 #+begin_src emacs-lisp
   (shell (get-buffer-create "sh1"))
