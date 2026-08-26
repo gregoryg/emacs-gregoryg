@@ -180,8 +180,6 @@
       :ensure nil
       :defer t
       :config
-      (setq gptel-backend (gptel-make-gemini "gemini"
-                            :key gptel-api-key :stream t))
       (message "Package gptel loaded.")
       ;; add-to-list instead of setf for alists https://emacs.stackexchange.com/a/3402/418
       (add-to-list 'gptel-prompt-prefix-alist `(org-mode . ,(concat "*** gjg " (format-time-string "[%Y-%m-%d]") "\n")))
@@ -189,7 +187,7 @@
       (gptel-expert-commands t)
       (gptel-track-media t)
       (gptel-include-reasoning 'ignore)
-      (gptel-model 'gpt-5-mini)
+      (gptel-model 'gpt-5.6)
       (gptel-prompt-prefix-alist
        '((markdown-mode . "### ") (org-mode . "*** gjg\12") (text-mode . "### ")))
       (gptel-log-level 'info)
@@ -313,7 +311,8 @@
 ** Configure ChatGPT / Codex OAuth
    #+begin_src emacs-lisp
      (require 'gptel-openai-oauth)
-     (gptel-make-openai-oauth "ChatGPT Codex - sub")
+     (setq gptel-model 'gpt-5.6-terra
+           gptel-backend (gptel-make-openai-oauth "ChatGPT Codex - sub"))
    #+end_src
 
 ** Add local llama.cpp
