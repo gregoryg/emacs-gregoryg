@@ -394,6 +394,17 @@
          (setq gptel-directives (gjg/gptel-build-directives "~/projects/ai/AIPIHKAL/system-prompts/")
                gptel-system-message (alist-get 'default gptel-directives))))
    #+end_src
+** Presets
+*** Flashcard examples for Portuguese
+    #+begin_src emacs-lisp
+      (gptel-make-preset 'portuguese-sample-sentences
+        :description "Generate sample sentences based on portuguese flashcard words or phrases" :backend
+        "ChatGPT Codex - sub" :model 'gpt-5.6-terra :system
+        "please give 4-5 memorable portuguese sentences using the portuguese terms, with translations in Spanish.  simple list, no bolding or emphasis\n"
+        :tools 'nil :stream t :temperature nil :max-tokens nil :use-context 'system :track-media t
+        :include-reasoning 'ignore)
+
+    #+end_src
 ** An experiment in composable prompts using presets
     Let's make a list of all directories that prompts may be found in - note that this is a subset of the =gptel-prompts= package by @jwiegley that I only discovered today [2025-07-03 Thu], but it suits my needs.
 
