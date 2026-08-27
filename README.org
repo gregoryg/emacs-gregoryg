@@ -3520,8 +3520,8 @@
              ("en" . "de")
              ("nl" . "en")
              ("en" . "nl")
-             ("en" . "he")
-             ("he" . "en")
+             ("pt" . "es")
+             ("es" . "pt")
              ))
    #+end_src
 ** E-books in Epub format
