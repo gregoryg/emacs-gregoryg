@@ -2,6 +2,7 @@
 src
 *.elc
 elpa/
+.dir-locals.el
 .emacs.d/init_bash.sh
 .emacs.d/org-persist/
 .emacs.d/persist/
