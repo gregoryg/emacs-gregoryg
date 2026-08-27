@@ -395,17 +395,35 @@
                gptel-system-message (alist-get 'default gptel-directives))))
    #+end_src
 ** Presets
+Because I am deferring loading of gptel, `gptel-make-preset` should be wrapped in `eval-after-load`
+
+NOTE: commit 5d6312f on 2026-08-23 adds the ability to selectively activate MCP tools (e.g., only list_directory and get_file_info on the "filesystem" MCP) - will be useful in presets
+
 *** Flashcard examples for Portuguese
     #+begin_src emacs-lisp
-      (gptel-make-preset 'portuguese-sample-sentences
-        :description "Generate sample sentences based on portuguese flashcard words or phrases" :backend
-        "ChatGPT Codex - sub" :model 'gpt-5.6-terra :system
-        "please give 4-5 memorable portuguese sentences using the portuguese terms, with translations in Spanish.  simple list, no bolding or emphasis\n"
-        :tools 'nil :stream t :temperature nil :max-tokens nil :use-context 'system :track-media t
-        :include-reasoning 'ignore)
-
+      (with-eval-after-load 'gptel
+        (gptel-make-preset 'portuguese-sample-sentences
+          :description "Generate sample sentences based on portuguese flashcard words or phrases"
+          :backend "ChatGPT Codex - sub"
+          :model 'gpt-5.6-terra
+          :system "please give 4-5 memorable portuguese sentences using the portuguese terms, with translations in Spanish.  simple list, no bolding or emphasis\n"
+          :tools 'nil
+          :stream t
+          :temperature nil
+          :max-tokens nil
+          :use-context 'system
+          :track-media t
+          :include-reasoning 'ignore))
     #+end_src
-** An experiment in composable prompts using presets
+*** Python coder
+    #+begin_src emacs-lisp :tangle no
+      (with-eval-after-load 'gptel
+        (gptel-make-preset 'python-coder
+          :description "Full prompt for a python coder partner."
+          :system (gjg/build-system-prompt
+                   '("roles" "use-org-mode" "project-context" "documentation" "task-management" "tool-usage" "code-structure" "coding-behavior-rules" "human-coding-partner" "python-style-conventions" "python-tests"))))
+#+end_src
+*** An experiment in composable prompts using presets
     Let's make a list of all directories that prompts may be found in - note that this is a subset of the =gptel-prompts= package by @jwiegley that I only discovered today [2025-07-03 Thu], but it suits my needs.
 
     We have a function that will work with 2 streams in my AIPIHKAL project
@@ -461,13 +479,6 @@
                (contents (mapcar #'f-read-text valid-files)))
           (mapconcat #'identity contents "\n\n")))
 
-#+end_src
-** Python coder
-    #+begin_src emacs-lisp :tangle no
-      (gptel-make-preset 'python-coder
-        :description "Full prompt for a python coder partner."
-        :system (gjg/build-system-prompt
-                 '("roles" "use-org-mode" "project-context" "documentation" "task-management" "tool-usage" "code-structure" "coding-behavior-rules" "human-coding-partner" "python-style-conventions" "python-tests")))
 #+end_src
 ** Add my supplemental functions
 *** Functions to use in hooks
