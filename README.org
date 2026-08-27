@@ -3405,7 +3405,7 @@
   :hook (emacs-lisp-mode . let-completion-mode))
    #+end_src
 ** org-node - a note taking system
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package org-mem
        :defer t
        ;; At least one of these two is needed
