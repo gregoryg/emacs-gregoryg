@@ -3466,17 +3466,27 @@
     sudo apt-get -y install gawk
   #+end_src
   #+begin_src emacs-lisp
-        (use-package hydra)
+    (use-package hydra)
 
 
-        (use-package org-fc
-          :load-path "~/projects/emacs/org-fc/"
-          :custom (org-fc-directories '("~/projects/private-orgmode/learning/"))
-          :config
-          (require 'org-fc-hydra)
-          (define-key org-fc-review-rate-mode-map "1" 'org-fc-review-rate-hard)
-          (define-key org-fc-review-rate-mode-map "2" 'org-fc-review-rate-good)
-          (define-key org-fc-review-rate-mode-map "3" 'org-fc-review-rate-easy))
+    (use-package org-fc
+      :load-path "~/projects/emacs/org-fc/"
+      :custom (org-fc-directories '("~/projects/private-orgmode/learning/portugues/"))
+      :config
+      ;; (require 'org-fc-hydra)
+      (define-key org-fc-review-rate-mode-map "1" 'org-fc-review-rate-easy)
+      (define-key org-fc-review-rate-mode-map "2" 'org-fc-review-rate-good)
+      (define-key org-fc-review-rate-mode-map "3" 'org-fc-review-rate-hard)
+      :hook
+      (org-fc-after-flip-hook .
+       (lambda () (when (org-buffer-narrowed-p) (org-show-all)))))
+
+    (add-to-list 'org-fc-custom-contexts
+                 '(spanish
+                   . (:paths ("~/projects/private-orgmode/learning/portugues/portuguese-frequency-dict-flashcards.org")
+                      :filter (tag "es"))))
+
+
     ;;    (use-package org-drill)
 #+end_src
 #+begin_src emacs-lisp :tangle no
