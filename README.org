@@ -3524,6 +3524,11 @@
              ("es" . "pt")
              ))
    #+end_src
+** Quick tts
+   #+begin_src emacs-lisp
+     (use-package google-tts
+       :load-path "~/projects/emacs/gregoryg-packages/google-tts/")
+   #+end_src
 ** E-books in Epub format
 *** nov.el
    #+begin_src emacs-lisp
