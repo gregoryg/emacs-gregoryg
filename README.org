@@ -712,6 +712,24 @@
            (when (yes-or-no-p "Buffer is indirect; really widen? ")
              (widen))
          (widen)))
+
+     (defun my/custom-indirect-buffer-naming (orig-fun &optional name display-flag norecord)
+       "Force automatic indirect buffer names to use the '-INDIRECT' suffix pattern."
+       (let ((base-name (buffer-name)))
+         ;; If the user didn't provide a custom name (e.g., didn't use C-u)
+         (unless name
+           (let ((new-name (concat base-name "-INDIRECT"))
+                 (counter 1))
+             ;; Find the next available unique name
+             (while (get-buffer new-name)
+               (setq counter (1+ counter))
+               (setq new-name (format "%s-INDIRECT<%d>" base-name counter)))
+             (setq name new-name)))
+         ;; Execute the original function with our new custom name
+         (funcall orig-fun name display-flag norecord)))
+
+     ;; Apply the advice to the standard Emacs command
+     (advice-add 'clone-indirect-buffer :around #'my/custom-indirect-buffer-naming)
    #+end_src
 ** Big bunch of key bindings for Window/Buffer navigation
    TODO: figure out global Super key chords in exwm map vs global key map
