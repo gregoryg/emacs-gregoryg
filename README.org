@@ -377,7 +377,7 @@
     (global-unset-key (kbd "M-[")) ; unset one previous-buffer binding
     (global-set-key (kbd "s-g") 'gjg/exwm-select-or-launch-gitea)
     (global-set-key (kbd "s-y") 'gjg/exwm-select-or-launch-spotify)
-    (global-set-key (kbd "s--")  #'browsel-tab-jump)
+    (global-set-key (kbd "s--")  #'browser-gt-tab-jump)
     (global-set-key (kbd "s-=")  'gjg/exwm-select-or-launch-home-assistant)
 
     (global-set-key [f1] 'delete-other-windows)
@@ -3341,21 +3341,21 @@
            ;; keybinding
            (customize-save-variable 'hsys-org-enable-smart-keys t))
        #+end_src
-** browsel
+** browser-gt
    #+begin_src emacs-lisp
-     (use-package websocket)
-     (use-package browsel
-       :load-path "~/projects/emacs/browsel/"
+     (use-package websocket :ensure t)
+     (use-package browser-gt
+       :load-path "~/projects/emacs/browser-gt/"
        :custom
-       (browsel-tab-manager-confirm-close nil)
+       (browser-gt-tab-manager-confirm-close nil)
        :config
-       (require 'browsel-www)         ; SAVE_PAGE
-       (require 'browsel-chatgpt)     ; CHATGPT
-       (require 'browsel-youtube)     ; YOUTUBE + YOUTUBE_TRANSCRIPT
-       (require 'browsel-babel)       ; org-babel browsel-js blocks
-       (require 'browsel-tab-manager) ; M-x browsel-tab-manager
-       (require 'browsel-url-handler) ; browsel-browse-url + browsel-url-routes
-       (browsel-start))
+       (require 'browser-gt-www)         ; SAVE_PAGE
+       (require 'browser-gt-chatgpt)     ; CHATGPT
+       (require 'browser-gt-youtube)     ; YOUTUBE + YOUTUBE_TRANSCRIPT
+       (require 'browser-gt-babel)       ; org-babel browser-gt-js blocks
+       (require 'browser-gt-tab-manager) ; M-x browser-gt-tab-manager
+       (require 'browser-gt-url-handler) ; browser-gt-browse-url + browser-gt-url-routes
+       (browser-gt-start))
    #+end_src
 ** ghostel
    #+begin_src emacs-lisp
