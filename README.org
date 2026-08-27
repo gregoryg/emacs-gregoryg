@@ -3621,11 +3621,13 @@
 ** Podcasts
    #+begin_src emacs-lisp
      (use-package podcast-companion
-       :load-path "~/projects/media/podcast-companion/"
+       :load-path "~/projects/emacs/gregoryg-packages/podcast-companion/"
        :config
        (define-key org-mode-map (kbd "C-c p") #'podcast-companion-play)
        :custom
-       (podcast-companion-file "~/projects/media/podcast-companion/podcasts.org"))
+       (podcast-companion-file "~/projects/emacs/gregoryg-packages/podcast-companion/podcasts.org")
+       (podcast-companion-transcribe-executable "~/projects/emacs/gregoryg-packages/spotify-cli/podcast-transcribe.py")
+       (podcast-companion-list-transcript-indicator ?📝))
    #+end_src
 Add some agenda views
 #+begin_src emacs-lisp
