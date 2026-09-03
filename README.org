@@ -1332,7 +1332,7 @@
 
 ** Hide-Show mode
 
-   This (re-written in Emacs 31) and hs-indentation-mode replace my use of yafolding
+   This (re-written for Emacs 31+) and hs-indentation-mode replace my use of yafolding
 
    + [[https://www.reddit.com/r/emacs/comments/1uafbsn/underappreciated_emacs_builtins_hideshow_60/][Underappreciated Emacs built-ins: hideshow 6.0 : r/emacs - www.reddit.com]]
 
