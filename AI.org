@@ -201,9 +201,20 @@
                                          nil)))
 
     ;; defer nothing
-    ;; (require 'gptel)
-    ;; (require 'gptel-transient)
+    (require 'gptel)
+    (require 'gptel-transient)
     (with-eval-after-load 'gptel
+      (require 'gptel-integrations)
+      (require 'gptel-anthropic)
+      (require 'gptel-gemini)
+      (require 'gptel-oauth)
+      (require 'gptel-ollama)
+      (require 'gptel-openai)
+      (require 'gptel-openai-extras)
+      (require 'gptel-openai-oauth)
+      (require 'gptel-openai-responses)
+      (require 'gptel-request)
+      (require 'gptel-transient)
       (require 'gptel-integrations))
   #+end_src
 ** Load jwiegley/gptel-prompts for prompt composability
