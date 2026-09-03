@@ -2311,10 +2311,6 @@
                 (sql . t)
                 )))
    #+end_src
-*  AI / LLM interaction
-  #+begin_src emacs-lisp
-    (load-file "~/.emacs.d/emacs-ai-llm.el")
-  #+end_src
 * Devops
 ** Working with containers
    This is largely a function of TRAMP.  I have added simple ways to
@@ -3343,6 +3339,10 @@
      (setq org-clock-mode-line-total 'today)
      (setq org-loop-over-headlines-in-active-region t)
    #+end_src
+* AI / LLM interaction
+  #+begin_src emacs-lisp
+    (load-file "~/.emacs.d/emacs-ai-llm.el")
+  #+end_src
 * Learning / researching / knowledge flow
 ** Hyperbole and HyWiki
    + refs:
