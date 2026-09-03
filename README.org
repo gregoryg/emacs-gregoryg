@@ -3391,7 +3391,9 @@
      ;; (use-package ghostel
      ;;   :vc (:url "https://github.com/dakra/ghostel" :rev :newest))
      (use-package ghostel
-       :load-path "~/projects/emacs/ghostel/lisp/")
+       :load-path "~/projects/emacs/ghostel/lisp/"
+       :custom
+       (ghostel-buffer-name-function 'ghostel-buffer-name-by-directory))
    #+end_src
 ** Cool let-completion
    Github: https://github.com/gggion/let-completion.el
