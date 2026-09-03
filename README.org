@@ -152,7 +152,6 @@
       ;; don't do that stoopid splash screen
       '(inhibit-splash-screen t)
       '(tab-always-indent 'complete)
-      '(tab-width 4)
       '(user-full-name "Gregory Grubbs")
       '(user-mail-address "gregory.grubbs@gmail.com")
       '(confirm-kill-emacs 'y-or-n-p) ;; confirm to exit emacs
