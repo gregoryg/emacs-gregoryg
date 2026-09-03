@@ -2023,7 +2023,7 @@
   #+end_src
 
 ** Clojure
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      ;; (add-hook 'cider-repl-mode-hook #'company-
      (use-package clojure-mode
        :mode "\\.clj[sc]?\\'"
@@ -2078,7 +2078,7 @@
       ;; Replace "sbcl" with the path to your implementation
       (setq inferior-lisp-program "sbcl")
     #+end_src
-    #+begin_src emacs-lisp
+    #+begin_src emacs-lisp :tangle no
       (use-package sly
         :custom
         (inferior-lisp-program "sbcl")
@@ -2167,11 +2167,11 @@
    #+end_src
 ** Cypher/OpenCypher for Neo4j
    + Cypher mode
-     #+begin_src emacs-lisp
-       (use-package cypher-mode)
+     #+begin_src emacs-lisp :tangle no
+       (use-package cypher-ts-mode)
      #+end_src
    + ob-cypher
-     #+begin_src emacs-lisp
+     #+begin_src emacs-lisp :tangle no
        (use-package ob-cypher
 
          :config
