@@ -1935,11 +1935,10 @@
 ** YAML - You A Moth Licker
     #+begin_src emacs-lisp
       (use-package yaml-mode
-        :hook (yaml-mode . (lambda () (yafolding-mode 1)
+        :hook (yaml-mode . (lambda ()
                              (toggle-truncate-lines 1))))
       (add-hook 'conf-mode-hook
                 (lambda ()
-                  (yafolding-mode 1)
                   (toggle-truncate-lines 1)))
     #+end_src
 ** rg / ripgrep
@@ -2004,7 +2003,6 @@
     (add-hook 'prog-mode-hook
               (lambda ()
                      (rainbow-delimiters-mode 1)
-                (yafolding-mode 1)
                 (electric-pair-local-mode 1)))
   #+end_src
 
@@ -3151,7 +3149,6 @@
                   ;;       (local-unset-key "o")
                   ;; rebind to a sweet and beautiful function
                   (org-defkey org-agenda-mode-map "o" 'org-agenda-show)
-                  (yafolding-mode 1)
                   ;; agenda lines get long with tags
                   (visual-line-mode -1)
                   (visual-fill-column-mode -1)
