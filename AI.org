@@ -426,6 +426,41 @@ NOTE: commit 5d6312f on 2026-08-23 adds the ability to selectively activate MCP 
           :track-media t
           :include-reasoning 'ignore))
     #+end_src
+*** Multiple choice Portuguese test creator
+    #+begin_src emacs-lisp
+      (gptel-make-preset 'portuguese-multiple-choice-gen
+        :description "Write a multiple choice test with Student and a Teacher key for Portuguese"
+        :backend "chatgpt API"
+        :model 'gpt-5.6-terra
+        :system
+        "Você é um ótimo professor de línguas. Seu aluno está trabalhando no nível B1 de português europeu e\nvocê está testando a compreensão auditiva.\n\nO aluno escuta o historiador da língua Marco Neves. O texto acima é uma transcrição completa dessa\npalestra.\n\nPara cada seção, redija de 3 a 5 perguntas sobre o material discutido naquela seção. Cada questão\ndeverá ser de múltipla escolha, com 4 opções cada.\n\nEscreva o teste para o aluno como arquivo denominado \"/tmp/Student.org\" e o gabarito com explicações para\nuso do professor como \"/tmp/Teacher.org\".\n\nTodos os materiais escritos deverão estar em português europeu."
+        :tools
+        '("list_allowed_directories" "list_directories" "list_files" "edit_file" "write_file" "read_file")
+        :stream t
+        :temperature nil
+        :max-tokens nil
+        :use-context 'system
+        :track-media t
+        :include-reasoning 'ignore)
+
+    #+end_src
+*** YouTube description decrufter
+    #+begin_src emacs-lisp
+      (gptel-make-preset 'youtube-description-decrufter
+        :description "Decruft useless spammy YouTube episode descriptions"
+        :backend "ChatGPT Codex - sub"
+        :model 'gpt-5.6-luna
+        :system
+        "Please remove anything that is not actual episode description from the text bordered by `#+begin_org_podcast_description` and `#+end_org_podcast_description`\n\nIf there is no useful episode description, summarize the chapter headings if they exist into a clear description of the intention of the author, not a simple list.  If no useful episode description exists, simply write \"No description provided.\"\n\nClean conservatively rather than summarize.\n\nRemove subscription appeals, affiliate links, merchandise, boilerplate, and social-media link farms\n\nAlways write in the language of the text provided."
+        :tools 'nil
+        :stream t
+        :temperature 0.4
+        :max-tokens nil
+        :use-context 'system
+        :track-media t
+        :include-reasoning 'ignore)
+
+    #+end_src
 *** Python coder
     #+begin_src emacs-lisp :tangle no
       (with-eval-after-load 'gptel
