@@ -3295,12 +3295,7 @@
       ...
     #+end_src
     #+begin_src emacs-lisp
-      (setq org-clock-persist nil
-            org-duration-format 'h:mm ; format of clocktable - show hours, not days
-            org-clock-string-limit 60 ; truncate very long clocked tasks
-            org-clock-report-include-clocking-task t
-            org-read-date-prefer-future 'time)
-      ;; (org-clock-persistence-insinuate)
+      (setq org-read-date-prefer-future 'time)
       ;; make the clock jump key global!
       (global-set-key (kbd "s-j") 'org-clock-goto)
     #+end_src
