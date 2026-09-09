@@ -443,6 +443,7 @@ With prefix ARG, silently save all file-visiting buffers."
                 (,(kbd "<XF86AudioMute>") . (lambda () (interactive) (gjg/volume "togmute")))
                 (,(kbd "<XF86AudioPlay>") . playerctl-play-pause-song)
                 ([?\s--] . browser-gt-tab-jump)
+                ([?\s-_] . browser-gt-tab-manager)
                 ([?\s-=] . gjg/exwm-select-or-launch-home-assistant)
                 ([?\s-.] . (lambda () (interactive) (find-file "~/emacs-gregoryg/README.org")))
                 ([?\s-,] . gjg/polybar-start-or-toggle)
