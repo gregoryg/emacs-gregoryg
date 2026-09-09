@@ -417,7 +417,7 @@ With prefix ARG, silently save all file-visiting buffers."
                 ([M-s-left] . windmove-delete-left)
                 ([M-s-right] . windmove-delete-right)
                 (,(kbd "M-SPC") . gjg/launch-rofi)
-                (,(kbd "s-SPC") . app-launcher-run-app)
+                (,(kbd "s-SPC") . xdg-launcher-run-app)
                 ([?\s-e] . gjg/ibuffer-only-exwm)
                 ([s-backspace] . bury-buffer)
                 ([?\s-q] . bury-buffer)

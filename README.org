@@ -767,6 +767,7 @@
      ;; (bind-key "s-[" 'ded/org-show-previous-heading-tidily)
      ;; (bind-key "M-SPC" #'(lambda () (interactive) (call-process-shell-command "rofi -modi drun,run -show drun")))
      (bind-key "M-SPC" 'gjg/launch-rofi)
+     (bind-key "s-SPC" 'xdg-launcher-run-app)
      (bind-key "s-\\" 'switch-to-buffer)
      ;; (Set-face-attribute 'winum-face nil :foreground "deep sky blue")
      (define-key ctl-x-4-map "t" 'toggle-window-split)
