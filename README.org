@@ -307,6 +307,29 @@
      (global-set-key [C-kp-add] 'inc-font-size)
 
    #+end_src
+** Faces
+   A place for a face for special occasions
+
+   Faces for use with tests, using CORRECT and WRONG todo keywords
+   #+begin_src emacs-lisp
+     (defface gjg/org-result-correct
+       '((t :inherit success :inverse-video t :weight bold))
+       "Face for a correct answer result."
+       :group 'org-faces)
+
+     (defface gjg/org-result-wrong
+       '((t :inherit error :inverse-video t :weight bold))
+       "Face for an incorrect answer result."
+       :group 'org-faces)
+#+end_src
+
+   An example of using these faces in a test file in org mode:
+
+#+begin_src org :tangle no
+  # -*- eval: (progn (org-list-checkbox-radio-mode 1) (setq-local org-todo-keyword-faces '(("CORRECT" . gjg/org-result-correct) ("WRONG" . gjg/org-result-wrong))) (when (boundp 'org-modern-todo-faces) (setq-local org-modern-todo-faces '(("CORRECT" . gjg/org-result-correct) ("WRONG" . gjg/org-result-wrong)))) (font-lock-flush)); -*-
+  ,#+todo: TODO(t) | CORRECT(c) WRONG(w)
+#+end_src
+
 ** Custom Functions in a separate file
   TODO: pull these functions in to this Org Mode doc
   #+begin_src emacs-lisp
@@ -914,7 +937,15 @@
            `(org-habit-clear-face ((,c :background ,bg-graph-green-0 :foreground "black")))
            `(org-habit-clear-future-face ((,c :background ,bg-graph-green-1 )))
            `(org-habit-ready-face ((,c :background ,bg-graph-green-0 :foreground "black")))
-           `(org-habit-ready-future-face ((,c :background ,bg-graph-green-1 ))))))
+           `(org-habit-ready-future-face ((,c :background ,bg-graph-green-1 )))
+           `(gjg/org-result-correct
+             ((,c :background ,bg-green-intense
+                  :foreground ,fg-main
+                  :weight bold)))
+           `(gjg/org-result-wrong
+             ((,c :background ,bg-red-intense
+                  :foreground ,fg-main
+                  :weight bold))))))
       (add-hook 'modus-themes-after-load-theme-hook #'gjg/my-modus-themes-custom-faces)
       (setq modus-themes-headings
             '((1 . ( semibold 1.3))
