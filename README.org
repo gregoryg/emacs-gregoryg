@@ -2520,13 +2520,7 @@
        (concat (mapconcat #'number-to-string (cdr numbering) ".") " "))
      (setq org-num-format-function 'org-num-skip-top-level-format)
    #+end_src
-** Org Superstar - appearance of headers
-   #+begin_src emacs-lisp :tangle no
-     (use-package org-superstar
-       :hook
-       (org-mode . org-superstar-mode))
-   #+end_src
-** Org Modern - possible replacement for Org Superstar
+** Org Modern
    #+begin_src emacs-lisp
      (use-package org-modern
        :custom
