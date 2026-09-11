@@ -870,6 +870,7 @@
                                              (mode . magit-status-mode)
                                              (mode . magit-process-mode)
                                              (mode . magit-revision-mode)
+                                             (mode . magit-log-mode)
                                              (mode . magit-refs-mode)))
                                 ("Dired" (mode . dired-mode))
                                 ("Tramp sessions" (name . "\*tramp.+"))
