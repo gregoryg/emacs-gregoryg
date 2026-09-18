@@ -3699,7 +3699,11 @@ Add some agenda views
       (setq elfeed-feeds
             '(("https://nullprogram.com/feed/" blog emacs)
               "https://sachachua.com/blog/category/emacs-news/feed/" ;; no autotagging
-              ("https://nedroid.com/feed/" webcomic)))
+              ("https://nedroid.com/feed/" webcomic)
+              ("https://feeds.fireside.fm/easyfrench/rss"
+               podcast language-learning french)
+              ("https://feeds.simplecast.com/UrwSRKXH"
+               podcast language-learning spanish)))
     #+end_src
 * Final steps
 #+begin_src emacs-lisp
