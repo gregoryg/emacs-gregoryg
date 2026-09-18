@@ -3416,6 +3416,14 @@
        (require 'browser-gt-tab-manager) ; M-x browser-gt-tab-manager
        (require 'browser-gt-url-handler) ; browser-gt-browse-url + browser-gt-url-routes
        (browser-gt-start))
+
+     ;; (add-to-list
+     ;;  'display-buffer-alist
+     ;;  '((category . browser-gt-tab-preview)
+     ;;    (display-buffer-in-direction)
+     ;;    (direction . right)
+     ;;    (window-width . 0.5)
+     ;;    (inhibit-same-window . t)))
    #+end_src
 ** ghostel
    #+begin_src emacs-lisp
