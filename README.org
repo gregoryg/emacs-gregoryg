@@ -3645,6 +3645,7 @@
 
     #+end_src
 ** Podcasts
+*** Podcast Companion
    #+begin_src emacs-lisp
      (use-package podcast-companion
        :load-path "~/projects/emacs/gregoryg-packages/podcast-companion/"
@@ -3684,6 +3685,14 @@ Add some agenda views
    '("Pr" "Recently added podcasts" org-podcast-man-agenda-recent "")
    t)
 #+end_src
+*** Elfeed (experimental)
+    #+begin_src emacs-lisp
+      (use-package elfeed)
+      (setq elfeed-feeds
+            '(("https://nullprogram.com/feed/" blog emacs)
+              "https://sachachua.com/blog/category/emacs-news/feed/" ;; no autotagging
+              ("https://nedroid.com/feed/" webcomic)))
+    #+end_src
 * Final steps
 #+begin_src emacs-lisp
   (shell (get-buffer-create "sh1"))
