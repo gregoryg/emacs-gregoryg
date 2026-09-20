@@ -413,6 +413,110 @@ NOTE: commit 5d6312f on 2026-08-23 adds the ability to selectively activate MCP 
         :include-reasoning 'ignore)
 
     #+end_src
+*** Simple spotify control
+    #+begin_src emacs-lisp
+      (defconst gjg/gptel-spotify-skill-file
+        (expand-file-name
+         "~/projects/ai/AIPIHKAL/skills/spotify-cli/SKILL.md")
+        "The spotify-cli skill injected into the Spotify preset.")
+
+      (defun gjg/gptel-spotify-system-prompt ()
+        "Return the system prompt for the dedicated Spotify-control preset."
+        (unless (file-readable-p gjg/gptel-spotify-skill-file)
+          (user-error "Spotify skill is not readable: %s"
+                      gjg/gptel-spotify-skill-file))
+        (concat
+         "You control Spotify for the user using spotify-cli.
+
+      spotify-cli is installed and available on PATH.  Invoke it directly;
+      do not perform a command-location preflight.
+
+      Perform requested Spotify actions rather than merely explaining how to
+      perform them.  Follow the supplied skill, use its shortest documented
+      path, avoid unnecessary exploratory commands, and briefly confirm
+      successful actions.
+
+      <spotify-cli-skill>
+      "
+         (with-temp-buffer
+           (insert-file-contents gjg/gptel-spotify-skill-file)
+           (buffer-string))
+         "
+      </spotify-cli-skill>"))
+
+      (with-eval-after-load 'gptel
+        ;; `gptel-native-shell' should already have registered its tools and
+        ;; defined `gptel-shell-allowed-commands'.
+        (unless (and (boundp 'gptel-shell-allowed-commands)
+                     (gptel-get-tool "execute_shell_command"))
+          (display-warning
+           'gjg/gptel-spotify-preset
+           "gptel-native-shell is not loaded; the Spotify preset will not work yet."
+           :warning))
+
+        (gptel-make-preset 'spotify
+          :description "Fast, narrowly scoped Spotify control via spotify-cli"
+
+          :backend "ChatGPT Codex - sub"
+          :model 'gpt-5.6-terra
+
+          ;; This function is evaluated for each request, so edits to SKILL.md
+          ;; take effect without reevaluating this preset definition.
+          :system #'gjg/gptel-spotify-system-prompt
+
+          ;; Expose only the execution tool, not allow-list inspection or
+          ;; unrelated filesystem and web tools.
+          :tools '("execute_shell_command")
+          :use-tools t
+
+          ;; Replace the shell allow-list rather than augmenting it.
+          :shell-allowed-commands '("spotify-cli")
+
+          :stream t
+          :temperature nil
+          :max-tokens nil
+          :use-context 'system
+          :track-media nil
+          :include-reasoning 'ignore))
+    #+end_src
+
+#+begin_src emacs-lisp
+  (defconst gjg/gptel-spotify-request-buffer
+    " *gptel-spotify-request*"
+    "Hidden buffer used for one-shot Spotify requests.")
+
+  (defun gjg/gptel-spotify-apply-preset ()
+    "Apply the Spotify preset buffer-locally in the current buffer."
+    (gptel--apply-preset
+     'spotify
+     (lambda (symbol value)
+       (set (make-local-variable symbol) value))))
+
+  (defun gjg/spotify (request)
+    "Send REQUEST through gptel using the Spotify preset.
+
+  Prompt for REQUEST in the minibuffer.  No text needs to be inserted
+  into the user's current buffer."
+    (interactive
+     (list (read-string "Spotify request: ")))
+    (when (string-empty-p (string-trim request))
+      (user-error "The Spotify request cannot be empty"))
+    (let ((work-buffer
+           (get-buffer-create gjg/gptel-spotify-request-buffer)))
+      (with-current-buffer work-buffer
+        (gjg/gptel-spotify-apply-preset)
+        (gptel-request
+            request
+          :buffer work-buffer
+          :callback
+          (lambda (response info)
+            (if response
+                (message "Spotify: %s" (string-trim response))
+              (message "Spotify request failed: %s"
+                       (or (plist-get info :status)
+                           "unknown error"))))))))
+
+#+end_src
 *** Python coder
     #+begin_src emacs-lisp :tangle no
       (with-eval-after-load 'gptel
