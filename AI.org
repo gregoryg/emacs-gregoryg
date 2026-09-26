@@ -490,8 +490,9 @@ NOTE: commit 5d6312f on 2026-08-23 adds the ability to selectively activate MCP 
    answer is stdout, and a non-zero exit is a failure.  =skill-run= decides which
    agent does the work, so changing models or harnesses never touches Emacs.
 *** skill-run: one request, one agent, only the named skills
-    =SKILL_HARNESS= selects =pi= (the default) or =claude=, and =SKILL_MODEL=
-    overrides that harness's default model.  Claude Code is required to use
+    =SKILL_HARNESS= selects =pi= (the default) or =claude=.  Each harness has a
+    default model, which a launcher can change with =--pi-model= or
+    =--claude-model= and =SKILL_MODEL= overrides for one run.  Claude Code is required to use
     Claude models on a subscription plan.  It also enforces an allow-list: Bash
     is limited to the skills' =scripts/= and the =--allow= commands, reads to the
     skills' =references/=, and anything else is denied without prompting.  pi can
@@ -504,13 +505,15 @@ NOTE: commit 5d6312f on 2026-08-23 adds the ability to selectively activate MCP 
     #+begin_src bash :tangle ~/bin/skill-run :shebang #!/usr/bin/env bash
       # Run one request through a narrowly scoped agent that uses the given skills.
       #
-      # Usage: skill-run [--timeout SECONDS] [--allow COMMAND]... --skill DIR... -- REQUEST...
+      # Usage: skill-run [--timeout SECONDS] [--pi-model MODEL] [--claude-model MODEL]
+      #                  [--allow COMMAND]... --skill DIR... -- REQUEST...
       #
       # The first --skill is the one the request is addressed to.  --allow names a
       # command the agent may run besides the skills' own scripts/.  Claude enforces
       # that allow-list; pi cannot restrict its bash tool.
       #
-      # SKILL_HARNESS selects the agent (pi or claude), SKILL_MODEL its model.
+      # SKILL_HARNESS selects the agent (pi or claude).  --pi-model and
+      # --claude-model set that harness's model; SKILL_MODEL overrides either.
       # The answer is written to stdout.  Without a REQUEST at a terminal, it
       # prompts for one; otherwise stdin is never read.
       set -euo pipefail
@@ -521,15 +524,19 @@ NOTE: commit 5d6312f on 2026-08-23 adds the ability to selectively activate MCP 
       die() { printf 'skill-run: %s\n' "$*" >&2; exit 2; }
 
       timeout_seconds=90
+      pi_model=openai-codex/gpt-5.6-terra
+      claude_model=sonnet
       skills=()
       allowed=()
       while (( $# > 0 )); do
           case $1 in
-              --timeout) timeout_seconds=${2:?"--timeout needs a value"} ;;
-              --skill)   skills+=("$(realpath -e -- "${2:?"--skill needs a directory"}")") ;;
-              --allow)   allowed+=("${2:?"--allow needs a command"}") ;;
-              --)        shift; break ;;
-              *)         die "unknown option: $1" ;;
+              --timeout)      timeout_seconds=${2:?"--timeout needs a value"} ;;
+              --pi-model)     pi_model=${2:?"--pi-model needs a model"} ;;
+              --claude-model) claude_model=${2:?"--claude-model needs a model"} ;;
+              --skill)        skills+=("$(realpath -e -- "${2:?"--skill needs a directory"}")") ;;
+              --allow)        allowed+=("${2:?"--allow needs a command"}") ;;
+              --)             shift; break ;;
+              *)              die "unknown option: $1" ;;
           esac
           shift 2
       done
@@ -545,7 +552,7 @@ NOTE: commit 5d6312f on 2026-08-23 adds the ability to selectively activate MCP 
       case ${SKILL_HARNESS:-pi} in
           pi)
               command=(pi --no-skills --no-context-files --no-approve
-                       --model "${SKILL_MODEL:-openai-codex/gpt-5.6-terra}")
+                       --model "${SKILL_MODEL:-$pi_model}")
               for skill in "${skills[@]}"; do
                   command+=(--skill "$skill/")
               done
@@ -566,7 +573,7 @@ NOTE: commit 5d6312f on 2026-08-23 adds the ability to selectively activate MCP 
               for allowed_command in "${allowed[@]}"; do
                   rules+=("Bash($allowed_command)" "Bash($allowed_command *)")
               done
-              command=(claude -p --model "${SKILL_MODEL:-sonnet}"
+              command=(claude -p --model "${SKILL_MODEL:-$claude_model}"
                        --setting-sources user --strict-mcp-config --no-session-persistence
                        --tools Bash,Read --permission-mode dontAsk
                        --allowedTools "${rules[@]}"
@@ -586,7 +593,9 @@ NOTE: commit 5d6312f on 2026-08-23 adds the ability to selectively activate MCP 
       exec timeout --signal=INT --kill-after=10s "${timeout_seconds}s" "${command[@]}" </dev/null
     #+end_src
 *** Spotify and Home Assistant launchers
-    Each launcher names its skills, extra allowed commands, and timeout.
+    Each launcher names its skills, extra allowed commands, and timeout, and may
+    choose its own models.  Under pi, OpenRouter's free-model router
+    (=openrouter/free=) handles Home Assistant requests well and quickly.
 
     #+begin_src bash :tangle ~/bin/play-something.sh :shebang #!/usr/bin/env bash
       exec "${0%/*}/skill-run" --timeout 90 --allow spotify-cli \
@@ -594,7 +603,7 @@ NOTE: commit 5d6312f on 2026-08-23 adds the ability to selectively activate MCP 
     #+end_src
 
     #+begin_src bash :tangle ~/bin/ha-assist.sh :shebang #!/usr/bin/env bash
-      exec "${0%/*}/skill-run" --timeout 90 --allow hass-cli \
+      exec "${0%/*}/skill-run" --timeout 90 --pi-model openrouter/free --allow hass-cli \
            --skill ~/projects/ai/AIPIHKAL/skills/casona-ranona-home \
            --skill ~/projects/ai/AIPIHKAL/skills/hass-cli -- "$@"
     #+end_src
