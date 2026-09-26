@@ -854,7 +854,8 @@
                                 ("Gptel and Emacs AI" (predicate memq 'gptel-mode local-minor-modes))
                                 ("Org and Markdown" (or (mode . org-mode)
                                                         (mode . org-agenda-mode)
-                                                        (mode . markdown-mode)))
+                                                        (mode . markdown-mode)
+                                                        (mode . markdown-ts-mode)))
                                 ("Epub / Books" (mode . nov-mode))
                                 ("Shells" (or (mode . shell-mode)
                                               (mode . vterm-mode)
@@ -1500,10 +1501,9 @@
    It's common to have very long lines in Markdown text - so turn on =longlines-mode=
    with word wrapping only for those files.
    #+begin_src emacs-lisp
-     (use-package markdown-mode
+     (use-package markdown-ts-mode
        :hook
-       (markdown-mode . visual-line-mode)
-     )
+       (markdown-ts-mode . visual-line-mode))
    #+end_src
 ** TRAMP
 *** Tramp general config
@@ -2037,6 +2037,7 @@
              (dockerfile-mode . dockerfile-ts-mode)
              (typescript-mode . typescript-ts-mode)
              (css-mode . css-ts-mode)
+             (markdown-mode . markdown-ts-mode)
              ;; (python-mode . python-ts-mode)
              )))
    #+end_src
