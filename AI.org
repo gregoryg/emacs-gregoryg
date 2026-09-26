@@ -413,110 +413,6 @@ NOTE: commit 5d6312f on 2026-08-23 adds the ability to selectively activate MCP 
         :include-reasoning 'ignore)
 
     #+end_src
-*** Simple spotify control
-    #+begin_src emacs-lisp
-      (defconst gjg/gptel-spotify-skill-file
-        (expand-file-name
-         "~/projects/ai/AIPIHKAL/skills/spotify-cli/SKILL.md")
-        "The spotify-cli skill injected into the Spotify preset.")
-
-      (defun gjg/gptel-spotify-system-prompt ()
-        "Return the system prompt for the dedicated Spotify-control preset."
-        (unless (file-readable-p gjg/gptel-spotify-skill-file)
-          (user-error "Spotify skill is not readable: %s"
-                      gjg/gptel-spotify-skill-file))
-        (concat
-         "You control Spotify for the user using spotify-cli.
-
-      spotify-cli is installed and available on PATH.  Invoke it directly;
-      do not perform a command-location preflight.
-
-      Perform requested Spotify actions rather than merely explaining how to
-      perform them.  Follow the supplied skill, use its shortest documented
-      path, avoid unnecessary exploratory commands, and briefly confirm
-      successful actions.
-
-      <spotify-cli-skill>
-      "
-         (with-temp-buffer
-           (insert-file-contents gjg/gptel-spotify-skill-file)
-           (buffer-string))
-         "
-      </spotify-cli-skill>"))
-
-      (with-eval-after-load 'gptel
-        ;; `gptel-native-shell' should already have registered its tools and
-        ;; defined `gptel-shell-allowed-commands'.
-        (unless (and (boundp 'gptel-shell-allowed-commands)
-                     (gptel-get-tool "execute_shell_command"))
-          (display-warning
-           'gjg/gptel-spotify-preset
-           "gptel-native-shell is not loaded; the Spotify preset will not work yet."
-           :warning))
-
-        (gptel-make-preset 'spotify
-          :description "Fast, narrowly scoped Spotify control via spotify-cli"
-
-          :backend "ChatGPT Codex - sub"
-          :model 'gpt-5.6-terra
-
-          ;; This function is evaluated for each request, so edits to SKILL.md
-          ;; take effect without reevaluating this preset definition.
-          :system #'gjg/gptel-spotify-system-prompt
-
-          ;; Expose only the execution tool, not allow-list inspection or
-          ;; unrelated filesystem and web tools.
-          :tools '("execute_shell_command")
-          :use-tools t
-
-          ;; Replace the shell allow-list rather than augmenting it.
-          :shell-allowed-commands '("spotify-cli")
-
-          :stream t
-          :temperature nil
-          :max-tokens nil
-          :use-context 'system
-          :track-media nil
-          :include-reasoning 'ignore))
-    #+end_src
-
-#+begin_src emacs-lisp
-  (defconst gjg/gptel-spotify-request-buffer
-    " *gptel-spotify-request*"
-    "Hidden buffer used for one-shot Spotify requests.")
-
-  (defun gjg/gptel-spotify-apply-preset ()
-    "Apply the Spotify preset buffer-locally in the current buffer."
-    (gptel--apply-preset
-     'spotify
-     (lambda (symbol value)
-       (set (make-local-variable symbol) value))))
-
-  (defun gjg/spotify (request)
-    "Send REQUEST through gptel using the Spotify preset.
-
-  Prompt for REQUEST in the minibuffer.  No text needs to be inserted
-  into the user's current buffer."
-    (interactive
-     (list (read-string "Spotify request: ")))
-    (when (string-empty-p (string-trim request))
-      (user-error "The Spotify request cannot be empty"))
-    (let ((work-buffer
-           (get-buffer-create gjg/gptel-spotify-request-buffer)))
-      (with-current-buffer work-buffer
-        (gjg/gptel-spotify-apply-preset)
-        (gptel-request
-            request
-          :buffer work-buffer
-          :callback
-          (lambda (response info)
-            (if response
-                (message "Spotify: %s" (string-trim response))
-              (message "Spotify request failed: %s"
-                       (or (plist-get info :status)
-                           "unknown error"))))))))
-
-#+end_src
 *** Python coder
     #+begin_src emacs-lisp :tangle no
       (with-eval-after-load 'gptel
@@ -582,6 +478,192 @@ NOTE: commit 5d6312f on 2026-08-23 adds the ability to selectively activate MCP 
           (mapconcat #'identity contents "\n\n")))
 
 #+end_src
+** Skill-backed household commands
+   =M-x gjg/spotify= and =M-x gjg/ha-assist= prompt for a plain-language request
+   and hand it to an agent that has only the matching skills.  =C-s-r=
+   (=whisper-run=) works at the prompt for dictation.  The answer appears in
+   the echo area, and a failure pops up the =*Spotify request*= or =*Home
+   Assistant request*= buffer.  A message every 10 seconds makes a request that
+   has wandered off stand out; killing that buffer cancels it.
+
+   Emacs relies only on the scripts' contract: the request is one argument, the
+   answer is stdout, and a non-zero exit is a failure.  =skill-run= decides which
+   agent does the work, so changing models or harnesses never touches Emacs.
+*** skill-run: one request, one agent, only the named skills
+    =SKILL_HARNESS= selects =pi= (the default) or =claude=, and =SKILL_MODEL=
+    overrides that harness's default model.  Claude Code is required to use
+    Claude models on a subscription plan.  It also enforces an allow-list: Bash
+    is limited to the skills' =scripts/= and the =--allow= commands, reads to the
+    skills' =references/=, and anything else is denied without prompting.  pi can
+    only switch whole tools on or off, so under pi the allow-list is advisory.
+
+    Both harnesses run from an empty directory.  That keeps project agent files
+    and settings out, and it matters for Claude Code, which reads anything under
+    its working directory without asking -- from =$HOME= that includes =~/.ssh=.
+
+    #+begin_src bash :tangle ~/bin/skill-run :shebang #!/usr/bin/env bash
+      # Run one request through a narrowly scoped agent that uses the given skills.
+      #
+      # Usage: skill-run [--timeout SECONDS] [--allow COMMAND]... --skill DIR... -- REQUEST...
+      #
+      # The first --skill is the one the request is addressed to.  --allow names a
+      # command the agent may run besides the skills' own scripts/.  Claude enforces
+      # that allow-list; pi cannot restrict its bash tool.
+      #
+      # SKILL_HARNESS selects the agent (pi or claude), SKILL_MODEL its model.
+      # The answer is written to stdout.  Without a REQUEST at a terminal, it
+      # prompts for one; otherwise stdin is never read.
+      set -euo pipefail
+
+      # claude installs to ~/.local/bin, which Emacs and other launchers may lack.
+      PATH=$HOME/.local/bin:$PATH
+
+      die() { printf 'skill-run: %s\n' "$*" >&2; exit 2; }
+
+      timeout_seconds=90
+      skills=()
+      allowed=()
+      while (( $# > 0 )); do
+          case $1 in
+              --timeout) timeout_seconds=${2:?"--timeout needs a value"} ;;
+              --skill)   skills+=("$(realpath -e -- "${2:?"--skill needs a directory"}")") ;;
+              --allow)   allowed+=("${2:?"--allow needs a command"}") ;;
+              --)        shift; break ;;
+              *)         die "unknown option: $1" ;;
+          esac
+          shift 2
+      done
+      request=$*
+      if [[ -z $request && -t 0 ]]; then
+          read -r -p "Request: " request
+      fi
+
+      (( ${#skills[@]} > 0 )) || die "at least one --skill is required"
+      [[ $timeout_seconds =~ ^[1-9][0-9]*$ ]] || die "--timeout must be a positive integer"
+      [[ -n ${request//[[:space:]]/} ]] || die "no request given"
+
+      case ${SKILL_HARNESS:-pi} in
+          pi)
+              command=(pi --no-skills --no-context-files --no-approve
+                       --model "${SKILL_MODEL:-openai-codex/gpt-5.6-terra}")
+              for skill in "${skills[@]}"; do
+                  command+=(--skill "$skill/")
+              done
+              command+=(-p "/skill:${skills[0]##*/} $request")
+              ;;
+          claude)
+              prompt="Carry out the user's request with the skills below; do not merely
+      explain how.  Use only the commands the skills document and run skill scripts
+      by absolute path.  Tools outside the allow-list will be denied: if a request
+      cannot be done with these skills, say so instead of exploring.  Confirm what
+      you did in one or two short plain-text sentences."
+              rules=()
+              for skill in "${skills[@]}"; do
+                  prompt+=$'\n\n'"<skill name=\"${skill##*/}\" directory=\"$skill\">"$'\n'
+                  prompt+="$(<"$skill/SKILL.md")"$'\n</skill>'
+                  rules+=("Bash($skill/scripts/*)" "Read(/$skill/references/**)")
+              done
+              for allowed_command in "${allowed[@]}"; do
+                  rules+=("Bash($allowed_command)" "Bash($allowed_command *)")
+              done
+              command=(claude -p --model "${SKILL_MODEL:-sonnet}"
+                       --setting-sources user --strict-mcp-config --no-session-persistence
+                       --tools Bash,Read --permission-mode dontAsk
+                       --allowedTools "${rules[@]}"
+                       --append-system-prompt "$prompt"
+                       -- "$request")
+              ;;
+          *)
+              die "SKILL_HARNESS must be pi or claude, not ${SKILL_HARNESS}"
+              ;;
+      esac
+
+      # Run from an empty directory: no project's agent files or settings apply,
+      # and Claude's permission-free reads of the working directory expose nothing.
+      workdir=${XDG_RUNTIME_DIR:-/tmp}/skill-run
+      mkdir -p -m 700 "$workdir"
+      cd "$workdir"
+      exec timeout --signal=INT --kill-after=10s "${timeout_seconds}s" "${command[@]}" </dev/null
+    #+end_src
+*** Spotify and Home Assistant launchers
+    Each launcher names its skills, extra allowed commands, and timeout.
+
+    #+begin_src bash :tangle ~/bin/play-something.sh :shebang #!/usr/bin/env bash
+      exec "${0%/*}/skill-run" --timeout 90 --allow spotify-cli \
+           --skill ~/projects/ai/AIPIHKAL/skills/spotify-cli -- "$@"
+    #+end_src
+
+    #+begin_src bash :tangle ~/bin/ha-assist.sh :shebang #!/usr/bin/env bash
+      exec "${0%/*}/skill-run" --timeout 90 --allow hass-cli \
+           --skill ~/projects/ai/AIPIHKAL/skills/casona-ranona-home \
+           --skill ~/projects/ai/AIPIHKAL/skills/hass-cli -- "$@"
+    #+end_src
+*** Emacs commands
+    #+begin_src emacs-lisp
+      (defun gjg/skill-run (label script request)
+        "Run SCRIPT with REQUEST in the background and report its answer as LABEL.
+
+      SCRIPT chooses the agent and model and prints the answer on stdout.
+      Progress messages every 10 seconds make a runaway request stand out.
+      Kill the output buffer to cancel the request."
+        (when (string-blank-p request)
+          (user-error "%s request cannot be empty" label))
+        (let ((buffer (get-buffer-create (format "*%s request*" label)))
+              (start (float-time))
+              timer)
+          (when (get-buffer-process buffer)
+            (user-error "%s request is already running; kill %s to cancel it"
+                        label (buffer-name buffer)))
+          (with-current-buffer buffer
+            (erase-buffer))
+          (make-process
+           :name label
+           :buffer buffer
+           :command (list (expand-file-name script) request)
+           :connection-type 'pipe
+           :noquery t
+           :sentinel
+           (lambda (process _event)
+             (unless (process-live-p process)
+               (cancel-timer timer)
+               (cond
+                ((not (buffer-live-p buffer))
+                 (message "%s request cancelled" label))
+                ((zerop (process-exit-status process))
+                 (let ((answer (with-current-buffer buffer
+                                 (string-trim (buffer-string)))))
+                   (message "%s: %s" label
+                            (if (string-empty-p answer) "done" answer))))
+                (t
+                 (display-buffer buffer)
+                 (message "%s request failed (%s %d)" label
+                          (process-status process) (process-exit-status process)))))))
+          (setq timer
+                (run-at-time 10 10
+                             (lambda ()
+                               (message "%s request still running (%ds); kill %s to cancel it"
+                                        label (round (- (float-time) start))
+                                        (buffer-name buffer)))))
+          (message "%s request sent" label)))
+
+      (defvar gjg/spotify-history nil
+        "Minibuffer history for `gjg/spotify'.")
+
+      (defun gjg/spotify (request)
+        "Ask the Spotify agent to carry out REQUEST."
+        (interactive
+         (list (read-string "Spotify request: " nil 'gjg/spotify-history)))
+        (gjg/skill-run "Spotify" "~/bin/play-something.sh" request))
+
+      (defvar gjg/ha-assist-history nil
+        "Minibuffer history for `gjg/ha-assist'.")
+
+      (defun gjg/ha-assist (request)
+        "Ask the Home Assistant agent to carry out REQUEST."
+        (interactive
+         (list (read-string "Home Assistant request: " nil 'gjg/ha-assist-history)))
+        (gjg/skill-run "Home Assistant" "~/bin/ha-assist.sh" request))
+    #+end_src
 ** Add my supplemental functions
 *** Functions to use in hooks
 **** Return Gptel backend + model
