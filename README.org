@@ -3700,6 +3700,7 @@ Add some agenda views
             '(("https://nullprogram.com/feed/" blog emacs)
               "https://sachachua.com/blog/category/emacs-news/feed/" ;; no autotagging
               ("https://nedroid.com/feed/" webcomic)
+              ("https://rss.art19.com/tim-ferriss-show" podcast)
               ("https://feeds.fireside.fm/easyfrench/rss"
                podcast language-learning french)
               ("https://feeds.simplecast.com/UrwSRKXH"
