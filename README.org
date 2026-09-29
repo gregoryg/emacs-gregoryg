@@ -1340,7 +1340,9 @@
 
      (use-package vertico
        :init
-       (vertico-mode))
+       (vertico-mode)
+       :custom
+       (read-extended-command-predicate 'command-completion-default-include-p))
        ;; (vertico-multiform-mode +1))
 
 
