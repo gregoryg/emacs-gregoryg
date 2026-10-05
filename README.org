@@ -2257,6 +2257,25 @@
     #+begin_src emacs-lisp
       (setq sql-login-delay 0)
     #+end_src
+*** Keep SQL password(s) out of Emacs memory
+
+    Forget the password once the session has started so it's not kept in Emacs' memory, accessible
+    using =emacsclient=
+
+    After login the global =sql-password= keeps the wallet's closure, and anyone who calls it gets
+    the password back.  The connection doesn't need it, so reset it to the =""= default.  This has
+    to run after =sql-product-interactive= returns: inside it =sql-password= is let-bound, so a
+    reset any earlier would be undone when that =let= exits.  It applies to every SQL product.
+     #+begin_src emacs-lisp
+       (defun gjg/sql-forget-password (orig &rest args)
+         "Call ORIG with ARGS, then reset the global `sql-password'."
+         (unwind-protect
+             (apply orig args)
+           (setq-default sql-password "")))
+       (with-eval-after-load 'sql
+         (advice-add 'sql-product-interactive :around #'gjg/sql-forget-password))
+     #+end_src
+
 *** Format SQL
     Emacs doesn't come out of the box with a useful SQL formatter, so go ahead and use an
     external process
