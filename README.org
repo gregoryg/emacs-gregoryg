@@ -2351,10 +2351,31 @@
      #+end_src
 
 *** Postgresql
-    + Allow for alternative port
-      Oddly, the variable sql-port sets the default port for MySQL *and* Postgresql!
+    + Allow for alternative port when using =M-x sql-postgres=
      #+begin_src emacs-lisp
        (setq sql-postgres-login-params '(user password server database port))
+     #+end_src
+
+    + Make sql-wallet finally work!  The password kept in the wallet never gets passed to the
+      database connection, regardless of database product!  This advice sets the env var PGPASSWORD
+      prior to =psql= getting executed.
+
+      The built-in =:password-in-comint= route is broken three ways (see =PLANNING.org=), so pass
+      the password via =PGPASSWORD= in the environment of the =psql= process only.  The wallet
+      returns an auth-source closure rather than a string, hence the =funcall=.
+     #+begin_src emacs-lisp
+       (defvar sql-password)
+       (defun gjg/sql-comint-postgres-pgpassword (orig product options &optional buf-name)
+         "Start psql via ORIG with `sql-password' in PGPASSWORD.
+       PRODUCT, OPTIONS and BUF-NAME are passed through unchanged."
+         (let* ((pw (if (functionp sql-password) (funcall sql-password) sql-password))
+                (process-environment
+                 (if (and (stringp pw) (not (string-empty-p pw)))
+                     (cons (concat "PGPASSWORD=" pw) process-environment)
+                   process-environment)))
+           (funcall orig product options buf-name)))
+       (with-eval-after-load 'sql
+         (advice-add 'sql-comint-postgres :around #'gjg/sql-comint-postgres-pgpassword))
      #+end_src
 ** FINAL step after all language modes have been configured
    #+begin_src emacs-lisp
