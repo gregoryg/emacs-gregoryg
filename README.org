@@ -2275,12 +2275,27 @@
     the password back.  The connection doesn't need it, so reset it to the =""= default.  This has
     to run after =sql-product-interactive= returns: inside it =sql-password= is let-bound, so a
     reset any earlier would be undone when that =let= exits.  It applies to every SQL product.
+
+    auth-source also caches the /entire/ decrypted wallet in =auth-source-netrc-cache=, lightly
+    obfuscated, until the file changes on disk.  Drop the wallet's files from that cache too, so
+    the next connection decrypts the wallet again.  Other cached files such as =~/.authinfo.gpg=
+    are left alone.  This narrows exposure rather than ending it: while gpg-agent holds the
+    passphrase, anything that can run Lisp in this Emacs can still decrypt the wallet.
      #+begin_src emacs-lisp
+       (defvar sql-password)
+       (defvar sql-password-wallet)
+       (defvar auth-source-netrc-cache)
        (defun gjg/sql-forget-password (orig &rest args)
-         "Call ORIG with ARGS, then reset the global `sql-password'."
+         "Call ORIG with ARGS, then forget the password it looked up.
+       Reset the global `sql-password' and drop the files of
+       `sql-password-wallet' from the auth-source netrc cache."
          (unwind-protect
              (apply orig args)
-           (setq-default sql-password "")))
+           (setq-default sql-password "")
+           (let ((wallet (ensure-list sql-password-wallet)))
+             (setq auth-source-netrc-cache
+                   (seq-remove (lambda (entry) (member (car entry) wallet))
+                               auth-source-netrc-cache)))))
        (with-eval-after-load 'sql
          (advice-add 'sql-product-interactive :around #'gjg/sql-forget-password))
      #+end_src
