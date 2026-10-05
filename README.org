@@ -513,7 +513,16 @@
 (require 'org-crypt)
 (org-crypt-use-before-save-magic)
   #+end_src
-** Helper function for auth-source
+** Auth-source: encrypted information for authentication
+*** Clear cache periodically
+    Auth-source does too much caching for my comfort of secrets and entire decrypted files.
+
+    We will run a 10-minute timer to clear all auth-source caches.  This time is roughly equivalent to what I expect of gpg-agent.
+
+    #+begin_src emacs-lisp
+      (run-with-timer 600 600 #'auth-source-forget-all-cached)
+    #+end_src
+*** Helper function for auth-source
    #+begin_src emacs-lisp
      (defun gjg/authinfo-secret (host &optional user)
        "Lookup the secret (a password or an API key, for example).
