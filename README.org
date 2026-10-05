@@ -2033,15 +2033,16 @@
    These *override* auto-mode-alist
    #+begin_src emacs-lisp
      (custom-set-variables '(major-mode-remap-alist
-           '((bash-mode . bash-ts-mode)
-             (sh-mode   . bash-ts-mode)
-             (js2-mode . js-ts-mode)
-             (js-mode  . js-ts-mode)
-             (javascript-mode . js-ts-mode)
+           '((bash-mode       . bash-ts-mode)
+             (css-mode        . css-ts-mode)
              (dockerfile-mode . dockerfile-ts-mode)
+             (javascript-mode . js-ts-mode)
+             (js2-mode        . js-ts-mode)
+             (js-mode         . js-ts-mode)
+             (markdown-mode   . markdown-ts-mode)
+             (sh-mode         . bash-ts-mode)
              (typescript-mode . typescript-ts-mode)
-             (css-mode . css-ts-mode)
-             (markdown-mode . markdown-ts-mode)
+             (yaml-mode       . yaml-ts-mode)
              ;; (python-mode . python-ts-mode)
              )))
    #+end_src
