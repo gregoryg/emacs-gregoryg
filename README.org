@@ -2302,7 +2302,6 @@
 
       (add-hook 'sql-interactive-mode-hook
             (lambda ()
-              (message "Lo, I am called!")
               (setq comint-input-ring-file-name my-sql-input-ring-file)
               (comint-read-input-ring 'silent)
               (add-hook 'kill-buffer-hook #'comint-write-input-ring nil 'local)))
