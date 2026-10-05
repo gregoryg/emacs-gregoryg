@@ -1320,7 +1320,7 @@
      (use-package whisper
        :load-path "~/projects/emacs/whisper.el/"
        :custom
-       (whisper-recording-timeout 15)
+       (whisper-recording-timeout nil) ; no timeout, use like walkie-talkie
        (whisper-return-cursor 'end)
        (whisper-install-whispercpp nil)
        (whisper-server-mode 'remote)
