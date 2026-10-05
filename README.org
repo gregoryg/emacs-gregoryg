@@ -1980,8 +1980,8 @@
     #+end_src
 ** YAML - You A Moth Licker
     #+begin_src emacs-lisp
-      (use-package yaml-mode
-        :hook (yaml-mode . (lambda ()
+      (use-package yaml-ts-mode
+        :hook (yaml-ts-mode . (lambda ()
                              (toggle-truncate-lines 1))))
       (add-hook 'conf-mode-hook
                 (lambda ()
