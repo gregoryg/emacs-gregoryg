@@ -2356,9 +2356,10 @@
        (setq sql-postgres-login-params '(user password server database port))
      #+end_src
 
-    + Make sql-wallet finally work!  The password kept in the wallet never gets passed to the
-      database connection, regardless of database product!  This advice sets the env var PGPASSWORD
-      prior to =psql= getting executed.
+    + Make sql-wallet finally work!  The password kept in the wallet never gets passed to =psql=.
+      (Many other products, MySQL and Oracle among them, do pass it, but on the command line,
+      where any user can see it with =ps=.)  This advice sets the env var PGPASSWORD prior to
+      =psql= getting executed.
 
       The built-in =:password-in-comint= route is broken three ways (see =PLANNING.org=), so pass
       the password via =PGPASSWORD= in the environment of the =psql= process only.  The wallet
