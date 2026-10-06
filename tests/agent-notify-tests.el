@@ -133,7 +133,7 @@ ENV is a list of extra NAME=VALUE strings."
       (should-not (string-match-p "test-hook-id" (nth 1 calls)))
       (should (string-match-p (regexp-quote "\"key\":\"agent_claude_ab12cd99\"") (nth 1 calls)))
       (should (string-match-p (regexp-quote "\"recipients\":[\"greg\"]") (nth 1 calls)))
-      (should (string-match-p (regexp-quote "\"persistent\":false") (nth 1 calls)))
+      (should (string-match-p (regexp-quote "\"severity\":\"urgent\",\"persistent\":false") (nth 1 calls)))
       (should (equal (nth 2 calls)
                      "config url = \"http://172.16.17.7:8123/api/webhook/test-hook-id\"")))
     (should (equal '(0 . "") (agent-notify-test--run

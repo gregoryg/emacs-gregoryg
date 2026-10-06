@@ -114,7 +114,7 @@
 
    | Event      | Desktop (=notify-send=)            | Phone (=ranona_notify= webhook)      |
    |------------+------------------------------------+--------------------------------------|
-   | =approval= | critical                           | sent                                 |
+   | =approval= | critical                           | sent as =urgent=                     |
    | =ready=    | normal, replaces the approval      | cleared, if one was sent             |
    | =clear=    | closed                             | cleared, if one was sent             |
 
@@ -344,7 +344,7 @@
                            --arg recipients "$AGENT_NOTIFY_RECIPIENTS" \
                            '{key: $key, title: $title, message: $message,
                              recipients: ($recipients | split(",") | map(gsub("^\\s+|\\s+$"; ""))),
-                             persistent: false}')" &&
+                             severity: "urgent", persistent: false}')" &&
              : >"$phone_file"
      }
 
