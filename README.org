@@ -2312,7 +2312,7 @@
 *** Org Babel SQL code blocks
     Come here to set code block headers
 
-    Add your host user/pass in ~/.emacs.d/sql-wallet
+    Add your host user/pass in the encrypted =~/.emacs.d/sql-wallet.gpg=
 
     Ideally you can set header args per file, like
     #+begin_example
