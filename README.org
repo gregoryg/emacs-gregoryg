@@ -32,6 +32,22 @@
   If reading this file on GitHub, use the =raw= view to see all the code markings and
   header parameters.
 
+** Checking the config
+   =make check= in this directory runs two checks, both in a bare =emacs -Q --batch=:
+   + =make drift= :: is every tangled file up to date with its Org file?  It compares code,
+     not text, so comments and layout don't count, and it names each form found on only one
+     side.  Fix drift by tangling the whole Org file.
+   + =make test= :: the ERT tests in =tests/*-tests.el=.  =make test SELECTOR=gjg-sql= runs
+     only the tests whose names match.
+
+   A test loads just the section it tests, straight from the Org file, never the whole
+   config.  The section is named by a =CUSTOM_ID= property on its heading (=sql= on the SQL
+   section, for instance), so renaming the heading doesn't break the test.  Give a section a
+   short, unique =CUSTOM_ID= when it gets tests, and load it with
+   =(gjg-config-test-load "README.org" "sql")=.  Sections often touch real state, such as
+   history files, so each test file says what it sandboxes.  The helpers are in
+   =tests/gjg-config-test.el=.
+
 ** Should I use =evil-mode=?
 
   evil-mode gives you Vim-like keybindings in Emacs.  I would recommend starting with Emacs key
