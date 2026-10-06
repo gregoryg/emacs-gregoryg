@@ -2285,6 +2285,12 @@
        (defvar sql-password)
        (defvar sql-password-wallet)
        (defvar auth-source-netrc-cache)
+       (defun gjg/sql-wallet-forget-cache ()
+         "Drop the files of `sql-password-wallet' from the auth-source netrc cache."
+         (let ((wallet (ensure-list sql-password-wallet)))
+           (setq auth-source-netrc-cache
+                 (seq-remove (lambda (entry) (member (car entry) wallet))
+                             auth-source-netrc-cache))))
        (defun gjg/sql-forget-password (orig &rest args)
          "Call ORIG with ARGS, then forget the password it looked up.
        Reset the global `sql-password' and drop the files of
@@ -2292,10 +2298,7 @@
          (unwind-protect
              (apply orig args)
            (setq-default sql-password "")
-           (let ((wallet (ensure-list sql-password-wallet)))
-             (setq auth-source-netrc-cache
-                   (seq-remove (lambda (entry) (member (car entry) wallet))
-                               auth-source-netrc-cache)))))
+           (gjg/sql-wallet-forget-cache)))
        (with-eval-after-load 'sql
          (advice-add 'sql-product-interactive :around #'gjg/sql-forget-password))
      #+end_src
@@ -2401,6 +2404,149 @@
            (funcall orig product options buf-name)))
        (with-eval-after-load 'sql
          (advice-add 'sql-comint-postgres :around #'gjg/sql-comint-postgres-pgpassword))
+     #+end_src
+*** Choose a connection from sql-wallet
+    The wallet already knows user, server, database and port, so =M-x gjg/sql-connect-wallet=
+    offers its entries and starts the chosen one without the four login prompts.  No
+    =sql-connection-alist= needed: the command builds a one-entry list from the wallet and
+    hands it to =sql-connect=, which asks only for what the entry lacks.  The password is still
+    looked up by =sql-get-login= as usual, so the new code never touches a secret.  =C-u=
+    prompts for the buffer name, as with =sql-connect=.
+
+    Two optional fields beyond the usual =machine=, =login=, =password= and =port=:
+    + =product= :: the =sql-product= (=postgres=, =mysql=, ...).  Without it you'll be asked.
+    + =name= :: what to call the connection.  Without it, =user@server/database:port=.
+      Quote it if it contains spaces.
+    #+begin_example
+      machine db.example.com/sales login alice password s3cret port 5432 product postgres name sales
+    #+end_example
+
+    A =machine= of the form =server/database= is split the way sql.el joins it for the wallet
+    lookup.  netrc fields take exactly one value each, read as strict key/value pairs, so give
+    each host its own line.  =machine host1 host2= is not two hosts: it shifts every later
+    token into the wrong slot, and auth-source either makes up odd fields or rejects the whole
+    wallet with "Unexpected `machine' token".
+
+    =sql-connect= sets the connection's values with =set-default= but then reads them, and
+    looks up the wallet, through the current buffer.  In a SQLi buffer, or a =sql-mode= buffer
+    with its own product, those variables are buffer-local, so the old session's values win:
+    wrong product, failed wallet lookup, password prompt.  So the command runs =sql-connect=
+    from a temporary buffer, then links a =sql-mode= buffer you started from to the new session,
+    as =sql-product-interactive= normally does.
+
+    Listing the entries decrypts the wallet, so its cache is dropped on the way out even when
+    you quit at the prompt.
+     #+begin_src emacs-lisp
+       (defvar auth-sources)
+       (defvar auth-source-do-cache)
+       (defvar sql-buffer)
+       (defvar sql-connection-alist)
+       (defvar sql-product-alist)
+       (defvar sql-set-sqli-hook)
+       (declare-function auth-source-search "auth-source" (&rest spec))
+       (declare-function sql-connect "sql" (connection &optional buf-name))
+       (declare-function sql-read-product "sql" (prompt &optional initial))
+
+       (defun gjg/sql-wallet-entries ()
+         "Return the connections in `sql-password-wallet', without their secrets.
+       Each is a plist of :name, :product, :user, :server, :database and
+       :port.  A machine of the form SERVER/DATABASE is split the way
+       `sql-auth-source-search-wallet' joins it; explicit server and
+       database fields take precedence.  A missing or non-numeric port is 0."
+         (let ((auth-sources (ensure-list sql-password-wallet))
+               (auth-source-do-cache nil))
+           (mapcar
+            (lambda (entry)
+              (let* ((host (plist-get entry :host))
+                     (host (split-string (if (stringp host) host "") "/"))
+                     (port (plist-get entry :port)))
+                (list :name (plist-get entry :name)
+                      :product (plist-get entry :product)
+                      :user (or (plist-get entry :user) "")
+                      :server (or (plist-get entry :server) (car host))
+                      :database (or (plist-get entry :database)
+                                    (string-join (cdr host) "/"))
+                      :port (if (and (stringp port) (string-match-p "\\`[0-9]+\\'" port))
+                                (string-to-number port)
+                              0))))
+            (auth-source-search :max 1000))))
+
+       (defun gjg/sql-wallet-label (conn)
+         "Return the name to offer for wallet connection CONN."
+         (or (plist-get conn :name)
+             (let ((user (plist-get conn :user))
+                   (database (plist-get conn :database))
+                   (port (plist-get conn :port)))
+               (concat (unless (string-empty-p user) (concat user "@"))
+                       (plist-get conn :server)
+                       (unless (string-empty-p database) (concat "/" database))
+                       (unless (zerop port) (format ":%d" port))))))
+
+       (defun gjg/sql-wallet-candidates ()
+         "Return an alist of (LABEL . CONN) for the wallet's connections.
+       Duplicate labels get a <N> suffix so every entry stays selectable."
+         (let (candidates)
+           (dolist (conn (gjg/sql-wallet-entries) (nreverse candidates))
+             (let* ((base (gjg/sql-wallet-label conn))
+                    (label base)
+                    (n 1))
+               (while (assoc label candidates)
+                 (setq n (1+ n)
+                       label (format "%s <%d>" base n)))
+               (push (cons label conn) candidates)))))
+
+       (defun gjg/sql-wallet-product (label product)
+         "Return the SQL product symbol for wallet connection LABEL.
+       PRODUCT is the entry's product field; when it is nil, prompt."
+         (if product
+             (let ((symbol (intern product)))
+               (unless (assq symbol sql-product-alist)
+                 (user-error "Unknown SQL product `%s' in sql-wallet entry %s" product label))
+               symbol)
+           (sql-read-product
+            (format-message "Product for %s (add `product' to sql-wallet to skip this)" label)
+            (default-value 'sql-product))))
+
+       (defun gjg/sql-connect-wallet (&optional buf-name)
+         "Start a SQLi session for a connection chosen from `sql-password-wallet'.
+       The chosen entry is passed to `sql-connect', so its user, server,
+       database and port are not prompted for, and the password comes from
+       the wallet as usual.  An entry without a product field prompts for
+       the product.  With a prefix argument BUF-NAME, prompt for the buffer
+       name, as `sql-connect' does."
+         (interactive "P")
+         (require 'sql)
+         (unwind-protect
+             (let* ((candidates (or (gjg/sql-wallet-candidates)
+                                    (user-error "No entries in `sql-password-wallet'")))
+                    (label
+                     (let ((completion-extra-properties
+                            (list :annotation-function
+                                  (lambda (label)
+                                    (concat "  " (or (plist-get (cdr (assoc label candidates))
+                                                                :product)
+                                                     "(no product)"))))))
+                       (completing-read "Wallet connection: " candidates nil t)))
+                    (conn (cdr (assoc label candidates)))
+                    (product (gjg/sql-wallet-product label (plist-get conn :product)))
+                    ;; `sql-connect' evals each value: keep them literal.
+                    (sql-connection-alist
+                     `((,label (sql-product ',product)
+                               (sql-user ,(plist-get conn :user))
+                               (sql-server ,(plist-get conn :server))
+                               (sql-database ,(plist-get conn :database))
+                               (sql-port ,(plist-get conn :port)))))
+                    (start (current-buffer))
+                    ;; Away from START's buffer-local SQL settings.
+                    (result (with-temp-buffer (sql-connect label buf-name)))
+                    (sqli (if (windowp result) (window-buffer result) result)))
+               (when (and (bufferp sqli) (buffer-live-p sqli))
+                 (with-current-buffer start
+                   (when (derived-mode-p 'sql-mode)
+                     (setq sql-buffer (buffer-name sqli))
+                     (run-hooks 'sql-set-sqli-hook))))
+               result)
+           (gjg/sql-wallet-forget-cache)))
      #+end_src
 ** FINAL step after all language modes have been configured
    #+begin_src emacs-lisp
