@@ -174,7 +174,8 @@
           xfce4-screenshooter \
           xfce4-whiskermenu-plugin \
           xfconf \
-          xfce4-screensaver
+          xfce4-screensaver \
+          xprintidle
    #+end_src
 ** X Session Desktop file for Lightdm
    Having this allows EXWM to be chosen from the Display Manager
