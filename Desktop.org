@@ -104,6 +104,307 @@
       #+begin_src sh :results verbatim
         crontab -l
       #+end_src
+** Coding-agent attention notifications
+   :PROPERTIES:
+   :CUSTOM_ID: agent-notify
+   :END:
+   =agent-notify= tells me when a coding agent (Claude Code, pi) is waiting for me.  It is
+   a plain script, so it works the same for an agent in ghostel, ghostty or any other
+   terminal, with or without Emacs.
+
+   | Event      | Desktop (=notify-send=)            | Phone (=ranona_notify= webhook)      |
+   |------------+------------------------------------+--------------------------------------|
+   | =approval= | critical                           | sent                                 |
+   | =ready=    | normal, replaces the approval      | cleared, if one was sent             |
+   | =clear=    | closed                             | cleared, if one was sent             |
+
+   + Nothing expires on a timer: desktop notifications are sent with =--expire-time 0=,
+     which dunst honors over its per-urgency =timeout=, and =ranona_notify= sets no phone
+     timeout.  A notification goes away when the next event replaces or clears it, or
+     when I dismiss it.
+   + Messages longer than 400 characters are cut at a word boundary and end in "…".
+   + Desktop notifications go to whatever notification daemon owns the session bus (dunst
+     today), so =notifications.el= senders and this script land in the same place.
+   + Each agent session gets its own key, =agent_<source>_<session>=, so two sessions don't
+     clear each other's notifications.  A clear is only sent to Home Assistant when this
+     script sent that key, because a clear pushes silently to every resident's phone.
+   + Runs that nobody is watching never notify: Claude's =-p= / =--print= runs (the
+     script checks its Claude ancestor's arguments), and pi outside its TUI and RPC modes
+     (the pi extension checks).  Delegated skill runs and red-team children stay quiet.
+   + Delivery problems never fail the calling hook: the script exits 0 and logs to
+     =$XDG_RUNTIME_DIR/agent-notify/log=.
+
+   Settings come from the environment or from =~/.config/agent-notify/env= (mode 600,
+   =KEY=value= lines; nothing is executed):
+   + =RANONA_NOTIFY_WEBHOOK_ID= :: required for the phone; without it only the desktop is used
+   + =RANONA_NOTIFY_URL= :: webhook base, default =http://172.16.17.7:8123/api/webhook=
+   + =AGENT_NOTIFY_RECIPIENTS= :: comma-separated =ranona_notify= recipients, default =greg=
+   + =AGENT_NOTIFY_PHONE_IDLE_SECONDS= :: when above 0, skip the phone unless X has been
+     idle that long (=xprintidle=); default 0, always send
+   + =AGENT_NOTIFY_DRY_RUN= :: when set, print what would be delivered instead
+
+   Callers:
+   + Claude Code :: hooks in =~/.claude/settings.json= run =agent-notify claude --hook= with
+     the hook's JSON on stdin; see [[*Claude Code hooks][Claude Code hooks]] below
+   + pi :: =~/projects/ai/pi-gregoryg/DOT-pi/extensions/agent-notify.ts=
+   #+begin_src bash :tangle ~/bin/agent-notify
+     # agent-notify: tell Greg that a coding agent needs attention or has finished.
+     set -uo pipefail
+
+     usage() {
+         cat <<'EOF'
+     Usage: agent-notify SOURCE EVENT [--session ID] [--cwd DIR] [--message TEXT]
+            agent-notify SOURCE --hook        (Claude Code hook JSON on stdin)
+
+     SOURCE  the agent, such as claude or pi (a-z, 0-9, _ and -)
+     EVENT   approval  the agent is blocked on the user: desktop and phone
+             ready     the agent finished its turn: desktop only; clears the phone
+             clear     the user is back: closes the desktop and phone notifications
+     EOF
+     }
+
+     die_usage() { printf 'agent-notify: %s\n' "$1" >&2; usage >&2; exit 2; }
+
+     state_dir=${XDG_RUNTIME_DIR:-/tmp/agent-notify-$UID}/agent-notify
+     mkdir -p -m 700 "$state_dir" 2>/dev/null
+     log() { printf '%s %s\n' "$(date -Is)" "$*" >>"$state_dir/log" 2>/dev/null; }
+
+     config=${AGENT_NOTIFY_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/agent-notify/env}
+     if [[ -r $config ]]; then
+         while IFS='=' read -r name value; do
+             case $name in
+                 RANONA_NOTIFY_WEBHOOK_ID|RANONA_NOTIFY_URL|AGENT_NOTIFY_RECIPIENTS|AGENT_NOTIFY_PHONE_IDLE_SECONDS)
+                     # The environment wins over the file.
+                     if [[ -z ${!name:-} ]]; then
+                         value=${value%\"} value=${value#\"} value=${value%\'} value=${value#\'}
+                         printf -v "$name" '%s' "$value"
+                     fi ;;
+             esac
+         done < <(sed -e '/^[[:space:]]*#/d' -e '/^[[:space:]]*$/d' "$config")
+     fi
+     RANONA_NOTIFY_URL=${RANONA_NOTIFY_URL:-http://172.16.17.7:8123/api/webhook}
+     AGENT_NOTIFY_RECIPIENTS=${AGENT_NOTIFY_RECIPIENTS:-greg}
+     AGENT_NOTIFY_PHONE_IDLE_SECONDS=${AGENT_NOTIFY_PHONE_IDLE_SECONDS:-0}
+     dry_run=${AGENT_NOTIFY_DRY_RUN:-}
+
+     # True when an ancestor is a Claude Code print-mode (-p) run, which nobody watches.
+     claude_print_mode() {
+         local pid=$PPID
+         for _ in 1 2 3 4 5; do
+             [[ $pid =~ ^[0-9]+$ && $pid -gt 1 && -r /proc/$pid/cmdline ]] || return 1
+             if [[ $(</proc/"$pid"/comm) == claude ]]; then
+                 tr '\0' '\n' </proc/"$pid"/cmdline | grep -qxE -- '-p|--print'
+                 return
+             fi
+             pid=$(awk '{ print $4 }' /proc/"$pid"/stat)
+         done
+         return 1
+     }
+
+     # Read a Claude Code hook payload; set event, session, cwd and message, or exit 0.
+     claude_hook() {
+         local json hook kind tool agent
+         json=$(cat)
+         IFS=$'\x1f' read -r hook kind tool agent session cwd < <(
+             jq -r '[.hook_event_name, .notification_type, .tool_name, .agent_id,
+                     .session_id, .cwd] | map(. // "") | join("\u001f")' <<<"$json" 2>>"$state_dir/log"
+         ) || { log "unreadable Claude hook payload"; exit 0; }
+         # Subagents report their own lifecycle; only the main conversation matters.
+         [[ -z $agent ]] || exit 0
+         case $hook in
+             Notification)
+                 # idle_prompt repeats what Stop already said.
+                 [[ $kind == idle_prompt ]] && exit 0
+                 event=approval
+                 message=$(jq -r '.message // ""' <<<"$json") ;;
+             PreToolUse)
+                 event=approval
+                 case $tool in
+                     AskUserQuestion) message="Claude has a question" ;;
+                     ExitPlanMode) message="Claude wants a plan approved" ;;
+                     *) exit 0 ;;
+                 esac ;;
+             Stop)
+                 event=ready
+                 # First non-blank line of the reply, as a reminder of what finished.
+                 message=$(jq -r '.last_assistant_message // ""
+                                  | split("\n") | map(select(test("\\S"))) | first // ""
+                                  | gsub("^\\s+|\\s+$"; "")' <<<"$json") ;;
+             PostToolUse|UserPromptSubmit|SessionEnd) event=clear ;;
+             *) exit 0 ;;
+         esac
+     }
+
+     source_name=${1:-}
+     [[ $source_name == -h || $source_name == --help ]] && { usage; exit 0; }
+     [[ $source_name =~ ^[a-z][a-z0-9_-]*$ ]] || die_usage "SOURCE must be a lowercase name"
+     shift
+     event= session= cwd= message=
+     if [[ ${1:-} == --hook ]]; then
+         claude_print_mode && exit 0
+         claude_hook
+     else
+         event=${1:-}
+         [[ $event == approval || $event == ready || $event == clear ]] ||
+             die_usage "EVENT must be approval, ready or clear"
+         shift
+         while (($#)); do
+             (($# >= 2)) || die_usage "$1 needs a value"
+             case $1 in
+                 --session) session=$2 ;;
+                 --cwd) cwd=$2 ;;
+                 --message) message=$2 ;;
+                 *) die_usage "unknown option $1" ;;
+             esac
+             shift 2
+         done
+     fi
+
+     # Print TEXT cut to at most LIMIT characters: at the last word boundary when that
+     # keeps at least half of it, then an ellipsis.
+     shorten() {
+         local LC_ALL=C.UTF-8 text=$1 limit=$2 cut word
+         if ((${#text} <= limit)); then
+             printf '%s' "$text"
+             return
+         fi
+         cut=${text:0:limit-1}
+         word=${cut% *}
+         ((${#word} >= limit / 2)) && cut=$word
+         cut=${cut%"${cut##*[![:space:]]}"}
+         printf '%s…' "$cut"
+     }
+     message=$(shorten "$message" 400)
+
+     session_tag=${session,,}
+     session_tag=${session_tag//[^a-z0-9]/}
+     key=agent_${source_name//-/_}
+     [[ -n $session_tag ]] && key=${key}_${session_tag:0:8}
+     title=${source_name^}
+     [[ -n $cwd ]] && title="$title: ${cwd##*/}"
+
+     desktop_file=$state_dir/$key.desktop
+     phone_file=$state_dir/$key.phone
+
+     desktop_show() {
+         local urgency=$1 text=$2 id
+         local args=(--app-name "$title" --urgency "$urgency" --expire-time 0 --print-id)
+         [[ -s $desktop_file ]] && args+=(--replace-id "$(<"$desktop_file")")
+         if [[ -n $dry_run ]]; then
+             printf 'desktop %s: %s | %s\n' "$urgency" "$title" "$text"
+             printf 0 >"$desktop_file"
+             return
+         fi
+         if id=$(notify-send "${args[@]}" -- "$title" "$text" 2>>"$state_dir/log"); then
+             printf '%s' "$id" >"$desktop_file"
+         else
+             log "notify-send failed for $key"
+         fi
+     }
+
+     desktop_close() {
+         [[ -s $desktop_file ]] || return 0
+         if [[ -n $dry_run ]]; then
+             printf 'desktop close: %s\n' "$title"
+         else
+             gdbus call --session --dest org.freedesktop.Notifications \
+                   --object-path /org/freedesktop/Notifications \
+                   --method org.freedesktop.Notifications.CloseNotification \
+                   "uint32 $(<"$desktop_file")" >/dev/null 2>>"$state_dir/log" ||
+                 log "could not close the desktop notification for $key"
+         fi
+         rm -f "$desktop_file"
+     }
+
+     # POST a JSON body to the ranona_notify webhook.  The webhook id stays out of
+     # the process list by reaching curl through a config file descriptor.
+     ranona_post() {
+         if [[ -n $dry_run ]]; then
+             printf 'phone %s\n' "$1"
+             return 0
+         fi
+         if [[ -z ${RANONA_NOTIFY_WEBHOOK_ID:-} ]]; then
+             log "RANONA_NOTIFY_WEBHOOK_ID is not set; phone skipped for $key"
+             return 1
+         fi
+         curl --silent --show-error --fail --connect-timeout 1 --max-time 4 \
+              --config <(printf 'url = "%s/%s"\n' "$RANONA_NOTIFY_URL" "$RANONA_NOTIFY_WEBHOOK_ID") \
+              --header 'Content-Type: application/json' --data-binary "$1" \
+              --output /dev/null 2>>"$state_dir/log" ||
+             { log "webhook POST failed for $key"; return 1; }
+     }
+
+     phone_send() {
+         local idle_ms
+         if ((AGENT_NOTIFY_PHONE_IDLE_SECONDS > 0)) && idle_ms=$(xprintidle 2>/dev/null) &&
+                ((idle_ms / 1000 < AGENT_NOTIFY_PHONE_IDLE_SECONDS)); then
+             return 0
+         fi
+         ranona_post "$(jq -cn --arg key "$key" --arg title "$title" --arg message "$1" \
+                           --arg recipients "$AGENT_NOTIFY_RECIPIENTS" \
+                           '{key: $key, title: $title, message: $message,
+                             recipients: ($recipients | split(",") | map(gsub("^\\s+|\\s+$"; ""))),
+                             persistent: false}')" &&
+             : >"$phone_file"
+     }
+
+     phone_clear() {
+         [[ -e $phone_file ]] || return 0
+         ranona_post "$(jq -cn --arg key "$key" '{operation: "clear", key: $key}')"
+         # Never retry a clear on every later event; the next send replaces it anyway.
+         rm -f "$phone_file"
+     }
+
+     case $event in
+         approval)
+             desktop_show critical "${message:-Waiting for you}"
+             phone_send "${message:-Waiting for you}" ;;
+         ready)
+             phone_clear
+             desktop_show normal "${message:-Ready for input}" ;;
+         clear)
+             phone_clear
+             desktop_close ;;
+     esac
+     exit 0
+   #+end_src
+*** Claude Code hooks
+    These go in the ="hooks"= object of =~/.claude/settings.json=.  =PostToolUse= has no
+    matcher, so approving any tool clears its approval notification; the script returns
+    quickly when there is nothing to clear.
+    #+begin_src json :tangle no
+      {
+        "Notification": [
+          { "hooks": [{ "type": "command", "command": "~/bin/agent-notify claude --hook", "timeout": 10 }] }
+        ],
+        "PreToolUse": [
+          { "matcher": "AskUserQuestion|ExitPlanMode",
+            "hooks": [{ "type": "command", "command": "~/bin/agent-notify claude --hook", "timeout": 10 }] }
+        ],
+        "PostToolUse": [
+          { "hooks": [{ "type": "command", "command": "~/bin/agent-notify claude --hook", "timeout": 10 }] }
+        ],
+        "Stop": [
+          { "hooks": [{ "type": "command", "command": "~/bin/agent-notify claude --hook", "timeout": 10 }] }
+        ],
+        "UserPromptSubmit": [
+          { "hooks": [{ "type": "command", "command": "~/bin/agent-notify claude --hook", "timeout": 10 }] }
+        ],
+        "SessionEnd": [
+          { "hooks": [{ "type": "command", "command": "~/bin/agent-notify claude --hook", "timeout": 10 }] }
+        ]
+      }
+    #+end_src
+*** Try it
+    Without the phone, printing instead of notifying:
+    #+begin_src bash :results verbatim
+      AGENT_NOTIFY_DRY_RUN=1 ~/bin/agent-notify claude approval --session demo --cwd ~/emacs-gregoryg --message "Allow Bash?"
+      AGENT_NOTIFY_DRY_RUN=1 ~/bin/agent-notify claude ready --session demo --cwd ~/emacs-gregoryg
+    #+end_src
+    For real, phone included:
+    #+begin_src bash :results none
+      ~/bin/agent-notify test approval --message "agent-notify test: needs you" && sleep 10 && ~/bin/agent-notify test clear
+    #+end_src
 
 * OS Applications
   The shell scripts here expect certain applications to be installed, so let's take care
