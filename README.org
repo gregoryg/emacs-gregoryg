@@ -2252,6 +2252,9 @@
      (load-library "~/projects/emacs/stardog-sparql/stardog-sparql")
    #+end_src
 ** SQL
+   :PROPERTIES:
+   :CUSTOM_ID: sql
+   :END:
 *** Crazy removal of sql-login-delay
     SQL connections are very very fast, yet I always wait ~8 seconds before I can start
     typing in a new interactive SQL buffer (at least for MySQL/MariaDB).  Why?  There's a
