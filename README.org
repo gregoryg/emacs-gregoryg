@@ -15,12 +15,19 @@
 #+property: header-args:emacs-lisp :tangle ~/.emacs.d/emacs-init.el :results none :mkdirp yes
 #+property: header-args:bash :comments both :shebang #!/usr/bin/env bash :results none
 * Literate Programming Config file
-  This Org Mode file becomes "tangled" by the =org-babel-load-file= function in =init.el= to
-  produce the entire config for my Emacs sessions on Windows, MacOS, Linux and ChromeOS
+  This Org Mode file is the config for my Emacs sessions on Windows, MacOS, Linux and
+  ChromeOS.
+
+  Tangling it (=C-c C-v t=) writes =~/.emacs.d/init.el= and
+  =~/.emacs.d/emacs-init.el=.  =init.el= loads =emacs-init.el=.
+
+  AI.org, EXWM.org and gjg-functions.org tangle to files of their own, loaded from here.
+  Tangle the whole buffer: a narrowed tangle rewrites =emacs-init.el= with just the narrowed
+  part.
 
   Hip tip: to exclude entire code block sections from the resulting tangled config file,
-  just add a =:tangle no= header to the source block - but do *not* use =:tangle yes= for
-  that will lead to tears by interfering with =org-babel-load-file=
+  just add a =:tangle no= header to the source block - but do *not* use =:tangle yes=,
+  which sends the block to a =README.el= that nothing loads.
 
   If reading this file on GitHub, use the =raw= view to see all the code markings and
   header parameters.
