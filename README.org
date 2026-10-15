@@ -451,7 +451,6 @@
     (global-set-key (kbd "C-c C-v") 'browse-url-at-point)
     ;; (unbind-key (kbd "C-c C-o") sh-mode-map)
     (global-set-key (kbd "C-c C-o") 'org-open-at-point)  ; open Org links in tangled files!
-    (defalias 'ss 'gjg/open-remote-shell)
     (defalias 'ht 'gjg/highlight-terraform-stuff)
     (defalias 'rb 'rename-buffer)
 
@@ -1684,11 +1683,14 @@
        '(:application tramp :machine "kobo")
        'my-dired-profile)
     #+end_src
-*** Shell sugar
-**** Open remote shell in current remote directory
-#+begin_src emacs-lisp
+*** Functions to quickly open remote shells
+     :PROPERTIES:
+     :CUSTOM_ID: shell-sugar
+     :END:
+**** Open shell-mode buffer in prompted directory
+#+begin_src emacs-lisp :tangle no
   (defun gjg/open-shell-prompted (newdir)
-    "Directly open shell local or TRAMP remote"
+    "Directly open local or TRAMP remote shell in NEWDIR"
     (interactive "D")
     (message (format "Changing directory to %s" newdir))
     (cd newdir)
@@ -1699,25 +1701,61 @@
         (file-name-nondirectory
          (directory-file-name
           (file-name-directory newdir)))))))
-
-
-
-  (defun gjg/open-remote-shell ()
-    "Open a new uniquely named shell in current directory.
-  Name is based on directory if local, or on hostname if remote."
-    (interactive)
-    (if (file-remote-p default-directory)
-        (progn
-          ;; do stuff
-          (message "Now I shall do stuff")
-          (shell (concat (file-remote-p default-directory 'host) "-sh")))
-      (shell
-       (concat
-        (file-name-nondirectory
-         (directory-file-name
-          (file-name-directory
-           default-directory))) "-sh"))))
 #+end_src
+**** Helper functions
+  #+begin_src emacs-lisp
+  (defun gjg/shell-buffer-name (suffix)
+    "Return a shell buffer name for `default-directory', ending in SUFFIX.
+  The name is the hostname if remote, or the directory's own name if local."
+    (concat (or (file-remote-p default-directory 'host)
+                (file-name-nondirectory
+                 (directory-file-name
+                  (file-name-directory default-directory))))
+            suffix))
+  #+end_src
+**** shell-mode
+  #+begin_src emacs-lisp
+    (defun gjg/open-remote-shell ()
+      "Open a new uniquely named shell in current directory.
+    Name is based on directory if local, or on hostname if remote."
+      (interactive)
+      (when (file-remote-p default-directory)
+        ;; do stuff
+        (message "Now I shall do stuff"))
+      (shell (gjg/shell-buffer-name "-sh")))
+
+    (defalias 'ss 'gjg/open-remote-shell)
+  #+end_src
+**** ghostel
+  #+begin_src emacs-lisp
+    (defun gjg/open-remote-ghostel (&optional arg)
+      "Open a Ghostel terminal in the current directory, or switch to it.
+    Like `gjg/open-remote-shell': the buffer is named HOST-gh if remote,
+    or DIR-gh after the directory if local, and shown in the same window.
+    With \\[universal-argument] prefix ARG, create another terminal even if
+    one exists.  With numeric prefix ARG, switch to the terminal with that
+    number, or create it."
+      (interactive "P")
+      ;; Let `ghostel' find or create the buffer: it matches its own
+      ;; record of the name it was created with, not the current buffer
+      ;; name, so a renamed terminal is still found.
+      ;;
+      ;; Renaming: left on, as for every other Ghostel buffer.
+      ;; `ghostel-buffer-name-by-directory' renames the buffer to
+      ;; *ghostel: DIR* whenever the shell reports its directory (OSC 7),
+      ;; so DIR-gh is only the starting name of a local terminal.  A remote
+      ;; shell reports it only with Ghostel's shell integration on that
+      ;; host (see `ghostel-tramp-shell-integration', off here), so HOST-gh
+      ;; usually stays.  To always keep the starting name, wrap the call as
+      ;;   (with-current-buffer (ghostel arg)
+      ;;     (setq-local ghostel-buffer-name-function nil))
+      (defvar ghostel-buffer-name)
+      (let ((ghostel-buffer-name (gjg/shell-buffer-name "-gh")))
+        (ghostel arg)))
+
+    (defalias 'gg #'gjg/open-remote-ghostel)
+  #+end_src
+
 ** Bookmark+
    Bookmark a function, bookmark crazy things
    Note this package provides =bmkp-bmenu-buffer= useful to use for jumping to bookmarked TRAMP connections
