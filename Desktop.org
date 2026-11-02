@@ -1327,7 +1327,7 @@
      [Desktop Entry]
      Name=Home Assistant
      Comment=Home Assistant of 2 Moonz
-     Exec=xdg-open https://homeassistant.magichome
+     Exec=x-www-browser --new-window https://homeassistant.magichome
      Icon= /home/gregj/.local/share/pixmaps/homeassistant.png
      Terminal=false
      Type=Application
