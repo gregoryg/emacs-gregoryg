@@ -55,7 +55,9 @@
   come to love it, as I have ♥️.
 
 * First things first: create init.el
-  #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el :mkdirp yes :comments no
+  NOTE: some Emacs operations modify ~/.emacs.d/init.el, such as disabled "advanced" commands that you give permanent permission to use after prompting.  This makes the generated init.el drift from the source in this code block.  SO, disable tangling of init.el by default, and periodically come and perform the reverse operation: bring this code block up to date with ~/.emacs.d/init.el.
+
+  #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el :mkdirp yes :comments no :tangle no
     ;;; ...  -*- lexical-binding: t -*-
     ;; Keep track of loading time
     (defconst emacs-start-time (current-time))
