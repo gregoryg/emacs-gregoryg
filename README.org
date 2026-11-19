@@ -3780,7 +3780,7 @@
               (json-ts-mode . combobulate-mode)
               (tsx-ts-mode . combobulate-mode)))
    #+end_src
-** Flaschcards
+** Flashcards
    Enable when in frequent use
   #+begin_src bash
     sudo apt-get -y install gawk
