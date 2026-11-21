@@ -1997,9 +1997,151 @@
         :custom
         (magit-clone-set-remote.pushDefault t)
         (magit-delete-by-moving-to-trash nil)
-        ;; (magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
+        (magit-repository-directories
+         '(("~/projects/emacs/gregoryg-packages/" . 1)
+           ("~/projects/selfhost-resources/solve-homelab-woes-w-k8s/" . 0)
+           ("~/projects/HomeAssistant/homeassistant-core/" . 0)
+           ("~/projects/HomeAssistant/linux-voice-assistant/" . 0)
+           ("~/projects/HomeAssistant/my-homeassistant-config/" . 0)
+           ("~/projects/HomeAssistant/stats-chronicler/" . 0)
+           ("~/emacs-gregoryg/" . 0)
+           ("~/projects/trips-vacations/" . 0)
+           ;; :load-path clones -- AI.org
+           ("~/projects/emacs/ai/gptel/" . 0)
+           ("~/projects/ai/AIPIHKAL/" . 0)
+           ("~/projects/ai/pi-gregoryg/" . 0)
+           ;; :load-path clones -- README.org
+           ("~/projects/emacs/mask-mode-line/" . 0)
+           ("~/projects/emacs/whisper.el/" . 0)
+           ("~/projects/emacs/browser-gt/" . 0)
+           ("~/projects/emacs/ghostel/" . 0)
+           ("~/projects/emacs/org-fc/" . 0)
+           ;; :load-path clones -- EXWM.org
+           ("~/projects/emacs/xdg-launcher/" . 0)
+           ;; remote dev clones
+           ("/ssh:perihelion:emacs-gregoryg" . 0)
+           ("/ssh:perihelion:projects/emacs/magit" . 0)
+           ("/ssh:perihelion:projects/HomeAssistant/my-homeassistant-config/" . 0)
+           ("/ssh:perihelion:projects/HomeAssistant/stats-chronicler/" . 0)
+           ("/ssh:perihelion:projects/selfhost-resources/solve-homelab-woes-w-k8s/" . 0)))
+        (magit-repolist-columns
+         '(("Name"    25 magit-repolist-column-ident ())
+           ("Branch"  12 magit-repolist-column-branch ())
+           ("Flags"    5 magit-repolist-column-flags ())
+           ("St"       2 magit-repolist-column-stashes ((:right-align t) (:sort <)))
+           ("B<U"      3 magit-repolist-column-unpulled-from-upstream ((:right-align t) (:sort <)))
+           ("B>U"      3 magit-repolist-column-unpushed-to-upstream ((:right-align t) (:sort <)))
+           ("Path"    99 magit-repolist-column-path ())))
+        (magit-repolist-column-flag-alist
+         '((magit-untracked-files . "⁇")
+           (magit-unstaged-files . "🙋")
+           (magit-staged-files . "🎭")
+           (gjg/magit-repolist-unpulled-p . "↓"))))
+      ;; (magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
 
-        )
+      ;; Magit 20261117 opens a per-directory repository list on every call
+      ;; (magit-repolist-setup tests `buffer-local-boundp', which is true for
+      ;; globally set options).  Always use the single global list instead.
+
+      (defun gjg/magit-repolist-unpulled-p ()
+        "Return non-nil if the current branch is behind its upstream or push branch.
+      Both are remote-tracking refs, so only already-fetched commits count.
+      A push branch that does not exist on the remote is ignored."
+        (seq-some (lambda (target)
+                    (> (cadr (magit-rev-diff-count "HEAD" target)) 0))
+                  (delete-dups (delq nil (list (magit-get-upstream-branch)
+                                               (magit-get-push-branch nil t))))))
+
+      (with-eval-after-load 'magit-repos
+        (keymap-set magit-repolist-mode-map "N" #'outline-next-visible-heading)
+        (keymap-set magit-repolist-mode-map "P" #'outline-previous-visible-heading))
+        ;;  (keymap-unset magit-repolist-mode-map "f" t)  ;; do not encourage "fetch" directly from repolist buffer
+        ;; (add-to-list 'magit-repolist-column-flag-alist
+        ;;              '(gjg/magit-repolist-unpulled-p . "↓") t))
+
+    #+end_src
+*** Filter groups for Magit repolist
+    #+begin_src emacs-lisp
+      (defvar gjg/magit-repolist-filter-groups
+        '(
+          ("Remote"          . "ssh:perihelion:")
+          ("Home Assistant" . "/HomeAssistant/")
+          ("My packages"    . "/gregoryg-packages/")
+          ("AI repos"       . "/projects/.*ai/")
+          ("Emacs repos"    . "/projects/emacs/"))
+        "Filter groups for `magit-list-repositories', like ibuffer's.
+      Each element is (GROUP-NAME . REGEXP).  REGEXP is matched against the
+      repository path in abbreviated form, so \"^~/emacs-gregoryg/\" works.
+      A repository goes into the first matching group, and groups are shown
+      in this order.  Repositories matching no group go into \"Other\".")
+
+      (defun gjg/magit-repolist-groups ()
+        "Return `tabulated-list-groups' for the current repository list.
+      Group `tabulated-list-entries' per `gjg/magit-repolist-filter-groups',
+      omitting empty groups."
+        (let ((buckets (mapcar (lambda (group) (list (car group)))
+                               gjg/magit-repolist-filter-groups))
+              (other (list "Other")))
+          (dolist (entry tabulated-list-entries)
+            (let* ((path (abbreviate-file-name (expand-file-name (car entry))))
+                   (group (seq-find (lambda (g) (string-match-p (cdr g) path))
+                                    gjg/magit-repolist-filter-groups))
+                   (bucket (if group (assoc (car group) buckets) other)))
+              (push entry (cdr bucket))))
+          (seq-keep (lambda (bucket)
+                      (when (cdr bucket)
+                        (cons (concat "** " (car bucket)) (nreverse (cdr bucket)))))
+                    (append buckets (list other)))))
+
+      (defun gjg/magit-repolist-enable-groups ()
+        "Group the repository list and make groups foldable with TAB."
+        (setq tabulated-list-groups #'gjg/magit-repolist-groups)
+        (setq-local outline-minor-mode-cycle t
+                    outline-minor-mode-highlight t)
+        (outline-minor-mode 1))
+
+      (add-hook 'magit-repolist-mode-hook #'gjg/magit-repolist-enable-groups)
+
+      ;;; but filter groups cause their own problems, so...
+      (defun gjg/magit-repolist--target-repos (all)
+        "Return repository directories for a repolist command.
+      With ALL non-nil, return every listed repository.  Otherwise return the
+      repositories marked with \"*\", or else the repository at point.  Group
+      header lines are skipped because they have no repository id."
+        (if all
+            (mapcar #'car tabulated-list-entries)
+          (let (marked)
+            (save-excursion
+              (goto-char (point-min))
+              (while (not (eobp))
+                (when-let* ((id (tabulated-list-get-id)))
+                  (when (eq (char-after) ?*)
+                    (push id marked)))
+                (forward-line)))
+            (or (nreverse marked)
+                (when-let* ((id (tabulated-list-get-id)))
+                  (list id))
+                (user-error "No marked repositories and no repository at point")))))
+
+      (defun gjg/magit-repolist-fetch (repos)
+        "Run \"git remote update\" in REPOS.
+      Interactively, REPOS are the marked repositories, or else the one at
+      point.  With a prefix argument, fetch every listed repository."
+        (interactive (list (gjg/magit-repolist--target-repos current-prefix-arg))
+                     magit-repolist-mode)
+        (run-hooks 'magit-credential-hook)
+        (let ((total (length repos))
+              (count 0))
+          (dolist (repo repos)
+            (let ((default-directory (file-name-as-directory (expand-file-name repo))))
+              (setq count (1+ count))
+              (message "(%d/%d) Fetching in %s..." count total default-directory)
+              (magit-run-git "remote" "update")))
+          (message "Fetched %d repositor%s" total (if (= total 1) "y" "ies"))))
+
+      (with-eval-after-load 'magit-repos
+        (keymap-set magit-repolist-mode-map "f" #'gjg/magit-repolist-fetch))
+
     #+end_src
 
 ** Help and helpful modes
