@@ -3230,7 +3230,18 @@
                   '("d" org-toggle-narrow-to-subtree))
      (setq org-speed-commands (delete '("a" . org-archive-subtree-default-with-confirmation) org-speed-commands))
    #+end_src
+** Annotations, highlights and vocabulary
+   This is a bespoke package based on the usefulness of the highlighing in the `nov-x` package
+   #+begin_src emacs-lisp
+     (use-package org-sidecar-notes-org
+       :load-path "~/projects/emacs/gregoryg-packages/org-sidecar-notes"
+       :hook
+       (org-mode . org-sidecar-notes-maybe-enable)
+       :bind (:map org-sidecar-notes-mode-map
+                   ("C-c n" . org-sidecar-notes-prefix)))
 
+     (require 'org-sidecar-notes)
+   #+end_src
 ** Org Powerslides
    my extension to the Dan Davison show-blah-tidily
    #+begin_src emacs-lisp
