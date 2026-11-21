@@ -2042,6 +2042,10 @@
       ;; Magit 20261117 opens a per-directory repository list on every call
       ;; (magit-repolist-setup tests `buffer-local-boundp', which is true for
       ;; globally set options).  Always use the single global list instead.
+      (advice-add 'magit-list-repositories :filter-args
+                  (lambda (_args) (list t))
+                  '((name . gjg/magit-repolist-force-global)))
+
 
       (defun gjg/magit-repolist-unpulled-p ()
         "Return non-nil if the current branch is behind its upstream or push branch.
