@@ -1994,6 +1994,7 @@
     #+begin_src emacs-lisp
       ;; (use-package magit-todos)
       (use-package magit
+        :load-path "~/projects/emacs/magit/lisp"
         :custom
         (magit-clone-set-remote.pushDefault t)
         (magit-delete-by-moving-to-trash nil)
