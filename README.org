@@ -2081,10 +2081,19 @@
       A repository goes into the first matching group, and groups are shown
       in this order.  Repositories matching no group go into \"Other\".")
 
+      (defun gjg/magit-repolist-group-heading (name)
+        "Return the heading for group NAME, ibuffer style.
+        The `outline-level' property, not the text, makes it an outline heading,
+        so marked rows, which begin with \"*\", are never taken for headings."
+        (propertize (format "[ %s ]" name)
+                    ;; 'face 'magit-section-heading
+                    'face 'bold
+                    'outline-level 1))
+
       (defun gjg/magit-repolist-groups ()
         "Return `tabulated-list-groups' for the current repository list.
-      Group `tabulated-list-entries' per `gjg/magit-repolist-filter-groups',
-      omitting empty groups."
+        Group `tabulated-list-entries' per `gjg/magit-repolist-filter-groups',
+        omitting empty groups."
         (let ((buckets (mapcar (lambda (group) (list (car group)))
                                gjg/magit-repolist-filter-groups))
               (other (list "Other")))
@@ -2096,58 +2105,23 @@
               (push entry (cdr bucket))))
           (seq-keep (lambda (bucket)
                       (when (cdr bucket)
-                        (cons (concat "** " (car bucket)) (nreverse (cdr bucket)))))
+                        (cons (gjg/magit-repolist-group-heading (car bucket))
+                              (nreverse (cdr bucket)))))
                     (append buckets (list other)))))
 
       (defun gjg/magit-repolist-enable-groups ()
         "Group the repository list and make groups foldable with TAB."
         (setq tabulated-list-groups #'gjg/magit-repolist-groups)
-        (setq-local outline-minor-mode-cycle t
-                    outline-minor-mode-highlight t)
+        ;; Pad for marks from the start, so the first mark does not reprint.
+        (setq-local tabulated-list-padding 2)
+        ;; Find headings by text property, as `describe-mode' does.
+        (setq-local outline-search-function #'outline-search-level
+                    outline-level (lambda () 1)
+                    outline-minor-mode-cycle t)
         (outline-minor-mode 1))
 
+
       (add-hook 'magit-repolist-mode-hook #'gjg/magit-repolist-enable-groups)
-
-      ;;; but filter groups cause their own problems, so...
-      ;; (defun gjg/magit-repolist--target-repos (all)
-      ;;   "Return repository directories for a repolist command.
-      ;; With ALL non-nil, return every listed repository.  Otherwise return the
-      ;; repositories marked with \"*\", or else the repository at point.  Group
-      ;; header lines are skipped because they have no repository id."
-      ;;   (if all
-      ;;       (mapcar #'car tabulated-list-entries)
-      ;;     (let (marked)
-      ;;       (save-excursion
-      ;;         (goto-char (point-min))
-      ;;         (while (not (eobp))
-      ;;           (when-let* ((id (tabulated-list-get-id)))
-      ;;             (when (eq (char-after) ?*)
-      ;;               (push id marked)))
-      ;;           (forward-line)))
-      ;;       (or (nreverse marked)
-      ;;           (when-let* ((id (tabulated-list-get-id)))
-      ;;             (list id))
-      ;;           (user-error "No marked repositories and no repository at point")))))
-
-      ;; (defun gjg/magit-repolist-fetch (repos)
-      ;;   "Run \"git remote update\" in REPOS.
-      ;; Interactively, REPOS are the marked repositories, or else the one at
-      ;; point.  With a prefix argument, fetch every listed repository."
-      ;;   (interactive (list (gjg/magit-repolist--target-repos current-prefix-arg))
-      ;;                magit-repolist-mode)
-      ;;   (run-hooks 'magit-credential-hook)
-      ;;   (let ((total (length repos))
-      ;;         (count 0))
-      ;;     (dolist (repo repos)
-      ;;       (let ((default-directory (file-name-as-directory (expand-file-name repo))))
-      ;;         (setq count (1+ count))
-      ;;         (message "(%d/%d) Fetching in %s..." count total default-directory)
-      ;;         (magit-run-git "remote" "update")))
-      ;;     (message "Fetched %d repositor%s" total (if (= total 1) "y" "ies"))))
-
-      ;; (with-eval-after-load 'magit-repos
-      ;;   (keymap-set magit-repolist-mode-map "f" #'gjg/magit-repolist-fetch))
-
     #+end_src
 
 ** Help and helpful modes
