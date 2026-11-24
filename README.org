@@ -2000,6 +2000,7 @@
         (magit-delete-by-moving-to-trash nil)
         (magit-repository-directories
          '(("~/projects/emacs/gregoryg-packages/" . 1)
+           ("~/projects/media/ytaudio/" . 0)
            ("~/projects/selfhost-resources/solve-homelab-woes-w-k8s/" . 0)
            ("~/projects/HomeAssistant/homeassistant-core/" . 0)
            ("~/projects/HomeAssistant/linux-voice-assistant/" . 0)
